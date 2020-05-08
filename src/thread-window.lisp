@@ -758,6 +758,13 @@ db:renumber-timeline-message-index."
             (draw object))))))
   object)
 
+(defun reblogged-data (reblogger-status)
+  (when-let* ((reblogged-id     (db:row-message-reblog-id reblogger-status))
+              (reblogged-status (db:find-status-id reblogged-id))
+              (body             (db:row-message-rendered-text reblogged-status))
+              (attachments      (status-attachments->text reblogged-id)))
+    (values body attachments)))
+
 (defmethod open-message ((object thread-window))
   (with-accessors ((row-selected-index row-selected-index)
                    (rows               rows)
@@ -770,14 +777,21 @@ db:renumber-timeline-message-index."
                 (header       (message-original->text-header fields)))
       (let* ((body        (db:row-message-rendered-text fields))
              (attachments (status-attachments->text status-id))
-             (raw         (strcat header body attachments))
              (refresh-event (make-instance 'program-events:refresh-conversations-window-event)))
-        (setf (message-window:source-text *message-window*)
-              raw)
-        (db:mark-status-red-p timeline-type timeline-folder status-id)
-        (resync-rows-db object :redraw t)
-        (program-events:push-event refresh-event)
-        (draw *message-window*)))))
+        (multiple-value-bind (reblogged-status-body reblogged-status-attachments)
+            (reblogged-data fields)
+          (let ((actual-body (if (string= body reblogged-status-body)
+                                 body
+                                 (strcat  body reblogged-status-body))))
+            (setf (message-window:source-text *message-window*)
+                  (strcat header
+                          actual-body
+                          reblogged-status-attachments
+                          attachments))
+            (db:mark-status-red-p timeline-type timeline-folder status-id)
+            (resync-rows-db object :redraw t)
+            (program-events:push-event refresh-event)
+            (draw *message-window*)))))))
 
 (defun mark-selected-status-boolean-value (window function)
   (with-accessors ((row-selected-index row-selected-index)

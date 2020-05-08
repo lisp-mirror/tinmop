@@ -67,7 +67,8 @@
                                         :selected-bg   fg
                                         :selected-fg   bg))
                      attach-names)))
-      (let ((attach-names (db:all-attachments-urls-to-status status-id)))
+      (let ((attach-names (db:all-attachments-urls-to-status status-id
+                                                             :add-reblogged-urls t)))
         (with-croatoan-window (croatoan-window object)
           (setf rows (make-rows attach-names
                                 selected-line-bg

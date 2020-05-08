@@ -1463,9 +1463,26 @@ messages are sorted as below:
                     (from +table-attachment+)
                     (where (:= :status-id status-id)))))
 
-(defun all-attachments-urls-to-status (status-id)
-  (mapcar (lambda (a) (db-getf a :url))
-          (all-attachments-to-status status-id)))
+(defun status->reblogged-status (wrapper-status-id)
+  "Return   the status that identified by `wrapper-status-id'
+reblogged (if exists)."
+  (when-let* ((wrapper-status      (find-status-id wrapper-status-id))
+              (reblogged-status-id (row-message-reblog-id wrapper-status)))
+    (find-status-id reblogged-status-id)))
+
+(defun all-attachments-urls-to-status (status-id &key (add-reblogged-urls nil))
+  "Returns  all the attachments to status identified by `status-id'
+  and (if `add-reblogged-urls' is non nil) reblogged status (if exists)"
+  (let* ((res                 (mapcar (lambda (a) (db-getf a :url))
+                                      (all-attachments-to-status status-id)))
+         (reblogged-status    (status->reblogged-status status-id)))
+    (when (and reblogged-status
+               add-reblogged-urls)
+      (setf res
+            (append res
+                    (all-attachments-urls-to-status (row-message-status-id reblogged-status)
+                                                    :add-reblogged-urls add-reblogged-urls))))
+    res))
 
 (defun debug-print-all-tree (timeline-type)
   (let ((all-trees  (remove-if-not (lambda (tree)
