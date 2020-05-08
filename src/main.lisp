@@ -106,10 +106,11 @@ etc.) happened"
     ;; now init the client
     (client:init)
     (client:authorize)
-    (when command-line:*start-folder*
-      (change-folder))
-    (when command-line:*start-timeline*
-      (change-timeline))
+    (let ((program-events:*process-events-immediately* t))
+      (when command-line:*start-folder*
+        (change-folder))
+      (when command-line:*start-timeline*
+        (change-timeline)))
     (when command-line:*update-timeline*
       (ui:update-current-timeline))
     (when command-line:*check-follow-requests*
