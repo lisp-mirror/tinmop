@@ -1,0 +1,206 @@
+#+OPTIONS: html-postamble:nil html-preamble:nil
+#+AUTHOR:
+#+TITLE: tinmop
+
+* Introduction
+
+  Tinmop is an  opinionated client for Mastodon (or  Pleroma using the
+  mastodon  API). It offer a distraction free terminal interface.
+
+  The name is a recursive acronym:  "Tinmop Is Not Mutt or Pine".  The
+  older of us can remember that, in turn, Pine is an acronym as well:
+  "Pine Is Not Elm" and, finally, Elm means (according to Wikipedia):
+  "Electronic Mail".
+
+* Peculiar Features
+
+  - tree structure of messages;
+  - subscriptions of hashtag;
+  - encrypted direct message (but see [[FAQ]]);
+  - no mentions notification, no knowlege of when or who favourited
+    your status;
+  - No blocking or muting, the client can be configured to ignore
+    a list of accounts.
+
+* Dependency
+
+** Programs
+
+   + for running the program:
+     - SBCL compiler;
+     - xdg-open;
+     - your favourite editor (default: nano).
+
+   + to install  the package, including running the  script to install
+     lisp libraries (~quick_quicklisp.sh~):
+     - GNU AWK (Gawk);
+     - BASH shell.
+
+** Lisp Libraries
+
+   - alexandria;
+   - cl-ppcre;
+   - tooter;
+   - croatoan;
+   - osicat;
+   - cl-spark;
+   - access;
+   - sqlite;
+   - sxql;
+   - sxql-composer;
+   - marshal;
+   - bordeaux-threads;
+   - log4cl;
+   - local-time;
+   - cl-colors2;
+   - cl-i18n;
+   - clunit2;
+   - esrap;
+   - ieee-floats;
+   - parse-number;
+   - cl-html5-parser;
+   - unix-opts;
+   - crypto-shortcuts;
+   - drakma.
+
+** Foreign (C language) library
+
+   - libssl
+
+* Install
+
+  1. optional step needed only if  you have not already the configure script,
+     you will need ~autotools~ for that.
+
+     #+BEGIN_SRC sh
+     $ autoreconf -fiv
+     #+END_SRC
+
+  2. run ~configure~ and resolve the missing dependencies (if any)
+
+     #+BEGIN_SRC sh
+     $ ./configure
+     #+END_SRC
+
+  3. the script ~quick-quicklisp.sh~ will download and install the library manager and the
+     library on your home dir.
+
+     #+BEGIN_SRC sh
+     $ ./quick_quicklisp.sh
+     #+END_SRC
+
+     This step is optional if you have already installed quicklisp, in
+     this case just  load the [[Dependency][dependencies]]
+     using  the client installed on your computer.
+
+  4. clone  in ~$HOME/quicklisp/local-projects/~ the latest  version of
+     tooter, a library to access mastodon API.
+
+     This step is temporary as this version will get into quicklisp eventually.
+     #+BEGIN_SRC sh
+     $ cd $HOME/quicklisp/local-projects/
+     $ git clone https://github.com/Shinmera/tooter.git
+     #+END_SRC
+
+  5. build the executable:
+
+     #+BEGIN_SRC sh
+     $ make
+     #+END_SRC
+
+  6. install on your system:
+
+     #+BEGIN_SRC sh
+     $ make install
+     #+END_SRC
+
+  7. run the software!
+
+     #+BEGIN_SRC sh
+     $ tinmop
+     #+END_SRC
+
+* Usage
+
+  See the command line options:
+
+  #+BEGIN_SRC sh
+   $ tinmop -h
+  #+END_SRC
+
+  To get instruction about configuration:
+
+  #+BEGIN_SRC sh
+   $ man tinmop
+  #+END_SRC
+
+* BUGS
+
+  Please file bug reports on  the
+  [[https://notabug.org/cage/tinmop/][notabug repository]].
+
+* Translations
+
+  Only Italian translation is regularly updated.
+
+* License
+
+  This program is released under  GNU General Public license version 3
+  or later (see COPYING file).
+
+  The  program  use data  and  code  from  other sources,  please  see
+  LICENSES.org for credits.
+
+  Although  any efforts  has  been  put to  make  the  list of  credits
+  exhaustive,  errors are  always possible.  Please send  correction to
+  cage-dev at twistfold dot it.
+
+* Privacy
+
+  This  software  does  collect  nothing from  its  users  in  places
+  different from their local computer.
+
+  But    launching     ~quick_quicklisp.sh~     will     contact
+  [[https://www.quicklisp.org/]],               check              the
+  [[https://beta.quicklisp.org/quicklisp.lisp][quicklisp sources]] for
+  details.
+
+* Contributing
+
+  Any help  is appreciated. If  you intend to contribute  please point
+  your  browser to  the
+  [[https://notabug.org/cage/tinmop/issues][issue  tracker]] or file a
+  [[https://notabug.org/cage/tinmop/pulls][pull request]].
+
+  But, please take a minute to read the file [[./CONTRIBUTING.org]]
+
+* FAQ
+  - are the encrypted messages secure?
+
+    No. First  only a symmetric  encryption scheme is  implemented (so
+    there is a problem of secure  key exchanging). Moreover i am not a
+    crypto expert and probably i made something wrong. Note that i am
+    not claiming that the algorithm  (AES256) or the implementation of
+    such encrypting  algorithm is flawed  but that, likely,  is flawed
+    the code i wrote to use the crypto library in this software.
+
+    So, please do not consider the encrypted message secure at all.
+
+* NO WARRANTY
+
+  tinmop: an humble mastodon client
+  Copyright (C) 2020  cage
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program.
+  If not, see [[http://www.gnu.org/licenses/][http://www.gnu.org/licenses/]].

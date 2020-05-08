@@ -1,0 +1,44 @@
+* Contributing
+
+  There is  always need for  help, you  can join the  developer, sending
+  patches or translating the UI to your favourite language.
+
+  Also there is need for better documentation.
+
+  And a fancy logo would be great too! :)
+
+  Just point your browser to the
+  [[https://notabug.org/cage/tinmop/][code repository]].
+
+** Some Notes
+   Please understand that tinmop is a  very opinionated client and with a
+   someway radical  approach to social  networks. The developer  tried to
+   offer a "/degamified/" experience to the user.
+
+   This  means that,  in  particular,  i will  not  accept patches  or
+   requests for:
+
+   - implementing mentioning or other alerts system;
+   - trending, hashtags/people suggested, etc.;
+   - count of followers, people you are following.
+
+   I think you get the idea ;-)
+
+   Also i  try to hide as  much as information i  can to the server  so i
+   won't implement muting or blocking.  Ignore the toot for annoying user
+   configuring the client to do so, instead.
+
+   Finally before  starting coding like a  crazy it is better  to discuss
+   the general  idea with the developers,  this way will be  more unlikely
+   that the patch will be rejected and our time wasted.
+
+   And do not forget to have fun!
+
+* Translations
+
+  translation template can be found in ~po/tinmop.pot~ in gettext format,
+  there are a  bunch of free software  editor to work with  this file or
+  you can just
+  [[https://www.gnu.org/software/gettext/manual/html_node/PO-Mode.html][use emacs]].
+
+  So far the only completed translation is in Italian.

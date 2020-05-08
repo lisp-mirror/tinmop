@@ -1,0 +1,37 @@
+;; tinmop: an humble mastodon client
+;; Copyright (C) 2020  cage
+
+;; This program is free software: you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation, either version 3 of the License, or
+;; (at your option) any later version.
+
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with this program.
+;; If not, see [[http://www.gnu.org/licenses/][http://www.gnu.org/licenses/]].
+
+(in-package :modules)
+
+(defun load-module (path)
+  (flet ((%load (file)
+           (load file :verbose nil :print nil)))
+    (let ((config-file (conditions:with-default-on-error (nil)
+                         (get-config-file path)))
+          (data-file   (conditions:with-default-on-error (nil)
+                         (get-data-file path))))
+      (cond
+        (config-file
+         (%load config-file))
+        (data-file
+         (%load data-file))
+        (t
+         (error (_ "Unrecoverable error: file ~a not found in any of the directory ~a ~a ~a ~a")
+                +sys-data-dir+
+                +sys-conf-dir+
+                (home-datadir)
+                (home-confdir)))))))

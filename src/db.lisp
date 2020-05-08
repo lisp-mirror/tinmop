@@ -1,0 +1,2221 @@
+;; tinmop: an humble mastodon client
+;; Copyright (C) 2020  cage
+
+;; This program is free software: you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation, either version 3 of the License, or
+;; (at your option) any later version.
+
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with this program.
+;; If not, see [[http://www.gnu.org/licenses/][http://www.gnu.org/licenses/]].
+
+;; derived from
+
+;; niccolo': a chemicals inventory
+;; Copyright (C) 2016  Universita' degli Studi di Palermo
+
+;; This  program is  free  software: you  can  redistribute it  and/or
+;; modify it  under the  terms of  the GNU  General Public  License as
+;; published  by  the  Free  Software Foundation,  version  3  of  the
+;; License, or (at your option) any later version.
+
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+(in-package :db)
+
+(define-constant +make-id-autoincrement+        " id INTEGER PRIMARY KEY AUTOINCREMENT, "
+  :test #'string=)
+
+(define-constant +make-id+                      " id INTEGER PRIMARY KEY, "
+  :test #'string=)
+
+(define-constant +make-string-id+               " id TEXT PRIMARY KEY, "
+  :test #'string=)
+
+(define-constant +other-id+                     :other-id
+  :test #'eq)
+
+(define-constant +make-open+                    " ( "
+  :test #'string=)
+
+(define-constant +make-close+                   " )  "
+  :test #'string=)
+
+(define-constant +restrict+                     " RESTRICT "
+  :test #'string=)
+
+(define-constant +cascade+                      " CASCADE "
+  :test #'string=)
+
+(define-constant +col-sep+                      " , "
+  :test #'string=)
+
+(define-constant +db-true+                      1
+  :test #'eq)
+
+(define-constant +db-false+                     0
+  :test #'eq)
+
+(define-constant +table-cache+                  :cache
+  :test #'eq)
+
+(define-constant +table-status+                 :status
+  :test #'eq)
+
+(define-constant +table-crypto-data+            :crypto
+  :test #'eq)
+
+(define-constant +table-account+                :account
+  :test #'eq)
+
+(define-constant +table-attachment+             :attachment
+  :test #'eq)
+
+(define-constant +table-input-history+          :input-history
+  :test #'eq)
+
+(define-constant +table-ignored-status+         :ignored-status
+  :test #'eq)
+
+(define-constant +table-followed-user+          :followed-user
+  :test #'eq)
+
+(define-constant +table-subscribed-tag+         :subscribed-tag
+  :test #'eq)
+
+(define-constant +table-tag-histogram+          :tag-histogram
+  :test #'eq)
+
+(define-constant +table-conversation+           :conversation
+  :test #'eq)
+
+(define-constant +federated-timeline+           "federated"
+  :test #'string=)
+
+(define-constant +local-timeline+               "local"
+  :test #'string=)
+
+(define-constant +home-timeline+                "home"
+  :test #'string=)
+
+(define-constant +direct-timeline+              "direct"
+  :test #'string=)
+
+(define-constant +default-status-folder+        "default"
+  :test #'string=)
+
+(define-constant +default-tag-timeline+         +federated-timeline+
+  :test #'string=)
+
+(define-constant +default-converation-timeline+ +federated-timeline+
+  :test #'string=)
+
+(define-constant +default-reblogged-timeline+   "reblogged"
+  :test #'string=)
+
+(define-constant +message-index-start+          1
+  :test #'=)
+
+(define-constant +tag-separator+                ","
+  :test #'string=)
+
+(defun default-timelines ()
+  (list +home-timeline+
+        +local-timeline+
+        +federated-timeline+))
+
+(defun message-index->sequence-index (message-index)
+  (- message-index +message-index-start+))
+
+(defmacro gen-timeline-const->description (timeline-const-sym description)
+  (let* ((const-name (symbol-name timeline-const-sym))
+         (fn-prefix  (subseq const-name 1 (1- (length const-name))))
+         (fn-name    (misc:format-fn-symbol t "~a->description" fn-prefix)))
+    `(defun ,fn-name ()
+       ,description)))
+
+(gen-timeline-const->description +federated-timeline+ (_ "federated"))
+
+(gen-timeline-const->description +local-timeline+     (_ "local"))
+
+(gen-timeline-const->description +direct-timeline+    (_ "direct"))
+
+(gen-timeline-const->description +home-timeline+      (_ "home"))
+
+(defun timeline-type->description (key)
+  (cond
+    ((string= key +federated-timeline+)
+     (federated-timeline->description))
+    ((string= key +local-timeline+)
+     (local-timeline->description))
+    ((string= key +direct-timeline+)
+     (direct-timeline->description))
+    ((string= key +home-timeline+)
+     (home-timeline->description))
+    (t
+     key)))
+
+(defun create-table-index (table-name &optional (columns '(:id)))
+  (labels ((%replace (s chars)
+           (if (null chars)
+               s
+               (%replace (regex-replace-all (string (first chars)) s "_")
+                         (rest chars)))))
+    (let ((actual-table-name (if (symbolp table-name)
+                                 (symbol-name table-name)
+                                 (string-downcase table-name))))
+      (query-low-level (format nil
+                               "CREATE UNIQUE INDEX IF NOT EXISTS index_~a on ~a (~{~a~^, ~})"
+                               (%replace actual-table-name +characters-trouble-name+)
+                               (quote-symbol table-name)
+                               (mapcar #'quote-symbol columns))))))
+
+(defun delete-table (table-name)
+  (query-low-level (format nil "DROP TABLE IF EXISTS ~a" (quote-symbol table-name))))
+
+(defun delete-view (view-name)
+  (query-low-level (format nil "DROP VIEW ~a" (quote-symbol view-name))))
+
+(defun prepare-table (name &key
+                             (autogenerated-id-p t)
+                             (integer-id-p       nil)
+                             (autoincrementp     nil))
+  (let ((id-section (when autogenerated-id-p
+                      (if (or autoincrementp
+                              integer-id-p)
+                          (if autoincrementp
+                              +make-id-autoincrement+
+                              +make-id+)
+                          +make-string-id+))))
+    (strcat "create table "
+            (quote-symbol name)
+            +make-open+
+            id-section)))
+
+(defun make-foreign (table column on-delete on-update &optional (add-comma nil))
+  (format nil
+          " REFERENCES ~a (~a) ON DELETE ~a ON UPDATE ~a ~:[ ~;,~]"
+          (quote-symbol table) (quote-symbol column) on-delete on-update add-comma))
+
+(defun make-cache ()
+  (query-low-level (strcat (prepare-table +table-cache+
+                                          :autogenerated-id-p t
+                                          :autoincrementp     t)
+                           "key              TEXT NOT NULL,"
+                           ;; timestamp
+                           " \"created-at\"  TEXT NOT NULL,"
+                           ;; timestamp
+                           " \"accessed-at\" TEXT NOT NULL,"
+                           " UNIQUE(key) ON CONFLICT FAIL"
+                           +make-close+)))
+
+(defun make-attachment ()
+  (query-low-level (strcat (prepare-table +table-attachment+)
+                           ;; one of swconf:*allowed-attachment-type*
+                           " type                  TEXT NOT NULL,"
+                           " url                   TEXT NOT NULL,"
+                           " \"preview-url\"       TEXT NOT NULL,"
+                           " \"remote-url\"        TEXT,"
+                           ;; url shortened
+                           " \"text-url\"          TEXT,"
+                           ;; metadata only for original attachment
+                           " width                 TEXT,"
+                           " height                TEXT,"
+                           " \"frame-rate\"        TEXT,"
+                           " duration              TEXT,"
+                           " bitrate               TEXT,"
+                           " description           TEXT,"
+                           " blurhash              TEXT,"
+                           " \"status-id\"         TEXT,"
+                           " UNIQUE(id) ON CONFLICT FAIL"
+                           +make-close+)))
+
+(defun make-conversation ()
+  (query-low-level (strcat (prepare-table +table-conversation+)
+                           " folder             TEXT, "
+                           " \"root-status-id\" TEXT, "
+                           ;; boolean
+                           " ignoredp INTEGER DEFAULT 0,"
+                           ;; timestamp
+                           " \"created-at\" TEXT    NOT NULL,"
+                           " UNIQUE(folder) ON CONFLICT FAIL"
+                           +make-close+)))
+
+(defun make-input-history ()
+  (query-low-level (strcat (prepare-table +table-input-history+ :autoincrementp t)
+                           " prompt                TEXT NOT NULL" +col-sep+
+                           " input                 TEXT NOT NULL" +col-sep+
+                           " \"date-added\"        TEXT NOT NULL"
+                           +make-close+)))
+
+(defun make-crypto-data ()
+  "The data all base64 encoded"
+  (query-low-level (strcat (prepare-table +table-crypto-data+ :autoincrementp t)
+                           ;; the key
+                           " key                   TEXT    NOT NULL"
+                           +make-close+)))
+
+(defun make-account ()
+  (query-low-level (strcat (prepare-table +table-account+)
+                           " username              TEXT    NOT NULL,"
+                           ;; this is the actual user identification
+                           " acct                  TEXT    NOT NULL,"
+                           ;; profile homepage
+                           " url                   TEXT    NOT NULL,"
+                           " \"display-name\"      TEXT    NOT NULL,"
+                           ;; bio
+                           " note                  TEXT    NOT NULL,"
+                           ;; url
+                           " avatar                TEXT    NOT NULL,"
+                           ;; the same as avatar if avatar is *not* an animated gif
+                           " \"avatar-static\"     TEXT    NOT NULL,"
+                           ;; url of banner profile
+                           " header                TEXT    NOT NULL,"
+                           ;; the same as header if header is *not* an animated gif
+                           " \"header-static\"     TEXT    NOT NULL,"
+                           ;; boolean
+                           " discoverable          integer default 0,"
+                           ;; boolean
+                           " locked                integer default 0,"
+                           ;; timestamp
+                           " \"created-at\"        TEXT    NOT NULL,"
+                           " \"statuses-count\"    INTEGER NOT NULL,"
+                           " \"followers-count\"   INTEGER NOT NULL,"
+                           " \"following-count\"   INTEGER NOT NULL,"
+                           " \"moved-id\"          TEXT ,"
+                           ;; boolean
+                           " botp                  integer default 0,"
+                           ;; local value
+                           " \"encryption-key-id\" INTEGER "
+                           (make-foreign +table-crypto-data+ "id" +cascade+ +cascade+) +col-sep+
+                           ;; boolean
+                           " ignoredp              INTEGER default 0, "
+                           " UNIQUE(id) ON CONFLICT FAIL"
+                           +make-close+)))
+
+(defun make-followed-user ()
+  (query-low-level (strcat (prepare-table +table-followed-user+ :integer-id-p t :autoincrementp t)
+                           " \"user-id\" TEXT "
+                           (make-foreign +table-account+ "id" +cascade+ +cascade+) +col-sep+
+                           ;; timestamp
+                           " \"created-at\"       TEXT    NOT NULL"
+                           +make-close+)))
+
+(defun make-status ()
+  (query-low-level (strcat (prepare-table +table-status+ :autogenerated-id-p nil)
+                           " \"status-id\"        TEXT    NOT NULL, "
+                           " \"account-id\"       TEXT    NOT NULL "
+                           (make-foreign +table-account+ "id" +cascade+ +cascade+) +col-sep+
+                           " uri                  TEXT    NOT NULL,"
+                           ;; timestamp
+                           " \"created-at\"       TEXT    NOT NULL,"
+                           ;; actual message (In HTML)
+                           " content              TEXT    NOT NULL,"
+                           ;; output message to  display when redraft,
+                           ;; probably useless to us
+                           " text                 TEXT   ,"
+                           ;; actual message to display in tinmop, used also for searching
+                           " \"rendered-text\"    TEXT    ,"
+                           ;; one of swconf:*allowed-status-visibility*
+                           " \"visibility\"       TEXT   NOT NULL,"
+                           ;; boolean,
+                           " sensitive            integer default 0 ,"
+                           ;; can value "" (empty string) but if not can be used as message subject?
+                           " \"spoiler-text\"     TEXT    ,"
+                           " \"reblogs-count\"    INTEGER default 0,"
+                           " \"favourites-count\" INTEGER default 0,"
+                           " \"replies-count\"    INTEGER default 0,"
+                           ;; nullables
+                           " url                          TEXT,"
+                           " \"in-reply-to-id\"           TEXT,"
+                           " \"in-reply-to-account-id\"   TEXT,"
+                           ;; boosted
+                           " \"reblog-id\"                INTEGER, "
+                           ;; two letter iso code (it, en etc.)
+                           " language                     TEXT,"
+                           ;; user action on this status
+                           ;; boolean
+                           " favourited                   integer default 0,"
+                           ;; boosted, boolean
+                           " reblogged                    integer default 0,"
+                           ;; boolean
+                           " muted                        integer default 0,"
+                           ;; boolean
+                           " bookmarked                   integer default 0,"
+                           ;; boolean
+                           " pinned                       TEXT,"
+                           ;; comma separated values
+                           " tags                         TEXT, "
+                           " application                  TEXT, "
+                           ;; local value
+                           ;; has been red? boolean
+                           " redp                         INTEGER DEFAULT 0, "
+                           ;; has the user marked this status for deletion? boolean
+                           " deletedp                     INTEGER DEFAULT 0, "
+                           ;; with timeline this status belong to
+                           ;; must be one of:
+                           ;; +federated-timeline+
+                           ;; +local-timeline+
+                           ;; +direct-timeline+
+                           " timeline                     TEXT    NOT NULL, "
+                           " folder TEXT NOT NULL DEFAULT \"" +default-status-folder+ "\"" +col-sep+
+                           ;; used  in  thread  window  to address  the  message  in  a
+                           ;; comfortable way for humans :)
+                           " \"message-index\"            INTEGER DEFAULT 1, "
+                           " UNIQUE (folder, timeline, \"status-id\") ON CONFLICT FAIL"
+                           +make-close+)))
+
+(defun make-subscribed-tag ()
+  (query-low-level (strcat (prepare-table +table-subscribed-tag+)
+                           " \"last-status-id-fetched\" TEXT, "
+                           ;; boolean
+                           " \"got-new-message-p\"  INTEGER DEFAULT 0, "
+                           ;; timestamp
+                           " \"created-at\"       TEXT    NOT NULL"
+                           +make-close+)))
+
+(defun make-tag-histogram ()
+  (query-low-level (strcat (prepare-table +table-tag-histogram+
+                                          :integer-id-p   t
+                                          :autoincrementp t)
+                           " \"tag\"   TEXT NOT NULL, "
+                           " \"count\" INTEGER DEFAULT 0, "
+                           ;; date
+                           " \"day\"   TEXT    NOT NULL"
+                           +make-close+)))
+
+(defun make-ignored-status ()
+  (query-low-level (strcat (prepare-table +table-ignored-status+)
+                           " timeline TEXT NOT NULL, "
+                           " folder   TEXT NOT NULL, "
+                           ;; timestamp
+                           " \"created-at\"       TEXT    NOT NULL"
+                           +make-close+)))
+
+(defun build-all-indices ()
+  (create-table-index +table-status+              '(:folder :timeline :status-id))
+  (create-table-index +table-account+             '(:id :acct))
+  (create-table-index +table-followed-user+       '(:user-id))
+  (create-table-index +table-attachment+          '(:id))
+  (create-table-index +table-subscribed-tag+      '(:id))
+  (create-table-index +table-ignored-status+      '(:id))
+  (create-table-index +table-conversation+        '(:id))
+  (create-table-index +table-cache+               '(:id :key)))
+
+(defmacro gen-delete (suffix &rest names)
+  `(progn
+     ,@(loop for name in names collect
+            `(,(misc:format-fn-symbol t "delete-~a" suffix) ,name))))
+
+(defun delete-all-tables ()
+  (gen-delete table
+              +table-cache+
+              +table-input-history+
+              +table-status+
+              +table-account+
+              +table-followed-user+
+              +table-subscribed-tag+
+              +table-tag-histogram+
+              +table-attachment+
+              +table-conversation+))
+
+(defun build-views ())
+
+(defun delete-all-views ())
+
+(defun delete-database ()
+   (with-disabled-foreign
+     (delete-all-views)
+     (delete-all-tables)))
+
+(defun maybe-build-all-tables ()
+  (when (= (fs:file-size (db-path))
+           0)
+    (make-cache)
+    (make-input-history)
+    (make-crypto-data)
+    (make-account)
+    (make-followed-user)
+    (make-status)
+    (make-ignored-status)
+    (make-attachment)
+    (make-subscribed-tag)
+    (make-tag-histogram)
+    (make-conversation)
+    (build-all-indices)
+    (fs:set-file-permissions (db-path) (logior fs:+s-irusr+ fs:+s-iwusr+))))
+
+;; specific utils
+
+(defun table->alist (table col)
+  (let ((all (fetch-all (query (select (:id col)
+                                 (from table)
+                                 (order-by col))))))
+    (loop for i in all collect
+         (cons (getf i :id)
+               (getf i col)))))
+
+(defgeneric fetch-single (query)
+  (:documentation "Fetch the first row from the results of exectuting `query'"))
+
+(defmethod fetch-single (query)
+  (fetch (query query)))
+
+(defmethod fetch-single ((query string))
+  (fetch (query-low-level query nil)))
+
+(defgeneric fetch-all-rows (query)
+  (:documentation "Fetch all rows from the results of exectuting `sql'"))
+
+(defmethod fetch-all-rows (sql)
+  (fetch-all (query sql)))
+
+(defmethod fetch-all-rows ((sql string))
+  (fetch-all (query-low-level sql nil)))
+
+(defun fetch-from-id (table id)
+  "Select a row from a `table' by column named `:id' with value `id'"
+   (fetch-single (select :*
+                   (from table)
+                   (where (:= :id id)))))
+
+(defun create-view (name select-query)
+  (query-low-level (format nil "create view ~a as ~a"
+                           (quote-symbol name)
+                           (query->sql select-query))))
+
+(defun delete-by-id (table id)
+  "Delete a row from a `table' by column named `:id' with value `id'"
+  (query (delete-from table (where (:= :id id)))))
+
+(defun acct->user (acct)
+  "Convert `acct' (acct is synonyym  for username in mastodon account)
+to the corresponding row in table +table-account+"
+  (fetch-single (select :*
+                  (from :account)
+                  (where (:= :acct acct)))))
+
+(defun acct->id (acct)
+  "Convert `acct' (acct is synonyym  for username in mastodon account)
+to the corresponding id in table +table-account+"
+  (db-getf (acct->user acct) :id))
+
+(misc:defalias username->id #'acct->id)
+
+(defun user-exists-p (username)
+  (acct->user username))
+
+(defun id->user (id)
+  (fetch-from-id :account id))
+
+(defun user-id->username (user-id)
+  "username or acct are synonyms"
+  (when-let ((user (id->user user-id)))
+    (db-getf user :acct)))
+
+(defun insert-in-history (prompt input)
+  "insert an history entry with `prompt` and `input'"
+  (when (string-not-empty-p input)
+   (let* ((now          (prepare-for-db (local-time-obj-now)))
+          (insert-query (make-insert :input-history
+                                     (:prompt :input :date-added)
+                                     (prompt input   now))))
+     (query insert-query))))
+
+(defun next-in-history (min-id prompt)
+  "Return the history entry with prompt `prompt` and id that is greater
+than `min-id'"
+  (let* ((query (select (:id
+                         (:as (fields (:min :id)) :min)
+                         :prompt
+                         :input)
+                  (from :input-history)
+                  (where (:and (:> :id min-id)
+                               (:= :prompt prompt)))))
+         (row    (fetch-single query)))
+    (and (second row)
+         (values (getf row :min)
+                 (getf row :input)))))
+
+(defun previous-in-history (max-id prompt)
+  "Return the history entry with prompt `prompt` and id that is smaller
+than `max-id'"
+  (let* ((query (select (:id
+                         (:as (fields (:max :id)) :max)
+                         :prompt
+                         :input)
+                  (from :input-history)
+                  (where (:and (:< :id max-id)
+                               (:= :prompt prompt)))))
+         (row   (fetch-single query)))
+    (and (second row)
+         (values (getf row :max)
+                 (getf row :input)))))
+
+(defun most-recent-history-id (prompt)
+  "The most recent history entry with prompt `prompt'"
+  (let* ((query  (select (fields (:max :id))
+                   (from :input-history)
+                   (where (:= :prompt prompt))))
+         (row    (fetch-single query)))
+    (or (second row)
+        0)))
+
+(defun threshold-time (days-in-the-past)
+  "Returns a time object `days-in-the-past' days in the past"
+  (local-time:adjust-timestamp (local-time-obj-now)
+    (offset :day days-in-the-past)))
+
+(defun purge-history ()
+  "Remove expired entry in history.
+
+An         entry          is         expired          if         older
+than (swconf:config-purge-history-days-offset) days in the past"
+  (let ((treshold (threshold-time (swconf:config-purge-history-days-offset))))
+    (query (make-delete +table-input-history+
+                        (:< :date-added (prepare-for-db treshold))))))
+
+(defmethod prepare-for-db ((object tooter:application) &key &allow-other-keys)
+  (tooter:name object))
+
+(defgeneric update-db (object &key &allow-other-keys)
+  (:documentation "Save object in database"))
+
+(defmethod update-db ((object sequence) &key &allow-other-keys)
+  (map 'list #'update-db object))
+
+(defmacro with-no-row-id ((table id) &body body)
+  "Execute `body' only if in table `table' an object with ID `id' does not exists"
+  `(when (null (fetch-from-id ,table ,id))
+     ,@body))
+
+(defmacro gen-insert-and-update-query ((insert-query-name
+                                        update-query-name
+                                        table
+                                        keys
+                                        values
+                                        &key (where nil))
+                                       &body body)
+  `(let ((,insert-query-name (make-insert ,table ,keys ,values))
+         (,update-query-name (make-update ,table ,keys ,values ,where)))
+     ,@body))
+
+(defgeneric metadata-width      (object)
+  (:documentation "attachment metadata width"))
+
+(defgeneric metadata-height     (object)
+  (:documentation "attachment metadata height"))
+
+(defgeneric metadata-frame-rate (object)
+  (:documentation "attachment metadata frame rate"))
+
+(defgeneric metadata-duration   (object)
+  (:documentation "attachment metadata duration"))
+
+(defgeneric metadata-bitrate    (object)
+  (:documentation "attachment metadata bitrate"))
+
+(defgeneric metadata-original    (object)
+  (:documentation "attachment metadata original metadata"))
+
+(defmethod metadata-width ((object tooter:image-metadata))
+  (and object
+       (tooter:width object)))
+
+(defmethod metadata-height ((object tooter:image-metadata))
+  (and object
+       (tooter:height object)))
+
+(defmethod metadata-width ((object tooter:video-metadata))
+  (and object
+       (tooter:width object)))
+
+(defmethod metadata-height ((object tooter:video-metadata))
+  (and object
+       (tooter:height object)))
+
+(defmethod metadata-frame-rate (object)
+  (declare (ignore object))
+  nil)
+
+(defmethod metadata-duration (object)
+  (declare (ignore object))
+  nil)
+
+(defmethod metadata-bitrate (object)
+  (declare (ignore object))
+  nil)
+
+(defmethod metadata-width (object)
+  (declare (ignore object))
+  nil)
+
+(defmethod metadata-height (object)
+  (declare (ignore object))
+  nil)
+
+(defmethod metadata-frame-rate ((object tooter:video-metadata))
+  (and object
+       (tooter:frame-rate object)))
+
+(defmethod metadata-duration ((object tooter:video-metadata))
+  (and object
+       (tooter:duration object)))
+
+(defmethod metadata-duration ((object tooter:audio-metadata))
+  (and object
+       (tooter:duration object)))
+
+(defmethod metadata-bitrate ((object tooter:video-metadata))
+  (and object
+       (tooter:bitrate object)))
+
+(defmethod metadata-bitrate ((object tooter:audio-metadata))
+  (and object
+       (tooter:audio-bitrate object)))
+
+(defmethod metadata-original (object)
+  (and object
+       (tooter:original object)))
+
+(defmethod update-db ((object tooter:attachment) &key (status-id nil) &allow-other-keys)
+  (with-accessors ((id  tooter:id)
+                   (kind tooter:kind)
+                   (url tooter:url)
+                   (preview-url tooter:preview-url)
+                   (remote-url tooter:remote-url)
+                   (text-url tooter:text-url)
+                   (metadata tooter:metadata)
+                   (description tooter:description)
+                   (blurhash    tooter:blurhash)) object
+    (assert status-id)
+    (with-no-row-id (+table-attachment+ id)
+      (let* ((actual-attachment-type (prepare-for-db kind))
+             (original-file-metadata (metadata-original metadata))
+             (width                  (prepare-for-db (metadata-width      original-file-metadata)))
+             (height                 (prepare-for-db (metadata-height     original-file-metadata)))
+             (frame-rate             (prepare-for-db (metadata-frame-rate original-file-metadata)))
+             (duration               (prepare-for-db (metadata-duration   original-file-metadata)))
+             (bitrate                (prepare-for-db (metadata-bitrate    original-file-metadata)))
+             (insert-query (make-insert +table-attachment+
+                                        (:id
+                                         :type
+                                         :url
+                                         :preview-url
+                                         :remote-url
+                                         :text-url
+                                         :width
+                                         :height
+                                         :frame-rate
+                                         :duration
+                                         :bitrate
+                                         :description
+                                         :blurhash
+                                         :status-id)
+                                        (id
+                                         actual-attachment-type
+                                         url
+                                         preview-url
+                                         remote-url
+                                         text-url
+                                         width
+                                         height
+                                         frame-rate
+                                         duration
+                                         bitrate
+                                         description
+                                         blurhash
+                                         status-id))))
+        (query insert-query)))))
+
+(defmacro insert-or-update (table keys values)
+  "Anaphoric `id'"
+  (with-gensyms (insert-query update-query)
+    `(gen-insert-and-update-query (,insert-query
+                                  ,update-query
+                                  ,table
+                                  ,keys
+                                  ,values
+                                  :where (:= :id id))
+       (if (fetch-from-id ,table id)
+           (query ,update-query)
+           (query ,insert-query)))))
+
+(defmethod update-db ((object tooter:account) &key &allow-other-keys)
+  (with-accessors ((id               tooter:id)
+                   (username         tooter:username)
+                   (account-name     tooter:account-name)
+                   (url              tooter:url)
+                   (display-name     tooter:display-name)
+                   (note             tooter:note)
+                   (avatar           tooter:avatar)
+                   (avatar-static    tooter:avatar-static)
+                   (header           tooter:header)
+                   (header-static    tooter:header-static)
+                   (locked           tooter:locked)
+                   (discoverable     tooter:discoverable)
+                   (created-at       tooter:created-at)
+                   (followers-count  tooter:followers-count)
+                   (following-count  tooter:following-count)
+                   (statuses-count   tooter:statuses-count)
+                   (moved            tooter:moved)
+                   (bot              tooter:bot)) object
+    (let ((actual-created-at   (prepare-for-db created-at))
+          (actual-botp         (prepare-for-db bot          :to-integer t))
+          (actual-discoverable (prepare-for-db discoverable :to-integer t))
+          (actual-locked       (prepare-for-db locked       :to-integer t))
+          (actual-moved-id     (if moved
+                                   (prepare-for-db (tooter:id moved))
+                                   (prepare-for-db nil))))
+      (insert-or-update +table-account+
+                        (:id
+                         :username
+                         :acct
+                         :url
+                         :display-name
+                         :note
+                         :avatar
+                         :avatar-static
+                         :header
+                         :header-static
+                         :locked
+                         :discoverable
+                         :created-at
+                         :followers-count
+                         :following-count
+                         :statuses-count
+                         :moved-id
+                         :botp)
+                        (id
+                         username
+                         account-name
+                         url
+                         display-name
+                         note
+                         avatar
+                         avatar-static
+                         header
+                         header-static
+                         actual-locked
+                         actual-discoverable
+                         actual-created-at
+                         followers-count
+                         following-count
+                         statuses-count
+                         actual-moved-id
+                         actual-botp)))))
+
+(defmethod update-db ((object tooter:tag-history) &key (tag nil) &allow-other-keys)
+  (assert (stringp tag))
+  (with-accessors ((day       tooter:day)
+                   (use-count tooter:use-count)) object
+    (let* ((actual-day     (decode-date-string day))
+           (entry-exists-p (query (select :*
+                                    (from +table-tag-histogram+)
+                                    (where (:and (:= :day  actual-day)
+                                                 (:= :tag  tag))))))
+           (updatable-p    (query (select :*
+                                    (from +table-tag-histogram+)
+                                    (where (:and (:= :day  actual-day)
+                                                 (:= :tag   tag)
+                                                 (:> :count use-count)))))))
+      (cond
+        ((not entry-exists-p)
+         (query (make-insert +table-tag-histogram+
+                             (:tag :day       :count)
+                             (tag  actual-day use-count))))
+        (updatable-p
+         (query (make-update +table-tag-histogram+
+                             (:count)
+                             (use-count)
+                             (:and (:= :day  actual-day)
+                                   (:= :tag  tag)))))))))
+
+(defun account-ignored-p (account-id)
+  (db-getf (fetch-from-id :account account-id)
+           :ignoredp nil))
+
+(defmethod update-db ((object tooter:status)
+                      &key
+                        (timeline +local-timeline+)
+                        (folder   +default-status-folder+)
+                        (skip-ignored-p nil)
+                        &allow-other-keys)
+  (with-accessors ((id                     tooter:id)
+                   (uri                    tooter:uri)
+                   (created-at             tooter:created-at)
+                   (content                tooter:content)
+                   (visibility             tooter:visibility)
+                   (sensitive              tooter:sensitive)
+                   (spoiler-text           tooter:spoiler-text)
+                   (reblogs-count          tooter:reblogs-count)
+                   (favourites-count       tooter:favourites-count)
+                   (url                    tooter:url)
+                   (in-reply-to-id         tooter:in-reply-to-id)
+                   (in-reply-to-account-id tooter:in-reply-to-account-id)
+                   (language               tooter:language)
+                   (favourited             tooter:favourited)
+                   (reblogged              tooter:reblogged)
+                   (parent                 tooter:parent)
+                   (muted                  tooter:muted)
+                   (pinned                 tooter:pinned)
+                   (account                tooter:account)
+                   (tags                   tooter:tags)
+                   (application            tooter:application)
+                   (media-attachments      tooter:media-attachments)) object
+    (update-db account)
+    (let* ((account-id         (tooter:id account))
+           (actual-created-at  (decode-datetime-string created-at))
+           (actual-application (prepare-for-db application))
+           (tag-names          (if tags
+                                   (mapcar #'client:tag-name tags)
+                                   ""))
+           (actual-tags        (join-with-strings tag-names
+                                                  +tag-separator+))
+           (actual-language    (prepare-for-db language))
+           ;; use string-downcase as a workaround because tooter return an upcased keyword
+           (actual-visibility  (string-downcase (prepare-for-db visibility)))
+           (actual-sensitive   (prepare-for-db sensitive  :to-integer t))
+           (actual-favourited  (prepare-for-db favourited :to-integer t))
+           (actual-pinned      (prepare-for-db pinned     :to-integer t))
+           (actual-reblogged   (prepare-for-db reblogged  :to-integer t))
+           (actual-muted       (prepare-for-db muted      :to-integer t))
+           (rendered-text      (msg-utils:message-original->text-body content
+                                                                      :try-decrypt nil))
+           (reblog-id          (if parent
+                                   (prepare-for-db (tooter:id parent))
+                                   (prepare-for-db nil)))
+           (account-ignored-p  (account-ignored-p account-id))
+           (status-ignored-p   (status-ignored-p id folder timeline)))
+      (when (not (and skip-ignored-p
+                      (or status-ignored-p
+                          account-ignored-p)))
+        (let ((insert-query (make-insert +table-status+
+                                         (:status-id
+                                          :account-id
+                                          :uri
+                                          :created-at
+                                          :content
+                                          :rendered-text
+                                          :visibility
+                                          :sensitive
+                                          :spoiler-text
+                                          :reblogs-count
+                                          :favourites-count
+                                          :url
+                                          :in-reply-to-id
+                                          :in-reply-to-account-id
+                                          :reblog-id
+                                          :language
+                                          :favourited
+                                          :reblogged
+                                          :muted
+                                          :pinned
+                                          :timeline
+                                          :tags
+                                          :application
+                                          :folder)
+                                         (id
+                                          account-id
+                                          uri
+                                          actual-created-at
+                                          content
+                                          rendered-text
+                                          actual-visibility
+                                          actual-sensitive
+                                          spoiler-text
+                                          reblogs-count
+                                          favourites-count
+                                          url
+                                          in-reply-to-id
+                                          in-reply-to-account-id
+                                          reblog-id
+                                          actual-language
+                                          actual-favourited
+                                          actual-reblogged
+                                          actual-muted
+                                          actual-pinned
+                                          timeline
+                                          actual-tags
+                                          actual-application
+                                          folder))))
+          (when (not (single-status-exists-p id timeline folder))
+            (query insert-query)
+            ;; attachments and tag history latest because of the reference from this table
+            ;; to table status
+            (map nil
+                 (lambda (media-attachment)
+                   (update-db media-attachment :status-id id))
+                 media-attachments)
+            (loop
+               for tag      in tags
+               for tag-name in tag-names do
+                 (let ((tag-history (or (tooter:history tag)
+                                        (api-client:make-placeholder-tag-histogram))))
+                   (update-db tag-history :tag tag-name)))
+            (update-db parent
+                       :skip-ignored-p skip-ignored-p
+                       :timeline       +default-reblogged-timeline+)
+            ;; now try to decrypt message if possible/needed
+            (maybe-decrypt-update-status-text id timeline folder)))))))
+
+(defun maybe-decrypt-update-status-text (status-id timeline folder)
+  "Decrypt, if possible, status identified by `status-id', `timeline' and `folder'.
+
+Update database with the decrypted text in column `rendered-text'"
+  (when-let* ((status    (fetch-single (make-filtered-message-select nil
+                                                                     timeline
+                                                                     folder
+                                                                     nil
+                                                                     `(:= :status-id ,status-id))))
+              (raw-text  (row-message-rendered-text status))
+              (decrypted (msg-utils:message-original->text-body status
+                                                                :notify-cant-decrypt t
+                                                                :try-decrypt         t)))
+    (query (make-update +table-status+
+                        (:rendered-text)
+                        (decrypted)
+                        (:and (:= :status-id status-id)
+                              (:= :folder    folder)
+                              (:= :timeline  timeline))))))
+
+(defun message-root (timeline folder status-id)
+  "Return the root of the status identified by 'status-id'.
+   If  'status-id'  does not  belong  to  a  reply return  the  status
+   identitfied by 'status-id'.   If parent of status  so identified is
+   not in the database return (values status :partial)"
+  (labels ((get-status (id)
+             (and id
+                  (message-from-timeline-folder-id timeline folder id)))
+           (climb-tree (parent child reply-id)
+             (if (null parent)
+                 (if reply-id
+                     (values child :partial)
+                     (values child nil))
+                 (let* ((reply-id     (getf parent :in-reply-to-id))
+                        (grand-parent (get-status reply-id)))
+                   (climb-tree grand-parent parent reply-id)))))
+    (climb-tree (get-status status-id) nil nil)))
+
+(defun all-root-statuses (timeline-type &key (folder +default-status-folder+))
+  (assert folder)
+  (assert timeline-type)
+  (let* ((query-no-reply   (select :*
+                           (from :status)
+                           (where (:and (:= :timeline timeline-type)
+                                        (:= :folder   folder)
+                                        (:is-null     :in-reply-to-id)))))
+         (query-with-reply (select :*
+                           (from :status)
+                           (where (:and (:= :timeline timeline-type)
+                                        (:= :folder   folder)
+                                        (:not-null     :in-reply-to-id)))))
+         (complete-tree    (fetch-all-rows query-no-reply))
+         (orphan           (remove-if (lambda (row)
+                                      (let ((id-reply  (row-message-reply-to-id row))
+                                            (folder    (row-message-folder      row))
+                                            (timeline  (row-message-timeline    row)))
+                                        (message-from-timeline-folder-id timeline
+                                                                         folder
+                                                                         id-reply)))
+                                    (fetch-all-rows query-with-reply))))
+    (values (append complete-tree orphan)
+            complete-tree
+            orphan)))
+
+(defun all-root-status-id (timeline-type
+                             &key
+                               (sort-fn nil)
+                               (folder +default-status-folder+))
+  (let ((ids (mapcar #'second (all-root-statuses timeline-type :folder folder))))
+    (if sort-fn
+        (sort ids sort-fn)
+        ids)))
+
+(defun message-from-timeline-folder-id (timeline folder status-id)
+  "Returns   a   message   identified   by   `status-id',   `timeline'
+and`folder'. A `message' is a plist that contains all the informations
+of  a row  of table  +table-status+ and  at least  the columns  :acct,
+:display-name and :locked from +table-account+"
+  (fetch-single (make-filtered-message-select nil
+                                              nil
+                                              folder
+                                              nil
+                                              `(:and := :status.timeline  ,timeline)
+                                              `(:and := :status.status-id ,status-id))))
+
+(defun message-from-timeline-folder-message-index (timeline folder message-index)
+  "Returns   a   message   identified   by   `status-id',   `timeline'
+and `message-index'. A `message' is a plist that contains all the informations
+of  a row  of table  +table-status+ and  at least  the columns  :acct,
+:display-name and :locked from +table-account+.
+
+Message index is an unique number  that identify the message after the
+messages are sorted as below:
+
+1. start with global message-index = 1
+
+1. sort all the trees in a folder from the one with the older root to the newest
+
+2. for each tree explore the messages starting from root
+
+   a. visit  each node in the  tree with a classic  Depth First Search
+   and set the value index for that node as the value of message-index
+
+   b. increment message-index by 1
+"
+  (let ((query (make-filtered-message-select nil
+                                             timeline
+                                             folder
+                                             nil
+                                             `(:= :status.message-index ,message-index))))
+    (fetch-single query)))
+
+(defun message-index->tree (timeline folder message-index)
+    "Returns   a  tree of  messages   identified   by   `status-id',   `timeline'
+and `message-index'.
+
+Message index is  an unique number that identify  the message."
+  (let ((message (message-from-timeline-folder-message-index timeline folder message-index)))
+    (assert message)
+    (let ((message-status-id  (row-message-status-id message)))
+      (message-root->tree timeline
+                          folder
+                          (row-message-status-id (message-root timeline
+                                                               folder
+                                                               message-status-id))))))
+
+(defun find-status-id (status-id)
+  "Find  a  status  by id,  notes  that  status  id  is not  a  unique
+identifier despite the name."
+  (fetch-single (select :*
+                  (from :status)
+                  (where (:= :status-id status-id)))))
+
+(defun find-status-id-folder-timeline (status-id folder timeline)
+  "Fetch a single message identified by `status-id', `folder' and `timeline'.
+
+Note that the tuple (`status-id', `folder' and `timeline') is the only key
+that identify a single message in table :status"
+  (fetch-single (select :* (from +table-status+)
+                        (where (:and (:= :status-id status-id)
+                                     (:= :timeline  timeline)
+                                     (:= :folder    folder))))))
+
+(defmacro gen-message-select ()
+  "Convenience macro for `make-filtered-message-select'"
+  (let ((select `(select (:status.*
+                          (:as :account.acct         :username)
+                          (:as :account.display-name :display-name)
+                          (:as :account.locked :locked))
+                   (from :status)
+                   (join :account :on (:= :account.id
+                                          :status.account-id)))))
+    select))
+
+(defun make-filtered-message-select (other-columns
+                                     timeline
+                                     folder
+                                     account-id
+                                     &rest
+                                       where-clauses)
+  "Query the table status
+
+- other-column fetch other column from  table :status or :account (the
+  default columns  are all the  ones of  table status and  the columns
+  :acct, :display-name and :locked  from +table-account+, use `nil' if
+  you are OK with the defaults
+
+- timeline
+  folder
+  account-id
+
+  use nil if you do not want to filter with this additional criteria
+
+- where-clause  a number of sxql where clause for even more filtering.  E.g:
+
+  `(:= :status.timeline ,timeline)
+  `(:= :in-reply-to-id  ,status-id)
+
+   the two cluasuses will be connectd by :AND by default
+
+  `(:or :like :spoiler-text
+        ,actual-text-looking-for)
+  `(:or :like :tags
+        ,actual-text-looking-for)
+  `(:or :like :username
+         ,actual-text-looking-for)
+  `(:and :>   :status.message-index
+         ,start-status-message-index)
+
+  note that the order matters in fact the following clauses
+
+  `(:and :>   :status.message-index
+         ,start-status-message-index)
+  `(:or :like :spoiler-text
+        ,actual-text-looking-for)
+  `(:or :like :tags
+        ,actual-text-looking-for)
+  `(:or :like :username
+         ,actual-text-looking-for)
+
+  is not equivalent to the one below, the latter means
+
+  (:status.message-index > start-status-message-index) OR  ...
+
+  and does not means:
+
+  (:status.message-index > start-status-message-index) AND ...
+
+  as was likely intended."
+  (let ((query (gen-message-select)))
+    (loop for other-column in other-columns do
+         (fields+ query other-column))
+    (loop for where-clause in where-clauses do
+         (cond
+           ((eq (first where-clause)
+                :and)
+            (and-where query (rest where-clause)))
+           ((eq (first where-clause)
+                :or)
+            (or-where query (rest where-clause)))
+           (t
+            (and-where query where-clause))))
+    (when folder
+      (and-where query `(:= :folder ,folder)))
+    (when timeline
+      (and-where query `(:= :timeline ,timeline)))
+    (when account-id
+      (and-where query `(:= :account-id ,account-id)))
+    query))
+
+(defun single-status-exists-p (status-id timeline folder)
+  "Id timeline and  folder is the tuple that is primary key for table
+:status"
+  (find-status-id-folder-timeline status-id folder timeline))
+
+(defun message-children (timeline folder status-id)
+  "Return the direct children of this status, nil if there are none"
+  (assert (stringp status-id))
+  (when-let* ((parent-status (message-from-timeline-folder-id timeline folder status-id))
+              (query         (make-filtered-message-select nil
+                                                           nil
+                                                           folder
+                                                           nil
+                                                           `(:= :status.timeline ,timeline)
+                                                           `(:= :in-reply-to-id  ,status-id))))
+    (fetch-all-rows query)))
+
+(defun message-id->tree (timeline folder status-id)
+  "Return an instance of  `mtree-utils:m-tree' filled with status that
+forms a messages thread identified by the arguments."
+  (message-root->tree timeline
+                      folder
+                      (row-message-status-id (message-root timeline folder status-id))))
+
+(defun message-root->tree (timeline folder root-status-id)
+  "Return an instance of  `mtree-utils:m-tree' filled with status that
+forms a messages thread"
+  (assert folder)
+  (assert (stringp root-status-id))
+  (when-let* ((root-status (message-from-timeline-folder-id timeline folder root-status-id))
+              (results     (mtree:make-node root-status)))
+    (labels ((add-children (node)
+               (let ((children (message-children timeline folder
+                                                 (row-message-status-id (mtree:data node)))))
+                 (loop for child in children do
+                      (mtree:add-child node
+                                       (mtree:make-node child)))
+                 (mtree:do-children (child node)
+                   (add-children child))
+                 node)))
+      (add-children results))))
+
+(defmacro gen-access-message-row (name column)
+  "Convenience macro to generate function to access a value of a table
+row."
+  `(defun ,(misc:format-fn-symbol t "row-~a" name) (row)
+       (and row
+        (db-getf row ,column))))
+
+(gen-access-message-row id                          :id)
+
+(gen-access-message-row message-visibility          :visibility)
+
+(gen-access-message-row message-status-id           :status-id)
+
+(gen-access-message-row message-index               :message-index)
+
+(gen-access-message-row message-folder              :folder)
+
+(gen-access-message-row message-timeline            :timeline)
+
+(gen-access-message-row message-username            :username)
+
+(gen-access-message-row message-user-display-name   :display-name)
+
+(gen-access-message-row message-content             :content)
+
+(gen-access-message-row message-rendered-text       :rendered-text)
+
+(gen-access-message-row message-creation-time       :created-at)
+
+(gen-access-message-row message-subject             :spoiler-text)
+
+(gen-access-message-row message-tags                :tags)
+
+(gen-access-message-row message-reblog-id           :reblog-id)
+
+(gen-access-message-row lockedp                     :locked)
+
+(gen-access-message-row message-redp                :redp)
+
+(gen-access-message-row user-username               :acct)
+
+(gen-access-message-row tag-got-new-message         :got-new-message-p)
+
+(gen-access-message-row conversation-folder         :folder)
+
+(gen-access-message-row conversation-ignored-p      :ignoredp)
+
+(gen-access-message-row conversation-root-status-id :root-status-id)
+
+(defun row-message-reply-to-id (row)
+  (and row
+       (db-getf row :in-reply-to-id)))
+
+(defun tree-data-id (tree-node)
+  "Return  the `data'  slot of  node `tree-node'.  the argument  is an
+instance of `mtree-utils:m-tree'"
+  (row-message-status-id (mtree:data tree-node)))
+
+(defun neighbor-tree (tree timeline-type &key (folder +default-status-folder+))
+  "Unused"
+  (when-let* ((all-roots-id (all-root-status-id timeline-type
+                                                :sort-fn #'string<
+                                                :folder  folder))
+              (needle-root  (mtree:root-node tree))
+              (needle-id    (tree-data-id needle-root))
+              (needle-pos   (position needle-id all-roots-id :test #'string=)))
+    (flet ((neighbor-ids ()
+             (cond
+               ((= needle-pos 0)
+                (values nil (elt all-roots-id (1+ needle-pos))))
+               ((= needle-pos (1- (length all-roots-id)))
+                (values (elt all-roots-id (1- needle-pos))
+                        nil))
+               (t
+                (values (elt all-roots-id (1- needle-pos))
+                        (elt all-roots-id (1+ needle-pos)))))))
+      (multiple-value-bind (previous-id next-id)
+          (neighbor-ids)
+        (values (and previous-id
+                     (message-id->tree timeline-type folder previous-id))
+                (and next-id
+                     (message-id->tree timeline-type folder next-id)))))))
+
+(defun next-status-tree (tree timeline-type &key (folder +default-status-folder+))
+  "Unused"
+  (multiple-value-bind (x next)
+      (neighbor-tree tree timeline-type :folder folder)
+    (declare (ignore x))
+    next))
+
+(defun previous-status-tree (tree timeline-type &key (folder +default-status-folder+))
+  "Unused"
+  (multiple-value-bind (previous x)
+      (neighbor-tree tree timeline-type :folder folder)
+    (declare (ignore x))
+    previous))
+
+(defun message-tree-root-equal (a b)
+  (string= (tree-data-id (mtree:root-node a))
+           (tree-data-id (mtree:root-node b))))
+
+(defun all-status-trees (timeline folder)
+  "Returns all the trees (instances of `mtree-utils:m-tree') belonging
+to `timeline' and `folder'"
+  (labels ((tree= (a b)
+             (message-tree-root-equal a b)))
+    (let ((res ())
+          (status-ids (mapcar #'second (fetch-all-rows (select :status-id
+                                                  (from :status)
+                                                  (where (:folder folder))
+                                                  (order-by (:asc :status-id)))))))
+      (loop for status-id in status-ids do
+           (let* ((status-id-root (row-message-status-id (message-root timeline
+                                                                       folder
+                                                                       status-id)))
+                  (tree    (message-id->tree timeline folder status-id-root)))
+             (pushnew tree res :test #'tree=)))
+      (sort res
+            (lambda (a b)
+              (let* ((root-a (mtree:root-node a))
+                     (root-b (mtree:root-node b))
+                     (status-id-a   (row-message-status-id (mtree:data root-a)))
+                     (status-id-b   (row-message-status-id (mtree:data root-b))))
+                (string< status-id-a status-id-b)))))))
+
+(defun fetch-status-trees (timeline folder &key (account-id nil))
+  "Returns all the trees (instances of `mtree-utils:m-tree') belonging
+to `timeline', `folder' and `account-id'"
+  (labels ((tree= (a b)
+             (string= (tree-data-id (mtree:root-node a))
+                      (tree-data-id (mtree:root-node b)))))
+    (let* ((res   ())
+           (query (select :status-id
+                    (from :status)
+                    (where (:and (:= :folder     folder)
+                                 (:= :timeline   timeline)))
+                    (order-by (:asc :status-id)))))
+      (when account-id
+        (and-where query `(:= :account-id ,account-id)))
+      (let* ((rows       (fetch-all-rows query))
+             (status-ids (mapcar #'second rows)))
+        (loop for status-id in status-ids do
+             (let* ((status-id-root (row-message-status-id (message-root timeline
+                                                                         folder
+                                                                         status-id)))
+                    (tree    (message-id->tree timeline folder status-id-root)))
+               (pushnew tree res :test #'tree=)))
+        (sort res
+              (lambda (a b)
+                (let* ((root-a (mtree:root-node a))
+                       (root-b (mtree:root-node b))
+                       (status-id-a   (row-message-status-id (mtree:data root-a)))
+                       (status-id-b   (row-message-status-id (mtree:data root-b))))
+                  (string< status-id-a status-id-b))))))))
+
+(defun annotated-tree-line->data-plist (line)
+  "See `mtree-utils:tree->annotated-lines"
+  (rest (last-elt line)))
+
+(defun renumber-timeline-message-index (timeline-type folder &key (account-id nil))
+ "Add a  unique numeric index to each message thei is an unique ID
+inside `timeline' and `folder'.
+
+`account-id' additional  restrict the message to be processed to the
+ones of a single author
+
+Message index is an unique number  that identify the message after the
+messages are sorted as below:
+
+1. start with global message-index = 1
+
+1. sort all the trees in a folder from the one with the older root to the newest
+
+2. for each tree explore the messages starting from root
+
+   a. visit  each node in the  tree with a classic  Depth First Search
+   and set the value index for that node as the value of message-index
+
+   b. increment message-index by 1"
+  (let ((all-trees (remove-if-not (lambda (tree)
+                                    (string= (db-getf (mtree:data tree) :timeline)
+                                             timeline-type))
+                                  (fetch-status-trees timeline-type
+                                                      folder
+                                                      :account-id account-id)))
+        (new-index +message-index-start+))
+    (loop for tree in all-trees do
+         (let ((tree-lines (mtree:tree->annotated-lines tree
+                                                        :print-data t
+                                                        :print-data-fn #'identity)))
+           (loop for line in tree-lines do
+                (let* ((status-id    (row-message-status-id (annotated-tree-line->data-plist line)))
+                       (query-update (update :status
+                                       (set= :message-index new-index)
+                                       (where (:= :status-id status-id)))))
+                  (query query-update)
+                  (incf new-index)))))))
+
+(defun all-folders ()
+  (let ((query (select (fields (:distinct :folder))
+                       (from  :status))))
+    (mapcar #'second
+            (fetch-all-rows query))))
+
+(defun all-status-timelines ()
+  (mapcar #'second
+          (fetch-all-rows (select (fields (:distinct :timeline)) (from :status)))))
+
+(defun renumber-all-timelines ()
+  (let ((all-folders   (all-folders))
+        (all-timelines (all-status-timelines)))
+    (loop for folder in all-folders do
+         (loop for timeline in all-timelines do
+              (renumber-timeline-message-index timeline folder :account-id nil)))))
+
+(defun all-attachments-to-status (status-id)
+  (fetch-all-rows (select :*
+                    (from +table-attachment+)
+                    (where (:= :status-id status-id)))))
+
+(defun all-attachments-urls-to-status (status-id)
+  (mapcar (lambda (a) (db-getf a :url))
+          (all-attachments-to-status status-id)))
+
+(defun debug-print-all-tree (timeline-type)
+  (let ((all-trees  (remove-if-not (lambda (tree)
+                                     (string= (db-getf (mtree:data tree) :timeline)
+                                              timeline-type))
+                                   (all-status-trees timeline-type +default-status-folder+))))
+    (loop for tree in all-trees do
+         (format t "tree:~%~{~a~%~}~%"
+                 (mtree:tree->annotated-lines tree
+                                              :print-data t
+                                              :print-data-fn
+                                              (lambda (a)
+                                                (strcat
+                                                 (db-getf a :status-id)
+                                                 " "
+                                                 (to-s (db-getf a :message-index)))))))))
+
+(defun mark-status-boolean-value (timeline folder status-id column value)
+  "Convenience function to set a boolean value for a single column of table status"
+  (assert (numberp value))
+  (assert (or (= value +db-true+)
+              (= value +db-false+)))
+  (let ((query (update :status
+                 (set= column value)
+                  (where (:and (:= :timeline timeline)
+                               (:= :folder folder)
+                               (:= :status-id status-id))))))
+    (query query)))
+
+(defun mark-status-red-p (timeline folder status-id)
+  (mark-status-boolean-value timeline folder status-id :redp +db-true+))
+
+(defun mark-status-unread (timeline folder status-id)
+  (mark-status-boolean-value timeline folder status-id :redp +db-false+))
+
+(defun mark-status-deleted-p (timeline folder status-id)
+  "Mark status as need to be deleted."
+  (mark-status-boolean-value timeline folder status-id :deletedp +db-true+))
+
+(defun mark-status-prevent-deletion (timeline folder status-id)
+  "Remove mark of status as need to be deleted."
+  (mark-status-boolean-value timeline folder status-id :deletedp +db-false+))
+
+(defun count-status-redp (timeline folder &key (account-id nil))
+  (let ((query (select (fields (:count :*))
+                       (from :status)
+                       (where (:and (:= :folder     folder)
+                                    (:= :timeline   timeline)
+                                    (:= :redp       +db-true+))))))
+    (when account-id
+      (and-where query `(:= :account-id ,account-id)))
+    (second (fetch-single query))))
+
+(defun count-status (timeline folder &key (account-id nil))
+  (let ((query   (select (fields (:count :*))
+                   (from :status)
+                   (where (:and (:= :folder     folder)
+                                (:= :timeline   timeline))))))
+    (when account-id
+      (and-where query `(:= :account-id ,account-id)))
+    (second (fetch-single query))))
+
+(defun search-messages-text-body (timeline folder text-looking-for &key (account-id nil))
+  "Search for `text-looking-for' inside the body of messages belonging to
+`timeline' , `folder' and possibly `account-id'"
+  (let* ((actual-text-looking-for (prepare-for-sql-like text-looking-for))
+         (query (make-filtered-message-select nil
+                                              timeline
+                                              folder
+                                              account-id
+                                              `(:and :like :rendered-text
+                                                     ,actual-text-looking-for))))
+    (order-by= query :message-index)
+    (fetch-all-rows query)))
+
+(defun search-next-message-body (timeline
+                                 folder
+                                 text-looking-for
+                                 start-status-message-index
+                                 &key (account-id nil))
+  "Search for `text-looking-for' inside the body of messages belonging
+to  `timeline' ,  `folder'  and possibly  `account-id', newer  than
+`start-status-message-index'"
+  (let* ((actual-text-looking-for (prepare-for-sql-like text-looking-for))
+         (query (make-filtered-message-select nil
+                                              timeline
+                                              folder
+                                              account-id
+                                              `(:and :like :rendered-text
+                                                     ,actual-text-looking-for)
+                                              `(:and :> :status.message-index
+                                                     ,start-status-message-index))))
+    (order-by= query :message-index)
+    (fetch-single query)))
+
+(defun search-previous-message-body (timeline
+                                     folder
+                                     text-looking-for
+                                     start-status-message-index
+                                     &key (account-id nil))
+  "Search for `text-looking-for' inside the body of messages belonging
+to  `timeline' ,  `folder'  and possibly  `account-id', older  than
+`start-status-message-index'"
+  (let* ((actual-text-looking-for (prepare-for-sql-like text-looking-for))
+         (query (make-filtered-message-select nil
+                                              timeline
+                                              folder
+                                              account-id
+                                              `(:and :like :rendered-text
+                                                     ,actual-text-looking-for)
+                                              `(:and :< :status.message-index
+                                                     ,start-status-message-index))))
+    (order-by= query '(:desc :message-index))
+    (fetch-single query)))
+
+(defun search-next-message-meta (timeline
+                                 folder
+                                 text-looking-for
+                                 start-status-message-index
+                                 &key (account-id nil))
+  "Search for `text-looking-for' inside the metadata of messages belonging
+to  `timeline' ,  `folder'  and possibly  `account-id', newer  than
+`start-status-message-index'
+
+Metadata are:
+
+- spoiler-text (subject of message)
+- tags
+- username"
+  (let* ((actual-text-looking-for (prepare-for-sql-like text-looking-for))
+         (query (make-filtered-message-select nil
+                                              timeline
+                                              folder
+                                              account-id
+                                              `(:or :like :spoiler-text
+                                                     ,actual-text-looking-for)
+                                              `(:or :like :tags
+                                                    ,actual-text-looking-for)
+                                              `(:or :like :username
+                                                     ,actual-text-looking-for)
+                                              `(:and :>   :status.message-index
+                                                     ,start-status-message-index))))
+    (order-by= query :message-index)
+    (fetch-single query)))
+
+(defun search-previous-message-meta (timeline
+                                     folder
+                                     text-looking-for
+                                     start-status-message-index
+                                     &key (account-id nil))
+    "Search for `text-looking-for' inside the metadata of messages belonging
+to  `timeline' ,  `folder'  and possibly  `account-id', older  than
+`start-status-message-index'
+
+Metadata are:
+
+- spoiler-text (subject of message)
+- tags
+- username"
+  (let* ((actual-text-looking-for (prepare-for-sql-like text-looking-for))
+         (query (make-filtered-message-select nil
+                                              timeline
+                                              folder
+                                              account-id
+                                              `(:or :like :username
+                                                    ,actual-text-looking-for)
+                                              `(:or :like :spoiler-text
+                                                    ,actual-text-looking-for)
+                                              `(:or :like :tags
+                                                    ,actual-text-looking-for)
+                                              `(:and :<   :status.message-index
+                                                     ,start-status-message-index))))
+    (order-by= query '(:desc :message-index))
+    (fetch-single query)))
+
+(defun search-next-unread-message (timeline
+                                   folder
+                                   start-status-message-index
+                                   &key (account-id nil))
+    "Search the next unread message belonging
+to  `timeline' ,  `folder'  and possibly  `account-id', older  than
+`start-status-message-index'"
+  (let* ((query (make-filtered-message-select nil
+                                              timeline
+                                              folder
+                                              account-id
+                                              `(:and :> :status.message-index
+                                                     ,start-status-message-index)
+                                              `(:and := :status.redp
+                                                     ,+db-false+))))
+    (order-by= query :message-index)
+    (fetch-single query)))
+
+(defmacro with-add-account-id-to-query ((query query-body) account-id &body body)
+  `(let ((,query ,query-body))
+     (when ,account-id
+       (and-where ,query `(:= :account-id ,,account-id)))
+     ,@body))
+
+(defun add-where-timeline-folder (query timeline folder)
+  (and-where query `(:= :timeline ,timeline))
+  (and-where query `(:= :folder   ,folder)))
+
+(defun last-message-index-status (timeline-type folder &key (account-id nil))
+  (with-add-account-id-to-query
+      (query (select ((:as (fields (:max :message-index)) :max))
+               (from :status)
+               (where (:and (:= :timeline timeline-type)
+                            (:= :folder   folder)))))
+      account-id
+    (when-let ((row (fetch-single query)))
+      (second row))))
+
+(defun last-status-id-timeline-folder (timeline folder)
+  (let ((query (select ((:as (fields (:max :status-id)) :max))
+                 (from :status)
+                 (where (:and (:= :timeline timeline)
+                              (:= :folder   folder))))))
+    (second (fetch-single query))))
+
+(defun delete-status (timeline-type folder status-id)
+  "delete status and connect its children with their grandparent"
+  (let* ((status           (find-status-id-folder-timeline status-id
+                                                           folder
+                                                           timeline-type))
+         (parent-status-id (db-getf status :in-reply-to-id))
+         (children         (message-children timeline-type folder status-id))
+         (query-delete     (delete-from :status
+                             (where (:and (:= :timeline  timeline-type)
+                                          (:= :folder    folder)
+                                          (:= :status-id status-id))))))
+    (with-db-transaction
+      (query query-delete)
+      (loop for child in children do
+           (query (make-update :status
+                               (:in-reply-to-id)
+                               (parent-status-id)
+                               (:and (:= :timeline  timeline-type)
+                                     (:= :folder    folder)
+                                     (:= :status-id (row-message-status-id child)))))))))
+
+(defun count-status-marked-to-delete ()
+  (second (fetch-single (select (fields (:count :status-id))
+                          (from :status)
+                          (where (:= :deletedp +db-true+))))))
+
+(defun statuses-id-marked-to-delete (timeline folder)
+   (query (select :status-id
+            (from :status)
+            (where (:and (:= :deletedp +db-true+)
+                         (:= :timeline timeline)
+                         (:= :folder   folder))))))
+
+(defun delete-all-statuses-marked-deleted ()
+  (let ((all-folders   (all-folders))
+        (all-timelines (all-status-timelines)))
+    (loop for folder in all-folders do
+         (loop for timeline in all-timelines do
+              (let ((marked-to-delete (statuses-id-marked-to-delete timeline folder)))
+                (loop for status-to-delete in marked-to-delete do
+                     (delete-status timeline folder (row-message-status-id status-to-delete))))))))
+
+(defun max-username-length (timeline-type folder)
+  (let ((query (select (fields (:max (:length :account.acct)))
+                 (from :status)
+                 (join :account :on (:= :account.id
+                                        :status.account-id))
+                 (where (:and (:= :timeline timeline-type)
+                              (:= :folder   folder))))))
+    (second (fetch-single query))))
+
+(defgeneric keyword->dbcolumn (object))
+
+(defmethod keyword->dbcolumn ((object symbol))
+  (string-downcase (symbol-name object)))
+
+(defmethod keyword->dbcolumn ((object string))
+  object)
+
+(defun folder-exists-p (folder)
+  (fetch-all-rows (select :*
+                    (from :status)
+                    (where (:= :folder folder)))))
+
+(defun timeline-exists-p (folder timeline)
+  (fetch-all-rows (select :*
+                    (from :status)
+                    (where (:and (:= :folder   folder)
+                                 (:= :timeline timeline))))))
+
+(defun move-message-to-folder (timeline folder status-id destination-folder)
+  (let ((message-exists-p (message-from-timeline-folder-id timeline folder status-id)))
+    (query (make-update :status
+                        (:folder)
+                        (destination-folder)
+                        (:and (:= :status-id status-id)
+                              (:= :timeline  timeline)
+                              (:= :folder    folder))))
+    message-exists-p))
+
+(defun move-tree-to-folder (timeline folder message-index destination-folder)
+  "Move the tree of messages (identified by `timeline', `folder' and `message-index' to
+`destination-folder'"
+  (let ((tree (message-index->tree timeline folder message-index)))
+    (mtree:top-down-visit tree
+                          (lambda (node)
+                            (let ((id (row-message-status-id (mtree:data node))))
+                              (move-message-to-folder timeline folder id destination-folder))))
+    (renumber-timeline-message-index timeline folder)
+    (renumber-timeline-message-index timeline destination-folder)))
+
+(defun last-status-id-in-tree (tree)
+  "Returns   the   newest   message   in  `tree'   (an   instance   of
+`mtree-utils:mtree')"
+  (let ((maximum ""))
+    (mtree:top-down-visit tree
+                          (lambda (node)
+                            (let ((id (row-message-status-id (mtree:data node))))
+                              (when (string> id maximum)
+                                (setf maximum id)))))
+    maximum))
+
+(defun all-timelines-in-folder (folder &key (include-default-timelines nil))
+  (assert folder)
+  (let* ((query   (select (fields (:distinct :timeline))
+                    (from  :status)
+                    (where (:= :folder folder))))
+         (dynamic (mapcar #'second
+                          (fetch-all-rows query))))
+    (if include-default-timelines
+        (union (default-timelines)
+               dynamic
+               :test #'string=)
+        dynamic)))
+
+(defun set-ignore-status-author (status-id new-value)
+  "Ignore  or  unignore  the  future   statuses  authored  by  the  user
+identified  by  the  account  that  wrote  the  status  identified  by
+`status-id'"
+  (when-let* ((status     (fetch-from-id :status status-id))
+              (account-id (db-getf status :account-id)))
+    (query (make-update :account
+                        (:ignoredp)
+                        ((prepare-for-db new-value :to-integer t))
+                        (:and (:= :id       account-id))))))
+
+(defun ignore-status-author (status-id)
+  "Ignore the future  statuses authored by the user  identified by the
+account that wrote the status identified by `status-id'"
+  (set-ignore-status-author status-id t))
+
+(defun unignore-author (id)
+  "Unignore the future  statuses authored by the user  identified by the
+account that wrote the status identified by `status-id'"
+  (query (make-update :account
+                      (:ignoredp)
+                      (+db-false+)
+                      (:or (:= :id id)
+                           (:= :acct id)))))
+
+(defun all-usernames ()
+  (mapcar #'second
+          (fetch-all-rows (select :acct (from :account) (order-by :acct)))))
+
+(defun all-ignored-usernames ()
+  (mapcar #'second
+          (fetch-all-rows (select :acct
+                            (from :account)
+                            (where (:= :ignoredp +db-true+))
+                            (order-by :acct)))))
+
+(defun all-followed-usernames ()
+  (mapcar #'second
+          (fetch-all-rows (select :account.acct
+                            (from :account)
+                            (join :followed-user :on (:= :account.id
+                                                         :followed-user.user-id))))))
+
+(defun all-unfollowed-usernames (&key (remove-ignored nil))
+  (let ((all      (all-usernames))
+        (followed (all-followed-usernames)))
+    (when remove-ignored
+      (setf all (set-difference all (all-ignored-usernames) :test #'string=)))
+    (set-difference all followed :test #'string=)))
+
+(defun status-ignored-p (status-id folder timeline)
+  "Return non nil if this status should be ignored
+(id timeline and  folder is the tuple that is primary key for table
+:status)"
+  (query (select :*
+           (from :ignored-status)
+           (where (:and (:= :id       status-id)
+                        (:= :folder   folder)
+                        (:= :timeline timeline))))))
+
+(defmacro with-db-current-timestamp ((timestamp) &body body)
+  `(let ((,timestamp (prepare-for-db (local-time-obj-now))))
+     ,@body))
+
+(defun add-to-status-ignored (status-id folder timeline)
+  "Ignore this status (id timeline and  folder is the tuple that is primary key for table
+:status), Ignored status wont be downloaded again from the net."
+  (when (not (status-ignored-p status-id folder timeline))
+    (with-db-current-timestamp (now)
+      (query (make-insert +table-ignored-status+
+                          (:id       :folder :timeline :created-at)
+                          (status-id folder  timeline  now))))))
+
+(defun add-to-followers (user-id)
+  (with-db-current-timestamp (now)
+    (query (make-insert +table-followed-user+
+                        (:user-id  :created-at)
+                        (user-id now)))))
+
+(defun remove-from-followers (user-id)
+  (query (make-delete +table-followed-user+
+                      (:= :user-id user-id))))
+
+(defun forget-all-statuses-marked-deleted ()
+  "Ignore all statuses marked for deletion"
+  (let ((all-folders   (all-folders))
+        (all-timelines (all-status-timelines)))
+    (loop for folder in all-folders do
+         (loop for timeline in all-timelines do
+              (let ((marked-to-delete (statuses-id-marked-to-delete timeline folder)))
+                (loop for status-to-delete in marked-to-delete do
+                     (add-to-status-ignored (row-message-status-id status-to-delete)
+                                            folder
+                                            timeline)))))))
+
+(defun status-id->username (status-id)
+  (when-let ((message (fetch-single (make-filtered-message-select nil nil nil nil
+                                                                  `(:= :status.status-id
+                                                                       ,status-id)))))
+    (row-message-username message)))
+
+(defun subscribe-to-tag (tag)
+  (assert (stringp tag))
+  (assert (string-not-empty-p tag))
+  (when (null (fetch-from-id +table-subscribed-tag+ tag))
+    (with-db-current-timestamp (now)
+      (query (make-insert +table-subscribed-tag+
+                          (:id :created-at)
+                          (tag now))))))
+
+(defun unsubscribe-to-tag (tag)
+  (assert (stringp tag))
+  (assert (string-not-empty-p tag))
+  (query (make-delete +table-subscribed-tag+
+                      (:= :id tag))))
+
+(defun all-subscribed-tags (&key (sort-data nil))
+  (let ((query (select :*
+                 (from +table-subscribed-tag+))))
+    (when sort-data
+      (order-by= query
+                 '(:asc :id)))
+    (fetch-all-rows query)))
+
+(defun all-subscribed-tags-name (&key (sort-data nil))
+  (mapcar #'row-id (all-subscribed-tags :sort-data sort-data)))
+
+(defun tag-folder-name-p (name)
+  "Returns non nil if name is a valid folder name for subsribed tags"
+  (scan (strcat "^" +folder-tag-prefix+) name))
+
+(defun tag->folder-name (tag)
+  "Add the tag prefix (usually '#') from folder to get the tag name"
+  (if (tag-folder-name-p tag)
+      tag
+      (strcat +folder-tag-prefix+ tag)))
+
+(defun folder-name->tag (folder)
+  "Strip the tag prefix (usually '#')  from tag name to get the folder
+name"
+  (cl-ppcre:regex-replace +folder-tag-prefix+ folder ""))
+
+(defun max-status-id-subscribed-tag (tag)
+  (when-let* ((max-status-id-row (fetch-single (select (fields (:max :status-id))
+                                                 (from +table-status+)
+                                                 (where (:= :folder (tag->folder-name tag))))))
+              (max-status-id     (second max-status-id-row)))
+    max-status-id))
+
+(defun more-recent-tag-fetched-p (tag)
+  "Returns the most recent message fetched that contains tag `tag', or
+nil if no such message exists"
+  (when-let* ((row (fetch-from-id +table-subscribed-tag+ tag)))
+    (let* ((last-status-id        (db-getf row :last-status-id-fetched))
+           (max-status-id-fetched (max-status-id-subscribed-tag tag)))
+      (or (null last-status-id)
+          (string> max-status-id-fetched
+                   last-status-id)))))
+
+(defun all-tags-with-new-message-fetched ()
+  "Returns the most recent messages fetched that contains subscribed tags, or
+nil if no such messages exist"
+  (remove-if-not #'more-recent-tag-fetched-p
+                 (all-subscribed-tags-name)))
+
+(defun update-last-seen-status-with-tag (tag)
+  (when-let* ((max-status-id (max-status-id-subscribed-tag tag)))
+    (query (make-update +table-subscribed-tag+
+                        (:last-status-id-fetched)
+                        (max-status-id)
+                        (:= :id tag)))))
+
+(defun update-last-seen-status-subscribed-tag ()
+  (loop for tag in (all-subscribed-tags-name) do
+       (update-last-seen-status-with-tag tag)))
+
+(defun tag-histogram (tag)
+  (mapcar #'second
+          (fetch-all (query (select :count
+                              (from +table-tag-histogram+)
+                              (where (:= :tag tag)))))))
+
+(defun set-got-new-message-tag (tag value)
+  (query (make-update +table-subscribed-tag+
+                      (:got-new-message-p)
+                      (value)
+                      (:= :id tag))))
+
+(defun mark-tag-got-new-messages (tag)
+  (set-got-new-message-tag tag +db-true+))
+
+(defun unmark-tag-got-new-messages (tag)
+  (set-got-new-message-tag tag +db-false+))
+
+(defun conversation-max-id ()
+  (when-let ((row (query (select ((:as (fields (:max :id)) :max))
+                           (from +table-conversation+)))))
+    (second row)))
+
+(defun all-conversations (&key (remove-ignored t))
+  (let ((query (select :*
+                 (from +table-conversation+))))
+    (order-by= query :id)
+    (when remove-ignored
+      (and-where query `(:= :ignoredp ,+db-false+)))
+    (fetch-all-rows query)))
+
+(defun all-conversations-id (&key (remove-ignored t))
+  (mapcar #'row-id (all-conversations :remove-ignored remove-ignored)))
+
+(defun add-conversation (id root-message-status-id &key (folder id))
+  "Create  a  new  conversation:  the timeline  for  messges  will  be
++default-converation-timeline+ and  default folder name will  be weual
+to id."
+  (assert (string-not-empty-p id))
+  (assert (string-not-empty-p root-message-status-id))
+  (assert (string-not-empty-p folder))
+  (when (null (fetch-from-id +table-conversation+ id))
+    (with-db-current-timestamp (now)
+      (query (make-insert +table-conversation+
+                          (:id :folder :root-status-id        :created-at)
+                          (id  folder  root-message-status-id now))))))
+
+(defun conversation-id->folder (id)
+  (assert (stringp id))
+  (assert (string-not-empty-p id))
+  (second (fetch-single (select :folder
+                          (from +table-conversation+)
+                          (where (:= :id id))))))
+
+(defun all-conversation-folders (&key (remove-ignored t))
+  (let ((all (all-conversations :remove-ignored remove-ignored)))
+    (mapcar #'row-conversation-folder all)))
+
+(defun conversation-folder-exists-p (folder)
+  (query (select :*
+           (from +table-conversation+)
+           (where (:= :folder folder)))))
+
+(defun conversation-root-captured-p (root-status-id)
+  "non  nil  if  this  root  status alerady  bleong  to  an  existsing
+conversation"
+  (query (select :*
+           (from +table-conversation+)
+           (where (:= :root-status-id root-status-id)))))
+
+(defun update-folder (table old-folder-name new-folder-name)
+  "Change folder name in `table'"
+  (query (make-update table
+                      (:folder)
+                      (new-folder-name)
+                      (:= :folder old-folder-name))))
+
+(defun update-conversation-folder (old-folder-name new-folder-name)
+  "Change conversation folder name"
+  (update-folder +table-conversation+ old-folder-name new-folder-name))
+
+(defun update-conversation-folder-by-id (id new-folder-name)
+  "Unused"
+  (query (make-update +table-conversation+
+                      (:folder)
+                      (new-folder-name)
+                      (:= :id id))))
+
+(defun update-conversation-by-id (id new-folder-name root-message-id)
+  "Unused"
+  (query (make-update +table-conversation+
+                      (:folder :root-status-id)
+                      (new-folder-name root-message-id)
+                      (:= :id id))))
+
+(defun update-status-folder (old-folder-name new-folder-name)
+  "chane statuses folder name"
+  (update-folder +table-status+ old-folder-name new-folder-name))
+
+(defun change-conversation-name (old-name new-name)
+  "This will update both column folder in table converstion and in table status"
+  (with-db-transaction
+    (update-status-folder       old-name new-name)
+    (update-conversation-folder old-name new-name)))
+
+(defun conversation-messages (name)
+  "returns all the message in a conversation in folder `name'"
+  (let ((statuses (query (select ((:as :conversation.id :conversation-id)
+                                  (:as :account.acct   :username)
+                                  (:as :account.locked :locked)
+                                  :status.*)
+                                 (from :status)
+                                 (join :account :on (:= :account.id
+                                                        :status.account-id))
+                                 (join :conversation :on (:= :conversation.folder
+                                                             :status.folder))
+                                 (where (:= :conversation.folder name))))))
+    statuses))
+
+(defclass conversation-stats ()
+  ((conversation-id
+    :initform nil
+    :initarg  :conversation-id
+    :accessor conversation-id)
+   (messages-red
+    :initform -1
+    :initarg  :messages-red
+    :accessor messages-red)
+   (messages-to-read
+    :initform -1
+    :initarg  :messages-to-read
+    :accessor messages-to-read)
+   (conversation-name
+    :initform (_ "unknown")
+    :initarg  :conversation-name
+    :accessor conversation-name))
+  (:documentation "Statistics for conversation"))
+
+(defun conversation-read/red (name)
+  (let* ((all-messages (conversation-messages name))
+         (red          (remove-if-not #'row-message-redp all-messages))
+         (to-read      (remove-if     #'row-message-redp all-messages)))
+    (values to-read red)))
+
+(defun all-conversation-stats (&key (remove-ignored t))
+  "All  statistics  for  all   converstions  optionally  with  ignored
+conversation removed (default: remove)"
+  (let ((all (all-conversations :remove-ignored remove-ignored)))
+    (loop for conversation in all collect
+         (let ((name (row-conversation-folder conversation))
+               (id   (row-id                  conversation)))
+           (multiple-value-bind (to-read red)
+               (conversation-read/red name)
+             (make-instance 'conversation-stats
+                            :conversation-id   id
+                            :messages-red      (length red)
+                            :messages-to-read  (length to-read)
+                            :conversation-name name))))))
+
+(defun ignore-conversation (folder-name)
+  "Ignore a conversation, never got new messages"
+  (query (make-update +table-conversation+
+                      (:ignoredp)
+                      (+db-true+)
+                      (:= :folder folder-name))))
+
+(defun delete-conversation (folder-name)
+  "Delete a conversation from database"
+  (query (make-delete +table-conversation+
+                      (:= :folder folder-name))))
+
+(defun import-crypto-data (user-id key)
+  (assert user-id)
+  (assert key)
+  (with-db-transaction
+    (when (fetch-from-id +table-account+ user-id)
+      (query (make-insert +table-crypto-data+
+                          (:key)
+                          (key)))
+      (let ((last-crypto-data (second (fetch-single (select (fields (:max :id))
+                                                      (from +table-crypto-data+))))))
+        (query (make-update +table-account+
+                            (:encryption-key-id)
+                            (last-crypto-data)
+                            (:= :id user-id)))))))
+
+(defun crypto-user-key (username)
+  (assert username)
+  (assert (stringp username))
+  (let ((data (fetch-single (select ((:as :crypto.key :key))
+                              (from :crypto)
+                              (join :account :on (:= :account.encryption-key-id :crypto.id))
+                              (where (:= :account.acct username))))))
+    (second data)))
+
+(defun cache-touch (key)
+  "Update the existing cache row accessing time to current time."
+  (with-db-current-timestamp (now)
+    (query (make-update +table-cache+
+                        (:accessed-at)
+                        (now)
+                        (:= :key key)))))
+
+(defun cache-put (key)
+  "Insert a new cahe row with key `key'"
+  (if (cache-get key)
+      (with-db-transaction
+        (cache-touch key)
+        (cache-get-value key))
+      (with-db-transaction
+        (with-db-current-timestamp (now)
+          (query (make-insert +table-cache+
+                              (:key :created-at :accessed-at)
+                              (key  now         now)))
+          (last-inserted-rowid)))))
+
+(defun cache-get (key)
+  "Get cache row identified by `key'"
+  (fetch-single (select :*
+                  (from :cache)
+                  (where (:= :key key)))))
+
+(defun cache-get-value (key)
+  "Get cache value identified by `key'"
+  (row-id (cache-get key)))
+
+(defun cache-invalidate (key)
+  "delete cache row identified by `key'"
+  (assert key)
+  (query (make-delete +table-cache+
+                      (:= :key key))))
+
+(defun cache-expired-p (key &key (days-in-the-past (swconf:config-purge-cage-days-offset)))
+  "Return non  nil if the last  time the cache was  accessed was older
+than `days-in-the-past' days (default: `(swconf:config-purge-cage-days-offset)'"
+  (let ((row (cache-get key)))
+    (if (null row)
+       t
+       (let ((access-time (encode-datetime-string (db-getf row :accessed-at)))
+             (offset      (threshold-time days-in-the-past)))
+         (local-time:timestamp< access-time
+                                offset)))))
