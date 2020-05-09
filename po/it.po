@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tinmop 0.0.1\n"
 "Report-Msgid-Bugs-To: https://notabug.org/cage/tinmop/\n"
-"POT-Creation-Date: 2020-05-08 15:15+0200\n"
-"PO-Revision-Date: 2020-05-07 16:32+0200\n"
+"POT-Creation-Date: 2020-05-09 12:40+0200\n"
+"PO-Revision-Date: 2020-05-09 12:41+0200\n"
 "Last-Translator: cage <cage@invalid.org>\n"
 "Language-Team: Italian\n"
 "Language: it\n"
@@ -118,7 +118,7 @@ msgstr "SCRIPT-FILE"
 msgid "Error: command ~a not found"
 msgstr "Errore: comando ~a non trovato"
 
-#: src/conditions.lisp:67 src/conditions.lisp:71 src/db.lisp:2113
+#: src/conditions.lisp:67 src/conditions.lisp:71 src/db.lisp:2130
 #: src/message-rendering-utils.lisp:132 src/message-rendering-utils.lisp:166
 #: src/message-rendering-utils.lisp:171
 msgid "unknown"
@@ -258,7 +258,7 @@ msgstr "Scritto da: "
 
 #: src/message-rendering-utils.lisp:211
 msgid "Boosted: "
-msgstr "Rilanciato per:"
+msgstr "Rilanciato per: "
 
 #: src/message-rendering-utils.lisp:215
 msgid "Date: "
@@ -272,7 +272,7 @@ msgstr "Messaggi"
 msgid "modeline"
 msgstr "modeline"
 
-#: src/modules.lisp:33
+#: src/modules.lisp:37
 #, lisp-format
 msgid ""
 "Unrecoverable error: file ~a not found in any of the directory ~a ~a ~a ~a"
@@ -316,7 +316,12 @@ msgstr "Scaricati nuovi messaggi per l'etichetta ~a."
 #: src/resources-utils.lisp:55
 #, lisp-format
 msgid "Unrecoverable error: cannot find ~s in either ~s or ~s."
-msgstr "Errore non rimediabile: non trovo ~s né in ~s né ~s."
+msgstr "Errore non rimediabile: non trovo il file ~s né in ~s né ~s."
+
+#: src/resources-utils.lisp:72
+#, lisp-format
+msgid "Unrecoverable error: cannot find file ~s."
+msgstr "Errore non rimediabile: non trovo il file ~s."
 
 #: src/sending-message.lisp:114
 msgid "none"
@@ -376,21 +381,21 @@ msgstr "Oggetto mancante"
 msgid "No message with index ~a exists."
 msgstr "Nessun messaggio esiste alla posizione ~a."
 
-#: src/thread-window.lisp:838 src/thread-window.lisp:872
+#: src/thread-window.lisp:852 src/thread-window.lisp:886
 #, lisp-format
 msgid "No next message that contains ~s exists."
 msgstr "Nessun messaggio successivo che contenga ~s esiste."
 
-#: src/thread-window.lisp:844 src/thread-window.lisp:878
+#: src/thread-window.lisp:858 src/thread-window.lisp:892
 #, lisp-format
 msgid "No previous message that contains ~s exists."
 msgstr "Nessun messaggio precedente che contenga ~s esiste."
 
-#: src/thread-window.lisp:894
+#: src/thread-window.lisp:908
 msgid "No others unread messages exist."
 msgstr "Non ci sono altri messaggi non letti."
 
-#: src/thread-window.lisp:905
+#: src/thread-window.lisp:919
 msgid "Threads"
 msgstr "Discussioni"
 

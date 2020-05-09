@@ -65,5 +65,12 @@
 (defun get-config-file (path)
   (get-resource-file +sys-conf-dir+ (home-confdir) path))
 
+(defun get-sys-config-file (path &optional (system-dir +sys-conf-dir+))
+  (let ((system-file (fs:cat-parent-dir system-dir path)))
+    (if (fs:file-exists-p system-file)
+        system-file
+        (let ((msg (_ "Unrecoverable error: cannot find file ~s.")))
+          (error (format nil msg system-file))))))
+
 (defun get-data-file (path)
   (get-resource-file +sys-data-dir+ (home-datadir) path))

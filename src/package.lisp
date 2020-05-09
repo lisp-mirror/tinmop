@@ -375,6 +375,7 @@
    :return-home-filename
    :return-system-filename
    :get-config-file
+   :get-sys-config-file
    :get-data-file))
 
 (defpackage :crypto-utils
@@ -1881,6 +1882,7 @@
    :ui-goodies)
   (:shadowing-import-from :resources-utils :init)
   (:export
+   :load-sys-module
    :load-module))
 
 (defpackage :scripts

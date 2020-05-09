@@ -17,6 +17,10 @@
 
 (in-package :modules)
 
+(defun load-sys-module (path)
+  (let ((file (get-sys-config-file path)))
+    (load file :verbose nil :print nil)))
+
 (defun load-module (path)
   (flet ((%load (file)
            (load file :verbose nil :print nil)))

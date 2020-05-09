@@ -29,7 +29,7 @@
 
 * Usage
 
-  Users of  Tinmop are expected  to interacts with the  social network
+  Users of  Tinmop supposed  to interacts with the  social network
   using  a terminal  interface (TUI),  The terminal  screen layout  is
   sketched below:
 
@@ -66,7 +66,7 @@
 
   - command window :: the window where the user instruct the software to perform commands
 
-  The only  way to interact  with the  program is using  the keyboard.
+  The main  way to interact  with the  program is using  the keyboard.
   There is  a contextual help  that appears  when the user  input data
   that provide hints  about commands and a quick help  window that can
   be  shown  by   hitting  ~?~  (if  this  keybinding   has  not  been
@@ -75,7 +75,7 @@
 ** Folders
 
    A  folder is  an  object  to groups  messages  for  each timeline  an
-   arbitrary number of folder can be  created, when the last message of
+   arbitrary number of folders can be  created, when the last message of
    a folder is deleted the folder is deleted as well.
 
 * Configuration
@@ -101,7 +101,7 @@
    #+BEGIN_SRC text
 
    # a file can be included in another with this directive:
-   use "default-theme.conf"
+   use "shared.conf"
 
    # a line starting with a '#' is a comment
    # The server instance name
@@ -122,14 +122,14 @@
 
    The file with this credential are confidential and must be put into
    user's       home       directory        under       the       path
-   ~/home/username/.local/share/tinmop/~.    Probably  the   directory
+   ~$HOME/.local/share/tinmop/main.conf~.    Probably  the   directory
    ~tinmop~ does not exists on user system, if it does not exists must
    be created manually.
 
    If the program  was installed correctly two other  files with simple
    semantics are  located in  your system wide  configuration directory
    (usually  ~/etc/tinmop/~),   please  check  these  files   for  more
-   information, as are extensively commented.
+   information, as they are extensively commented.
 
 ** Lisp program
 
@@ -149,9 +149,10 @@
 
    Again in  the configuration directory  there is a  (commented) file
    named  ~init.lisp~ that  user can  use as  their starting  point to
-   write their files.  A custom init  file (or other module files must
-   be located into the directory ~$HOME/.local/share/tinmop/~
-   to be successfully loaded.
+   write their files.  A custom init file, or other module files, must
+   be  located  into  the  directory  ~$HOME/.local/share/tinmop/~  or
+   ~$HOME/.config/tinmop/~ (because, you know,  data is code and code
+   is data) to be successfully loaded.
 
    However there is  no need to write  their own init file  if user is
    happy with the provided one by the package maintainers.
@@ -189,6 +190,29 @@
   [[https://notabug.org/cage/tinmop/][code repository]].
 
   See also the file CONTRIBUTE.org
+
+** Debug mode
+
+   If you decomment the line:
+
+   #+BEGIN_SRC lisp
+   ;;(push :debug-mode *features*)
+   #+END_SRC
+
+   The program will be compiled in ~debug-mode~ this means that a lot
+   of diagnostic output will be appended to a file named ~tinmop.log~
+   in the directory ~$HOME/.local/share/tinmop/~.
+
+* Files
+
+  - ~$HOME/.local/share/tinmop/db.sqlite3~: the program database
+  - ~$HOME/.local/share/tinmop/client~: the program credentials to connect with the instance *keep private!*
+  - ~$HOME/.local/share/tinmop/tinmop.log~: this file is created only for  debugging and should not be enabled in binary package distribution (see [[Contributing]]).
+  - ~/etc/tinmop/default-theme.conf~: default visual style
+  - ~/etc/tinmop/shared.conf~: some default configuration not related  to themes
+  - ~/etc/tinmop/init.lisp~: system wide configuration
+  - ~$HOME/.config/tinmop/init.lisp~: user configuration
+  - ~$HOME/.local/share/tinmop/main.conf~: user configuration (simple format)
 
 * Privacy
 
