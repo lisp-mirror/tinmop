@@ -153,8 +153,8 @@ be either `:keybinding' or `:string'.  the former for key command the latter for
     (when suggestions-win
       (calculate suggestions-win dt))))
 
-(defun draw-keybinding-mode (win)
-  "Draw window `win' accepting key commands"
+(defun draw-string-mode (win)
+  "Draw window `win' accepting strings"
   (with-accessors ((command-line   command-line)
                    (point-position point-position)
                    (point-bg       point-bg)
@@ -213,7 +213,7 @@ be either `:keybinding' or `:string'.  the former for key command the latter for
                      (print-text object commands-separator advance 0)
                      (incf advance (text-width commands-separator)))
                 (print-text object (last-elt command-line) advance 0)))
-            (draw-keybinding-mode object))))
+            (draw-string-mode object))))
     (win-refresh object)))
 
 (defgeneric enqueue-command (object command decode-key))
@@ -225,6 +225,8 @@ be either `:keybinding' or `:string'.  the former for key command the latter for
 (defgeneric add-error-message (object message))
 
 (defgeneric add-info-message (object message))
+
+(defgeneric remove-messages (object))
 
 (defun manage-command-event (command-window event)
   "Intercept UI events in keybindg mode"
@@ -279,8 +281,7 @@ be either `:keybinding' or `:string'.  the former for key command the latter for
                               (decode-key-event command)
                               command))
            (found-subtree (update-suggestions object key-decoded)))
-      (setf error-message nil)
-      (setf info-message  nil)
+      (remove-messages object)
       (cond
         ((null found-subtree)
          (let ((missing-command (format nil "~s" (lcat command-line
@@ -348,6 +349,11 @@ be either `:keybinding' or `:string'.  the former for key command the latter for
   (setf (info-message object) message)
   (draw object))
 
+(defmethod remove-messages ((object command-window))
+  "Remove info and error messages that this window holds"
+  (setf (info-message object) nil)
+  (setf (error-message object) nil))
+
 (defun move-suggestion-page (win offset)
   "Paginate win (suggestion window) by offset, will not go past the numer of pages."
   (with-accessors ((suggestions-win suggestions-win)) win
@@ -387,6 +393,8 @@ command line."
 (defun manage-string-event (command-window event)
   "Manage UI events when `command-window` is in string mode"
   (with-accessors ((command-line     command-line)
+                   (error-message    error-message)
+                   (info-message     info-message)
                    (prompt           prompt)
                    (history-position history-position)
                    (suggestions-win  suggestions-win)) command-window
@@ -398,6 +406,7 @@ command line."
            (insert-in-history (prompt command-line)
              (db:insert-in-history prompt command-line)
              (set-history-most-recent command-window prompt)))
+      (remove-messages command-window)
       (cond
         ((eq :control-left event)
          (move-suggestion-page-left command-window))

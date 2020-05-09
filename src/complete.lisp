@@ -74,28 +74,29 @@ to the appropriate home directory."
       string))
 
 (defun directory-complete (string)
-  "Return two values completion of 'string' (non nil if can be completed) and "
-  (declare (simple-string string))
-  (let* ((string  (tilde-expand-string string))
-         (dir     (pathname-directory-pathname string))
-         (namefun (if (relative-pathname-p string)
-                      #'namestring
-                      (lambda (x) (namestring (merge-pathnames x))))))
-    (unless (and (underlying-directory-p dir)
-                 (not (wild-pathname-p dir)))
-      (return-from directory-complete (values nil 0)))
-    (with-directory-iterator (next dir)
-      (when-let* ((all        (loop
-                                 for entry = (next)
-                                 while entry collect
-                                   (funcall namefun entry)))
-                  (re        (text-utils:strcat "^" string))
-                  (candidates (sort (remove-if-not (lambda (a) (cl-ppcre:scan re a))
-                                                   all)
-                                    (lambda (a b) (< (length a)
-                                                     (length b))))))
-        (values candidates
-                (reduce-to-common-prefix candidates))))))
+  "Return  two  values completion  of  'string'  (non  nil if  can  be
+completed) and the common prefix of the completion string."
+  (when (text-utils:string-not-empty-p string)
+    (let* ((string  (tilde-expand-string string))
+           (dir     (pathname-directory-pathname string))
+           (namefun (if (relative-pathname-p string)
+                        #'namestring
+                        (lambda (x) (namestring (merge-pathnames x))))))
+      (unless (and (underlying-directory-p dir)
+                   (not (wild-pathname-p dir)))
+        (return-from directory-complete (values nil 0)))
+      (with-directory-iterator (next dir)
+        (when-let* ((all        (loop
+                                   for entry = (next)
+                                   while entry collect
+                                     (funcall namefun entry)))
+                    (re        (text-utils:strcat "^" string))
+                    (candidates (sort (remove-if-not (lambda (a) (cl-ppcre:scan re a))
+                                                     all)
+                                      (lambda (a b) (< (length a)
+                                                       (length b))))))
+          (values candidates
+                  (reduce-to-common-prefix candidates)))))))
 
 (defun starts-with-clsr (hint)
   (lambda (a)

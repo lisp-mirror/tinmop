@@ -300,3 +300,7 @@ for their help when I started to develop this program.
 .PP
 There are more people i borrowed code and data from, they are mentioned
 in the file LINCENSES.org
+
+.PP
+This  program is  was  born also  with the  help  of CCCP: "Collettivo Computer
+Club Palermo".

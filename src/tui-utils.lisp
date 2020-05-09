@@ -26,15 +26,15 @@
 (defun make-croatoan-window (&rest keys)
   (apply #'make-instance
          'window
-         (append (list :stacked               t
+         (append (list :stacked               nil
                        :input-blocking        nil)
                  keys)))
 
 (defun make-blocking-croatoan-window (&rest keys)
   (apply #'make-instance
          'window
-         (append (list :stacked               t
-                       :input-blocking        t)
+         (append (list :stacked               nil
+                       :input-blocking          t)
                  keys)))
 
 (defun make-screen ()
@@ -50,7 +50,7 @@
                  :enable-colors                t
                  :use-terminal-colors        nil
                  :cursor-visible             nil
-                 :stacked                      t))
+                 :stacked                    nil))
 
 (defun make-tui-char (char
                       &key

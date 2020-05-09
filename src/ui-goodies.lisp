@@ -312,16 +312,21 @@ Metadata includes:
   (loop for win in windows-lose-focus when win do
        (setf (windows:in-focus win) nil))
   (windows:draw-all)
-  (info-message info-change-focus-message))
+  (when info-change-focus-message
+    (info-message info-change-focus-message)))
 
 (defmacro gen-focus-to-window (function-suffix window-get-focus
                                &key
                                  (info-change-focus-message (_ "Focus changed"))
                                  (windows-lose-focus nil)
                                  (documentation nil))
-  `(defun ,(misc:format-fn-symbol t "focus-to-~a" function-suffix) ()
+  `(defun ,(misc:format-fn-symbol t "focus-to-~a" function-suffix) (&key (print-message t))
      ,documentation
-     (give-focus ,window-get-focus , info-change-focus-message ,@windows-lose-focus)))
+     (give-focus ,window-get-focus
+                 (if print-message
+                     ,info-change-focus-message
+                     nil)
+                 ,@windows-lose-focus)))
 
 (gen-focus-to-window thread-window
                      specials:*thread-window*
@@ -608,18 +613,20 @@ and if fetch local (again, to server) statuses only."
 (defun attach-delete ()
   "Delete an attach"
   (line-oriented-window:selected-row-delete specials:*send-message-window*)
+  (win-clear specials:*send-message-window*)
   (draw specials:*send-message-window*))
 
 (defun attach-add ()
   "Add an attach"
   (flet ((on-add-attach (attach-path)
-           (when (string-not-empty-p attach-path)
-             (let ((add-event (make-instance 'send-message-add-attachment-event
-                                             :payload attach-path)))
-               (if (fs:file-exists-p attach-path)
-                   (push-event add-event)
-                   (error-message (format nil (_ "File ~s does not exists.") attach-path)))
-               (attach-add)))))
+           (if (string-not-empty-p attach-path)
+               (let ((add-event (make-instance 'send-message-add-attachment-event
+                                               :payload attach-path)))
+                 (if (fs:file-exists-p attach-path)
+                     (push-event add-event)
+                     (error-message (format nil (_ "File ~s does not exists.") attach-path)))
+                 (attach-add))
+               (info-message (_ "Message ready to be sent")))))
     (ask-string-input #'on-add-attach
                       :prompt      (_ "Add attachment: ")
                       :complete-fn #'complete:directory-complete)))

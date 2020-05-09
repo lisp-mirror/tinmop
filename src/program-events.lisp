@@ -509,7 +509,7 @@
 (defmethod process-event ((object open-send-message-window-event))
   (let ((message-data (payload object)))
     (sending-message:init message-data specials:*main-window*)
-    (ui:focus-to-send-message-window)
+    (ui:focus-to-send-message-window :print-message nil)
     (windows:draw specials:*send-message-window*)))
 
 (defclass send-message-add-attachment-event (program-event) ())
@@ -761,6 +761,13 @@
                    (key      key)) object
     (db:import-crypto-data (db:acct->id username)
                            key)))
+
+(defclass function-event (program-event) ())
+
+(defmethod process-event ((object function-event))
+  (with-accessors ((payload payload)) object
+    (assert (functionp payload))
+    (funcall payload)))
 
 ;;;; end events
 

@@ -567,17 +567,20 @@
    :q-dbg-print))
 
 (defpackage :stack
-  (:use :cl)
-  (:nicknames :st)
-  (:shadow :push :pop :find)
+  (:use
+   :cl
+   :alexandria)
   (:export
-   :*equal-function*
-   :*key-function*
-   :push
-   :pop
-   :find
-   :emptyp
-   :with-stack))
+   :stack
+   :stack-push
+   :stack-pop
+   :stack-find
+   :stack-empty-p
+   :stack-remove
+   :stack-position
+   :stack-raise-to-top
+   :stack-empty-p
+   :do-stack-element))
 
 (defpackage :db-utils
     (:use
@@ -1115,6 +1118,7 @@
    :delete-conversations-event
    :report-status-event
    :add-crypto-data-event
+   :function-event
    :dispatch-program-events))
 
 (defpackage :api-client
@@ -1197,12 +1201,14 @@
    :croatoan
    :config
    :constants
+   :stack
    :text-utils
    :misc
    :mtree
    :specials
    :tui-utils)
   (:shadowing-import-from :misc :random-elt :shuffle)
+  (:shadowing-import-from :stack :stack :stack-push :stack-pop :stack-empty-p)
   (:export
    :key-config-holder
    :key-config
@@ -1620,6 +1626,7 @@
    :prompt
    :add-error-message
    :add-info-message
+   :remove-messages
    :set-history-most-recent
    :manage-event
    :set-keybinding-mode

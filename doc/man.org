@@ -235,3 +235,6 @@
 
   There are more people i borrowed code and data from, they are mentioned
   in the file LINCENSES.org
+
+  This  program is  was  born also  with the  help  of CCCP: "Collettivo Computer
+  Club Palermo".

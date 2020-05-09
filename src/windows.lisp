@@ -72,6 +72,8 @@
     (refresh-config-color-map object key-config)
     (refresh-config-tree-rendering-values object key-config)))
 
+(defparameter *window-stack* (make-instance 'stack))
+
 (defclass wrapper-window (m-tree key-config-holder)
   ((croatoan-window
     :initform nil
@@ -84,6 +86,10 @@
     :accessor keybindings
     :documentation "The keymap associated to this window"))
   (:documentation "This is the parent of all the windows in this program"))
+
+(defmethod initialize-instance :after ((object wrapper-window) &key &allow-other-keys)
+  (stack-push *window-stack* object)
+  (win-show object))
 
 (defmethod print-object ((object wrapper-window) stream)
   (print-unreadable-object (object stream :type t :identity nil)))
@@ -120,11 +126,21 @@ height, position and so on)"
 
 (gen-simple-win->croatoan-specialized-wrapper refresh win)
 
-(gen-simple-win->croatoan-specialized-wrapper close   win)
-
-(gen-simple-win->croatoan-specialized-wrapper raise-to-top win)
+(gen-simple-win->croatoan-specialized-wrapper touch  win)
 
 (gen-simple-win->croatoan-specialized-wrapper select menu)
+
+(defun win-visible-p (win)
+  (with-croatoan-window (croatoan-window win)
+    (visiblep croatoan-window)))
+
+(defun win-close (window)
+  (with-croatoan-window (croatoan-window window)
+    (stack-remove *window-stack* window)
+    (close croatoan-window)))
+
+(defun win-raise-to-top (window)
+  (stack-raise-to-top *window-stack* window))
 
 (defun win-width-no-border (win)
   (- (win-width win)
@@ -290,25 +306,16 @@ height, position and so on)"
   t)
 
 (defun calculate-all (dt)
-  (refresh-stack)
-  (calculate *main-window*          dt)
-  (calculate *thread-window*        dt)
-  (calculate *message-window*       dt)
-  (calculate *command-window*       dt)
-  (calculate *send-message-window*  dt)
-  (calculate *tags-window*          dt)
-  (calculate *conversations-window* dt)
-  (calculate *open-attach-window*   dt))
+  (do-stack-element (window *window-stack*)
+    (when (win-visible-p window)
+      (win-touch window)
+      (mark-for-refresh (croatoan-window window)))
+    (calculate window dt))
+  (refresh-marked))
 
 (defun draw-all ()
-  (draw *main-window*)
-  (draw *thread-window*)
-  (draw *message-window*)
-  (draw *tags-window*)
-  (draw *conversations-window*)
-  (draw *command-window*)
-  (draw *send-message-window*)
-  (draw *open-attach-window*))
+  (do-stack-element (window *window-stack*)
+    (draw window)))
 
 (defun refresh-config-all ()
   (refresh-config *main-window*)

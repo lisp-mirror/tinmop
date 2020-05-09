@@ -16,30 +16,81 @@
 
 (in-package :stack)
 
-(defparameter *stack* (misc:make-array-frame 0))
+(defclass stack ()
+  ((container
+    :initform ()
+    :initarg  :container
+    :accessor container)
+   (test-fn
+    :initform #'eq
+    :initarg  :test-fn
+    :accessor test-fn)
+   (key-fn
+    :initform #'identity
+    :initarg  :key-fn
+    :accessor key-fn)))
 
-(defparameter *equal-function* #'equalp)
+(defmethod print-object ((object stack) stream)
+  (print-unreadable-object (object stream :type t :identity nil)
+    (format stream "~a" (container object))))
 
-(defparameter *key-function* #'identity)
+(defgeneric stack-push (object val))
 
-(defun push (val)
-  (vector-push-extend val *stack*))
+(defgeneric stack-pop (object))
 
-(defun pop ()
-  (if (not (emptyp))
-      (prog1
-          (alexandria:last-elt *stack*)
-        (setf *stack* (misc:safe-delete@ *stack* (1- (length *stack*)))))
-      nil))
+(defgeneric stack-remove (object val))
 
-(defun find (element)
-  (cl:find element *stack* :key *key-function* :test *equal-function*))
+(defgeneric stack-find (object val))
 
-(defun emptyp ()
-  (not (> (length *stack*) 0)))
+(defgeneric stack-position (object val))
 
-(defmacro with-stack ((equal key) &body body)
-  `(let ((*stack* (misc:make-array-frame 0))
-         (*equal-function* ,equal)
-         (*key-function* ,key))
-     ,@body))
+(defgeneric stack-raise-to-top (object val))
+
+(defgeneric stack-empty-p (object))
+
+(defmethod stack-push ((object stack) val)
+  (with-accessors ((container container)) object
+    (setf container (push val container))
+    object))
+
+(defmethod stack-pop ((object stack))
+  (with-accessors ((container container)) object
+    (if (not (stack-empty-p object))
+        (prog1
+            (alexandria:last-elt container)
+          (setf container (misc:safe-delete@ container (1- (length container)))))
+      nil)))
+
+(defmethod stack-find ((object stack) val)
+  (with-accessors ((container container)
+                   (key-fn    key-fn)
+                   (test-fn   test-fn)) object
+    (find val container :key key-fn :test test-fn)))
+
+(defmethod stack-position ((object stack) val)
+  (with-accessors ((container container)
+                   (key-fn    key-fn)
+                   (test-fn   test-fn)) object
+    (position val container :key key-fn :test test-fn)))
+
+(defmethod stack-empty-p ((object stack))
+  (not (> (length (container object))
+          0)))
+
+(defmethod stack-raise-to-top ((object stack) val)
+  (with-accessors ((container container)) object
+    (when-let ((val-position  (stack-position object val))
+               (last-position (1- (length container))))
+      (misc:swap (elt container val-position)
+                 (elt container 0)))
+    object))
+
+(defmethod stack-remove ((object stack) val)
+  (with-accessors ((container container)) object
+    (when-let ((val-position  (stack-position object val)))
+      (setf container (misc:safe-delete@ container val-position)))
+    object))
+
+(defmacro do-stack-element ((element stack) &body body)
+  `(loop for ,element in (reverse (container ,stack)) do
+        ,@body))
