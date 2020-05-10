@@ -958,15 +958,19 @@ and if fetch local (again, to server) statuses only."
            (add-new-name ()
              (flet ((on-add-new-name (new-name)
                       (db-utils:with-ready-database (:connect nil)
-                        (let ((event (make-instance 'change-conversation-name-event
-                                                    :old-name *conversation-old-name*
-                                                    :new-name new-name)))
+                        (let ((update-event (make-instance 'change-conversation-name-event
+                                                           :old-name *conversation-old-name*
+                                                           :new-name new-name))
+                              (refresh-event
+                               (make-instance 'refresh-conversations-window-event)))
                           (when (string-not-empty-p new-name)
                             (if (db:conversation-folder-exists-p new-name)
                                 (error-message (format nil
                                                        (_ "A conversation with name ~a already exists.")
                                                        new-name))
-                                (push-event event)))))))
+                                (progn
+                                  (push-event update-event)
+                                  (push-event refresh-event))))))))
                (ask-string-input #'on-add-new-name
                                  :prompt      (_ "New name: ")))))
     (add-old-name)))

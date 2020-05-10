@@ -272,6 +272,8 @@
 
 ;; conversations keymap
 
+(define-key "C-c c"     #'change-conversation-name                    *conversations-keymap*)
+
 (define-key "C-J"       #'goto-conversation                           *conversations-keymap*)
 
 (define-key "up"        #'conversation-go-up                          *conversations-keymap*)

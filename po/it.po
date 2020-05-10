@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: tinmop 0.0.1\n"
 "Report-Msgid-Bugs-To: https://notabug.org/cage/tinmop/\n"
 "POT-Creation-Date: 2020-05-09 21:15+0200\n"
-"PO-Revision-Date: 2020-05-09 21:16+0200\n"
+"PO-Revision-Date: 2020-05-10 19:18+0200\n"
 "Last-Translator: cage <cage@invalid.org>\n"
 "Language-Team: Italian\n"
 "Language: it\n"
@@ -710,7 +710,7 @@ msgstr "Ignorare la conversazione ~s? [s/N] "
 #: src/ui-goodies.lisp:998
 #, lisp-format
 msgid "Delete conversation ~s? [y/N] "
-msgstr "Ignorare la conversazione ~s? [s/N] "
+msgstr "Eliminare la conversazione ~s? [s/N] "
 
 #: src/ui-goodies.lisp:1017
 #, lisp-format
