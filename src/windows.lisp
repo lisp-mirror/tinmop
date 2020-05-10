@@ -319,7 +319,8 @@ height, position and so on)"
 
 (defun draw-all ()
   (do-stack-element (window *window-stack*)
-    (draw window)))
+    (when (win-visible-p window)
+      (draw window))))
 
 (defun refresh-config-all ()
   (refresh-config *main-window*)
