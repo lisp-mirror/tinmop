@@ -21,6 +21,7 @@ Table of Contents
 10. Contributing
 11. FAQ
 12. NO WARRANTY
+13. Acknowledgment
 
 
 
@@ -269,3 +270,19 @@ Table of Contents
 
 
 [http://www.gnu.org/licenses/] <http://www.gnu.org/licenses/>
+
+
+13 Acknowledgment
+═════════════════
+
+  My deep thanks to the folks that provided us with wonderful SBCL and
+  Common lisp libraries.
+
+  In particular i want to thanks the authors of the libraries Croatoan
+  and Tooter for their help when I started to develop this program.
+
+  There are more people i borrowed code and data from, they are
+  mentioned in the file LINCENSES.org
+
+  This program is was born also with the help of CCCP: "Collettivo
+  Computer Club Palermo".
