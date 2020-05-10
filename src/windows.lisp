@@ -128,7 +128,11 @@ height, position and so on)"
 
 (gen-simple-win->croatoan-specialized-wrapper touch  win)
 
-(gen-simple-win->croatoan-specialized-wrapper select menu)
+(defun menu-select (window)
+  (with-croatoan-window (croatoan-window window)
+    (prog1
+        (select croatoan-window)
+      (win-close window))))
 
 (defun win-visible-p (win)
   (with-croatoan-window (croatoan-window win)
@@ -441,6 +445,7 @@ list of strings (the text lines)."
                                 4))
          (message            (join-with-strings lines (format nil "~%")))
          (dialog-window      (make-instance 'dialog-window
+                                            :stacked              nil
                                             :center               t
                                             :message-text         message
                                             :input-blocking       t

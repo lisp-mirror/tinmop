@@ -170,11 +170,13 @@ authorizations was performed with success."
       (progn
         (copy-credentials-to-client)
         (tooter:authorize *client*)
-        (when (null (application-credentials))
-          (ui:error-dialog-immediate
-           (format nil
-                   (_ "Credential invalid. Try to remove ~a and restart the software to authenticate again.")
-                   (res:get-data-file +credentials-filename+)))))
+        (handler-case
+            (application-credentials)
+          (error ()
+            (ui:error-dialog-immediate
+             (format nil
+                     (_ "Credential invalid. Try to remove ~a and restart the software to authenticate again.")
+                     (res:get-data-file +credentials-filename+))))))
       (multiple-value-bind (server-socket server-port)
           (open-catch-code-socket)
         (setf *client* (make-default-client))
