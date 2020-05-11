@@ -66,3 +66,6 @@ $(CONF_PATH_FILE):
 	echo -e "\""$(VERSION)"\" :test #'string=)\n"           >> $(CONF_PATH_FILE);
 
 	cat  $(CONF_PATH_FILE).in | sed "\/^;;.*$\/d"           >> $(CONF_PATH_FILE);
+
+dist-hook:
+	rm -fv $(top_distdir)/$(CONF_PATH_FILE)
