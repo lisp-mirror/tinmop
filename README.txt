@@ -140,19 +140,29 @@ Table of Contents
      │ $ git clone https://github.com/Shinmera/tooter.git
      └────
 
-  5. build the executable:
+  5. clone in `$HOME/quicklisp/local-projects/' the latest version of
+     croatoan, a library to wrap the ncurses TUI library.
+
+     This step is temporary as this version will get into quicklisp
+     eventually.
+     ┌────
+     │ $ cd $HOME/quicklisp/local-projects/
+     │ $ git clone https://github.com/McParen/croatoan.git
+     └────
+
+  6. build the executable:
 
      ┌────
      │ $ make
      └────
 
-  6. install on your system:
+  7. install on your system:
 
      ┌────
      │ $ make install
      └────
 
-  7. run the software!
+  8. run the software!
 
      ┌────
      │ $ tinmop
