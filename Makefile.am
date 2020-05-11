@@ -28,7 +28,7 @@ CONF_PATH_FILE_IN = src/config.lisp.in
 BUILT_SOURCES  = $(CONF_PATH_FILE)
 
 EXTRA_DIST = config.rpath m4/ChangeLog  tinmop.asd README.org src LICENSES.org COPYING \
-             etc/shared.conf etc/default-theme.conf etc/init.lisp
+             etc/shared.conf etc/default-theme.conf etc/init.lisp compare_version.awk
 
 SUBDIRS    = po
 
