@@ -6360,8 +6360,10 @@ if test "$GAWK" = "no" ; then
    exit 1;
 fi
 
-# Extract the first word of "xdg-open", so it can be a program name with args.
-set dummy xdg-open; ac_word=$2
+for ac_prog in xdg-open open
+do
+  # Extract the first word of "$ac_prog", so it can be a program name with args.
+set dummy $ac_prog; ac_word=$2
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
 $as_echo_n "checking for $ac_word... " >&6; }
 if ${ac_cv_path_XDG_OPEN+:} false; then :
@@ -6387,7 +6389,6 @@ done
   done
 IFS=$as_save_IFS
 
-  test -z "$ac_cv_path_XDG_OPEN" && ac_cv_path_XDG_OPEN="no"
   ;;
 esac
 fi
@@ -6401,8 +6402,12 @@ $as_echo "no" >&6; }
 fi
 
 
+  test -n "$XDG_OPEN" && break
+done
+test -n "$XDG_OPEN" || XDG_OPEN="no"
 
-if test "$GAWK" = "no" ; then
+
+if test "$XDG_OPEN" = "no" ; then
    as_fn_error $? "Can not find xdg-open." "$LINENO" 5
    exit 1;
 fi

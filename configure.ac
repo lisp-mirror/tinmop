@@ -55,9 +55,9 @@ if test "$GAWK" = "no" ; then
    exit 1;
 fi
 
-AC_PATH_PROG([XDG_OPEN],[xdg-open],[no])
+AC_PATH_PROGS([XDG_OPEN],[xdg-open open],[no])
 
-if test "$GAWK" = "no" ; then
+if test "$XDG_OPEN" = "no" ; then
    AC_MSG_ERROR([Can not find xdg-open.])
    exit 1;
 fi
