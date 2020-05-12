@@ -397,9 +397,10 @@
                            +make-close+)))
 
 (defun make-ignored-status ()
-  (query-low-level (strcat (prepare-table +table-ignored-status+)
-                           " timeline TEXT NOT NULL, "
-                           " folder   TEXT NOT NULL, "
+  (query-low-level (strcat (prepare-table +table-ignored-status+ :autoincrementp t)
+                           " \"status-id\" TEXT NOT NULL, "
+                           " timeline      TEXT NOT NULL, "
+                           " folder        TEXT NOT NULL, "
                            ;; timestamp
                            " \"created-at\"       TEXT    NOT NULL"
                            +make-close+)))
@@ -410,7 +411,7 @@
   (create-table-index +table-followed-user+       '(:user-id))
   (create-table-index +table-attachment+          '(:id))
   (create-table-index +table-subscribed-tag+      '(:id))
-  (create-table-index +table-ignored-status+      '(:id))
+  (create-table-index +table-ignored-status+      '(:folder :timeline :status-id))
   (create-table-index +table-conversation+        '(:id))
   (create-table-index +table-cache+               '(:id :key)))
 
@@ -1874,9 +1875,9 @@ account that wrote the status identified by `status-id'"
 :status)"
   (query (select :*
            (from :ignored-status)
-           (where (:and (:= :id       status-id)
-                        (:= :folder   folder)
-                        (:= :timeline timeline))))))
+           (where (:and (:= :status-id status-id)
+                        (:= :folder    folder)
+                        (:= :timeline  timeline))))))
 
 (defmacro with-db-current-timestamp ((timestamp) &body body)
   `(let ((,timestamp (prepare-for-db (local-time-obj-now))))
@@ -1888,8 +1889,8 @@ account that wrote the status identified by `status-id'"
   (when (not (status-ignored-p status-id folder timeline))
     (with-db-current-timestamp (now)
       (query (make-insert +table-ignored-status+
-                          (:id       :folder :timeline :created-at)
-                          (status-id folder  timeline  now))))))
+                          (:status-id :folder :timeline :created-at)
+                          (status-id  folder  timeline  now))))))
 
 (defun add-to-followers (user-id)
   (with-db-current-timestamp (now)
