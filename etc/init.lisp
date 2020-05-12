@@ -31,6 +31,12 @@
                       ; user as inline help
   (ui:clean-close-program))
 
+;; this file can load others using the 'load-module' function the file
+;; in  looked  up in  the  home  (e.g.  $HOME/.config/tinmop/)  config
+;; directory or in the system wide config directory
+
+(load-module "next-previous-open.lisp")
+
 ;; keybindings syntax:
 
 ;; a command is executed after a sequence  of one or more keys.  a key
@@ -117,7 +123,7 @@
 
 ;; global keymap
 
-(define-key "C-q"       #'quit)  ; here we  are  calling the  custom
+(define-key "q"         #'quit)  ; here we  are  calling the  custom
                                  ; function defined above
 
 (define-key "?"         #'print-quick-help)
