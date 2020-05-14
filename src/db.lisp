@@ -529,12 +529,12 @@ to the corresponding id in table +table-account+"
 (defun user-exists-p (username)
   (acct->user username))
 
-(defun id->user (id)
+(defun user-id->user (id)
   (fetch-from-id :account id))
 
 (defun user-id->username (user-id)
   "username or acct are synonyms"
-  (when-let ((user (id->user user-id)))
+  (when-let ((user (user-id->user user-id)))
     (db-getf user :acct)))
 
 (defun insert-in-history (prompt input)

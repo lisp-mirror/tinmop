@@ -727,7 +727,7 @@
    :acct->id
    :username->id
    :user-exists-p
-   :id->user
+   :user-id->user
    :user-id->username
    :insert-in-history
    :previous-in-history
