@@ -474,13 +474,14 @@ and if fetch local (again, to server) statuses only."
     (multiple-value-bind (kind localp)
         (timeline->kind timeline)
       (flet ((update ()
-               (client:update-timeline timeline
-                                       kind
-                                       folder
-                                       :min-id max-id
-                                       :local  localp)
-               (let ((refresh-event  (make-instance 'refresh-thread-windows-event)))
-                 (push-event refresh-event))))
+               (with-notify-errors
+                 (client:update-timeline timeline
+                                         kind
+                                         folder
+                                         :min-id max-id
+                                         :local  localp)
+                 (let ((refresh-event  (make-instance 'refresh-thread-windows-event)))
+                   (push-event refresh-event)))))
         (notify-procedure #'update
                           (_ "Downloading messages.")
                           :ending-message (_ "Messages downloaded.")
@@ -496,13 +497,14 @@ Starting from the oldest toot and going back."
     (multiple-value-bind (kind localp)
         (timeline->kind timeline)
       (flet ((update ()
-               (client:update-timeline timeline
-                                       kind
-                                       folder
-                                       :max-id min-id
-                                       :local  localp)
-               (let ((refresh-event  (make-instance 'refresh-thread-windows-event)))
-                 (push-event refresh-event))))
+               (with-notify-errors
+                 (client:update-timeline timeline
+                                         kind
+                                         folder
+                                         :max-id min-id
+                                         :local  localp)
+                 (let ((refresh-event  (make-instance 'refresh-thread-windows-event)))
+                   (push-event refresh-event)))))
         (notify-procedure #'update
                           (_ "Downloading messages.")
                           :ending-message (_ "Messages downloaded.")

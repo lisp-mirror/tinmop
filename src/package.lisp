@@ -679,7 +679,8 @@
      :attribute-invisible
      :combine-attributes
      :colorize-line
-     :colorized-line->tui-string))
+     :colorized-line->tui-string
+     :with-notify-errors))
 
 (defpackage :db
   (:use

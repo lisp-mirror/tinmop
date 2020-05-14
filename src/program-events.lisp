@@ -33,15 +33,6 @@
   (incf *event-id*)
   *event-id*)
 
-(defmacro with-notify-errors (&body body)
-  `(handler-case
-       (progn
-         ,@body)
-     (error (e)
-       (ui:notify (format nil (_ "Error: ~a") e)
-                  :life     (* (swconf:config-notification-life) 5)
-                  :as-error t))))
-
 (defclass program-event ()
   ((event-id
     :initform (next-id)
@@ -461,25 +452,25 @@
 (defclass favourite-status-event (program-event event-with-message-index) ())
 
 (defmethod process-event ((object favourite-status-event))
-  (with-notify-errors
+  (tui:with-notify-errors
     (change-status-values object #'api-client:favourite-status)))
 
 (defclass unfavourite-status-event (program-event event-with-message-index) ())
 
 (defmethod process-event ((object unfavourite-status-event))
-  (with-notify-errors
+  (tui:with-notify-errors
     (change-status-values object #'api-client:unfavourite-status)))
 
 (defclass reblog-status-event (program-event event-with-message-index) ())
 
 (defmethod process-event ((object reblog-status-event))
-  (with-notify-errors
+  (tui:with-notify-errors
     (change-status-values object #'api-client:reblog-status)))
 
 (defclass unreblog-status-event (program-event event-with-message-index) ())
 
 (defmethod process-event ((object unreblog-status-event))
-  (with-notify-errors
+  (tui:with-notify-errors
     (change-status-values object #'api-client:unreblog-status)))
 
 (defclass unignore-user-event (program-event) ())
@@ -584,7 +575,7 @@
 (defclass open-follow-requests-window-event (program-event) ())
 
 (defmethod process-event ((object open-follow-requests-window-event))
-  (with-notify-errors
+  (tui:with-notify-errors
     (multiple-value-bind (accounts usernames)
         (api-client:follow-requests)
       (when accounts
@@ -662,7 +653,7 @@
 (defmethod process-event ((object update-conversations-event))
   (with-accessors ((new-timeline new-timeline)
                    (new-folder  new-folder)) object
-    (with-notify-errors
+    (tui:with-notify-errors
       (add-new-conversations)
       (let* ((all-conversations (db:all-conversations)))
         (loop for conversation in all-conversations do
@@ -716,7 +707,7 @@
               (folder        (line-oriented-window:normal-text selected-row))
               (id            (db:conversation-id fields))
               (refresh-event (make-instance 'refresh-conversations-window-event)))
-    (with-notify-errors
+    (tui:with-notify-errors
       (api-client:delete-conversation id)
       (db:delete-conversation folder))))
 
@@ -743,7 +734,7 @@
                    (account-id account-id)
                    (comment    comment)
                    (forwardp   forwardp)) object
-    (with-notify-errors
+    (tui:with-notify-errors
       (api-client:make-report account-id status-id comment forwardp))))
 
 (defclass add-crypto-data-event (program-event)

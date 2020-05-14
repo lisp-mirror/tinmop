@@ -467,3 +467,12 @@
   (print-unreadable-object (object stream :type t :identity nil)
     (loop for i across (complex-char-array object) do
          (print-debug i))))
+
+(defmacro with-notify-errors (&body body)
+  `(handler-case
+       (progn
+         ,@body)
+     (error (e)
+       (ui:notify (format nil (_ "Error: ~a") e)
+                  :life     (* (swconf:config-notification-life) 5)
+                  :as-error t))))
