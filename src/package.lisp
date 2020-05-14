@@ -1076,7 +1076,7 @@
    :user-input-string-event
    :notify-user-event
    :remove-notify-user-event
-   :update-timeline-event
+   :save-timeline-in-db-event
    :timeline-type
    :localp
    :min-id

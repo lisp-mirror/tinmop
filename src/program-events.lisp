@@ -254,7 +254,7 @@
   (let ((win (payload object)))
     (mtree:remove-child specials:*main-window* win)))
 
-(defclass update-timeline-event (program-event)
+(defclass save-timeline-in-db-event (program-event)
   ((timeline-type
    :initform nil
    :initarg  :timeline-type
@@ -273,7 +273,7 @@
    :initarg  :min-id
    :accessor min-id)))
 
-(defmethod process-event ((object update-timeline-event))
+(defmethod process-event ((object save-timeline-in-db-event))
   "Update a timeline, save messages, performs topological sorts"
   (let ((statuses      (payload       object))
         (timeline-type (timeline-type object))
@@ -651,7 +651,7 @@
 
 (defun fetch-conversations (message-root-id conversation-folder)
   (let* ((conversation-tree (api-client:expand-conversations-tree message-root-id))
-         (event             (make-instance 'update-timeline-event
+         (event             (make-instance 'save-timeline-in-db-event
                                            :payload       conversation-tree
                                            :timeline-type db:+default-converation-timeline+
                                            :folder        conversation-folder
