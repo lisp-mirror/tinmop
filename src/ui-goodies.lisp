@@ -503,7 +503,7 @@ Starting from the oldest toot and going back."
                                          folder
                                          :max-id min-id
                                          :local  localp)
-                 (let ((refresh-event  (make-instance 'refresh-thread-windows-event)))
+                 (let ((refresh-event (make-instance 'refresh-thread-windows-event)))
                    (push-event refresh-event)))))
         (notify-procedure #'update
                           (_ "Downloading messages.")
@@ -512,9 +512,10 @@ Starting from the oldest toot and going back."
 
 (defun refresh-tags ()
   "Update messages for subscribed tags"
-  (let ((all-tags (db:all-subscribed-tags-name)))
+  (let* ((all-tags        (db:all-subscribed-tags-name))
+         (all-paginations (db:all-tag-paginations-status all-tags)))
     (flet ((update ()
-             (client:update-subscribed-tags all-tags)
+             (client:update-subscribed-tags all-tags all-paginations)
              (let ((update-got-message-event
                     (make-instance 'tag-mark-got-messages-event))
                    (notify-event

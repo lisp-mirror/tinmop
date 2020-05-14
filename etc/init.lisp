@@ -274,9 +274,9 @@
 
 (define-key "C-J"       #'open-tag-folder                             *tags-keymap*)
 
-(define-key "C-X m u"   #'unsubscribe-to-hash                         *tags-keymap*)
+(define-key "U"         #'unsubscribe-to-hash                         *tags-keymap*)
 
-(define-key "C-t h r"   #'refresh-tags                                *tags-keymap*)
+(define-key "r"         #'refresh-tags                                *tags-keymap*)
 
 ;; conversations keymap
 

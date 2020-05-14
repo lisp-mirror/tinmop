@@ -422,6 +422,7 @@
   (create-table-index +table-attachment+          '(:id))
   (create-table-index +table-subscribed-tag+      '(:id))
   (create-table-index +table-ignored-status+      '(:folder :timeline :status-id))
+  (create-table-index +table-pagination-status+   '(:folder :timeline :status-id))
   (create-table-index +table-conversation+        '(:id))
   (create-table-index +table-cache+               '(:id :key)))
 
@@ -1996,6 +1997,17 @@ account that wrote the status identified by `status-id'"
   (if (tag-folder-name-p tag)
       tag
       (strcat +folder-tag-prefix+ tag)))
+
+(defun tag->paginations-status (tag timeline)
+  (let ((folder (tag->folder-name tag)))
+    (values (first-pagination-status-id-timeline-folder timeline folder)
+            (last-pagination-status-id-timeline-folder  timeline folder))))
+
+(defun all-tag-paginations-status (tags &optional (timeline +default-tag-timeline+))
+  (loop for tag in tags collect
+       (multiple-value-bind (oldest newest)
+           (tag->paginations-status tag timeline)
+         (list oldest newest))))
 
 (defun folder-name->tag (folder)
   "Strip the tag prefix (usually '#')  from tag name to get the folder

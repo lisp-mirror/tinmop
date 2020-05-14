@@ -355,6 +355,9 @@ authorizations was performed with success."
                                                      :folder        folder
                                                      :localp        nil
                                                      :min-id        min-id)))
+      (update-pagination-statuses-so-far timeline-statuses
+                                         db:+default-tag-timeline+
+                                         folder)
       (program-events:push-event save-timeline-in-db-event))))
 
 (defun tag-name (tag &key (return-empty-string-if-nil nil))
@@ -369,15 +372,18 @@ become an emty string (\"\")
             ""
             nil))))
 
-(defun-w-lock update-subscribed-tags (all-tags &key min-id (limit 20))
+(defun-w-lock update-subscribed-tags (all-tags all-paginations &key (limit 20))
     *client-lock*
   "Update all tage in the list `all-tags'"
-  (loop for tag in all-tags do
+  (loop
+     for tag    in all-tags
+     for max-id in (mapcar #'second all-paginations)
+     do
        (let ((tag-folder (db:tag->folder-name tag)))
          (update-timeline-tag tag
                               tag-folder
                               :limit  limit
-                              :min-id min-id))))
+                              :min-id max-id))))
 
 (defun-w-lock fetch-remote-status (status-id)
   *client-lock*

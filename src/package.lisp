@@ -824,6 +824,7 @@
    :unsubscribe-to-tag
    :tag->folder-name
    :folder-name->tag
+   :all-tag-paginations-status
    :all-subscribed-tags
    :all-subscribed-tags-name
    :tag-folder-name-p
