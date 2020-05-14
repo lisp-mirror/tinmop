@@ -470,7 +470,7 @@ and if fetch local (again, to server) statuses only."
   "Update current timeline"
   (let* ((timeline (thread-window:timeline-type specials:*thread-window*))
          (folder   (thread-window:timeline-folder specials:*thread-window*))
-         (max-id   (db:last-status-id-timeline-folder timeline folder)))
+         (max-id   (db:last-pagination-status-id-timeline-folder timeline folder)))
     (multiple-value-bind (kind localp)
         (timeline->kind timeline)
       (flet ((update ()
@@ -478,6 +478,28 @@ and if fetch local (again, to server) statuses only."
                                        kind
                                        folder
                                        :min-id max-id
+                                       :local  localp)
+               (let ((refresh-event  (make-instance 'refresh-thread-windows-event)))
+                 (push-event refresh-event))))
+        (notify-procedure #'update
+                          (_ "Downloading messages.")
+                          :ending-message (_ "Messages downloaded.")
+                          :life-start     (* (swconf:config-notification-life) 5))))))
+
+(defun update-current-timeline-backwards ()
+  "Update current timeline backwards
+
+Starting from the oldest toot and going back."
+  (let* ((timeline          (thread-window:timeline-type specials:*thread-window*))
+         (folder            (thread-window:timeline-folder specials:*thread-window*))
+         (min-id            (db:first-pagination-status-id-timeline-folder timeline folder)))
+    (multiple-value-bind (kind localp)
+        (timeline->kind timeline)
+      (flet ((update ()
+               (client:update-timeline timeline
+                                       kind
+                                       folder
+                                       :max-id min-id
                                        :local  localp)
                (let ((refresh-event  (make-instance 'refresh-thread-windows-event)))
                  (push-event refresh-event))))

@@ -762,6 +762,26 @@
     (db:import-crypto-data (db:acct->id username)
                            key)))
 
+(defclass add-pagination-status-event (program-event)
+  ((status-id
+    :initform nil
+    :initarg  :status-id
+    :accessor status-id)
+   (timeline
+    :initform nil
+    :initarg  :timeline
+    :accessor timeline)
+   (folder
+    :initform nil
+    :initarg  :folder
+    :accessor folder)))
+
+(defmethod process-event ((object add-pagination-status-event))
+  (with-accessors ((status-id status-id)
+                   (timeline  timeline)
+                   (folder    folder)) object
+    (db:add-to-pagination-status status-id folder timeline)))
+
 (defclass function-event (program-event) ())
 
 (defmethod process-event ((object function-event))

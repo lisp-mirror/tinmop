@@ -786,6 +786,12 @@
    :search-next-unread-message
    :last-message-index-status
    :last-status-id-timeline-folder
+   :first-status-id-timeline-folder
+   :last-ignored-status-id-timeline-folder
+   :first-ignored-status-id-timeline-folder
+   :last-pagination-status-id-timeline-folder
+   :first-pagination-status-id-timeline-folder
+   :add-to-pagination-status
    :count-status-marked-to-delete
    :delete-all-statuses-marked-deleted
    :tags-histogram-foreground
@@ -1119,7 +1125,10 @@
    :report-status-event
    :add-crypto-data-event
    :function-event
-   :dispatch-program-events))
+   :dispatch-program-events
+   :add-pagination-status-event
+   :status-id
+   :timeline))
 
 (defpackage :api-client
   (:use
@@ -1821,6 +1830,7 @@
    :change-folder
    :change-timeline
    :update-current-timeline
+   :update-current-timeline-backwards
    :refresh-tags
    :favourite-selected-status
    :unfavourite-selected-status

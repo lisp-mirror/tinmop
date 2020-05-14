@@ -89,6 +89,9 @@
 (define-constant +table-ignored-status+         :ignored-status
   :test #'eq)
 
+(define-constant +table-pagination-status+      :pagination-status
+  :test #'eq)
+
 (define-constant +table-followed-user+          :followed-user
   :test #'eq)
 
@@ -405,6 +408,13 @@
                            " \"created-at\"       TEXT    NOT NULL"
                            +make-close+)))
 
+(defun make-pagination-status ()
+  (query-low-level (strcat (prepare-table +table-pagination-status+ :autoincrementp t)
+                           " \"status-id\" TEXT NOT NULL, "
+                           " timeline      TEXT NOT NULL, "
+                           " folder        TEXT NOT NULL  "
+                           +make-close+)))
+
 (defun build-all-indices ()
   (create-table-index +table-status+              '(:folder :timeline :status-id))
   (create-table-index +table-account+             '(:id :acct))
@@ -455,6 +465,7 @@
     (make-subscribed-tag)
     (make-tag-histogram)
     (make-conversation)
+    (make-pagination-status)
     (build-all-indices)
     (fs:set-file-permissions (db-path) (logior fs:+s-irusr+ fs:+s-iwusr+))))
 
@@ -1697,12 +1708,42 @@ to  `timeline' ,  `folder'  and possibly  `account-id', older  than
     (when-let ((row (fetch-single query)))
       (second row))))
 
-(defun last-status-id-timeline-folder (timeline folder)
+(defun last-status-id-timeline-folder-table (timeline folder table)
   (let ((query (select ((:as (fields (:max :status-id)) :max))
-                 (from :status)
+                 (from table)
                  (where (:and (:= :timeline timeline)
                               (:= :folder   folder))))))
     (second (fetch-single query))))
+
+(defun first-status-id-timeline-folder-table (timeline folder table)
+  (let ((query (select ((:as (fields (:min :status-id)) :min))
+                 (from table)
+                 (where (:and (:= :timeline timeline)
+                              (:= :folder   folder))))))
+    (second (fetch-single query))))
+
+(defun last-status-id-timeline-folder (timeline folder)
+  (last-status-id-timeline-folder-table timeline folder :status))
+
+(defun first-status-id-timeline-folder (timeline folder)
+  (first-status-id-timeline-folder-table timeline folder :status))
+
+(defun last-ignored-status-id-timeline-folder (timeline folder)
+  (last-status-id-timeline-folder-table timeline folder :ignored-status))
+
+(defun first-ignored-status-id-timeline-folder (timeline folder)
+  (first-status-id-timeline-folder-table timeline folder :ignored-status))
+
+(defun last-pagination-status-id-timeline-folder (timeline folder)
+  (last-status-id-timeline-folder-table timeline folder :pagination-status))
+
+(defun first-pagination-status-id-timeline-folder (timeline folder)
+  (first-status-id-timeline-folder-table timeline folder :pagination-status))
+
+(defun add-to-pagination-status (status-id folder timeline)
+  (query (make-insert +table-pagination-status+
+                      (:status-id :folder :timeline)
+                      (status-id  folder  timeline))))
 
 (defun delete-status (timeline-type folder status-id)
   "delete status and connect its children with their grandparent"
