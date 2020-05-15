@@ -1,6 +1,1 @@
-2019-12-26  gettextize  <bug-gnu-gettext@gnu.org>
-
-	* Makefile.am (SUBDIRS): Add po.
-	(EXTRA_DIST): Add config.rpath, m4/ChangeLog.
-	* configure.ac (AC_CONFIG_FILES): Add po/Makefile.in.
-
+2020-05-15 initial release
