@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tinmop 0.0.1\n"
 "Report-Msgid-Bugs-To: https://notabug.org/cage/tinmop/\n"
-"POT-Creation-Date: 2020-05-14 20:30+0200\n"
+"POT-Creation-Date: 2020-05-15 16:44+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -750,6 +750,10 @@ msgstr ""
 #: src/ui-goodies.lisp:1125
 #, lisp-format
 msgid "Added key for user ~s: ~a"
+msgstr ""
+
+#: src/ui-goodies.lisp:1141
+msgid "About this software"
 msgstr ""
 
 #: src/windows.lisp:526 src/windows.lisp:582

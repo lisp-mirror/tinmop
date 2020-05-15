@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tinmop 0.0.1\n"
 "Report-Msgid-Bugs-To: https://notabug.org/cage/tinmop/\n"
-"POT-Creation-Date: 2020-05-14 20:30+0200\n"
-"PO-Revision-Date: 2020-05-10 19:18+0200\n"
+"POT-Creation-Date: 2020-05-15 16:44+0200\n"
+"PO-Revision-Date: 2020-05-15 16:51+0200\n"
 "Last-Translator: cage <cage@invalid.org>\n"
 "Language-Team: Italian\n"
 "Language: it\n"
@@ -764,6 +764,10 @@ msgstr "utente ~s chiave ~s"
 #, lisp-format
 msgid "Added key for user ~s: ~a"
 msgstr "Aggiunta chiave crittografica per l'utente ~s: ~a"
+
+#: src/ui-goodies.lisp:1141
+msgid "About this software"
+msgstr "Sul programma"
 
 #: src/windows.lisp:526 src/windows.lisp:582
 msgid "OK"
