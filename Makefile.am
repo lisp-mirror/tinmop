@@ -15,28 +15,32 @@
 # along with this program.
 # If not, see [[http://www.gnu.org/licenses/][http://www.gnu.org/licenses/]].
 
-ACLOCAL_AMFLAGS = -I m4
+ACLOCAL_AMFLAGS   = -I m4
 
-bin_SCRIPTS = tinmop
+bin_SCRIPTS       = $(PACKAGE)
 
-CLEANFILES = $(bin_SCRIPTS) $(CONF_PATH_FILE);
+CLEANFILES        = $(bin_SCRIPTS) $(CONF_PATH_FILE);
 
-CONF_PATH_FILE = src/config.lisp
+CONF_PATH_FILE    = src/config.lisp
 
 CONF_PATH_FILE_IN = src/config.lisp.in
 
-BUILT_SOURCES  = $(CONF_PATH_FILE)
+BUILT_SOURCES     = $(CONF_PATH_FILE)
 
-EXTRA_DIST = config.rpath m4/ChangeLog  tinmop.asd README.org src LICENSES.org COPYING \
-             etc/shared.conf etc/default-theme.conf etc/init.lisp compare_version.awk
+EXTRA_DIST        = config.rpath m4/ChangeLog  tinmop.asd README.org src \
+                    LICENSES.org COPYING etc/shared.conf etc/default-theme.conf \
+                    etc/init.lisp compare_version.awk
 
-SUBDIRS    = po
+SUBDIRS           = po
 
-dist_doc_DATA = README.org README.txt LICENSES.org CONTRIBUTING.org doc/man.org doc/send-toot.lisp
+dist_doc_DATA     = README.org README.txt LICENSES.org CONTRIBUTING.org \
+                    doc/man.org doc/send-toot.lisp
 
-nobase_dist_sysconf_DATA = etc/shared.conf etc/init.lisp etc/default-theme.conf
+confdir           = $(sysconfdir)/$(PACKAGE)
 
-dist_man1_MANS = doc/tinmop.man
+dist_conf_DATA    = etc/shared.conf etc/init.lisp etc/default-theme.conf
+
+dist_man1_MANS    = doc/tinmop.man
 
 $(PACKAGE): $(CONF_PATH_FILE)
 	$(LISP_COMPILER) \

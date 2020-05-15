@@ -688,7 +688,7 @@
    :alexandria
    :cl-ppcre
    :sxql
-   :sxql.composer
+   :sxql-composer
    :config
    :constants
    :db-utils
