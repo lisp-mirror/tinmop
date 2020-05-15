@@ -211,6 +211,8 @@
 
 (define-key "C-t U"     #'update-current-timeline-backwards           *thread-keymap*)
 
+(define-key "C-t R"     #'reset-timeline-pagination                   *thread-keymap*)
+
 (define-key "C-t h r"   #'refresh-tags                                *thread-keymap*)
 
 (define-key "C-X m t"   #'move-message-tree                           *thread-keymap*)

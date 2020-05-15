@@ -796,6 +796,7 @@
    :last-pagination-status-id-timeline-folder
    :first-pagination-status-id-timeline-folder
    :add-to-pagination-status
+   :remove-pagination-status
    :count-status-marked-to-delete
    :delete-all-statuses-marked-deleted
    :tags-histogram-foreground
@@ -1886,7 +1887,8 @@
    :crypto-import-key
    :crypto-export-key
    :crypto-generate-key
-   :show-about-window))
+   :show-about-window
+   :reset-timeline-pagination))
 
 (defpackage :modules
   (:use

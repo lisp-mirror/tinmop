@@ -1135,6 +1135,7 @@ Starting from the oldest toot and going back."
                       :complete-fn #'complete:username-complete)))
 
 (defun show-about-window ()
+  "Show an informative window about this program"
   (let ((lines (text-utils:split-lines +help-about-message+))
         (bg    (swconf:win-bg swconf:+key-help-dialog+))
         (fg    (swconf:win-fg swconf:+key-help-dialog+)))
@@ -1144,3 +1145,13 @@ Starting from the oldest toot and going back."
                                           lines
                                           bg
                                           fg)))
+(defun reset-timeline-pagination ()
+  "Removes the pagination data for current timeline and folder
+
+For each timeline the software keep tracks of the oldest and newes toot fetched from the instance, This way we can expand the messages thread from the point we left after the latest update.
+
+This command will remove those limits so that we can just jump to the last messages posted on the instance and start expanding toots from there."
+  (let* ((timeline (thread-window:timeline-type specials:*thread-window*))
+         (folder   (thread-window:timeline-folder specials:*thread-window*)))
+    (with-blocking-notify-procedure ((_ "Clearing pagination data"))
+      (db:remove-pagination-status folder timeline))))

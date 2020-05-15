@@ -1755,6 +1755,13 @@ to  `timeline' ,  `folder'  and possibly  `account-id', older  than
                       (:status-id :folder :timeline)
                       (status-id  folder  timeline))))
 
+(defun remove-pagination-status (folder timeline)
+  "Removes  all  the pagination  data  (i.e.  all columns  from  table
+:pagination-data) matching `folder' and `timeline'"
+  (query (make-delete +table-pagination-status+
+                      (:and (:= :folder   folder)
+                            (:= :timeline timeline)))))
+
 (defun delete-status (timeline-type folder status-id)
   "delete status and connect its children with their grandparent"
   (let* ((status           (find-status-id-folder-timeline status-id
