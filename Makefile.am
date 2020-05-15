@@ -17,7 +17,7 @@
 
 ACLOCAL_AMFLAGS   = -I m4
 
-bin_SCRIPTS       = $(PACKAGE)
+bin_SCRIPTS       = tinmop
 
 CLEANFILES        = $(bin_SCRIPTS) $(CONF_PATH_FILE);
 
