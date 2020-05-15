@@ -745,6 +745,7 @@
    :message-from-timeline-folder-message-index
    :message-index->tree
    :find-status-id
+   :find-message-id
    :data-id
    :row-id
    :row-message-visibility

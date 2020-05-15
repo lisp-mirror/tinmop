@@ -1117,6 +1117,15 @@ identifier despite the name."
                   (from :status)
                   (where (:= :status-id status-id)))))
 
+(defun find-message-id (status-id)
+  "Find a message  (status with other columns like acct)  by id, notes
+that status id is not a unique identifier despite the name."
+  (fetch-single (make-filtered-message-select nil
+                                              nil
+                                              nil
+                                              nil
+                                              `(:= :status-id ,status-id))))
+
 (defun find-status-id-folder-timeline (status-id folder timeline)
   "Fetch a single message identified by `status-id', `folder' and `timeline'.
 

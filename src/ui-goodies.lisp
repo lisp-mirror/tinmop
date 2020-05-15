@@ -753,16 +753,18 @@ Starting from the oldest toot and going back."
                ;; timeline here as  the id in unique  identifier for a
                ;; single message *content*  regardless of the position
                ;; in db (folder, timeline).
-               (when-let* ((message      (db:find-status-id reply-id))
-                           (quoted-text  (db:row-message-rendered-text message))
-                           (lines        (split-lines quoted-text))
-                           (quote-mark   (swconf:quote-char))
-                           (quoted-lines (mapcar (lambda (a) (strcat quote-mark a))
-                                                 lines)))
+               (when-let* ((message        (db:find-message-id reply-id))
+                           (reply-username (db:row-message-username message))
+                           (quoted-text    (db:row-message-rendered-text message))
+                           (lines          (split-lines quoted-text))
+                           (quote-mark     (swconf:quote-char))
+                           (quoted-lines   (mapcar (lambda (a) (strcat quote-mark a))
+                                                   lines)))
                  (with-open-file (stream file
                                          :if-exists    :append
                                          :direction    :output
                                          :element-type 'character)
+                   (format stream "~a~%" (msg-utils:add-mention-prefix reply-username))
                    (loop for line in quoted-lines do
                         (format stream "~a~%" line))))))
            (add-body ()
