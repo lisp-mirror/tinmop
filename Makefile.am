@@ -69,6 +69,8 @@ $(CONF_PATH_FILE):
 	echo "(alexandria:define-constant +program-version+"    >> $(CONF_PATH_FILE);
 	echo -e "\""$(VERSION)"\" :test #'string=)\n"           >> $(CONF_PATH_FILE);
 
+	echo "(alexandria:define-constant +issue-tracker+"      >> $(CONF_PATH_FILE);
+	echo -e "\""$(PACKAGE_BUGREPORT)"\" :test #'string=)\n" >> $(CONF_PATH_FILE);
 	cat  $(CONF_PATH_FILE).in | sed "\/^;;.*$\/d"           >> $(CONF_PATH_FILE);
 
 dist-hook:

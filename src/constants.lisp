@@ -16,8 +16,9 @@
 
 (in-package :constants)
 
-(define-constant +help-about-message-template+
-    "~a
+(define-constant +help-about-message+
+    (format nil
+            "~a
  Copyright (C) 2019  cage
 
  This program is free software:  you can redistribute it and/or modify
@@ -31,7 +32,13 @@
  General Public License for more details.
 
  You should have received a copy of the GNU General Public License
- along with this program.                       "
+ along with this program.
+
+ For bug report please point your browser to:
+
+ ~a"
+            +program-name+
+            +issue-tracker+)
   :test #'string=)
 
 (define-constant +http-code-ok+               200             :test #'=)

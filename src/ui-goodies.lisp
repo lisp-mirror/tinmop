@@ -1131,3 +1131,14 @@ Starting from the oldest toot and going back."
     (ask-string-input #'on-add-username
                       :prompt      (_ "Username: ")
                       :complete-fn #'complete:username-complete)))
+
+(defun show-about-window ()
+  (let ((lines (text-utils:split-lines +help-about-message+))
+        (bg    (swconf:win-bg swconf:+key-help-dialog+))
+        (fg    (swconf:win-fg swconf:+key-help-dialog+)))
+    (windows:make-blocking-message-dialog specials:*main-window*
+                                          nil
+                                          (_ "About this software")
+                                          lines
+                                          bg
+                                          fg)))

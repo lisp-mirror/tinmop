@@ -23,15 +23,17 @@
    :+text-domain+
    :+program-name+
    :+program-version+
+   :+issue-tracker+
    :+home-data-dir+
    :_
    :n_))
 
 (defpackage :constants
   (:use :cl
-        :alexandria)
+        :alexandria
+        :config)
   (:export
-   :+help-about-message-template+
+   :+help-about-message+
    :+http-code-ok+
    :+mime-type-jpg+
    :+mime-type-png+
@@ -1882,7 +1884,8 @@
    :report-status
    :crypto-import-key
    :crypto-export-key
-   :crypto-generate-key))
+   :crypto-generate-key
+   :show-about-window))
 
 (defpackage :modules
   (:use
