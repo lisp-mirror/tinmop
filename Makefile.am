@@ -55,7 +55,7 @@ $(CONF_PATH_FILE):
 	echo -e "\""$(pkgdatadir)"/data/\" :test #'string=)\n"  >> $(CONF_PATH_FILE);
 
 	echo "(alexandria:define-constant +sys-conf-dir+"       >> $(CONF_PATH_FILE);
-	echo -e  "\"$(sysconfdir)\" :test #'string=)\n"         >> $(CONF_PATH_FILE);
+	echo -e  "\"$(confdir)\" :test #'string=)\n"            >> $(CONF_PATH_FILE);
 
 	echo "(alexandria:define-constant +catalog-dir+"        >> $(CONF_PATH_FILE);
 	echo -e "\""$(localedir)"\" :test #'string=)\n"         >> $(CONF_PATH_FILE);
