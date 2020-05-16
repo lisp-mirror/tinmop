@@ -78,6 +78,8 @@
 
 (define-constant +conf-filename+         "main.conf"             :test #'string=)
 
+(define-constant +shared-conf-filename+  "shared.conf"           :test #'string=)
+
 (define-constant +field-separator-value+ "."                     :test #'string=)
 
 (define-constant +field-separator+       :field-separator        :test #'eq)

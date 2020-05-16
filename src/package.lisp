@@ -900,6 +900,8 @@
   (:nicknames :swconf)
   (:shadowing-import-from :misc :random-elt :shuffle)
   (:export
+   :+conf-filename+
+   :+shared-conf-filename+
    :+key-background+
    :+key-foreground+
    :+key-width+

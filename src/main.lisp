@@ -81,10 +81,14 @@ etc.) happened"
                                        :new-timeline command-line:*start-timeline*)))
     (program-events:push-event refresh-event)))
 
+(defun load-configuration-files ()
+  (swconf:load-config-file swconf:+shared-conf-filename+)
+  (swconf:load-config-file swconf:+conf-filename+))
+
 (defun init ()
   "Initialize the program"
   (res:init)
-  (swconf:load-config-file)
+  (load-configuration-files)
   (init-db)
   (db-utils:with-ready-database (:connect nil)
     (modules:load-module +starting-init-file+)
@@ -129,7 +133,7 @@ etc.) happened"
 (defun load-script-file ()
   "Load (exexute) a lisp file used in requests of a command line switch"
   (setf program-events:*process-events-immediately* t)
-  (swconf:load-config-file)
+  (load-configuration-files)
   (init-db)
   (db-utils:with-ready-database (:connect nil)
     (client:init)
