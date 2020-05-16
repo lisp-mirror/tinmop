@@ -212,7 +212,7 @@
   - ~/etc/tinmop/shared.conf~: some default configuration not related  to themes
   - ~/etc/tinmop/init.lisp~: system wide configuration
   - ~$HOME/.config/tinmop/init.lisp~: user configuration
-  - ~$HOME/.local/share/tinmop/main.conf~: user configuration (simple format)
+  - ~$HOME/.config/tinmop/main.conf~: user configuration (simple format)
 
 * Privacy
 

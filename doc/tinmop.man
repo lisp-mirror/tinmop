@@ -274,7 +274,7 @@ in the directory \fC$HOME/.local/share/tinmop/\fP.
 .IP \(em 4
 \fC$HOME/.config/tinmop/init.lisp\fP: user configuration
 .IP \(em 4
-\fC$HOME/.local/share/tinmop/main.conf\fP: user configuration (simple format)
+\fC$HOME/.config/tinmop/main.conf\fP: user configuration (simple format)
 
 .SH "Privacy"
 .PP

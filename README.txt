@@ -20,8 +20,9 @@ Table of Contents
 9. Privacy
 10. Contributing
 11. FAQ
-12. NO WARRANTY
-13. Acknowledgment
+12. FAQ
+13. NO WARRANTY
+14. Acknowledgment
 
 
 
@@ -45,8 +46,8 @@ Table of Contents
   • tree structure of messages;
   • subscriptions of hashtag;
   • encrypted direct message (but see 11);
-  • no mentions notification, no knowlege of when or who favourited your
-    status;
+  • no mentions notification, no knowledge of when or who favourited
+    your status;
   • No blocking or muting, the client can be configured to ignore a list
     of accounts.
 
@@ -220,10 +221,16 @@ Table of Contents
 9 Privacy
 ═════════
 
-  This software does collect nothing from its users in places different
-  from their local computer.
+  The author of this software collect no user data informations.
 
-  But launching `quick_quicklisp.sh' will contact
+  But this software is a client to connect and interact to one or more
+  remote computer.  So potentially it could share a lot of informations
+  with other actors but just after the user allowed it to do so.
+
+  It is the user reponsability to checks the privacy conditions of the
+  instance this software connect to.
+
+  Moreover launching `quick_quicklisp.sh' will contact
   <https://www.quicklisp.org/>, check the [quicklisp sources] for
   details.
 
@@ -248,9 +255,45 @@ Table of Contents
 11 FAQ
 ══════
 
-  • are the encrypted messages secure?
 
-    No. First only a symmetric encryption scheme is implemented (so
+12 FAQ
+══════
+
+  • I just tried to start the program for the first time but it give me
+    a weird error, what's wrong?
+
+    Did you wrote a configuration file?
+
+    Tinmop expects a configuration file in your config directory
+    (usually `$HOME/.config/tinmop/').  This file must contains at least
+    the username and the name of the instance you want to connect. If
+    this file does not exists or is invalid tinmop will refuse to start.
+
+    Please check the man page (tinmop(1)) for more information.
+
+  • OK the program is running but how can i use it?
+
+    Press the key `?' to get a list of the available keys available.
+
+  • Tinmop crashed! Where can i report that?
+
+    The issue tracker is here:
+
+    <https://notabug.org/tinmop/issues/>
+
+    Please also, if possible, send the backtrace of the process. To
+    print a backtrace just write `backtrace' when the debugger has been
+    invoked.
+
+    *Important note*
+
+    The backtrace can contains sensitive and personal information,
+    please always *carefully checks* the backtrace contents before
+    making this information public!
+
+  • Are the encrypted messages secure?
+
+    *No*. First only a symmetric encryption scheme is implemented (so
     there is a problem of secure key exchanging). Moreover i am not a
     crypto expert and probably i made something wrong. Note that i am
     not claiming that the algorithm (AES256) or the implementation of
@@ -260,7 +303,7 @@ Table of Contents
     So, please do not consider the encrypted message secure at all.
 
 
-12 NO WARRANTY
+13 NO WARRANTY
 ══════════════
 
   tinmop: an humble mastodon client Copyright (C) 2020 cage
@@ -282,7 +325,7 @@ Table of Contents
 [http://www.gnu.org/licenses/] <http://www.gnu.org/licenses/>
 
 
-13 Acknowledgment
+14 Acknowledgment
 ═════════════════
 
   My deep thanks to the folks that provided us with wonderful SBCL and
