@@ -8,6 +8,7 @@ Table of Contents
 
 1. Introduction
 2. Peculiar Features
+.. 1. Important note
 3. Dependency
 .. 1. Programs
 .. 2. Lisp Libraries
@@ -50,6 +51,14 @@ Table of Contents
     your status;
   • No blocking or muting, the client can be configured to ignore a list
     of accounts.
+
+
+2.1 Important note
+──────────────────
+
+  This is alpha quality software, many things are broken, some feature
+  are missing some works with unintended/unexpected side effects; this
+  software is for testing only and remember that there is 13.
 
 
 3 Dependency

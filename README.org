@@ -22,6 +22,13 @@
   - No blocking or muting, the client can be configured to ignore
     a list of accounts.
 
+** Important note
+
+   This  is  alpha quality  software,  many  things are  broken,  some
+   feature  are missing  some  works  with unintended/unexpected  side
+   effects; this software is for  testing only and remember that there
+   is [[NO WARRANTY]].
+
 * Dependency
 
 ** Programs
