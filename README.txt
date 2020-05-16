@@ -339,3 +339,5 @@ Table of Contents
 
   This program is was born also with the help of CCCP: "Collettivo
   Computer Club Palermo".
+
+  Also thanks to "barbar" for testing of the installation scripts.
