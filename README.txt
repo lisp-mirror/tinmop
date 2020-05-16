@@ -21,9 +21,8 @@ Table of Contents
 9. Privacy
 10. Contributing
 11. FAQ
-12. FAQ
-13. NO WARRANTY
-14. Acknowledgment
+12. NO WARRANTY
+13. Acknowledgment
 
 
 
@@ -58,7 +57,10 @@ Table of Contents
 
   This is alpha quality software, many things are broken, some feature
   are missing some works with unintended/unexpected side effects; this
-  software is for testing only and remember that there is 13.
+  software is for testing only and remember that there is [NO WARRANTY].
+
+
+[NO WARRANTY] See section 12
 
 
 3 Dependency
@@ -264,10 +266,6 @@ Table of Contents
 11 FAQ
 ══════
 
-
-12 FAQ
-══════
-
   • I just tried to start the program for the first time but it give me
     a weird error, what's wrong?
 
@@ -312,7 +310,7 @@ Table of Contents
     So, please do not consider the encrypted message secure at all.
 
 
-13 NO WARRANTY
+12 NO WARRANTY
 ══════════════
 
   tinmop: an humble mastodon client Copyright (C) 2020 cage
@@ -334,7 +332,7 @@ Table of Contents
 [http://www.gnu.org/licenses/] <http://www.gnu.org/licenses/>
 
 
-14 Acknowledgment
+13 Acknowledgment
 ═════════════════
 
   My deep thanks to the folks that provided us with wonderful SBCL and

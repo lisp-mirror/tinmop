@@ -27,7 +27,7 @@
    This  is  alpha quality  software,  many  things are  broken,  some
    feature  are missing  some  works  with unintended/unexpected  side
    effects; this software is for  testing only and remember that there
-   is [[NO WARRANTY]].
+   is [[NO WARRANTY][NO WARRANTY]].
 
 * Dependency
 
@@ -196,8 +196,6 @@
   [[https://notabug.org/cage/tinmop/pulls][pull request]].
 
   But, please take a minute to read the file [[./CONTRIBUTING.org]]
-
-* FAQ
 
 * FAQ
 
