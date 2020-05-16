@@ -45,6 +45,7 @@ Table of Contents
 
   • tree structure of messages;
   • subscriptions of hashtag;
+  • programmable and extensible;
   • encrypted direct message (but see 11);
   • no mentions notification, no knowledge of when or who favourited
     your status;
@@ -232,13 +233,14 @@ Table of Contents
 9 Privacy
 ═════════
 
-  The author of this software collect no user data informations.
+  The author of this software collects no user data information with
+  this software.
 
   But this software is a client to connect and interact to one or more
-  remote computer.  So potentially it could share a lot of informations
+  remote computer.  So potentially it could share a lot of information
   with other actors but just after the user allowed it to do so.
 
-  It is the user reponsability to checks the privacy conditions of the
+  It is the user responsibility to checks the privacy conditions of the
   instance this software connect to.
 
   Moreover launching `quick_quicklisp.sh' will contact
