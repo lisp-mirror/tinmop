@@ -186,10 +186,14 @@ authorizations was performed with success."
             (tooter:authorize *client*)
           (declare (ignore a))
           (let* ((dialog-msg (authorize-dialog-message))
-                 (save-item  (_ "Save address"))
-                 (open-item  (_ "Open address"))
+                 (save-item   (_ "Save address"))
+                 (open-item   (_ "Open address"))
+                 (cancel-item (_ "Cancel"))
                  (choosen    (ui:info-dialog-immediate (format nil "~a~%~a" dialog-msg url)
-                                                       :buttons (list save-item open-item))))
+                                                       :buttons (list save-item
+                                                                      open-item
+                                                                      cancel-item)
+                                                       :append-ok-button nil)))
             (labels ((on-got-authorization-code (value)
                        (handler-case
                            (progn

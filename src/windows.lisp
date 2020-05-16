@@ -436,11 +436,15 @@ list of strings (the text lines)."
     (get-char low-level-window)
     (win-close window)))
 
-(defun make-dialog (parent title message color-pair &optional (buttons nil))
+(defun make-dialog (parent title message color-pair
+                    &optional (buttons nil)
+                      (append-ok-button t))
   (let* ((lines              (text-utils:split-lines message))
          (max-line-size      (text-utils:find-max-line-length lines))
-         (actual-buttons     (append (list +menu-button-ok+)
-                                     buttons))
+         (actual-buttons     (if append-ok-button
+                                 (append (list +menu-button-ok+)
+                                         buttons)
+                                 buttons))
          (max-button-size    (text-utils:find-max-line-length actual-buttons))
          (max-message-height (- (win-height-no-border parent)
                                 4))
@@ -468,15 +472,21 @@ list of strings (the text lines)."
     (make-instance 'wrapper-window
                    :croatoan-window dialog-window)))
 
-(defun make-error-message-dialog (parent title message &optional (buttons nil))
+(defun make-error-message-dialog (parent title message
+                                  &optional
+                                    (buttons nil)
+                                    (append-ok-button t))
   (let ((bg (swconf:win-bg swconf:+key-error-dialog+))
         (fg (swconf:win-fg swconf:+key-error-dialog+)))
-    (make-dialog parent title message (list fg bg) buttons)))
+    (make-dialog parent title message (list fg bg) buttons append-ok-button)))
 
-(defun make-info-message-dialog (parent title message &optional (buttons nil))
+(defun make-info-message-dialog (parent title message
+                                 &optional
+                                   (buttons nil)
+                                   (append-ok-button t))
   (let ((bg (swconf:win-bg swconf:+key-info-dialog+))
         (fg (swconf:win-fg swconf:+key-info-dialog+)))
-    (make-dialog parent title message (list fg bg) buttons)))
+    (make-dialog parent title message (list fg bg) buttons append-ok-button)))
 
 (defun make-simple-style (foreground          background
                           selected-foreground selected-background)

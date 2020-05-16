@@ -85,18 +85,28 @@
                               :payload message)))
     (push-event event)))
 
-(defun info-dialog-immediate (message &key (buttons nil) (title (_ "Information")))
+(defun info-dialog-immediate (message
+                              &key
+                                (buttons nil)
+                                (title (_ "Information"))
+                                (append-ok-button t))
   (let ((dialog-window (windows:make-info-message-dialog specials:*main-window*
                                                          title
                                                          message
-                                                         buttons)))
+                                                         buttons
+                                                         append-ok-button)))
     (windows:menu-select dialog-window)))
 
-(defun error-dialog-immediate (message &key (buttons nil) (title (_ "Error")))
+(defun error-dialog-immediate (message
+                               &key
+                                 (buttons nil)
+                                 (title (_ "Error"))
+                                 (append-ok-button t))
   (let ((dialog-window (windows:make-error-message-dialog specials:*main-window*
                                                          title
                                                          message
-                                                         buttons)))
+                                                         buttons
+                                                         append-ok-button)))
     (windows:menu-select dialog-window)))
 
 (defun input-dialog-immediate (message)

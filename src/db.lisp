@@ -1881,7 +1881,7 @@ to  `timeline' ,  `folder'  and possibly  `account-id', older  than
   "Ignore  or  unignore  the  future   statuses  authored  by  the  user
 identified  by  the  account  that  wrote  the  status  identified  by
 `status-id'"
-  (when-let* ((status     (fetch-from-id :status status-id))
+  (when-let* ((status     (find-status-id status-id))
               (account-id (db-getf status :account-id)))
     (query (make-update :account
                         (:ignoredp)
