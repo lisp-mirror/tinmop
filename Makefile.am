@@ -38,7 +38,8 @@ dist_doc_DATA     = README.org README.txt LICENSES.org CONTRIBUTING.org \
 
 confdir           = $(sysconfdir)/$(PACKAGE)
 
-dist_conf_DATA    = etc/shared.conf etc/init.lisp etc/default-theme.conf
+dist_conf_DATA    = etc/init.lisp etc/next-previous-open.lisp \
+                    etc/default-theme.conf etc/shared.conf
 
 dist_man1_MANS    = doc/tinmop.man
 

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tinmop 0.0.1\n"
 "Report-Msgid-Bugs-To: https://notabug.org/cage/tinmop/\n"
-"POT-Creation-Date: 2020-05-15 16:44+0200\n"
+"POT-Creation-Date: 2020-05-16 14:00+0200\n"
 "PO-Revision-Date: 2020-05-15 16:51+0200\n"
 "Last-Translator: cage <cage@invalid.org>\n"
 "Language-Team: Italian\n"
@@ -118,7 +118,7 @@ msgstr "SCRIPT-FILE"
 msgid "Error: command ~a not found"
 msgstr "Errore: comando ~a non trovato"
 
-#: src/conditions.lisp:67 src/conditions.lisp:71 src/db.lisp:2184
+#: src/conditions.lisp:67 src/conditions.lisp:71 src/db.lisp:2200
 #: src/message-rendering-utils.lisp:132 src/message-rendering-utils.lisp:166
 #: src/message-rendering-utils.lisp:171
 msgid "unknown"
@@ -334,7 +334,7 @@ msgstr "Oggetto del messaggio: "
 msgid "Visibility:"
 msgstr "Visibilità:"
 
-#: src/software-configuration.lisp:415
+#: src/software-configuration.lisp:422
 msgid "This message was crypted."
 msgstr "Questo messaggion era cifrato."
 
@@ -636,138 +636,142 @@ msgstr[1] "Il tuo messaggio e più lungo del limite ammesso di ~a caratteri."
 msgid "Add subject: "
 msgstr "Oggetto del messaggio: "
 
-#: src/ui-goodies.lisp:803
+#: src/ui-goodies.lisp:805
 #, lisp-format
 msgid "The maximum allowed number of media is ~a."
 msgstr "Il numero massimo di file da allegare è ~a."
 
-#: src/ui-goodies.lisp:806
+#: src/ui-goodies.lisp:808
 msgid "Sending message"
 msgstr "Spedisco il messaggio"
 
-#: src/ui-goodies.lisp:855
+#: src/ui-goodies.lisp:857
 msgid "Follow: "
 msgstr "Segui: "
 
-#: src/ui-goodies.lisp:858
+#: src/ui-goodies.lisp:860
 #, lisp-format
 msgid "Following ~a"
 msgstr "Segui ~a"
 
-#: src/ui-goodies.lisp:859
+#: src/ui-goodies.lisp:861
 #, lisp-format
 msgid "Followed  ~a"
 msgstr "Adesso segui ~a "
 
-#: src/ui-goodies.lisp:863
+#: src/ui-goodies.lisp:865
 msgid "Unfollow: "
 msgstr "Abbandona: "
 
-#: src/ui-goodies.lisp:866
+#: src/ui-goodies.lisp:868
 #, lisp-format
 msgid "Unfollowing ~a"
 msgstr "Abbandona ~a"
 
-#: src/ui-goodies.lisp:867
+#: src/ui-goodies.lisp:869
 #, lisp-format
 msgid "Unfollowed  ~a"
 msgstr "Hai abbandonato ~a"
 
-#: src/ui-goodies.lisp:896
+#: src/ui-goodies.lisp:898
 msgid "Confirm operation?"
 msgstr "Confermi l'operazione?"
 
-#: src/ui-goodies.lisp:934
+#: src/ui-goodies.lisp:936
 msgid "Updating conversations."
 msgstr "Aggiorno le conversazioni"
 
-#: src/ui-goodies.lisp:935
+#: src/ui-goodies.lisp:937
 msgid "Conversations updated."
 msgstr "Conversazioni aggiornate"
 
-#: src/ui-goodies.lisp:945
+#: src/ui-goodies.lisp:947
 msgid "Open conversation: "
 msgstr "Apri una conversazione: "
 
-#: src/ui-goodies.lisp:980
+#: src/ui-goodies.lisp:982
 msgid "Old name: "
 msgstr "Nome precedente: "
 
-#: src/ui-goodies.lisp:994
+#: src/ui-goodies.lisp:996
 #, lisp-format
 msgid "A conversation with name ~a already exists."
 msgstr "Una conversazione con nome ~a esiste già."
 
-#: src/ui-goodies.lisp:1000
+#: src/ui-goodies.lisp:1002
 msgid "New name: "
 msgstr "Nuovo nome: "
 
-#: src/ui-goodies.lisp:1016
+#: src/ui-goodies.lisp:1018
 #, lisp-format
 msgid "Ignore conversation ~s? [y/N] "
 msgstr "Ignorare la conversazione ~s? [s/N] "
 
-#: src/ui-goodies.lisp:1032
+#: src/ui-goodies.lisp:1034
 #, lisp-format
 msgid "Delete conversation ~s? [y/N] "
 msgstr "Eliminare la conversazione ~s? [s/N] "
 
-#: src/ui-goodies.lisp:1051
+#: src/ui-goodies.lisp:1053
 #, lisp-format
 msgid "Comment too long by ~a character"
 msgid_plural "Comment too long by ~a characters"
 msgstr[0] "Il commento è troppo lungo di ~a caratteri"
 msgstr[1] "Il commento è troppo lungo di ~a caratteri"
 
-#: src/ui-goodies.lisp:1058
+#: src/ui-goodies.lisp:1060
 #, lisp-format
 msgid "Reporting user: ~s"
 msgstr "Segnalo l'utente ~s"
 
-#: src/ui-goodies.lisp:1059
+#: src/ui-goodies.lisp:1061
 msgid "Report trasmitted."
 msgstr "Segnalazione trasmessa."
 
-#: src/ui-goodies.lisp:1062
+#: src/ui-goodies.lisp:1064
 msgid "Comment on reports: "
 msgstr "Commento sulla segnalazione: "
 
-#: src/ui-goodies.lisp:1078 src/ui-goodies.lisp:1111 src/ui-goodies.lisp:1129
+#: src/ui-goodies.lisp:1080 src/ui-goodies.lisp:1113 src/ui-goodies.lisp:1131
 #, lisp-format
 msgid "User ~s does not exists in database"
 msgstr "L'utente ~s non esiste nel database"
 
-#: src/ui-goodies.lisp:1081 src/ui-goodies.lisp:1114 src/ui-goodies.lisp:1132
+#: src/ui-goodies.lisp:1083 src/ui-goodies.lisp:1116 src/ui-goodies.lisp:1134
 msgid "Username: "
 msgstr "Nome utente: "
 
-#: src/ui-goodies.lisp:1091
+#: src/ui-goodies.lisp:1093
 #, lisp-format
 msgid "Added crypto key for user ~s"
 msgstr "Aggiunta chiave crittografica per l'utente ~s"
 
-#: src/ui-goodies.lisp:1094
+#: src/ui-goodies.lisp:1096
 msgid "Key: "
 msgstr "Chiave: "
 
-#: src/ui-goodies.lisp:1108
+#: src/ui-goodies.lisp:1110
 #, lisp-format
 msgid "Generated key for user ~s"
 msgstr "Generata chiave crittografica per l'utente ~s"
 
-#: src/ui-goodies.lisp:1109
+#: src/ui-goodies.lisp:1111
 #, lisp-format
 msgid "user ~s key ~s"
 msgstr "utente ~s chiave ~s"
 
-#: src/ui-goodies.lisp:1125
+#: src/ui-goodies.lisp:1127
 #, lisp-format
 msgid "Added key for user ~s: ~a"
 msgstr "Aggiunta chiave crittografica per l'utente ~s: ~a"
 
-#: src/ui-goodies.lisp:1141
+#: src/ui-goodies.lisp:1144
 msgid "About this software"
 msgstr "Sul programma"
+
+#: src/ui-goodies.lisp:1156
+msgid "Clearing pagination data"
+msgstr ""
 
 #: src/windows.lisp:526 src/windows.lisp:582
 msgid "OK"
