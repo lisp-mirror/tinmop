@@ -760,10 +760,10 @@ db:renumber-timeline-message-index."
 
 (defun reblogged-data (reblogger-status)
   (when-let* ((reblogged-id     (db:row-message-reblog-id reblogger-status))
-              (reblogged-status (db:find-status-id reblogged-id))
-              (body             (db:row-message-rendered-text reblogged-status))
-              (attachments      (status-attachments->text reblogged-id)))
-    (values body attachments)))
+              (reblogged-status (db:find-status-id reblogged-id)))
+    (let ((body            (db:row-message-rendered-text reblogged-status))
+          (attachments     (status-attachments->text reblogged-id)))
+      (values body attachments))))
 
 (defmethod open-message ((object thread-window))
   (with-accessors ((row-selected-index row-selected-index)
