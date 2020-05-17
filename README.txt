@@ -35,9 +35,9 @@ Table of Contents
   mastodon API). It offer a distraction free terminal interface.
 
   The name is a recursive acronym: "Tinmop Is Not Mutt or Pine".  The
-  older of us can remember that, in turn, Pine is an acronym as well:
-  "Pine Is Not Elm" and, finally, Elm means (according to Wikipedia):
-  "Electronic Mail".
+  older of us can remember that, in turn, Pine is sometimes considered
+  an acronym as well: "Pine Is Not Elm" and, finally, Elm means
+  (according to Wikipedia): "Electronic Mail".
 
 
 2 Peculiar Features
