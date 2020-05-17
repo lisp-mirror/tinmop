@@ -1,1 +1,11 @@
-2020-05-15 initial release
+2020-05-17  cage
+
+        * src/open-message-link-window.lisp
+	* src/text-utils.lisp
+	- added a class to represent a window with the links that a message contains
+
+	The    links     are    collected    by    the     new    function
+	text-utils:collect-links applyed on the rendered text of a status.
+
+2020-05-15 cage
+	- initial release
