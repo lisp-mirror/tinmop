@@ -25,11 +25,11 @@
     :initarg  :status-id
     :accessor status-id)))
 
-(defmethod refresh-config :after ((object open-attach-window))
+(defun refresh-view-links-window-config  (window config-window-key)
   (with-accessors ((croatoan-window croatoan-window)
                    (selected-line-bg  selected-line-bg)
-                   (selected-line-fg  selected-line-fg)) object
-    (let* ((theme-style (swconf:form-style swconf:+key-open-attach-window+))
+                   (selected-line-fg  selected-line-fg)) window
+    (let* ((theme-style (swconf:form-style config-window-key))
            (fg          (swconf:foreground theme-style))
            (bg          (swconf:background theme-style))
            (selected-fg (swconf:selected-foreground theme-style))
@@ -46,9 +46,12 @@
       (setf (fgcolor croatoan-window) fg)
       (setf selected-line-fg selected-fg)
       (setf selected-line-bg selected-bg)
-      (win-resize object win-w win-h)
-      (win-move object x y)
-      object)))
+      (win-resize window win-w win-h)
+      (win-move window x y)
+      window)))
+
+(defmethod refresh-config :after ((object open-attach-window))
+  (refresh-view-links-window-config object swconf:+key-open-attach-window+))
 
 (defmethod resync-rows-db ((object open-attach-window) &key
                                                          (redraw t)

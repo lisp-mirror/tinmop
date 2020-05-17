@@ -203,6 +203,14 @@
 
 (define-key "v"         #'open-message-attach                         *thread-keymap*)
 
+(define-key "V"         #'open-message-link                           *thread-keymap*)
+
+(define-key "C-c u"     #'update-conversations                        *thread-keymap*)
+
+(define-key "C-c o"     #'open-conversation                           *thread-keymap*)
+
+(define-key "C-c c"     #'change-conversation-name                    *thread-keymap*)
+
 (define-key "C-f c"     #'change-folder                               *thread-keymap*)
 
 (define-key "C-t c"     #'change-timeline                             *thread-keymap*)
@@ -214,20 +222,6 @@
 (define-key "C-t R"     #'reset-timeline-pagination                   *thread-keymap*)
 
 (define-key "C-t h r"   #'refresh-tags                                *thread-keymap*)
-
-(define-key "C-X m t"   #'move-message-tree                           *thread-keymap*)
-
-(define-key "C-X m f"   #'favourite-selected-status                   *thread-keymap*)
-
-(define-key "C-X m r f" #'unfavourite-selected-status                 *thread-keymap*)
-
-(define-key "C-X m b"   #'boost-selected-status                       *thread-keymap*)
-
-(define-key "C-X m r b" #'unboost-selected-status                     *thread-keymap*)
-
-(define-key "C-X m s"   #'subscribe-to-hash                           *thread-keymap*)
-
-(define-key "C-X m u"   #'unsubscribe-to-hash                         *thread-keymap*)
 
 (define-key "C-u i"     #'ignore-user                                 *thread-keymap*)
 
@@ -247,11 +241,19 @@
 
 (define-key "C-u c k g" #'crypto-generate-key                         *thread-keymap*)
 
-(define-key "C-c u"     #'update-conversations                        *thread-keymap*)
+(define-key "C-X m t"   #'move-message-tree                           *thread-keymap*)
 
-(define-key "C-c o"     #'open-conversation                           *thread-keymap*)
+(define-key "C-X m f"   #'favourite-selected-status                   *thread-keymap*)
 
-(define-key "C-c c"     #'change-conversation-name                    *thread-keymap*)
+(define-key "C-X m r f" #'unfavourite-selected-status                 *thread-keymap*)
+
+(define-key "C-X m b"   #'boost-selected-status                       *thread-keymap*)
+
+(define-key "C-X m r b" #'unboost-selected-status                     *thread-keymap*)
+
+(define-key "C-X m s"   #'subscribe-to-hash                           *thread-keymap*)
+
+(define-key "C-X m u"   #'unsubscribe-to-hash                         *thread-keymap*)
 
 ;; message window keymap
 
@@ -303,4 +305,18 @@
 
 (define-key "down"      #'open-message-attach-go-down                   *open-attach-keymap*)
 
-(define-key "q"         #'close-open-message-window                     *open-attach-keymap*)
+(define-key "q"         #'close-open-attach-window                      *open-attach-keymap*)
+
+;; message links keymap
+
+(define-key "C-J"       #'open-message-link-perform-opening
+  *open-message-link-keymap*)
+
+(define-key "up"        #'open-message-link-go-up
+  *open-message-link-keymap*)
+
+(define-key "down"      #'open-message-link-go-down
+  *open-message-link-keymap*)
+
+(define-key "q"         #'close-open-message-link-window
+  *open-message-link-keymap*)

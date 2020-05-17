@@ -92,6 +92,7 @@
                (:file "thread-window")
                (:file "message-window")
                (:file "open-attach-window")
+               (:file "open-message-link-window")
                (:file "command-window")
                (:file "sending-message")
                (:file "follow-requests")

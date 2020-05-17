@@ -342,7 +342,9 @@ Metadata includes:
                      specials:*thread-window*
                      :documentation      "Move focus on thread window"
                      :info-change-focus-message (_ "Focus passed on threads window")
-                     :windows-lose-focus (specials:*conversations-window*
+                     :windows-lose-focus (specials:*open-message-link-window*
+                                          specials:*open-attach-window*
+                                          specials:*conversations-window*
                                           specials:*tags-window*
                                           specials:*send-message-window*
                                           specials:*message-window*
@@ -352,7 +354,9 @@ Metadata includes:
                      specials:*message-window*
                      :documentation      "Move focus on message window"
                      :info-change-focus-message (_ "Focus passed on message window")
-                     :windows-lose-focus (specials:*conversations-window*
+                     :windows-lose-focus (specials:*open-message-link-window*
+                                          specials:*open-attach-window*
+                                          specials:*conversations-window*
                                           specials:*tags-window*
                                           specials:*thread-window*
                                           specials:*send-message-window*
@@ -363,7 +367,8 @@ Metadata includes:
                      specials:*send-message-window*
                      :documentation      "Move focus on send message window"
                      :info-change-focus-message (_ "Focus passed on send message window")
-                     :windows-lose-focus (specials:*open-attach-window*
+                     :windows-lose-focus (specials:*open-message-link-window*
+                                          specials:*open-attach-window*
                                           specials:*conversations-window*
                                           specials:*tags-window*
                                           specials:*thread-window*
@@ -374,7 +379,8 @@ Metadata includes:
                      specials:*follow-requests-window*
                      :documentation      "Move focus on follow requests window"
                      :info-change-focus-message (_ "Focus passed on follow requests window")
-                     :windows-lose-focus (specials:*open-attach-window*
+                     :windows-lose-focus (specials:*open-message-link-window*
+                                          specials:*open-attach-window*
                                           specials:*conversations-window*
                                           specials:*tags-window*
                                           specials:*thread-window*
@@ -385,7 +391,8 @@ Metadata includes:
                      specials:*tags-window*
                      :documentation      "Move focus on tags window"
                      :info-change-focus-message (_ "Focus passed on tags window")
-                     :windows-lose-focus (specials:*open-attach-window*
+                     :windows-lose-focus (specials:*open-message-link-window*
+                                          specials:*open-attach-window*
                                           specials:*conversations-window*
                                           specials:*follow-requests-window*
                                           specials:*thread-window*
@@ -395,7 +402,8 @@ Metadata includes:
                      specials:*conversations-window*
                      :documentation      "Move focus on conversations window"
                      :info-change-focus-message (_ "Focus passed on conversation window")
-                     :windows-lose-focus (specials:*open-attach-window*
+                     :windows-lose-focus (specials:*open-message-link-window*
+                                          specials:*open-attach-window*
                                           specials:*tags-window*
                                           specials:*follow-requests-window*
                                           specials:*thread-window*
@@ -406,7 +414,20 @@ Metadata includes:
                      specials:*open-attach-window*
                      :documentation      "Move focus on open-attach window"
                      :info-change-focus-message (_ "Focus passed on attach window")
+                     :windows-lose-focus (specials:*open-message-link-window*
+                                          specials:*conversations-window*
+                                          specials:*tags-window*
+                                          specials:*follow-requests-window*
+                                          specials:*thread-window*
+                                          specials:*message-window*
+                                          specials:*send-message-window*))
+
+(gen-focus-to-window open-message-link-window
+                     specials:*open-message-link-window*
+                     :documentation      "Move focus on open-link window"
+                     :info-change-focus-message (_ "Focus passed on link window")
                      :windows-lose-focus (specials:*conversations-window*
+                                          specials:*open-attach-window*
                                           specials:*tags-window*
                                           specials:*follow-requests-window*
                                           specials:*thread-window*
@@ -822,7 +843,9 @@ Starting from the oldest toot and going back."
                 (push-event event)))))))
 
 (defun open-message-attach ()
-  "Open message attachments window"
+  "Open message links window
+
+Browse and optionally open the links the messages contains."
   (when-let* ((win              specials:*thread-window*)
               (selected-message (line-oriented-window:selected-row-fields win)))
     (open-attach-window:init (db:row-message-status-id selected-message))
@@ -845,8 +868,35 @@ Starting from the oldest toot and going back."
               (url           (line-oriented-window:normal-text selected-line)))
   (open-attach-window:open-attachment url)))
 
-(defun close-open-message-window ()
+(defun close-open-attach-window ()
   (close-window-and-return-to-threads specials:*open-attach-window*))
+
+(defun open-message-link ()
+  "Open message attachments window"
+  (when-let* ((win              specials:*thread-window*)
+              (selected-message (line-oriented-window:selected-row-fields win)))
+    (open-message-link-window:init (db:row-message-status-id selected-message))
+    (focus-to-open-message-link-window)))
+
+(defun open-message-link-move (amount)
+  (ignore-errors
+    (line-oriented-window:unselect-all specials:*open-message-link-window*)
+    (line-oriented-window:row-move     specials:*open-message-link-window* amount)
+    (draw specials:*open-message-link-window*)))
+
+(defun open-message-link-go-down ()
+  (open-message-link-move 1))
+
+(defun open-message-link-go-up ()
+  (open-message-link-move -1))
+
+(defun open-message-link-perform-opening ()
+  (when-let* ((selected-line (line-oriented-window:selected-row specials:*open-message-link-window*))
+              (url           (line-oriented-window:normal-text selected-line)))
+  (open-message-link-window:open-message-link url)))
+
+(defun close-open-message-link-window ()
+  (close-window-and-return-to-threads specials:*open-message-link-window*))
 
 (defun prompt-for-username (prompt complete-function event
                             notify-starting-message

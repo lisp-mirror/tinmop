@@ -220,10 +220,12 @@ this exact quantity wold go beyond the length or fows or zero."
 
 (defclass simple-line-navigation-window (wrapper-window row-oriented-widget border-window)
   ((selected-line-bg
+    :initform :blue
     :initarg  :selected-line-bg
     :accessor selected-line-bg
     :documentation "The background color for a selected line")
    (selected-line-fg
+    :initform :red
     :initarg  :selected-line-fg
     :accessor selected-line-fg
    :documentation "The foreground color for a selected line"))

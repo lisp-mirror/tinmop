@@ -351,7 +351,8 @@
    :box-fit-multiple-column
    :annotated-text-symbol
    :annotated-text-value
-   :box-fit-multiple-column-annotated))
+   :box-fit-multiple-column-annotated
+   :collect-links))
 
 (defpackage :html-utils
   (:use
@@ -927,6 +928,7 @@
    :+key-boosted+
    :+key-tags-window+
    :+key-open-attach-window+
+   :+key-open-message-link-window+
    :+key-conversations-window+
    :+key-keybindings-window+
    :+key-suggestions-window+
@@ -1027,6 +1029,7 @@
    :*send-message-keymap*
    :*follow-requests-keymap*
    :*open-attach-keymap*
+   :*open-message-link-keymap*
    :define-key
    :init-keyboard-mapping
    :find-keymap-node
@@ -1051,7 +1054,8 @@
    :*follow-requests-window*
    :*tags-window*
    :*conversations-window*
-   :*open-attach-window*))
+   :*open-attach-window*
+   :*open-message-link-window*))
 
 (defpackage :program-events
   (:use
@@ -1613,8 +1617,32 @@
   (:shadowing-import-from :misc :random-elt :shuffle)
   (:export
    :open-attach-window
+   :status-id
+   :refresh-view-links-window-config
    :resync-rows-db
    :open-attachment
+   :init))
+
+(defpackage :open-message-link-window
+  (:use
+   :cl
+   :alexandria
+   :cl-ppcre
+   :access
+   :croatoan
+   :config
+   :constants
+   :text-utils
+   :misc
+   :mtree
+   :specials
+   :windows
+   :line-oriented-window
+   :tui-utils)
+  (:shadowing-import-from :misc :random-elt :shuffle)
+  (:export
+   :open-message-link-window
+   :open-message-link
    :init))
 
 (defpackage :command-window
@@ -1855,7 +1883,12 @@
    :open-message-attach-go-up
    :open-message-attach-go-down
    :open-message-attach-perform-opening
-   :close-open-message-window
+   :close-open-attach-window
+   :open-message-link
+   :open-message-link-go-up
+   :open-message-link-go-down
+   :open-message-link-perform-opening
+   :close-open-message-link-window
    :attach-go-up
    :attach-go-down
    :attach-delete

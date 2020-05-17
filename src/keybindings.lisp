@@ -243,6 +243,9 @@ produces a tree and graft the latter on `existing-tree'"
 (defparameter *open-attach-keymap* (make-starting-comand-tree)
   "The keymap for window to open message's attachments.")
 
+(defparameter *open-message-link-keymap* (make-starting-comand-tree)
+  "The keymap for window to open message's links.")
+
 (defun define-key (key-sequence function &optional (existing-keymap *global-keymap*))
   "Define a key sequence that trigger a function:
 

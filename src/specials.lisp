@@ -48,3 +48,6 @@
 
 (defparameter *open-attach-window*              nil
   "The window that shows attachments for a message.")
+
+(defparameter *open-message-link-window*        nil
+  "The window that shows links in a message.")

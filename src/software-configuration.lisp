@@ -353,6 +353,7 @@
                    keybindings-window
                    suggestions-window
                    open-attach-window
+                   open-message-link-window
                    command-window
                    command-separator
                    tree

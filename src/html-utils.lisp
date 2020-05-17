@@ -104,7 +104,7 @@ Some convenience functions are provided to works with this structures.
                                         (_ "No address found")))
                             (descend-children node)
                             (when add-link-footnotes
-                              (format body-stream "[~a] " link-count))))
+                              (format body-stream " [~a] " link-count))))
                          ((tag= +tag-break+ node)
                           (format body-stream "~%")
                           (descend-children node))

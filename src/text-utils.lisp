@@ -631,3 +631,22 @@ printed in the box column by column; in the example above the results are:
                                                               box-height))
                    (list columns)))))
     (fit)))
+
+(defun collect-links (text &optional (schemes '("http" "https" "ftp")))
+  "Collect all hyperlinks in a text marked from a list of valid `schemes'"
+  (flet ((build-re-scheme ()
+           (let ((res ""))
+             (loop for (scheme . rest) on schemes do
+                  (if rest
+                      (setf res (strcat res "(" scheme ")|"))
+                      (setf res (strcat res "(" scheme ")://"))))
+             (strcat "(" res ")"))))
+    (let* ((results ())
+           (re      (strcat (build-re-scheme) "\\P{White_Space}+"))
+           (words   (split-words text))
+           (scanner (cl-ppcre:create-scanner re)))
+      (loop for word in words when (cl-ppcre:scan scanner word) do
+           (pushnew (cl-ppcre:scan-to-strings scanner word)
+                    results
+                    :test #'string=))
+      results)))
