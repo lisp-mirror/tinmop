@@ -1,3 +1,15 @@
+2020-05-18 cage
+
+	* doc/man.org
+	* doc/tinmop.man
+	* po/it.po
+	* po/tinmop.pot
+	* src/command-line.lisp
+	* src/main.lisp
+	* src/package.lisp
+
+        - added the reset of timeline pagination from command line.
+
 2020-05-17  cage
 
         * src/open-message-link-window.lisp
