@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tinmop 0.0.1\n"
 "Report-Msgid-Bugs-To: https://notabug.org/cage/tinmop/\n"
-"POT-Creation-Date: 2020-05-17 17:47+0200\n"
-"PO-Revision-Date: 2020-05-17 17:49+0200\n"
+"POT-Creation-Date: 2020-05-18 19:14+0200\n"
+"PO-Revision-Date: 2020-05-18 19:15+0200\n"
 "Last-Translator: cage <cage@invalid.org>\n"
 "Language-Team: Italian\n"
 "Language: it\n"
@@ -107,14 +107,18 @@ msgid "Update timeline"
 msgstr "Aggiorna la timeline"
 
 #: src/command-line.lisp:50
+msgid "Reset the timeline pagination"
+msgstr "resetta la paginazione della timeline"
+
+#: src/command-line.lisp:54
 msgid "Check follows requests"
 msgstr "Controlla le richieste di poterti seguire"
 
-#: src/command-line.lisp:54
+#: src/command-line.lisp:58
 msgid "Execute script"
 msgstr "Esegui script"
 
-#: src/command-line.lisp:57
+#: src/command-line.lisp:61
 msgid "SCRIPT-FILE"
 msgstr "SCRIPT-FILE"
 

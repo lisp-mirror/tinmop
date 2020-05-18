@@ -81,6 +81,9 @@ etc.) happened"
                                        :new-timeline command-line:*start-timeline*)))
     (program-events:push-event refresh-event)))
 
+(defun reset-timeline-pagination ()
+  (ui:reset-timeline-pagination))
+
 (defun load-configuration-files ()
   (swconf:load-config-file swconf:+shared-conf-filename+)
   (swconf:load-config-file swconf:+conf-filename+))
@@ -115,6 +118,8 @@ etc.) happened"
         (change-folder))
       (when command-line:*start-timeline*
         (change-timeline)))
+    (when command-line:*reset-timeline-pagination*
+      (reset-timeline-pagination))
     (when command-line:*update-timeline*
       (ui:update-current-timeline))
     (when command-line:*check-follow-requests*

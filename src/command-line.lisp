@@ -23,49 +23,55 @@
 (defmacro gen-opts ()
   `(opts:define-opts
      (:name                  :help
-                             :description           (_ "Print help and exit")
-                             :short                 #\h
-                             :long                  "help")
+                             :description               (_ "Print help and exit")
+                             :short                     #\h
+                             :long                      "help")
      (:name                  :version
-                             :description           (_ "Print program information and exit")
-                             :short                 #\v
-                             :long                  "version")
+                             :description               (_ "Print program information and exit")
+                             :short                     #\v
+                             :long                      "version")
      (:name                  :folder
-                             :description           (_ "Starting folder")
-                             :short                 #\f
-                             :arg-parser            #'identity
-                             :meta-var              (_ "FOLDER-NAME")
-                             :long                  "folder")
+                             :description               (_ "Starting folder")
+                             :short                     #\f
+                             :arg-parser                #'identity
+                             :meta-var                  (_ "FOLDER-NAME")
+                             :long                      "folder")
      (:name                  :timeline
-                             :description           (_ "Starting timeline")
-                             :short                 #\t
-                             :meta-var              (_ "TIMELINE-NAME")
-                             :arg-parser            #'identity
-                             :long                  "timeline")
+                             :description               (_ "Starting timeline")
+                             :short                     #\t
+                             :meta-var                  (_ "TIMELINE-NAME")
+                             :arg-parser                #'identity
+                             :long                      "timeline")
      (:name                  :update-timeline
-                             :description           (_ "Update timeline")
-                             :short                 #\u
-                             :long                  "update-timeline")
+                             :description               (_ "Update timeline")
+                             :short                     #\u
+                             :long                      "reset-timeline-pagination")
+     (:name                  :reset-timeline-pagination
+                             :description               (_ "Reset the timeline pagination")
+                             :short                     #\R
+                             :long                      "reset-timeline-pagination")
      (:name                  :check-follows-requests
-                             :description           (_ "Check follows requests")
-                             :short                 #\c
-                             :long                  "check-follows-requests")
+                             :description               (_ "Check follows requests")
+                             :short                     #\c
+                             :long                      "check-follows-requests")
      (:name                  :execute
-                             :description           (_ "Execute script")
-                             :short                 #\e
-                             :arg-parser            #'identity
-                             :meta-var              (_ "SCRIPT-FILE")
-                             :long                  "execute-script")))
+                             :description               (_ "Execute script")
+                             :short                     #\e
+                             :arg-parser                #'identity
+                             :meta-var                  (_ "SCRIPT-FILE")
+                             :long                      "execute-script")))
 
-(defparameter *start-folder*          nil)
+(defparameter *start-folder*              nil)
 
-(defparameter *start-timeline*        nil)
+(defparameter *start-timeline*            nil)
 
-(defparameter *update-timeline*       nil)
+(defparameter *update-timeline*           nil)
 
-(defparameter *script-file*           nil)
+(defparameter *script-file*               nil)
 
-(defparameter *check-follow-requests* nil)
+(defparameter *check-follow-requests*     nil)
+
+(defparameter *reset-timeline-pagination* nil)
 
 (defun exit-on-error (e)
   (format *error-output* "~a~%" e)
@@ -88,8 +94,10 @@
         (setf *start-folder* (getf options :folder)))
       (when (getf options :timeline)
         (setf *start-timeline* (getf options :timeline)))
+      (when (getf options :reset-timeline-pagination)
+        (setf *reset-timeline-pagination* t))
       (when (getf options :update-timeline)
-        (setf *update-timeline* (getf options :update-timeline)))
+        (setf *update-timeline* t))
       (when (getf options :execute)
         (setf *script-file* (getf options :execute)))
       (when (getf options :check-follows-requests)

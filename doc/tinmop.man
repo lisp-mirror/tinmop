@@ -24,26 +24,31 @@ Without options the program will start a terminal interface and will
 try to connect to your instance (see \fIConfiguration\fP)
 
 .TP
-\fB-e, --execute-script SCRIPT-FILE\fP
-Execute a script file
+\fB-R, --reset-timeline-pagination \fP
+Reset the timeline pagination. By default the new toots are fetched
+starting from the last one downloaded from the instance, this switch
+will force the program to fetch the last message posted by users
 .TP
 \fB-c, --check-follows-requests    \fP
 Checks for follow request at start
 .TP
-\fB-u, --update-timeline           \fP
-Update the selected timeline
-.TP
-\fB-t, --timeline TIMELINE-NAME    \fP
-Start using this timeline
+\fB-e, --execute-script SCRIPT-FILE\fP
+Execute a script file
 .TP
 \fB-f, --folder FOLDER-NAME        \fP
 Start on that folder
 .TP
-\fB-v, --version                   \fP
-Print program version and exit
-.TP
 \fB-h, --help                      \fP
 print program help and exit
+.TP
+\fB-t, --timeline TIMELINE-NAME    \fP
+Start using this timeline
+.TP
+\fB-u, --update-timeline           \fP
+Update the selected timeline
+.TP
+\fB-v, --version                   \fP
+Print program version and exit
 
 .SH "Usage"
 .PP

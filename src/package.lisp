@@ -1974,6 +1974,7 @@
    :*update-timeline*
    :*script-file*
    :*check-follow-requests*
+   :*reset-timeline-pagination*
    :manage-opts))
 
 (defpackage :main

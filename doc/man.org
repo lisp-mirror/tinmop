@@ -19,13 +19,17 @@
   Without options the program will start a terminal interface and will
   try to connect to your instance (see [[Configuration]])
 
-  + -e, --execute-script SCRIPT-FILE :: Execute a script file
+  + -R, --reset-timeline-pagination  ::
+    Reset the timeline pagination. By default the new toots are fetched
+    starting from the last one downloaded from the instance, this switch
+    will force the program to fetch the last message posted by users
   + -c, --check-follows-requests     :: Checks for follow request at start
-  + -u, --update-timeline            :: Update the selected timeline
-  + -t, --timeline TIMELINE-NAME     :: Start using this timeline
+  + -e, --execute-script SCRIPT-FILE :: Execute a script file
   + -f, --folder FOLDER-NAME         :: Start on that folder
-  + -v, --version                    :: Print program version and exit
   + -h, --help                       :: print program help and exit
+  + -t, --timeline TIMELINE-NAME     :: Start using this timeline
+  + -u, --update-timeline            :: Update the selected timeline
+  + -v, --version                    :: Print program version and exit
 
 * Usage
 
