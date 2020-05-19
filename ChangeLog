@@ -1,3 +1,19 @@
+2020-05-19 cage
+
+	* src/db.lisp (renumber-timeline-message-index)
+	* src/command-line.lisp (gen-opts)
+	* etc/shared.conf
+	- fixed renumbering of 'message-index' of status
+
+	  The old  procedure did  not took into  account the  'folder' and
+	  'timeline' columns making possible to overwrite index of a copy of
+	  the same  message placed in  different folder.  This bug  made the
+          program crash;
+
+	- fixed command line long option;
+
+	- fixed wrong name of a variable in a configuration file.
+
 2020-05-18 cage
 
 	* doc/man.org
