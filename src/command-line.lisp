@@ -45,7 +45,7 @@
      (:name                  :update-timeline
                              :description               (_ "Update timeline")
                              :short                     #\u
-                             :long                      "reset-timeline-pagination")
+                             :long                      "update-timeline")
      (:name                  :reset-timeline-pagination
                              :description               (_ "Reset the timeline pagination")
                              :short                     #\R
