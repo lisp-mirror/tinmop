@@ -1459,7 +1459,9 @@ messages are sorted as below:
                 (let* ((status-id    (row-message-status-id (annotated-tree-line->data-plist line)))
                        (query-update (update :status
                                        (set= :message-index new-index)
-                                       (where (:= :status-id status-id)))))
+                                       (where (:and (:= :status-id status-id)
+                                                    (:= :folder    folder)
+                                                    (:= :timeline timeline-type))))))
                   (query query-update)
                   (incf new-index)))))))
 
