@@ -78,7 +78,7 @@ install_quicklisp () {
           --eval "(quicklisp-quickstart:install)"    \
           --eval "(ql:add-to-init-file)"             \
           --eval "(sb-ext:quit)";
-        @MKDIR_P@ -p $LISP_SOURCE_REGISTRY_DIR;
+        @MKDIR_P@ $LISP_SOURCE_REGISTRY_DIR;
         PAR_PWD="${PWD%/*}";
         echo "(:source-registry"       >  $LISP_SOURCE_REGISTRY_FILE;
         echo "  (:tree \"$PAR_PWD\")"  >> $LISP_SOURCE_REGISTRY_FILE;
