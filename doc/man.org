@@ -12,7 +12,7 @@
   information about this topic can be found on the
   official website ([[https://docs.joinmastodon.org/]]).
 
-  Tinmop proposes a terminal interface to to connect with Pleroma
+  Tinmop proposes a terminal interface to connect with Pleroma
   social network
 
 * Options

@@ -15,7 +15,7 @@ information about this topic can be found on the
 official website (\fIhttps://docs.joinmastodon.org/\fP).
 
 .PP
-Tinmop proposes a terminal interface to to connect with Pleroma
+Tinmop proposes a terminal interface to connect with Pleroma
 social network
 
 .SH "Options"
