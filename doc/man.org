@@ -12,8 +12,8 @@
   information about this topic can be found on the
   official website ([[https://docs.joinmastodon.org/]]).
 
-  Tinmop propose a terminal interface to to connect with Mastodon or
-  Pleroma social network
+  Tinmop proposes a terminal interface to to connect with Pleroma
+  social network
 
 * Options
   Without options the program will start a terminal interface and will
@@ -33,7 +33,7 @@
 
 * Usage
 
-  Users of Tinmop supposed to interacts with the social network
+  Users of Tinmop supposed to interact with the social network
   using a terminal interface (TUI), The terminal screen layout is
   sketched below:
 

@@ -15,8 +15,8 @@ information about this topic can be found on the
 official website (\fIhttps://docs.joinmastodon.org/\fP).
 
 .PP
-Tinmop propose a terminal interface to to connect with Mastodon or
-Pleroma social network
+Tinmop proposes a terminal interface to to connect with Pleroma
+social network
 
 .SH "Options"
 .PP
@@ -52,7 +52,7 @@ Print program version and exit
 
 .SH "Usage"
 .PP
-Users of Tinmop supposed to interacts with the social network
+Users of Tinmop supposed to interact with the social network
 using a terminal interface (TUI), The terminal screen layout is
 sketched below:
 

@@ -31,8 +31,8 @@ Table of Contents
 1 Introduction
 ══════════════
 
-  Tinmop is an opinionated client for Mastodon (or Pleroma using the
-  mastodon API). It offer a distraction free terminal interface.
+  Tinmop is an opinionated client for Pleroma (using the mastodon
+  API). It offer a distraction free terminal interface.
 
   The name is a recursive acronym: "Tinmop Is Not Mutt or Pine".  The
   older of us can remember that, in turn, Pine is sometimes considered
@@ -268,10 +268,18 @@ Table of Contents
 11 FAQ
 ══════
 
+  • Is tinmop compatible with mastodon servers?
+
+    Unfortunately no, the way some API endpoint provide the toots is not
+    suitable for this client, for more information please go [here].
+
+    I hope this will change in the future but this depends entirely from
+    the people are developing the server.
+
   • I just tried to start the program for the first time but it give me
     a weird error, what's wrong?
 
-    Did you wrote a configuration file?
+    Did you wrote a configuration file before starting?
 
     Tinmop expects a configuration file in your config directory
     (usually `$HOME/.config/tinmop/').  This file must contains at least
@@ -310,6 +318,9 @@ Table of Contents
     code i wrote to use the crypto library in this software.
 
     So, please do not consider the encrypted message secure at all.
+
+
+[here] <https://github.com/tootsuite/mastodon/issues/13817>
 
 
 12 NO WARRANTY
