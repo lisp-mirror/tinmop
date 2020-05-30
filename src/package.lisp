@@ -637,54 +637,6 @@
      :prepare-for-db
      :last-inserted-rowid))
 
-(defpackage :tui-utils
-    (:use
-     :cl
-     :alexandria
-     :cl-ppcre
-     :local-time
-     :croatoan
-     :config
-     :constants
-     :interfaces
-     :text-utils)
-    (:nicknames :tui)
-    (:import-from :misc-utils :defalias)
-    (:export
-     :make-background
-     :make-croatoan-window
-     :make-blocking-croatoan-window
-     :make-screen
-     :make-tui-char
-     :make-tui-string
-     :tui-format
-     :decode-key-event
-     :colorize-tree-element
-     :colorize-tree-line
-     :text-width
-     :text-slice
-     :find-max-line-width
-     :ncat-complex-string
-     :cat-complex-string
-     :complex-char->char
-     :cat-tui-string
-     :tui-string->chars-string
-     :text-ellipsize
-     :right-pad-text
-     :text->tui-attribute
-     :assemble-attributes
-     :attribute-reverse
-     :attribute-bold
-     :attribute-underline
-     :attribute-italic
-     :attribute-blink
-     :attribute-dim
-     :attribute-invisible
-     :combine-attributes
-     :colorize-line
-     :colorized-line->tui-string
-     :with-notify-errors))
-
 (defpackage :db
   (:use
    :cl
@@ -1010,35 +962,73 @@
    :selected-background
    :selected-foreground))
 
-(defpackage :keybindings
+(defpackage :tui-utils
+    (:use
+     :cl
+     :alexandria
+     :cl-ppcre
+     :local-time
+     :croatoan
+     :config
+     :constants
+     :interfaces
+     :text-utils)
+    (:nicknames :tui)
+    (:import-from :misc-utils :defalias)
+    (:export
+     :make-background
+     :make-croatoan-window
+     :make-blocking-croatoan-window
+     :make-screen
+     :make-tui-char
+     :make-tui-string
+     :tui-format
+     :decode-key-event
+     :colorize-tree-element
+     :colorize-tree-line
+     :text-width
+     :text-slice
+     :find-max-line-width
+     :ncat-complex-string
+     :cat-complex-string
+     :complex-char->char
+     :cat-tui-string
+     :tui-string->chars-string
+     :text-ellipsize
+     :right-pad-text
+     :text->tui-attribute
+     :assemble-attributes
+     :attribute-reverse
+     :attribute-bold
+     :attribute-underline
+     :attribute-italic
+     :attribute-blink
+     :attribute-dim
+     :attribute-invisible
+     :combine-attributes
+     :colorize-line
+     :colorized-line->tui-string
+     :with-notify-errors))
+
+(defpackage :command-line
   (:use
    :cl
    :alexandria
    :cl-ppcre
-   :esrap
    :config
    :constants
    :text-utils
-   :misc
-   :mtree)
+   :misc-utils)
   (:shadowing-import-from :misc :random-elt :shuffle)
   (:export
-   :*global-keymap*
-   :*thread-keymap*
-   :*tags-keymap*
-   :*conversations-keymap*
-   :*message-keymap*
-   :*send-message-keymap*
-   :*follow-requests-keymap*
-   :*open-attach-keymap*
-   :*open-message-link-keymap*
-   :define-key
-   :init-keyboard-mapping
-   :find-keymap-node
-   :humanize-key
-   :help-fields-get-function
-   :help-fields-get-text
-   :print-help))
+   :*start-folder*
+   :*start-timeline*
+   :*update-timeline*
+   :*script-file*
+   :*check-follow-requests*
+   :*reset-timeline-pagination*
+   :*notify-mentions*
+   :manage-opts))
 
 (defpackage :specials
   (:use
@@ -1058,6 +1048,25 @@
    :*conversations-window*
    :*open-attach-window*
    :*open-message-link-window*))
+
+(defpackage :complete
+  (:use
+   :cl
+   :alexandria
+   :osicat)
+  (:export
+   :*complete-function*
+   :shortest-candidate
+   :directory-complete
+   :folder-complete
+   :timeline-complete-fn
+   :ignored-username-complete
+   :username-complete
+   :visibility-complete
+   :unfollowed-user-complete
+   :followed-user-complete
+   :tags-complete
+   :conversation-folder))
 
 (defpackage :program-events
   (:use
@@ -1224,6 +1233,36 @@
    :*before-prepare-for-rendering-message*
    :*before-sending-message*))
 
+(defpackage :keybindings
+  (:use
+   :cl
+   :alexandria
+   :cl-ppcre
+   :esrap
+   :config
+   :constants
+   :text-utils
+   :misc
+   :mtree)
+  (:shadowing-import-from :misc :random-elt :shuffle)
+  (:export
+   :*global-keymap*
+   :*thread-keymap*
+   :*tags-keymap*
+   :*conversations-keymap*
+   :*message-keymap*
+   :*send-message-keymap*
+   :*follow-requests-keymap*
+   :*open-attach-keymap*
+   :*open-message-link-keymap*
+   :define-key
+   :init-keyboard-mapping
+   :find-keymap-node
+   :humanize-key
+   :help-fields-get-function
+   :help-fields-get-text
+   :print-help))
+
 (defpackage :windows
   (:use
    :cl
@@ -1329,25 +1368,6 @@
    :notify-window-p
    :draw-pending
    :make-notification-window))
-
-(defpackage :complete
-  (:use
-   :cl
-   :alexandria
-   :osicat)
-  (:export
-   :*complete-function*
-   :shortest-candidate
-   :directory-complete
-   :folder-complete
-   :timeline-complete-fn
-   :ignored-username-complete
-   :username-complete
-   :visibility-complete
-   :unfollowed-user-complete
-   :followed-user-complete
-   :tags-complete
-   :conversation-folder))
 
 (defpackage :suggestions-window
   (:use
@@ -1807,7 +1827,6 @@
    :parse-subwin-w
    :parse-subwin-h))
 
-
 (defpackage :ui-goodies
   (:use
    :cl
@@ -1969,26 +1988,6 @@
    :api-client)
   (:shadowing-import-from :misc :random-elt :shuffle)
   (:export))
-
-(defpackage :command-line
-  (:use
-   :cl
-   :alexandria
-   :cl-ppcre
-   :config
-   :constants
-   :text-utils
-   :misc-utils)
-  (:shadowing-import-from :misc :random-elt :shuffle)
-  (:export
-   :*start-folder*
-   :*start-timeline*
-   :*update-timeline*
-   :*script-file*
-   :*check-follow-requests*
-   :*reset-timeline-pagination*
-   :*notify-mentions*
-   :manage-opts))
 
 (defpackage :main
   (:use

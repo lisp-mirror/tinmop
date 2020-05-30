@@ -74,6 +74,7 @@
                (:file "emoji-shortcodes")
                (:file "software-configuration")
                (:file "tui-utils")
+               (:file "command-line")
                (:file "specials")
                (:file "complete")
                (:file "program-events")
@@ -101,7 +102,6 @@
                (:file "main-window")
                (:file "ui-goodies")
                (:file "modules")
-               (:file "command-line")
                (:file "main")
                (:module tests
                         :components ((:file "package")
