@@ -59,7 +59,13 @@
                              :short                     #\e
                              :arg-parser                #'identity
                              :meta-var                  (_ "SCRIPT-FILE")
-                             :long                      "execute-script")))
+                             :long                      "execute-script")
+     (:name                  :notify-mentions
+                             :description               (_ "Notify messages that mentions the user")
+                             :short                     #\m
+                             :arg-parser                #'identity
+                             :long                      "notify-mentions")))
+
 
 (defparameter *start-folder*              nil)
 
@@ -72,6 +78,8 @@
 (defparameter *check-follow-requests*     nil)
 
 (defparameter *reset-timeline-pagination* nil)
+
+(defparameter *notify-mentions*           nil)
 
 (defun exit-on-error (e)
   (format *error-output* "~a~%" e)
@@ -101,4 +109,6 @@
       (when (getf options :execute)
         (setf *script-file* (getf options :execute)))
       (when (getf options :check-follows-requests)
-        (setf *check-follow-requests* (getf options :check-follows-requests))))))
+        (setf *check-follow-requests* (getf options :check-follows-requests)))
+      (when (getf options :notify-mentions)
+        (setf *notify-mentions* (getf options :check-follows-requests))))))

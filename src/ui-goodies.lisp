@@ -479,9 +479,13 @@ Metadata includes:
     (flet ((on-input-complete (new-timeline)
              (let* ((refresh-event (make-instance 'refresh-thread-windows-event
                                                   :new-timeline new-timeline)))
-               (if (string-empty-p new-timeline)
-                   (error-message (_ "No timeline specified."))
-                   (push-event refresh-event)))))
+               (cond
+                 ((string-empty-p new-timeline)
+                  (error-message (_ "No timeline specified.")))
+                 ((db:hidden-recipient-p new-timeline)
+                  (error-message (_ "This timeline is protected.")))
+                 (t
+                  (push-event refresh-event))))))
       (ask-string-input #'on-input-complete
                         :prompt      (_ "Change timeline: ")
                         :complete-fn (complete:timeline-complete-fn folder)))))
@@ -498,7 +502,11 @@ and if fetch local (again, to server) statuses only."
      (values :home nil))))
 
 (defun update-current-timeline ()
-  "Update current timeline"
+  "Update current timeline
+
+This  command  also checks  notifications  about  mentioning the  user
+and (if  such mentions  exists) download the  mentioning toots  in the
+folder \"mentions\"."
   (let* ((timeline (thread-window:timeline-type specials:*thread-window*))
          (folder   (thread-window:timeline-folder specials:*thread-window*))
          (max-id   (db:last-pagination-status-id-timeline-folder timeline folder)))
@@ -511,7 +519,11 @@ and if fetch local (again, to server) statuses only."
                                          folder
                                          :min-id max-id
                                          :local  localp)
-                 (let ((refresh-event  (make-instance 'refresh-thread-windows-event)))
+                 (let ((update-mentions-event (make-instance 'update-mentions-event))
+                       (refresh-event         (make-instance 'refresh-thread-windows-event)))
+                   ;; updating home also triggers the checks for mentions
+                   (when (eq kind :home)
+                     (push-event update-mentions-event))
                    (push-event refresh-event)))))
         (notify-procedure #'update
                           (_ "Downloading messages.")
@@ -540,6 +552,24 @@ Starting from the oldest toot and going back."
                           (_ "Downloading messages.")
                           :ending-message (_ "Messages downloaded.")
                           :life-start     (* (swconf:config-notification-life) 5))))))
+
+(defun refresh-thread ()
+  "Check and download a thread
+
+Force the checking for new message in the thread the selected message belong."
+  (when-let* ((selected-message (line-oriented-window:selected-row-fields specials:*thread-window*))
+              (timeline         (thread-window:timeline-type specials:*thread-window*))
+              (folder           (thread-window:timeline-folder specials:*thread-window*))
+              (status-id        (db:row-message-status-id selected-message))
+              (expand-event     (make-instance 'expand-thread-event
+                                               :new-folder   folder
+                                               :new-timeline timeline
+                                               :status-id    status-id))
+              (refresh-event  (make-instance 'refresh-thread-windows-event
+                                             :priority +minimum-event-priority+)))
+    (with-blocking-notify-procedure ((_ "Expanding thread"))
+      (push-event expand-event)
+      (push-event refresh-event))))
 
 (defun refresh-tags ()
   "Update messages for subscribed tags"

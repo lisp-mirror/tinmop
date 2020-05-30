@@ -710,10 +710,12 @@
    :+home-timeline+
    :+direct-timeline+
    :+default-status-folder+
+   :+mentions-status-folder+
    :+default-tag-timeline+
    :+default-converation-timeline+
    :+message-index-start+
    :+tag-separator+
+   :hidden-recipient-p
    :default-timelines
    :message-index->sequence-index
    :timeline-type->description
@@ -1070,6 +1072,8 @@
   (:shadowing-import-from :misc           :random-elt :shuffle)
   (:shadowing-import-from :priority-queue :emptyp)
   (:export
+   :+standard-event-priority+
+   :+minimum-event-priority+
    :*process-events-immediately*
    :program-event
    :event-id
@@ -1134,6 +1138,8 @@
    :refresh-conversations-window-event
    :ignore-conversations-event
    :delete-conversations-event
+   :update-mentions-event
+   :expand-thread-event
    :report-status-event
    :add-crypto-data-event
    :function-event
@@ -1192,6 +1198,11 @@
    :bookmark
    :unbookmark
    :polls
+   :get-notifications
+   :delete-notification
+   :all-mentions
+   :update-mentions-folder
+   :expand-status-thread
    :make-placeholder-tag-histogram
    :init))
 
@@ -1867,6 +1878,7 @@
    :change-timeline
    :update-current-timeline
    :update-current-timeline-backwards
+   :refresh-thread
    :refresh-tags
    :favourite-selected-status
    :unfavourite-selected-status
@@ -1975,6 +1987,7 @@
    :*script-file*
    :*check-follow-requests*
    :*reset-timeline-pagination*
+   :*notify-mentions*
    :manage-opts))
 
 (defpackage :main

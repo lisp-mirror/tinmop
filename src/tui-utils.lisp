@@ -469,10 +469,11 @@
          (print-debug i))))
 
 (defmacro with-notify-errors (&body body)
-  `(handler-case
-       (progn
-         ,@body)
-     (error (e)
-       (ui:notify (format nil (_ "Error: ~a") e)
-                  :life     (* (swconf:config-notification-life) 5)
-                  :as-error t))))
+  #+debug-mode `(progn ,@body)
+  #-debug-mode `(handler-case
+                    (progn
+                      ,@body)
+                  (error (e)
+                    (ui:notify (format nil (_ "Error: ~a") e)
+                               :life     (* (swconf:config-notification-life) 5)
+                               :as-error t))))

@@ -201,6 +201,8 @@
 
 (define-key "r"         #'reply-message                               *thread-keymap*)
 
+(define-key "R"         #'refresh-thread                              *thread-keymap*)
+
 (define-key "v"         #'open-message-attach                         *thread-keymap*)
 
 (define-key "V"         #'open-message-link                           *thread-keymap*)

@@ -102,10 +102,13 @@ completed) and the common prefix of the completion string."
   (lambda (a)
     (cl-ppcre:scan (text-utils:strcat "^" hint) a)))
 
+(defun remove-if-hidden (candidates)
+  (remove-if #'db:hidden-recipient-p candidates))
+
 (defun folder-complete (hint)
   "Virtual messages folder in db not filesystem directory"
-  (when-let ((matching-folders (remove-if-not (starts-with-clsr hint)
-                                              (db:all-folders))))
+  (when-let ((matching-folders (remove-if-hidden (remove-if-not (starts-with-clsr hint)
+                                                                (db:all-folders)))))
     (values matching-folders
             (reduce-to-common-prefix matching-folders))))
 
@@ -116,8 +119,8 @@ completed) and the common prefix of the completion string."
                                    (db:all-timelines-in-folder folder
                                                                :include-default-timelines t)
                                    (db:default-timelines)))
-           (matching-timelines (remove-if-not (starts-with-clsr hint)
-                                              all-timelines)))
+           (matching-timelines (remove-if-hidden (remove-if-not (starts-with-clsr hint)
+                                                                all-timelines))))
       (values matching-timelines
               (reduce-to-common-prefix matching-timelines)))))
 

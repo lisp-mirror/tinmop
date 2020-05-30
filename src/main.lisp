@@ -72,8 +72,11 @@ etc.) happened"
   (let ((refresh-event (make-instance 'program-events:refresh-thread-windows-event
                                       :new-folder command-line:*start-folder*))
         (folder-exists-p (db:folder-exists-p command-line:*start-folder*)))
-    (when folder-exists-p
-      (program-events:push-event refresh-event))))
+    (if folder-exists-p
+        (program-events:push-event refresh-event)
+        (ui:error-message (format nil
+                                  (_ "Folder ~s does not exists")
+                                  command-line:*start-folder*)))))
 
 (defun change-timeline ()
   "Change timeline, used in requests of a command line switch"
@@ -114,10 +117,10 @@ etc.) happened"
     (client:init)
     (client:authorize)
     (let ((program-events:*process-events-immediately* t))
-      (when command-line:*start-folder*
-        (change-folder))
       (when command-line:*start-timeline*
-        (change-timeline)))
+        (change-timeline))
+      (when command-line:*start-folder*
+        (change-folder)))
     (when command-line:*reset-timeline-pagination*
       (reset-timeline-pagination))
     (when command-line:*update-timeline*

@@ -23,9 +23,13 @@
 
 ;; used only in batch mode from the command line
 (defparameter *process-events-immediately* nil
-  "Used only in batch mode from the command line. Instead of pushing the event on a priority queue that will be picked by a thread process the event immediately")
+  "Used only in  batch mode from the command line.  Instead of pushing
+  the  event on  a priority  queue  that will  be picked  by a  thread
+  process the event immediately")
 
-(define-constant +standard-event-priority+ 10 :test #'=)
+(define-constant +standard-event-priority+  10 :test #'=)
+
+(define-constant +minimum-event-priority+   -1 :test #'=)
 
 ;; keep  this  function  stricly  monotonic  otherwise  the  order  of
 ;; elements in priority queue is going to be messed up
@@ -45,20 +49,30 @@
    (priority
     :initform +standard-event-priority+
     :initarg  :priority
-    :accessor priority)))
+    :accessor priority)
+   (notes
+    :initform nil
+    :initarg  :notes
+    :accessor notes
+    :documentation "Someway useful for debugging")))
 
 (defmethod print-object ((object program-event) stream)
   (print-unreadable-object (object stream :type t :identity nil)
-    (format stream "id ~a priority ~a" (event-id object) (priority object))))
+    (format stream
+            "id ~a priority ~a notes ~a"
+            (event-id object)
+            (priority object)
+            (notes object))))
 
 (defgeneric process-event (object))
 
 (defgeneric reinitialize-id (object))
 
-(defmethod  reinitialize-id ((object program-event))
-  (setf (event-id object)
-        (next-id))
-  object)
+(defmacro wrapped-in-lock ((queue) &body body)
+  (with-gensyms (lock)
+    `(with-accessors ((,lock lock)) ,queue
+       (with-lock (,lock)
+         ,@body))))
 
 (defclass events-queue (priority-queue)
   ((lock
@@ -87,13 +101,13 @@
     (setf equal-function   #'queue-equals-predicate)
     (setf compare-function #'queue-compare-predicate)))
 
-(defmacro wrapped-in-lock ((queue) &body body)
-  (with-gensyms (lock)
-    `(with-accessors ((,lock lock)) ,queue
-       (with-lock (,lock)
-         ,@body))))
-
 (defparameter *events-queue* (make-instance 'events-queue))
+
+(defmethod  reinitialize-id ((object program-event))
+  (wrapped-in-lock (*events-queue*)
+    (setf (event-id object)
+          (next-id))
+    object))
 
 (defun push-event (event)
   (wrapped-in-lock (*events-queue*)
@@ -711,6 +725,30 @@
       (api-client:delete-conversation id)
       (db:delete-conversation folder))))
 
+(defclass update-mentions-event (program-event) ())
+
+(defmethod process-event ((object update-mentions-event))
+  (when-let* ((mentions       (api-client:update-mentions-folder :delete-mentions-on-server t))
+              (mentions-count (length mentions)))
+    (when command-line:*notify-mentions*
+      (ui:notify (format nil
+                         (n_ "Got ~a notification"
+                             "~Got a notifications"
+                             mentions-count)
+                         mentions-count)))))
+
+(defclass expand-thread-event (program-event event-with-timeline-and-folder)
+  ((status-id
+    :initform nil
+    :initarg :status-id
+    :accessor status-id)))
+
+(defmethod process-event ((object expand-thread-event))
+  (with-accessors ((new-folder    new-folder)
+                   (new-timeline  new-timeline)
+                   (status-id     status-id)) object
+    (api-client:expand-status-thread status-id new-timeline new-folder)))
+
 (defclass report-status-event (program-event)
   ((status-id
     :initform nil
@@ -784,4 +822,12 @@
 
 (defun dispatch-program-events ()
   (when (event-available-p)
-    (process-event (pop-event))))
+    (let ((bypassable-event (pop-event)))
+      (if (and (= (priority bypassable-event)
+                  +minimum-event-priority+)
+               (event-available-p))
+          (let ((event (pop-event)))
+            (reinitialize-id bypassable-event)
+            (push-event bypassable-event)
+            (process-event event))
+          (process-event bypassable-event)))))

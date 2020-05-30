@@ -119,13 +119,19 @@
 (define-constant +default-status-folder+        "default"
   :test #'string=)
 
+(define-constant +mentions-status-folder+       "mentions"
+  :test #'string=)
+
 (define-constant +default-tag-timeline+         +federated-timeline+
   :test #'string=)
 
 (define-constant +default-converation-timeline+ +federated-timeline+
   :test #'string=)
 
-(define-constant +default-reblogged-timeline+   "reblogged"
+(define-constant +hidden-recipient-prefix+      #\.
+  :test #'char=)
+
+(define-constant +default-reblogged-timeline+   ".reblogged"
   :test #'string=)
 
 (define-constant +message-index-start+          1
@@ -138,6 +144,12 @@
   (list +home-timeline+
         +local-timeline+
         +federated-timeline+))
+
+(defgeneric hidden-recipient-p (object))
+
+(defmethod hidden-recipient-p ((object string))
+  (char= +hidden-recipient-prefix+
+         (first-elt object)))
 
 (defun message-index->sequence-index (message-index)
   (- message-index +message-index-start+))
