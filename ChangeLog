@@ -7,12 +7,20 @@
 	* src/main.lisp
 	* src/package.lisp
 	* src/program-events.lisp
+	* src/thread-window.lisp
 	* src/tui-utils.lisp
 	* src/ui-goodies.lisp
+	* tinmop.asd
 
+	- [breaking changes] changed table for attachments;
+	- fixed  bug  that prevented  statuses  missing  attachments when  the
+	  status was reblogged.
 	- added optional notification of statuses mentioning the user;
 	- protected reblogged timeline from accidental deletiion;
-	- added the possibility to force expanding of a message tree.
+	- added the possibility to force expanding of a message tree;
+	- rearranged compilation  order to prevent warning  about command line
+	  switch;
+	- rearranged order of packages.
 
 2020-05-20 cage
 	* quick_quicklisp.sh.in
