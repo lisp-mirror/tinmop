@@ -780,14 +780,16 @@ db:renumber-timeline-message-index."
              (refresh-event (make-instance 'program-events:refresh-conversations-window-event)))
         (multiple-value-bind (reblogged-status-body reblogged-status-attachments)
             (reblogged-data fields)
-          (let ((actual-body (if (string= body reblogged-status-body)
-                                 body
-                                 (strcat  body reblogged-status-body))))
+          (let ((actual-body        (if (string= body reblogged-status-body)
+                                        body
+                                        (strcat body reblogged-status-body)))
+                (actual-attachments (if (string= attachments reblogged-status-attachments)
+                                        attachments
+                                        (strcat reblogged-status-attachments attachments))))
             (setf (message-window:source-text *message-window*)
                   (strcat header
                           actual-body
-                          reblogged-status-attachments
-                          attachments))
+                          actual-attachments))
             (db:mark-status-red-p timeline-type timeline-folder status-id)
             (resync-rows-db object :redraw t)
             (program-events:push-event refresh-event)
