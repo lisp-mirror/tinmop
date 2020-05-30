@@ -733,7 +733,7 @@
     (when command-line:*notify-mentions*
       (ui:notify (format nil
                          (n_ "Got ~a notification"
-                             "~Got a notifications"
+                             "Got ~a notifications"
                              mentions-count)
                          mentions-count)))))
 

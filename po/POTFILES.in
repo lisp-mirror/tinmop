@@ -7,10 +7,9 @@ src/command-window.lisp
 src/complete-window.lisp
 src/complete.lisp
 src/conditions.lisp
-src/config.lisp
-src/config.lisp.in
 src/constants.lisp
 src/conversations-window.lisp
+src/crypto-utils.lisp
 src/date-formatter.lisp
 src/db-utils.lisp
 src/db.lisp
@@ -33,6 +32,8 @@ src/modules.lisp
 src/mtree-utils.lisp
 src/notify-window.lisp
 src/num-utils.lisp
+src/open-attach-window.lisp
+src/open-message-link-window.lisp
 src/os-utils.lisp
 src/package.lisp
 src/point-tracker.lisp

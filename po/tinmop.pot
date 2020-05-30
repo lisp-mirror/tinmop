@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: tinmop 0.0.2\n"
+"Project-Id-Version: tinmop 0.0.3\n"
 "Report-Msgid-Bugs-To: https://notabug.org/cage/tinmop/\n"
-"POT-Creation-Date: 2020-05-18 19:14+0200\n"
+"POT-Creation-Date: 2020-05-30 12:00+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -64,7 +64,7 @@ msgid ""
 "Error: was not able to create server socket to listen for authorization code"
 msgstr ""
 
-#: src/api-client.lisp:665
+#: src/api-client.lisp:745
 #, lisp-format
 msgid "Initializing empty credentials file in ~a"
 msgstr ""
@@ -118,12 +118,16 @@ msgstr ""
 msgid "SCRIPT-FILE"
 msgstr ""
 
+#: src/command-line.lisp:64
+msgid "Notify messages that mentions the user"
+msgstr ""
+
 #: src/command-window.lisp:299
 #, lisp-format
 msgid "Error: command ~a not found"
 msgstr ""
 
-#: src/conditions.lisp:67 src/conditions.lisp:71 src/db.lisp:2200
+#: src/conditions.lisp:67 src/conditions.lisp:71 src/db.lisp:2217
 #: src/message-rendering-utils.lisp:132 src/message-rendering-utils.lisp:166
 #: src/message-rendering-utils.lisp:171
 msgid "unknown"
@@ -133,19 +137,19 @@ msgstr ""
 msgid "Conversations"
 msgstr ""
 
-#: src/db.lisp:152
+#: src/db.lisp:164
 msgid "federated"
 msgstr ""
 
-#: src/db.lisp:154
+#: src/db.lisp:166
 msgid "local"
 msgstr ""
 
-#: src/db.lisp:156
+#: src/db.lisp:168
 msgid "direct"
 msgstr ""
 
-#: src/db.lisp:158
+#: src/db.lisp:170
 msgid "home"
 msgstr ""
 
@@ -194,6 +198,11 @@ msgstr ""
 #: src/line-oriented-window.lisp:271 src/ui-goodies.lisp:74
 #: src/ui-goodies.lisp:91
 msgid "Information"
+msgstr ""
+
+#: src/main.lisp:78
+#, lisp-format
+msgid "Folder ~s does not exists"
 msgstr ""
 
 #: src/message-rendering-utils.lisp:69
@@ -245,7 +254,8 @@ msgstr ""
 msgid "duration: ~a~%"
 msgstr ""
 
-#: src/message-rendering-utils.lisp:159 src/sending-message.lisp:132
+#: src/message-rendering-utils.lisp:159 src/open-attach-window.lisp:88
+#: src/sending-message.lisp:132
 msgid "Attachments"
 msgstr ""
 
@@ -287,24 +297,35 @@ msgid_plural "~a pending"
 msgstr[0] ""
 msgstr[1] ""
 
+#: src/open-message-link-window.lisp:57
+msgid "Links"
+msgstr ""
+
 #: src/os-utils.lisp:55
 msgid ""
 "No editor found, please configure the 'editor' directive in your "
 "configuration file"
 msgstr ""
 
-#: src/program-events.lisp:404
+#: src/program-events.lisp:418
 msgid "No message selected!"
 msgstr ""
 
-#: src/program-events.lisp:554
+#: src/program-events.lisp:568
 msgid "Message sent."
 msgstr ""
 
-#: src/program-events.lisp:609
+#: src/program-events.lisp:623
 #, lisp-format
 msgid "Downloaded new messages for tag ~a"
 msgstr ""
+
+#: src/program-events.lisp:735
+#, lisp-format
+msgid "Got ~a notification"
+msgid_plural "Got ~a notifications"
+msgstr[0] ""
+msgstr[1] ""
 
 #: src/resources-utils.lisp:55
 #, lisp-format
@@ -372,21 +393,21 @@ msgstr ""
 msgid "No message with index ~a exists."
 msgstr ""
 
-#: src/thread-window.lisp:852 src/thread-window.lisp:886
+#: src/thread-window.lisp:854 src/thread-window.lisp:888
 #, lisp-format
 msgid "No next message that contains ~s exists."
 msgstr ""
 
-#: src/thread-window.lisp:858 src/thread-window.lisp:892
+#: src/thread-window.lisp:860 src/thread-window.lisp:894
 #, lisp-format
 msgid "No previous message that contains ~s exists."
 msgstr ""
 
-#: src/thread-window.lisp:908
+#: src/thread-window.lisp:910
 msgid "No others unread messages exist."
 msgstr ""
 
-#: src/thread-window.lisp:919
+#: src/thread-window.lisp:921
 msgid "Threads"
 msgstr ""
 
@@ -395,7 +416,7 @@ msgstr ""
 msgid "Unknown event ~a"
 msgstr ""
 
-#: src/tui-utils.lisp:476
+#: src/tui-utils.lisp:477
 #, lisp-format
 msgid "Error: ~a"
 msgstr ""
@@ -508,263 +529,271 @@ msgstr ""
 msgid "Change folder: "
 msgstr ""
 
-#: src/ui-goodies.lisp:483
+#: src/ui-goodies.lisp:484
 msgid "No timeline specified."
 msgstr ""
 
 #: src/ui-goodies.lisp:486
+msgid "This timeline is protected."
+msgstr ""
+
+#: src/ui-goodies.lisp:490
 msgid "Change timeline: "
 msgstr ""
 
-#: src/ui-goodies.lisp:517 src/ui-goodies.lisp:540
+#: src/ui-goodies.lisp:529 src/ui-goodies.lisp:552
 msgid "Downloading messages."
 msgstr ""
 
-#: src/ui-goodies.lisp:518 src/ui-goodies.lisp:541 src/ui-goodies.lisp:563
+#: src/ui-goodies.lisp:530 src/ui-goodies.lisp:553 src/ui-goodies.lisp:593
 msgid "Messages downloaded."
 msgstr ""
 
-#: src/ui-goodies.lisp:562
+#: src/ui-goodies.lisp:570
+msgid "Expanding thread"
+msgstr ""
+
+#: src/ui-goodies.lisp:592
 msgid "Downloading tags messages."
 msgstr ""
 
-#: src/ui-goodies.lisp:575
+#: src/ui-goodies.lisp:605
 msgid "Favorite this message?"
 msgstr ""
 
-#: src/ui-goodies.lisp:584
+#: src/ui-goodies.lisp:614
 msgid "Favouring message."
 msgstr ""
 
-#: src/ui-goodies.lisp:585
+#: src/ui-goodies.lisp:615
 msgid "Favoured message."
 msgstr ""
 
-#: src/ui-goodies.lisp:590
+#: src/ui-goodies.lisp:620
 msgid "Remove this message from your favourites?"
 msgstr ""
 
-#: src/ui-goodies.lisp:599
+#: src/ui-goodies.lisp:629
 msgid "Unfavouring message."
 msgstr ""
 
-#: src/ui-goodies.lisp:600
+#: src/ui-goodies.lisp:630
 msgid "Unfavoured message."
 msgstr ""
 
-#: src/ui-goodies.lisp:605
+#: src/ui-goodies.lisp:635
 msgid "Boost this message?"
 msgstr ""
 
-#: src/ui-goodies.lisp:614
+#: src/ui-goodies.lisp:644
 msgid "Boosting message."
 msgstr ""
 
-#: src/ui-goodies.lisp:615
+#: src/ui-goodies.lisp:645
 msgid "Boosted message."
 msgstr ""
 
-#: src/ui-goodies.lisp:620
+#: src/ui-goodies.lisp:650
 msgid "Unboost this message?"
 msgstr ""
 
-#: src/ui-goodies.lisp:629
+#: src/ui-goodies.lisp:659
 msgid "Uboosting message."
 msgstr ""
 
-#: src/ui-goodies.lisp:630
+#: src/ui-goodies.lisp:660
 msgid "Unboosted message."
 msgstr ""
 
-#: src/ui-goodies.lisp:638
+#: src/ui-goodies.lisp:668
 #, lisp-format
 msgid "Ignore ~s?"
 msgstr ""
 
-#: src/ui-goodies.lisp:641
+#: src/ui-goodies.lisp:671
 #, lisp-format
 msgid "Ignoring ~s"
 msgstr ""
 
-#: src/ui-goodies.lisp:642
+#: src/ui-goodies.lisp:672
 #, lisp-format
 msgid "User ~s ignored"
 msgstr ""
 
-#: src/ui-goodies.lisp:652
+#: src/ui-goodies.lisp:682
 msgid "No username specified."
 msgstr ""
 
-#: src/ui-goodies.lisp:654
+#: src/ui-goodies.lisp:684
 msgid "Unignore username: "
 msgstr ""
 
-#: src/ui-goodies.lisp:683
+#: src/ui-goodies.lisp:713
 #, lisp-format
 msgid "File ~s does not exists."
 msgstr ""
 
-#: src/ui-goodies.lisp:685
+#: src/ui-goodies.lisp:715
 msgid "Message ready to be sent"
 msgstr ""
 
-#: src/ui-goodies.lisp:687
+#: src/ui-goodies.lisp:717
 msgid "Add attachment: "
 msgstr ""
 
-#: src/ui-goodies.lisp:697
+#: src/ui-goodies.lisp:727
 msgid "New subject: "
 msgstr ""
 
-#: src/ui-goodies.lisp:706
+#: src/ui-goodies.lisp:736
 msgid "New visibility: "
 msgstr ""
 
-#: src/ui-goodies.lisp:753
+#: src/ui-goodies.lisp:783
 #, lisp-format
 msgid "Your message is ~a character too long."
 msgid_plural "Your message is ~a characters too long."
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/ui-goodies.lisp:777
+#: src/ui-goodies.lisp:807
 msgid "Add subject: "
 msgstr ""
 
-#: src/ui-goodies.lisp:836
+#: src/ui-goodies.lisp:866
 #, lisp-format
 msgid "The maximum allowed number of media is ~a."
 msgstr ""
 
-#: src/ui-goodies.lisp:839
+#: src/ui-goodies.lisp:869
 msgid "Sending message"
 msgstr ""
 
-#: src/ui-goodies.lisp:917
+#: src/ui-goodies.lisp:947
 msgid "Follow: "
 msgstr ""
 
-#: src/ui-goodies.lisp:920
+#: src/ui-goodies.lisp:950
 #, lisp-format
 msgid "Following ~a"
 msgstr ""
 
-#: src/ui-goodies.lisp:921
+#: src/ui-goodies.lisp:951
 #, lisp-format
 msgid "Followed  ~a"
 msgstr ""
 
-#: src/ui-goodies.lisp:925
+#: src/ui-goodies.lisp:955
 msgid "Unfollow: "
 msgstr ""
 
-#: src/ui-goodies.lisp:928
+#: src/ui-goodies.lisp:958
 #, lisp-format
 msgid "Unfollowing ~a"
 msgstr ""
 
-#: src/ui-goodies.lisp:929
+#: src/ui-goodies.lisp:959
 #, lisp-format
 msgid "Unfollowed  ~a"
 msgstr ""
 
-#: src/ui-goodies.lisp:958
+#: src/ui-goodies.lisp:988
 msgid "Confirm operation?"
 msgstr ""
 
-#: src/ui-goodies.lisp:996
+#: src/ui-goodies.lisp:1026
 msgid "Updating conversations."
 msgstr ""
 
-#: src/ui-goodies.lisp:997
+#: src/ui-goodies.lisp:1027
 msgid "Conversations updated."
 msgstr ""
 
-#: src/ui-goodies.lisp:1007
+#: src/ui-goodies.lisp:1037
 msgid "Open conversation: "
 msgstr ""
 
-#: src/ui-goodies.lisp:1042
+#: src/ui-goodies.lisp:1072
 msgid "Old name: "
 msgstr ""
 
-#: src/ui-goodies.lisp:1056
+#: src/ui-goodies.lisp:1086
 #, lisp-format
 msgid "A conversation with name ~a already exists."
 msgstr ""
 
-#: src/ui-goodies.lisp:1062
+#: src/ui-goodies.lisp:1092
 msgid "New name: "
 msgstr ""
 
-#: src/ui-goodies.lisp:1078
+#: src/ui-goodies.lisp:1108
 #, lisp-format
 msgid "Ignore conversation ~s? [y/N] "
 msgstr ""
 
-#: src/ui-goodies.lisp:1094
+#: src/ui-goodies.lisp:1124
 #, lisp-format
 msgid "Delete conversation ~s? [y/N] "
 msgstr ""
 
-#: src/ui-goodies.lisp:1113
+#: src/ui-goodies.lisp:1143
 #, lisp-format
 msgid "Comment too long by ~a character"
 msgid_plural "Comment too long by ~a characters"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/ui-goodies.lisp:1120
+#: src/ui-goodies.lisp:1150
 #, lisp-format
 msgid "Reporting user: ~s"
 msgstr ""
 
-#: src/ui-goodies.lisp:1121
+#: src/ui-goodies.lisp:1151
 msgid "Report trasmitted."
 msgstr ""
 
-#: src/ui-goodies.lisp:1124
+#: src/ui-goodies.lisp:1154
 msgid "Comment on reports: "
 msgstr ""
 
-#: src/ui-goodies.lisp:1140 src/ui-goodies.lisp:1173 src/ui-goodies.lisp:1191
+#: src/ui-goodies.lisp:1170 src/ui-goodies.lisp:1203 src/ui-goodies.lisp:1221
 #, lisp-format
 msgid "User ~s does not exists in database"
 msgstr ""
 
-#: src/ui-goodies.lisp:1143 src/ui-goodies.lisp:1176 src/ui-goodies.lisp:1194
+#: src/ui-goodies.lisp:1173 src/ui-goodies.lisp:1206 src/ui-goodies.lisp:1224
 msgid "Username: "
 msgstr ""
 
-#: src/ui-goodies.lisp:1153
+#: src/ui-goodies.lisp:1183
 #, lisp-format
 msgid "Added crypto key for user ~s"
 msgstr ""
 
-#: src/ui-goodies.lisp:1156
+#: src/ui-goodies.lisp:1186
 msgid "Key: "
 msgstr ""
 
-#: src/ui-goodies.lisp:1170
+#: src/ui-goodies.lisp:1200
 #, lisp-format
 msgid "Generated key for user ~s"
 msgstr ""
 
-#: src/ui-goodies.lisp:1171
+#: src/ui-goodies.lisp:1201
 #, lisp-format
 msgid "user ~s key ~s"
 msgstr ""
 
-#: src/ui-goodies.lisp:1187
+#: src/ui-goodies.lisp:1217
 #, lisp-format
 msgid "Added key for user ~s: ~a"
 msgstr ""
 
-#: src/ui-goodies.lisp:1204
+#: src/ui-goodies.lisp:1234
 msgid "About this software"
 msgstr ""
 
-#: src/ui-goodies.lisp:1216
+#: src/ui-goodies.lisp:1246
 msgid "Clearing pagination data"
 msgstr ""
 
