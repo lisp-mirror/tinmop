@@ -1,3 +1,24 @@
+2020-05-30 cage
+	* etc/init.lisp
+	* src/api-client.lisp
+	* src/command-line.lisp
+	* src/complete.lisp
+	* src/db.lisp
+	* src/main.lisp
+	* src/package.lisp
+	* src/program-events.lisp
+	* src/tui-utils.lisp
+	* src/ui-goodies.lisp
+
+	- added optional notification of statuses mentioning the user;
+	- protected reblogged timeline from accidental deletiion;
+	- added the possibility to force expanding of a message tree.
+
+2020-05-20 cage
+	* quick_quicklisp.sh.in
+
+	- removed useless switch.
+
 2020-05-19 cage
 
 	* src/db.lisp (renumber-timeline-message-index)
