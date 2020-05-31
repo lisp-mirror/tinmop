@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tinmop 0.0.1\n"
 "Report-Msgid-Bugs-To: https://notabug.org/cage/tinmop/\n"
-"POT-Creation-Date: 2020-05-30 12:00+0200\n"
-"PO-Revision-Date: 2020-05-30 12:03+0200\n"
+"POT-Creation-Date: 2020-05-31 12:44+0200\n"
+"PO-Revision-Date: 2020-05-31 12:46+0200\n"
 "Last-Translator: cage <cage@invalid.org>\n"
 "Language-Team: Italian\n"
 "Language: it\n"
@@ -131,7 +131,7 @@ msgstr "Notifica i messaggi che menzionano l'utente."
 msgid "Error: command ~a not found"
 msgstr "Errore: comando ~a non trovato"
 
-#: src/conditions.lisp:67 src/conditions.lisp:71 src/db.lisp:2217
+#: src/conditions.lisp:67 src/conditions.lisp:71 src/db.lisp:2354
 #: src/message-rendering-utils.lisp:132 src/message-rendering-utils.lisp:166
 #: src/message-rendering-utils.lisp:171
 msgid "unknown"
@@ -141,19 +141,19 @@ msgstr "sconosciuto"
 msgid "Conversations"
 msgstr "Conversazioni"
 
-#: src/db.lisp:164
+#: src/db.lisp:170
 msgid "federated"
 msgstr "federata"
 
-#: src/db.lisp:166
+#: src/db.lisp:172
 msgid "local"
 msgstr "locale"
 
-#: src/db.lisp:168
+#: src/db.lisp:174
 msgid "direct"
 msgstr "diretta"
 
-#: src/db.lisp:170
+#: src/db.lisp:176
 msgid "home"
 msgstr "home"
 
@@ -283,6 +283,10 @@ msgstr "Rilanciato per: "
 msgid "Date: "
 msgstr "Scritto il: "
 
+#: src/message-rendering-utils.lisp:259
+msgid "The poll has expired"
+msgstr "Il sondaggio è scaduto"
+
 #: src/message-window.lisp:218
 msgid "Messages"
 msgstr "Messaggi"
@@ -364,7 +368,7 @@ msgstr "Oggetto del messaggio: "
 msgid "Visibility:"
 msgstr "Visibilità:"
 
-#: src/software-configuration.lisp:423
+#: src/software-configuration.lisp:429
 msgid "This message was crypted."
 msgstr "Questo messaggion era cifrato."
 
@@ -406,21 +410,21 @@ msgstr "Oggetto mancante"
 msgid "No message with index ~a exists."
 msgstr "Nessun messaggio esiste alla posizione ~a."
 
-#: src/thread-window.lisp:854 src/thread-window.lisp:888
+#: src/thread-window.lisp:859 src/thread-window.lisp:893
 #, lisp-format
 msgid "No next message that contains ~s exists."
 msgstr "Nessun messaggio successivo che contenga ~s esiste."
 
-#: src/thread-window.lisp:860 src/thread-window.lisp:894
+#: src/thread-window.lisp:865 src/thread-window.lisp:899
 #, lisp-format
 msgid "No previous message that contains ~s exists."
 msgstr "Nessun messaggio precedente che contenga ~s esiste."
 
-#: src/thread-window.lisp:910
+#: src/thread-window.lisp:915
 msgid "No others unread messages exist."
 msgstr "Non ci sono altri messaggi non letti."
 
-#: src/thread-window.lisp:921
+#: src/thread-window.lisp:926
 msgid "Threads"
 msgstr "Discussioni"
 

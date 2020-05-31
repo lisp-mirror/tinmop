@@ -775,9 +775,13 @@ db:renumber-timeline-message-index."
                 (original     (db-utils:db-getf fields :content ""))
                 (status-id    (db:row-message-status-id fields))
                 (header       (message-original->text-header fields)))
-      (let* ((body        (db:row-message-rendered-text fields))
-             (attachments (status-attachments->text status-id))
-             (refresh-event (make-instance 'program-events:refresh-conversations-window-event)))
+      (let* ((body          (db:row-message-rendered-text fields))
+             (attachments   (status-attachments->text status-id))
+             (refresh-event (make-instance 'program-events:refresh-conversations-window-event))
+             (poll          (db:find-poll-bound-to-status status-id))
+             (poll-text     (poll->text (db:row-id poll)
+                                        (truncate (/ (win-width-no-border object)
+                                                     2)))))
         (multiple-value-bind (reblogged-status-body reblogged-status-attachments)
             (reblogged-data fields)
           (let ((actual-body        (if (string= body reblogged-status-body)
@@ -789,6 +793,7 @@ db:renumber-timeline-message-index."
             (setf (message-window:source-text *message-window*)
                   (strcat header
                           actual-body
+                          poll-text
                           actual-attachments))
             (db:mark-status-red-p timeline-type timeline-folder status-id)
             (resync-rows-db object :redraw t)

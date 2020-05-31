@@ -692,6 +692,10 @@
    :next-in-history
    :most-recent-history-id
    :purge-history
+   :all-poll-options
+   :find-poll
+   :find-poll-option
+   :find-poll-bound-to-status
    :update-db
    :message-root
    :message-children
@@ -722,6 +726,10 @@
    :row-conversation-folder
    :row-conversation-root-status-id
    :row-conversation-ignored-p
+   :row-poll-expired-p
+   :row-expire-date
+   :row-title
+   :row-votes-count
    :row-message-reply-to-id
    :next-status-tree
    :previous-status-tree
@@ -866,6 +874,7 @@
    :+key-window+
    :+key-focus+
    :+key-mark+
+   :+key-vote-vertical-bar+
    :+key-info-dialog+
    :+key-help-dialog+
    :+key-error-dialog+
@@ -913,6 +922,7 @@
    :parse
    :load-config-file
    :external-editor
+   :vote-vertical-bar
    :crypted-mark-value
    :quick-help-header-colors
    :window-titles-ends
@@ -1555,7 +1565,8 @@
    :attachment-type->metadata
    :status-attachments->text
    :message-original->text-body
-   :message-original->text-header))
+   :message-original->text-header
+   :poll->text))
 
 (defpackage :thread-window
   (:use

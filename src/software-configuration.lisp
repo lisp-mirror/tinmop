@@ -321,6 +321,7 @@
                    attribute
                    new-message
                    mark
+                   vote-vertical-bar
                    crypted
                    histogram
                    error-dialog
@@ -414,6 +415,11 @@
 (defparameter *allowed-attachment-type*   '("unknown" "image" "gifv" "video" "audio"))
 
 ;;;; interface
+
+(defun vote-vertical-bar ()
+  (or (access:accesses *software-configuration*
+                       +key-vote-vertical-bar+)
+      "="))
 
 (defun crypted-mark-value ()
   (or (access:accesses *software-configuration*
