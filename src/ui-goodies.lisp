@@ -1245,3 +1245,45 @@ This command will remove those limits so that we can just jump to the last messa
          (folder   (thread-window:timeline-folder specials:*thread-window*)))
     (with-blocking-notify-procedure ((_ "Clearing pagination data"))
       (db:remove-pagination-status folder timeline))))
+
+(defun poll-vote ()
+  "Change timeline"
+  (labels ((valid-indices-p (choices options)
+             (let ((max-index (length options)))
+               (every (lambda (a) (and (>= a 0)
+                                       (< a max-index)))
+                      choices)))
+           (on-input-complete (choices)
+             (let ((choices-list (split-words choices)))
+               (if (or (null choices-list)
+                       (notevery (lambda (a)
+                                   (let ((idx (parse-integer a :junk-allowed t)))
+                                     (and idx
+                                          (>= idx 0))))
+                                 choices-list))
+                   (error-message
+                    (_ "Invalid choices, usa a space separated list of positive integers."))
+                   (db-utils:with-ready-database (:connect nil)
+                     (when-let* ((fields    (line-oriented-window:selected-row-fields
+                                             specials:*thread-window*))
+                                 (status-id (db:row-message-status-id fields))
+                                 (poll      (db:find-poll-bound-to-status status-id))
+                                 (poll-id   (db:row-id poll))
+                                 (event     (make-instance 'poll-vote-event
+                                                           :poll-id poll-id
+                                                           :choices choices-list))
+                                 (actual-choices (mapcar (lambda (a)
+                                                           (parse-integer a :junk-allowed t))
+                                                         choices-list))
+                                 (options        (db:all-poll-options poll-id)))
+                       (if (not (valid-indices-p actual-choices options))
+                           (error-message
+                            (format nil
+                                    (_ "Invalid choices, index choice out of range (max ~a).")
+                                    (1- (length options))))
+                           (with-blocking-notify-procedure ((_ "Voting... ")
+                                                            (_ "Choice sent."))
+                             (push-event event)))))))))
+    (ask-string-input #'on-input-complete
+                      :prompt
+                      (_ "Type the index (or space separated indices) of selected choices: "))))

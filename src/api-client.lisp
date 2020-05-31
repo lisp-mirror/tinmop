@@ -598,6 +598,16 @@ returns nil if the credentials are invalid"
   (assert (stringp id))
   (tooter:polls *client* id))
 
+(defun-w-lock poll-vote (poll-id choices)
+  *client-lock*
+  "Vote  for a  poll identified  by `poll-id',  choices is  a list  of
+numerical indices identifying the option voting for"
+  (assert (every (lambda (a)
+                   (or (numberp a)
+                       (parse-integer a :radix 10)))
+                 choices))
+  (tooter:poll-vote *client* poll-id choices))
+
 (defun-w-lock get-notifications (&key
                                    (max-id        nil)
                                    (min-id        nil)

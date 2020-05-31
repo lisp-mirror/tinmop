@@ -241,7 +241,7 @@
                 (max-title-w   (find-max-line-length all-titles))
                 (max-bar-width (- width max-title-w 6))
                 (bar-char      (swconf:vote-vertical-bar)))
-      (let ((expiredp      (db:row-poll-expired-p poll)))
+      (let ((expiredp (db:row-poll-expired-p poll)))
         (with-output-to-string (stream)
           (loop for option in options do
                (let* ((title (left-padding (db:row-title option) max-title-w))
@@ -254,6 +254,7 @@
                  (format stream "~a " title)
                  (loop for i from 0 below bar-w do
                       (princ bar-char stream))
-                 (format stream " ~a~%" (left-padding vote (- max-bar-width bar-w)))))
+                 (format stream " ~a~%" (left-padding vote (+ 4 ; size of vote percent: ' nnn%'
+                                                              (- max-bar-width bar-w))))))
           (when expiredp
             (format stream "~%~a~%" (_ "The poll has expired"))))))))

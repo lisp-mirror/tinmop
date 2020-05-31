@@ -193,7 +193,7 @@
 (defclass user-input-string-event (ask-user-input-string-event)
   ()
   (:documentation  "When  user provided  a  string  as this  event  is
-  generated. When processed it just wlii notify the condition variable
+  generated. When processed it just will notify the condition variable
   of   the  slots   `command-window:event-to-answer'  in   the  object
   `specials:*command-window*' so  that the  callee thread  can restart
   the computation with the input."))
@@ -810,6 +810,22 @@
                    (timeline  timeline)
                    (folder    folder)) object
     (db:add-to-pagination-status status-id folder timeline)))
+
+(defclass poll-vote-event (program-event)
+  ((poll-id
+    :initform nil
+    :initarg  :poll-id
+    :accessor poll-id)
+   (choices
+    :initform ()
+    :initarg  :choices
+    :accessor choices)))
+
+(defmethod process-event ((object poll-vote-event))
+  (with-accessors ((poll-id  poll-id)
+                   (choices  choices)) object
+    (tui:with-notify-errors
+      (api-client:poll-vote poll-id choices))))
 
 (defclass function-event (program-event) ())
 

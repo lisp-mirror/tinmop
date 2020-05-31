@@ -1161,6 +1161,7 @@
    :expand-thread-event
    :report-status-event
    :add-crypto-data-event
+   :poll-vote-event
    :function-event
    :dispatch-program-events
    :add-pagination-status-event
@@ -1217,6 +1218,7 @@
    :bookmark
    :unbookmark
    :polls
+   :poll-vote
    :get-notifications
    :delete-notification
    :all-mentions
@@ -1965,7 +1967,8 @@
    :crypto-export-key
    :crypto-generate-key
    :show-about-window
-   :reset-timeline-pagination))
+   :reset-timeline-pagination
+   :poll-vote))
 
 (defpackage :modules
   (:use

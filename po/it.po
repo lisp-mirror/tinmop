@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: tinmop 0.0.1\n"
 "Report-Msgid-Bugs-To: https://notabug.org/cage/tinmop/\n"
 "POT-Creation-Date: 2020-05-31 12:44+0200\n"
-"PO-Revision-Date: 2020-05-31 12:46+0200\n"
+"PO-Revision-Date: 2020-05-31 16:48+0200\n"
 "Last-Translator: cage <cage@invalid.org>\n"
 "Language-Team: Italian\n"
 "Language: it\n"
@@ -568,7 +568,7 @@ msgstr "Messaggi scaricati"
 
 #: src/ui-goodies.lisp:570
 msgid "Expanding thread"
-msgstr "Espandi l'albero deimessaggi"
+msgstr "Espandi l'albero dei messaggi"
 
 #: src/ui-goodies.lisp:592
 msgid "Downloading tags messages."

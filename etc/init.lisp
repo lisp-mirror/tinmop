@@ -207,6 +207,8 @@
 
 (define-key "V"         #'open-message-link                           *thread-keymap*)
 
+(define-key "P"         #'poll-vote                                   *thread-keymap*)
+
 (define-key "C-c u"     #'update-conversations                        *thread-keymap*)
 
 (define-key "C-c o"     #'open-conversation                           *thread-keymap*)
