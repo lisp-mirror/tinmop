@@ -1,4 +1,8 @@
 2020-05-31 cage
+	* etc/init.lisp
+	* src/api-client.lisp
+	* src/program-events.lisp
+	* src/ui-goodies.lisp
         * etc/default-theme.conf
         * etc/shared.conf
         * po/it.po
@@ -9,8 +13,9 @@
         * src/software-configuration.lisp
         * src/thread-window.lisp
 
+
         - [breaking changes]
-	  added rendering of polls.  To  allow this feature two new tables
+	  Added polls.  To  allow this feature two new tables
 	  "poll" and "poll-options" has been added to database schema.
 
 2020-05-30 cage
