@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tinmop 0.0.1\n"
 "Report-Msgid-Bugs-To: https://notabug.org/cage/tinmop/\n"
-"POT-Creation-Date: 2020-05-31 12:44+0200\n"
-"PO-Revision-Date: 2020-05-31 16:48+0200\n"
+"POT-Creation-Date: 2020-06-07 12:11+0200\n"
+"PO-Revision-Date: 2020-06-07 12:15+0200\n"
 "Last-Translator: cage <cage@invalid.org>\n"
 "Language-Team: Italian\n"
 "Language: it\n"
@@ -68,7 +68,7 @@ msgstr ""
 "Errore: non sono stato in grado di creare il socket per la cattura del "
 "codice di autorizzazione."
 
-#: src/api-client.lisp:745
+#: src/api-client.lisp:755
 #, lisp-format
 msgid "Initializing empty credentials file in ~a"
 msgstr "Inizializzo credenziali vuote (segnaposto) nel file ~a"
@@ -131,7 +131,7 @@ msgstr "Notifica i messaggi che menzionano l'utente."
 msgid "Error: command ~a not found"
 msgstr "Errore: comando ~a non trovato"
 
-#: src/conditions.lisp:67 src/conditions.lisp:71 src/db.lisp:2354
+#: src/conditions.lisp:67 src/conditions.lisp:71 src/db.lisp:2356
 #: src/message-rendering-utils.lisp:132 src/message-rendering-utils.lisp:166
 #: src/message-rendering-utils.lisp:171
 msgid "unknown"
@@ -283,7 +283,15 @@ msgstr "Rilanciato per: "
 msgid "Date: "
 msgstr "Scritto il: "
 
-#: src/message-rendering-utils.lisp:259
+#: src/message-rendering-utils.lisp:273
+msgid "Multiple choices allowed"
+msgstr "Sono ammesse scelte multiple"
+
+#: src/message-rendering-utils.lisp:274
+msgid "A single choice allowed"
+msgstr "È ammessa una sola scelta"
+
+#: src/message-rendering-utils.lisp:276
 msgid "The poll has expired"
 msgstr "Il sondaggio è scaduto"
 
@@ -813,6 +821,33 @@ msgstr "Sul programma"
 #: src/ui-goodies.lisp:1246
 msgid "Clearing pagination data"
 msgstr "Elimina i dati della paginazione"
+
+#: src/ui-goodies.lisp:1265
+msgid "Invalid choices, usa a space separated list of positive integers."
+msgstr ""
+"Il formato ammesso è costituito da una lista di interi positivi separati da "
+"spazi."
+
+#: src/ui-goodies.lisp:1282
+#, lisp-format
+msgid "Invalid choices, index choice out of range (max ~a)."
+msgstr "Intervallo dei valori delle scelte non valido (massimo ~a)."
+
+#: src/ui-goodies.lisp:1284
+msgid "Voting... "
+msgstr "Votazione in corso..."
+
+#: src/ui-goodies.lisp:1285
+msgid "Choice sent."
+msgstr "Voto inserito."
+
+#: src/ui-goodies.lisp:1294
+msgid "Type the index (or space separated indices) of selected choices: "
+msgstr "Inserisci gli indici associati alle opzioni separati da spazi: "
+
+#: src/ui-goodies.lisp:1295
+msgid "This in not a poll"
+msgstr "Questo messaggio non è un sondaggio."
 
 #: src/windows.lisp:536 src/windows.lisp:592
 msgid "OK"

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tinmop 0.0.3\n"
 "Report-Msgid-Bugs-To: https://notabug.org/cage/tinmop/\n"
-"POT-Creation-Date: 2020-05-31 12:44+0200\n"
+"POT-Creation-Date: 2020-06-07 12:11+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -64,7 +64,7 @@ msgid ""
 "Error: was not able to create server socket to listen for authorization code"
 msgstr ""
 
-#: src/api-client.lisp:745
+#: src/api-client.lisp:755
 #, lisp-format
 msgid "Initializing empty credentials file in ~a"
 msgstr ""
@@ -127,7 +127,7 @@ msgstr ""
 msgid "Error: command ~a not found"
 msgstr ""
 
-#: src/conditions.lisp:67 src/conditions.lisp:71 src/db.lisp:2354
+#: src/conditions.lisp:67 src/conditions.lisp:71 src/db.lisp:2356
 #: src/message-rendering-utils.lisp:132 src/message-rendering-utils.lisp:166
 #: src/message-rendering-utils.lisp:171
 msgid "unknown"
@@ -276,7 +276,15 @@ msgstr ""
 msgid "Date: "
 msgstr ""
 
-#: src/message-rendering-utils.lisp:259
+#: src/message-rendering-utils.lisp:273
+msgid "Multiple choices allowed"
+msgstr ""
+
+#: src/message-rendering-utils.lisp:274
+msgid "A single choice allowed"
+msgstr ""
+
+#: src/message-rendering-utils.lisp:276
 msgid "The poll has expired"
 msgstr ""
 
@@ -799,6 +807,31 @@ msgstr ""
 
 #: src/ui-goodies.lisp:1246
 msgid "Clearing pagination data"
+msgstr ""
+
+#: src/ui-goodies.lisp:1265
+msgid "Invalid choices, usa a space separated list of positive integers."
+msgstr ""
+
+#: src/ui-goodies.lisp:1282
+#, lisp-format
+msgid "Invalid choices, index choice out of range (max ~a)."
+msgstr ""
+
+#: src/ui-goodies.lisp:1284
+msgid "Voting... "
+msgstr ""
+
+#: src/ui-goodies.lisp:1285
+msgid "Choice sent."
+msgstr ""
+
+#: src/ui-goodies.lisp:1294
+msgid "Type the index (or space separated indices) of selected choices: "
+msgstr ""
+
+#: src/ui-goodies.lisp:1295
+msgid "This in not a poll"
 msgstr ""
 
 #: src/windows.lisp:536 src/windows.lisp:592
