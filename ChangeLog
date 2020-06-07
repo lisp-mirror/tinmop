@@ -1,4 +1,6 @@
 2020-06-07 cage
+	* configure
+	* src/ui-goodies.lisp
         * src/api-client.lisp
         * src/api-pleroma.lisp
         * src/db.lisp
@@ -7,6 +9,9 @@
         * src/text-utils.lisp
         * tinmop.asd
 
+	- remove duplicated urls in messages that are a reblog;
+	- fixed swapped docstrings;
+	- updated configure.
 	- moved pleroma specific API to i package :api-pleroma;
 	- renamed function: 'text-utils:left-padding-suffix' to 'text-utils:left-padding-prefix';
 	- rendered the choice index for poll's choices;
