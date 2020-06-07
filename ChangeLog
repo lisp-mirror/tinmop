@@ -10,7 +10,9 @@
 	- moved pleroma specific API to i package :api-pleroma;
 	- renamed function: 'text-utils:left-padding-suffix' to 'text-utils:left-padding-prefix';
 	- rendered the choice index for poll's choices;
-	- shown if a poll allows multiple choiches.
+	- shown if a poll allows multiple choiches;
+	- printed an error  to the user when trying to  vote for a message
+	  that does not contains a poll.
 
 2020-05-31 cage
 	* etc/init.lisp
