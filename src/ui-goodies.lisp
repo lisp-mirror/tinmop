@@ -873,9 +873,7 @@ Force the checking for new message in the thread the selected message belong."
                 (push-event event)))))))
 
 (defun open-message-attach ()
-  "Open message links window
-
-Browse and optionally open the links the messages contains."
+  "Open message attachments window"
   (when-let* ((win              specials:*thread-window*)
               (selected-message (line-oriented-window:selected-row-fields win)))
     (open-attach-window:init (db:row-message-status-id selected-message))
@@ -902,7 +900,9 @@ Browse and optionally open the links the messages contains."
   (close-window-and-return-to-threads specials:*open-attach-window*))
 
 (defun open-message-link ()
-  "Open message attachments window"
+  "Open message links window
+
+Browse and optionally open the links the messages contains."
   (when-let* ((win              specials:*thread-window*)
               (selected-message (line-oriented-window:selected-row-fields win)))
     (open-message-link-window:init (db:row-message-status-id selected-message))

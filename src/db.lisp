@@ -1660,7 +1660,7 @@ reblogged (if exists)."
             (append res
                     (all-attachments-urls-to-status (row-message-status-id reblogged-status)
                                                     :add-reblogged-urls add-reblogged-urls))))
-    res))
+    (remove-duplicates res :test #'string=)))
 
 (defun debug-print-all-tree (timeline-type)
   (let ((all-trees  (remove-if-not (lambda (tree)
