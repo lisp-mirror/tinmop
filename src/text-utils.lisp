@@ -185,7 +185,7 @@
                        :initial-element padding-char)
           str))
 
-(defun left-padding-suffix (str total-size &key (padding-char #\Space))
+(defun left-padding-prefix (str total-size &key (padding-char #\Space))
   (make-string (max 0 (- total-size (length str)))
                :initial-element padding-char))
 

@@ -642,7 +642,7 @@ the latest 15 mentions)."
 (defun-w-lock delete-notification (notification-id)
     *client-lock*
   "Delete a notification identified by `notification-id'"
-  (tooter:delete-notification-deprecated *client* notification-id))
+  (api-pleroma:delete-notification *client* notification-id))
 
 (defun sort-id< (list)
   "Sort entities by id in descending order"

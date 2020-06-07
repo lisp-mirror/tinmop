@@ -78,6 +78,7 @@
                (:file "specials")
                (:file "complete")
                (:file "program-events")
+               (:file "api-pleroma")
                (:file "api-client")
                (:file "hooks")
                (:file "keybindings")

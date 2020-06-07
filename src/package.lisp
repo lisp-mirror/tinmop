@@ -340,7 +340,7 @@
    :right-padding
    :right-padding-suffix
    :left-padding
-   :left-padding-suffix
+   :left-padding-prefix
    :ellipsize
    :justify-monospaced-text
    :flush-left-mono-text
@@ -727,8 +727,9 @@
    :row-conversation-root-status-id
    :row-conversation-ignored-p
    :row-poll-expired-p
-   :row-expire-date
+   :row-poll-multiple-vote-p
    :row-title
+   :row-expire-date
    :row-votes-count
    :row-message-reply-to-id
    :next-status-tree
@@ -1167,6 +1168,15 @@
    :add-pagination-status-event
    :status-id
    :timeline))
+
+(defpackage :api-pleroma
+  (:use
+   :cl
+   :alexandria
+   :config
+   :constants)
+  (:export
+   :delete-notification))
 
 (defpackage :api-client
   (:use

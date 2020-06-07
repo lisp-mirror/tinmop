@@ -233,28 +233,44 @@
 
 (defun poll->text (poll-id width)
   (when poll-id
-    (when-let* ((poll          (db:find-poll poll-id))
-                (options       (db:all-poll-options poll-id))
-                (all-titles    (loop for option in options collect (db:row-title option)))
-                (vote-sum      (reduce #'+
+    (when-let* ((poll                 (db:find-poll poll-id))
+                (options              (db:all-poll-options poll-id))
+                (all-titles           (loop for option in options collect
+                                         (db:row-title option)))
+                (all-rendered-indices (loop for idx from 0 below (length all-titles) collect
+                                          (format nil "[~a] " idx)))
+                (vote-sum             (reduce #'+
                                        (mapcar #'db:row-votes-count options)))
-                (max-title-w   (find-max-line-length all-titles))
-                (max-bar-width (- width max-title-w 6))
-                (bar-char      (swconf:vote-vertical-bar)))
-      (let ((expiredp (db:row-poll-expired-p poll)))
+                (max-title-w          (find-max-line-length all-titles))
+                (max-index-w          (find-max-line-length all-rendered-indices))
+                (max-bar-width        (- width
+                                         max-title-w
+                                         max-index-w
+                                         6))
+                (bar-char             (swconf:vote-vertical-bar)))
+      (let ((expiredp              (db:row-poll-expired-p       poll))
+            (multiple-vote-allowed (db:row-poll-multiple-vote-p poll)))
         (with-output-to-string (stream)
-          (loop for option in options do
-               (let* ((title (left-padding (db:row-title option) max-title-w))
-                      (rate  (handler-case
-                                 (/ (db:row-votes-count option)
-                                    vote-sum)
-                               (error () 0)))
-                      (vote  (left-padding (format nil "~a%" (* 100 rate)) 4))
-                      (bar-w (truncate (* rate max-bar-width))))
-                 (format stream "~a " title)
+          (loop
+             for title  in all-titles
+             for index  in all-rendered-indices
+             for option in options
+             do
+               (let* ((padded-title (left-padding title max-title-w))
+                      (padded-index (left-padding index max-index-w))
+                      (rate         (handler-case
+                                        (/ (db:row-votes-count option)
+                                           vote-sum)
+                                      (error () 0)))
+                      (vote         (left-padding (format nil "~a%" (* 100 rate)) 4))
+                      (bar-w        (truncate (* rate max-bar-width))))
+                 (format stream "~a~a " padded-index padded-title)
                  (loop for i from 0 below bar-w do
                       (princ bar-char stream))
                  (format stream " ~a~%" (left-padding vote (+ 4 ; size of vote percent: ' nnn%'
                                                               (- max-bar-width bar-w))))))
+          (if multiple-vote-allowed
+              (format stream "~%~a~%" (_ "Multiple choices allowed"))
+              (format stream "~%~a~%" (_ "A single choice allowed")))
           (when expiredp
             (format stream "~%~a~%" (_ "The poll has expired"))))))))

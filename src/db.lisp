@@ -1459,9 +1459,11 @@ row."
 
 (gen-access-message-row poll-expired-p              :expired)
 
-(gen-access-message-row expire-date                 :expire-date)
+(gen-access-message-row poll-multiple-vote-p        :multiple)
 
 (gen-access-message-row title                       :title)
+
+(gen-access-message-row expire-date                 :expire-date)
 
 (defun row-votes-count (row)
   (and row (db-getf row :votes-count 0)))
