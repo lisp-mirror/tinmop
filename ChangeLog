@@ -1,3 +1,17 @@
+2020-06-07 cage
+        * src/api-client.lisp
+        * src/api-pleroma.lisp
+        * src/db.lisp
+        * src/message-rendering-utils.lisp
+        * src/package.lisp
+        * src/text-utils.lisp
+        * tinmop.asd
+
+	- moved pleroma specific API to i package :api-pleroma;
+	- renamed function: 'text-utils:left-padding-suffix' to 'text-utils:left-padding-prefix';
+	- rendered the choice index for poll's choices;
+	- shown if a poll allows multiple choiches.
+
 2020-05-31 cage
 	* etc/init.lisp
 	* src/api-client.lisp
@@ -12,7 +26,6 @@
         * src/package.lisp
         * src/software-configuration.lisp
         * src/thread-window.lisp
-
 
         - [breaking changes]
 	  Added polls.  To  allow this feature two new tables
