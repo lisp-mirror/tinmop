@@ -18,7 +18,7 @@
 (defsystem :tinmop
   :author      "cage"
   :license     "GPLv3"
-  :version     "0.0.3"
+  :version     "0.0.4"
   :pathname    "src"
   :serial      t
   :depends-on (:alexandria

@@ -15,7 +15,7 @@ dnl You should have received a copy of the GNU General Public License
 dnl along with this program.
 dnl If not, see [[http://www.gnu.org/licenses/][http://www.gnu.org/licenses/]].
 
-AC_INIT([tinmop],[0.0.3],[https://notabug.org/cage/tinmop/],[tinmop])
+AC_INIT([tinmop],[0.0.4],[https://notabug.org/cage/tinmop/],[tinmop])
 
 AM_INIT_AUTOMAKE([-Wall foreign])
 
