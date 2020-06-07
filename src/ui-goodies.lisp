@@ -1247,7 +1247,7 @@ This command will remove those limits so that we can just jump to the last messa
       (db:remove-pagination-status folder timeline))))
 
 (defun poll-vote ()
-  "Change timeline"
+  "Vote in a poll"
   (labels ((valid-indices-p (choices options)
              (let ((max-index (length options)))
                (every (lambda (a) (and (>= a 0)
@@ -1284,6 +1284,12 @@ This command will remove those limits so that we can just jump to the last messa
                            (with-blocking-notify-procedure ((_ "Voting... ")
                                                             (_ "Choice sent."))
                              (push-event event)))))))))
-    (ask-string-input #'on-input-complete
-                      :prompt
-                      (_ "Type the index (or space separated indices) of selected choices: "))))
+    (when-let* ((fields (line-oriented-window:selected-row-fields
+                         specials:*thread-window*))
+                (status-id (db:row-message-status-id fields)))
+      (let ((poll (db:find-poll-bound-to-status status-id)))
+        (if poll
+            (ask-string-input #'on-input-complete
+                              :prompt
+                              (_ "Type the index (or space separated indices) of selected choices: "))
+            (error-message (_ "This in not a poll")))))))
