@@ -10,7 +10,7 @@ tinmop [OPTION]...
 
 .SH "Description"
 .PP
-This document assumes basic knowledge of how mastodon works. More
+This document assumes basic knowledge of how fediverse works. More
 information about this topic can be found on the
 official website (\fIhttps://docs.joinmastodon.org/\fP).
 
@@ -23,6 +23,9 @@ social network
 Without options the program will start a terminal interface and will
 try to connect to your instance (see \fIConfiguration\fP)
 
+.TP
+\fB-m, --notify-mentions ARG       \fP
+Notify messages that mentions the user
 .TP
 \fB-R, --reset-timeline-pagination \fP
 Reset the timeline pagination. By default the new toots are fetched

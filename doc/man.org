@@ -8,7 +8,7 @@
 
 * Description
 
-  This document assumes basic knowledge of how mastodon works. More
+  This document assumes basic knowledge of how fediverse works. More
   information about this topic can be found on the
   official website ([[https://docs.joinmastodon.org/]]).
 
@@ -16,9 +16,11 @@
   social network
 
 * Options
+
   Without options the program will start a terminal interface and will
   try to connect to your instance (see [[Configuration]])
 
+  + -m, --notify-mentions ARG        :: Notify messages that mentions the user
   + -R, --reset-timeline-pagination  ::
     Reset the timeline pagination. By default the new toots are fetched
     starting from the last one downloaded from the instance, this switch

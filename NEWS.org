@@ -2,6 +2,9 @@
 
   - version 0.0.4
     - Added polls voting;
+    - added the possibility to force expanding of a message tree;
+    - added  optional notification  of  statuses  mentioning the  user
+      (--notify-mentions);
     - many bug fixed.
 
 * 2020-05-18

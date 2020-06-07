@@ -51,7 +51,7 @@
 	- fixed  bug  that prevented  statuses  missing  attachments when  the
 	  status was reblogged.
 	- added optional notification of statuses mentioning the user;
-	- protected reblogged timeline from accidental deletiion;
+	- protected reblogged timeline from accidental deletion;
 	- added the possibility to force expanding of a message tree;
 	- rearranged compilation  order to prevent warning  about command line
 	  switch;
