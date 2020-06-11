@@ -95,6 +95,9 @@
 (define-constant +table-ignored-status+         :ignored-status
   :test #'eq)
 
+(define-constant +table-skipped-status+         :skipped-status
+  :test #'eq)
+
 (define-constant +table-pagination-status+      :pagination-status
   :test #'eq)
 
@@ -455,6 +458,15 @@
                            " \"created-at\"       TEXT    NOT NULL"
                            +make-close+)))
 
+(defun make-skipped-status ()
+  (query-low-level (strcat (prepare-table +table-skipped-status+ :autoincrementp t)
+                           " \"status-id\" TEXT NOT NULL, "
+                           " timeline      TEXT NOT NULL, "
+                           " folder        TEXT NOT NULL, "
+                           ;; timestamp
+                           " \"created-at\"       TEXT    NOT NULL"
+                           +make-close+)))
+
 (defun make-pagination-status ()
   (query-low-level (strcat (prepare-table +table-pagination-status+ :autoincrementp t)
                            " \"status-id\" TEXT NOT NULL, "
@@ -468,6 +480,7 @@
   (create-table-index +table-followed-user+       '(:user-id))
   (create-table-index +table-subscribed-tag+      '(:id))
   (create-table-index +table-ignored-status+      '(:folder :timeline :status-id))
+  (create-table-index +table-skipped-status+      '(:folder :timeline :status-id))
   (create-table-index +table-pagination-status+   '(:folder :timeline :status-id))
   (create-table-index +table-conversation+        '(:id))
   (create-table-index +table-cache+               '(:id :key)))
@@ -489,6 +502,8 @@
               +table-attachment+
               +table-conversation+
               +table-pagination-status+
+              +table-ignored-status+
+              +table-skipped-status+
               +table-poll-option+
               +table-poll+))
 
@@ -511,6 +526,7 @@
     (make-followed-user)
     (make-status)
     (make-ignored-status)
+    (make-skipped-status)
     (make-attachment)
     (make-subscribed-tag)
     (make-tag-histogram)
@@ -563,6 +579,24 @@
 (defun delete-by-id (table id)
   "Delete a row from a `table' by column named `:id' with value `id'"
   (query (delete-from table (where (:= :id id)))))
+
+(defun account-ignored-p (account-id)
+  "Returns non nil if this account has been setted as ignored by the user"
+  (let* ((db-account-row  (fetch-from-id :account account-id))
+         (account-known-p db-account-row))
+    (and account-known-p
+         (db-getf db-account-row
+                  :ignoredp nil))))
+
+(defun user-ignored-p (account-id)
+  "Returns non nil if this account must be ignored"
+  (or (db:account-ignored-p account-id)
+      (when-let ((ignore-regexps (swconf:ignore-users-regexps))
+                 (username (db:user-id->username account-id)))
+        (loop for ignore-re in ignore-regexps do
+             (when (cl-ppcre:scan ignore-re username)
+               (return-from user-ignored-p t)))
+        nil)))
 
 (defun acct->user (acct)
   "Convert `acct' (acct is synonyym  for username in mastodon account)
@@ -995,10 +1029,6 @@ than (swconf:config-purge-history-days-offset) days in the past"
                              (:and (:= :day  actual-day)
                                    (:= :tag  tag)))))))))
 
-(defun account-ignored-p (account-id)
-  (db-getf (fetch-from-id :account account-id)
-           :ignoredp nil))
-
 (defmethod update-db ((object tooter:status)
                       &key
                         (timeline +local-timeline+)
@@ -1050,7 +1080,7 @@ than (swconf:config-purge-history-days-offset) days in the past"
            (reblog-id          (if parent
                                    (prepare-for-db (tooter:id parent))
                                    (prepare-for-db nil)))
-           (account-ignored-p  (account-ignored-p account-id))
+           (account-ignored-p  (user-ignored-p account-id))
            (status-ignored-p   (status-ignored-p id folder timeline)))
       (when (not (and skip-ignored-p
                       (or status-ignored-p
@@ -2093,6 +2123,16 @@ account that wrote the status identified by `status-id'"
                         (:= :folder    folder)
                         (:= :timeline  timeline))))))
 
+(defun status-skipped-p (status-id folder timeline)
+  "Return non nil if this status should be skipped because belong to an ignored account
+(id timeline and  folder is the tuple that is primary key for table
+:status)"
+  (query (select :*
+           (from +table-skipped-status+)
+           (where (:and (:= :status-id status-id)
+                        (:= :folder    folder)
+                        (:= :timeline  timeline))))))
+
 (defmacro with-db-current-timestamp ((timestamp) &body body)
   `(let ((,timestamp (prepare-for-db (local-time-obj-now))))
      ,@body))
@@ -2103,6 +2143,16 @@ account that wrote the status identified by `status-id'"
   (when (not (status-ignored-p status-id folder timeline))
     (with-db-current-timestamp (now)
       (query (make-insert +table-ignored-status+
+                          (:status-id :folder :timeline :created-at)
+                          (status-id  folder  timeline  now))))))
+
+(defun add-to-status-skipped (status-id folder timeline)
+  "Skips this  status (id timeline and folder is the tuple that is
+primary key for table :status), if in this table the
+status has been downloaded from the net and ignored because belog to an ignored account."
+  (when (not (status-skipped-p status-id folder timeline))
+    (with-db-current-timestamp (now)
+      (query (make-insert +table-skipped-status+
                           (:status-id :folder :timeline :created-at)
                           (status-id  folder  timeline  now))))))
 

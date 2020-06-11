@@ -501,7 +501,7 @@ and if fetch local (again, to server) statuses only."
     ((string= timeline db:+home-timeline+)
      (values :home nil))))
 
-(defun update-current-timeline ()
+(defun update-current-timeline (&optional (recover-count 0))
   "Update current timeline
 
 This  command  also checks  notifications  about  mentioning the  user
@@ -517,8 +517,10 @@ folder \"mentions\"."
                  (client:update-timeline timeline
                                          kind
                                          folder
-                                         :min-id max-id
-                                         :local  localp)
+                                         :recover-from-skipped-statuses t
+                                         :recover-count                 recover-count
+                                         :min-id                        max-id
+                                         :local                         localp)
                  (let ((update-mentions-event (make-instance 'update-mentions-event))
                        (refresh-event         (make-instance 'refresh-thread-windows-event)))
                    ;; updating home also triggers the checks for mentions
@@ -530,7 +532,7 @@ folder \"mentions\"."
                           :ending-message (_ "Messages downloaded.")
                           :life-start     (* (swconf:config-notification-life) 5))))))
 
-(defun update-current-timeline-backwards ()
+(defun update-current-timeline-backwards (&optional (recover-count 0))
   "Update current timeline backwards
 
 Starting from the oldest toot and going back."
@@ -544,8 +546,10 @@ Starting from the oldest toot and going back."
                  (client:update-timeline timeline
                                          kind
                                          folder
-                                         :max-id min-id
-                                         :local  localp)
+                                         :recover-count                 recover-count
+                                         :recover-from-skipped-statuses t
+                                         :max-id                        min-id
+                                         :local                         localp)
                  (let ((refresh-event (make-instance 'refresh-thread-windows-event)))
                    (push-event refresh-event)))))
         (notify-procedure #'update

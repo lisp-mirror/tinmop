@@ -17,57 +17,60 @@
 
 (in-package :software-configuration)
 
-;; CONFIG               := (ENTRIES)*
-;; ENTRIES              := COMMENT*
+;; CONFIG                := (ENTRIES)*
+;; ENTRIES               := COMMENT*
 ;;                         (USE-FILE
+;;                          | IGNORE-USER-RE-ASSIGN
 ;;                          | COLOR-RE-ASSIGN
 ;;                          | SERVER-ASSIGN
 ;;                          | USERNAME-ASSIGN
 ;;                          | GENERIC-ASSIGN)
 ;;                         COMMENT*
-;; SERVER-ASSIGN        := SERVER-KEY BLANKS ASSIGN BLANKS GENERIC-VALUE BLANKS
-;; USERNAME-ASSIGN      := USERNAME-KEY BLANKS ASSIGN BLANKS GENERIC-VALUE BLANKS
-;; GENERIC-ASSIGN       := (and key blanks assign blanks
+;; SERVER-ASSIGN         := SERVER-KEY BLANKS ASSIGN BLANKS GENERIC-VALUE BLANKS
+;; USERNAME-ASSIGN       := USERNAME-KEY BLANKS ASSIGN BLANKS GENERIC-VALUE BLANKS
+;; GENERIC-ASSIGN        := (and key blanks assign blanks
 ;;                           (or quoted-string
 ;;                               hexcolor
 ;;                               colorname
 ;;                               generic-value) ; the order in this list *is* important
 ;;                         blanks)
-;; COLOR-RE-ASSIGN      := COLOR-RE-KEY ASSIGN REGEXP FG-COLOR (? ATTRIBUTE-VALUE)
-;; USE-FILE             := (AND USE BLANKS FILEPATH BLANKS)
-;; KEY                  := FIELD (FIELD-SEPARATOR KEY)*
-;; BLANKS               := (BLANK)*
-;; FILEPATH             := QUOTED-STRING
-;; USE                  := "use"
-;; SERVER-KEY           := "server"
-;; USERNAME-KEY         := "username"
-;; COLOR-RE-KEY         := "color-regexp"
-;; REGEXP               := QUOTED-STRING
-;; QUOTED-STRING        := #\" (not #\") #\"
-;; FIELD                := ( (or ESCAPED-CHARACTER
+;; IGNORE-USER-RE-ASSIGN := IGNORE-USER-RE-KEY ASSIGN REGEXP
+;; COLOR-RE-ASSIGN       := COLOR-RE-KEY ASSIGN REGEXP FG-COLOR (? ATTRIBUTE-VALUE)
+;; USE-FILE              := (AND USE BLANKS FILEPATH BLANKS)
+;; KEY                   := FIELD (FIELD-SEPARATOR KEY)*
+;; BLANKS                := (BLANK)*
+;; FILEPATH              := QUOTED-STRING
+;; USE                   := "use"
+;; SERVER-KEY            := "server"
+;; USERNAME-KEY          := "username"
+;; COLOR-RE-KEY          := "color-regexp"
+;; IGNORE-USER-RE-KEY    := "ignore-user-regexp"
+;; REGEXP                := QUOTED-STRING
+;; QUOTED-STRING         := #\" (not #\") #\"
+;; FIELD                 := ( (or ESCAPED-CHARACTER
 ;;                               (not #\# ASSIGN BLANK FIELD-SEPARATOR) )*
-;; COMMENT              := BLANKS #\# (not #\Newline)* BLANKS
-;; FIELD-SEPARATOR      := #\.
-;; GENERIC-VALUE        := KEY
-;; ASSIGN               := #\=
-;; BLANK                := (or #\space #\Newline #\Tab)
-;; BG-COLOR             := COLOR
-;; FG-COLOR             := COLOR
-;; COLOR                := HEX-COLOR | COLOR-NAME
-;; HEX-COLOR            := HEXCOLOR-PREFIX
+;; COMMENT               := BLANKS #\# (not #\Newline)* BLANKS
+;; FIELD-SEPARATOR       := #\.
+;; GENERIC-VALUE         := KEY
+;; ASSIGN                := #\=
+;; BLANK                 := (or #\space #\Newline #\Tab)
+;; BG-COLOR              := COLOR
+;; FG-COLOR              := COLOR
+;; COLOR                 := HEX-COLOR | COLOR-NAME
+;; HEX-COLOR             := HEXCOLOR-PREFIX
 ;;                         HEXDIGIT HEXDIGIT -> red
 ;;                         HEXDIGIT HEXDIGIT -> green
 ;;                         HEXDIGIT HEXDIGIT -> blue
-;; ESCAPED-CHARACTER    := #\\ any-character
-;; HEXCOLOR-PREFIX      := #\#
-;; HEX-DIGIT            := (and (character-ranges #\0 #\9)
+;; ESCAPED-CHARACTER     := #\\ any-character
+;; HEXCOLOR-PREFIX       := #\#
+;; HEX-DIGIT             := (and (character-ranges #\0 #\9)
 ;;                              (character-ranges #\a #\f)
 ;;                              (character-ranges #\A #\f)
-;; ATTRIBUTE-VALUE      := "bold"
+;; ATTRIBUTE-VALUE       := "bold"
 ;;                         | "italic"
 ;;                         | "underline"
 ;;                         | "blink"
-;; COLOR-NAME           := "black"
+;; COLOR-NAME            := "black"
 ;;                         | "red"
 ;;                         | "green"
 ;;                         | "yellow"
@@ -224,6 +227,7 @@
                                 (and color-name-p       color)
                                 (and (not color-name-p) color)
                                 attributes))))
+
 (defrule attribute-value (or "bold"
                              "italic"
                              "underline"
@@ -238,6 +242,14 @@
          (? (and attribute-value blanks)))
   (:function remove-if-null)
   (:function build-color-re-assign))
+
+(defrule ignore-user-re-key "ignore-user-regexp"
+  (:constant :ignore-user-re))
+
+(defrule ignore-user-re-assign
+    (and ignore-user-re-key blanks
+         assign blanks regexp blanks)
+  (:function (lambda (a) (list (first a) (fifth a)))))
 
 (defrule server-key "server"
   (:constant :server))
@@ -271,6 +283,7 @@
     (and (* comment)
          (or use-file
              color-re-assign
+             ignore-user-re-assign
              server-assign
              username-assign
              generic-assign)
@@ -376,6 +389,7 @@
                    read
                    unread
                    color-re
+                   ignore-user-re
                    purge-history-days-offset
                    purge-cache-days-offset)
 
@@ -388,7 +402,8 @@
                (let ((key   (first  entry))
                      (value (second entry)))
                  (cond
-                   ((eq +key-color-re+ key)
+                   ((or (eq +key-color-re+ key)
+                        (eq +key-ignore-user-re+ key))
                     (setf (access:accesses *software-configuration* key)
                           (append (access:accesses *software-configuration* key)
                                   (list value))))
@@ -519,6 +534,10 @@
 (defun color-regexps ()
   (access:accesses *software-configuration*
                    +key-color-re+))
+
+(defun ignore-users-regexps ()
+  (access:accesses *software-configuration*
+                   +key-ignore-user-re+))
 
 (defmacro gen-win-key-access (fn-suffix key)
   `(defun ,(misc:format-fn-symbol t "win-~a" fn-suffix) (win-key)
@@ -770,7 +789,7 @@
                    +key-value+))
 
 (defun date-fmt (window-key)
-  (let* ((raw      (access:accesses *software-configuration*
+  (let* ((raw (access:accesses *software-configuration*
                                     window-key
                                     +key-date-format+
                                     +key-value+)))

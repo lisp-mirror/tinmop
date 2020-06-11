@@ -681,6 +681,8 @@
    :fetch-from-id
    :fetch-single
    :delete-by-id
+   :account-ignored-p
+   :user-ignored-p
    :acct->user
    :acct->id
    :username->id
@@ -783,7 +785,9 @@
    :all-unfollowed-usernames
    :all-ignored-usernames
    :status-ignored-p
+   :status-skipped-p
    :add-to-status-ignored
+   :add-to-status-skipped
    :add-to-followers
    :remove-from-followers
    :forget-all-statuses-marked-deleted
@@ -936,6 +940,7 @@
    :quote-char
    :max-attachments-allowed
    :color-regexps
+   :ignore-users-regexps
    :win-bg
    :win-fg
    :win-height
@@ -1094,6 +1099,7 @@
   (:export
    :+standard-event-priority+
    :+minimum-event-priority+
+   :+maximum-event-priority+
    :*process-events-immediately*
    :program-event
    :event-id

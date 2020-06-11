@@ -31,6 +31,8 @@
 
 (define-constant +minimum-event-priority+   -1 :test #'=)
 
+(define-constant +maximum-event-priority+   -2 :test #'=)
+
 ;; keep  this  function  stricly  monotonic  otherwise  the  order  of
 ;; elements in priority queue is going to be messed up
 (defun-w-lock next-id () *id-lock*
@@ -86,8 +88,14 @@
     (if same-priority-p
         (< (event-id a)
            (event-id b))
-        (< (priority a)
-           (priority b)))))
+        (cond
+          ((= (priority a) +maximum-event-priority+)
+           t)
+          ((= (priority b) +maximum-event-priority+)
+           nil)
+          (t
+           (< (priority a)
+              (priority b)))))))
 
 (defun queue-equals-predicate (a b)
   (= (event-id a)
@@ -259,43 +267,86 @@
   (let ((win (payload object)))
     (mtree:remove-child specials:*main-window* win)))
 
+(define-constant +max-recover-count+ 3)
+
 (defclass save-timeline-in-db-event (program-event)
-  ((timeline-type
-   :initform nil
-   :initarg  :timeline-type
-   :accessor timeline-type)
+  ((kind
+    :initform nil
+    :initarg  :kind
+    :accessor kind)
+   (timeline-type
+    :initform nil
+    :initarg  :timeline-type
+    :accessor timeline-type)
    (folder
-   :initform nil
-   :initarg  :folder
-   :accessor folder)
+    :initform nil
+    :initarg  :folder
+    :accessor folder)
    (local
-   :initform nil
-   :initarg  :localp
-   :reader   localp
-   :writer   (setf local))
+    :initform nil
+    :initarg  :localp
+    :reader   localp
+    :writer   (setf local))
    (min-id
-   :initform nil
-   :initarg  :min-id
-   :accessor min-id)))
+    :initform nil
+    :initarg  :min-id
+    :accessor min-id)
+   (max-id
+    :initform nil
+    :initarg  :max-id
+    :accessor max-id)
+   (recover-from-skipped-statuses
+    :initform nil
+    :initarg  :recover-from-skipped-statuses
+    :reader   recover-from-skipped-statuses-p
+    :writer   recover-from-skipped-statuses)
+   (recover-count
+    :initform 0
+    :initarg  :recover-count
+    :accessor recover-count)))
 
 (defmethod process-event ((object save-timeline-in-db-event))
   "Update a timeline, save messages, performs topological sorts"
-  (let ((statuses      (payload       object))
-        (timeline-type (timeline-type object))
-        (folder        (folder        object)))
-    #+debug-mode
-    (let ((dump (with-output-to-string (stream)
-                  (mapcar (lambda (toot) (tooter::present toot stream))
-                          statuses))))
-      (dbg "statuses ~a" dump))
-    (loop for status in statuses do
-         (db:update-db status
-                       :timeline       timeline-type
-                       :folder         folder
-                       :skip-ignored-p t))
-    (db:renumber-timeline-message-index timeline-type
-                                        folder
-                                        :account-id nil)))
+  (let ((statuses      (payload object))
+        (ignored-count 0))
+    (with-accessors ((timeline-type timeline-type)
+                     (folder        folder)
+                     (min-id        min-id)
+                     (max-id        max-id)
+                     (kind          kind)
+                     (recover-count recover-count)) object
+      #+debug-mode
+      (let ((dump (with-output-to-string (stream)
+                    (mapcar (lambda (toot) (tooter::present toot stream))
+                            statuses))))
+        (dbg "statuses ~a" dump))
+      (loop for status in statuses do
+           (let ((account-id (tooter:id (tooter:account status)))
+                 (status-id  (tooter:id status)))
+             (when (and (db:user-ignored-p account-id)
+                        (not (db:status-skipped-p status-id folder timeline-type)))
+               (db:add-to-status-skipped status-id folder timeline-type)
+               (incf ignored-count)))
+           (db:update-db status
+                         :timeline       timeline-type
+                         :folder         folder
+                         :skip-ignored-p t))
+      (db:renumber-timeline-message-index timeline-type
+                                          folder
+                                          :account-id nil)
+      (when (and recover-count
+                 (< recover-count +max-recover-count+)
+                 (> ignored-count 0)
+                 (recover-from-skipped-statuses-p object))
+        (let ((going-backward  max-id)
+              (going-forward   (or (and (null max-id)
+                                        (null min-id))
+                                   min-id)))
+          (cond
+            (going-forward
+             (ui:update-current-timeline (1+ recover-count)))
+            (going-backward
+             (ui:update-current-timeline-backwards (1+ recover-count)))))))))
 
 (defclass fetch-remote-status-event (program-event) ())
 
