@@ -1,3 +1,12 @@
+* 2020-06-11
+  - The software try to skips over statuses authored from an ignored user
+  - in the configuration file the directive
+    + ~ignore-user-regexp~  can be used  in the configuration  file to
+      ignore users;  the value  of this variable  should be  a regular
+      expression that  should matches the  username, if a  match occurs
+      the user is ignored.
+
+
 * 2020-06-07
 
   - version 0.0.4

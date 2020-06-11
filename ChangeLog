@@ -1,3 +1,25 @@
+2020-06-11 cage
+	* etc/shared.conf
+	* src/api-client.lisp
+	* src/db.lisp
+	* src/package.lisp
+	* src/program-events.lisp
+	* src/software-configuration.lisp
+	* src/ui-goodies.lisp
+
+	- fixed skipping of ignored users
+
+	When a set  of downloaded statuses contains one or  more status from
+	an ignored user restarts the download process again starting from the
+	last (or first, if going backward) downloaded status (ordered by ID).
+
+	This way we could skip over a bunch of ignored status.
+
+	The number of download restarting iteration is limited to 3
+
+	- added a  configuration directive  to ignore  usernames that  match a
+	regular exception.
+
 2020-06-07 cage
 	* configure
 	* src/ui-goodies.lisp
