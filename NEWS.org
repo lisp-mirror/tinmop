@@ -1,3 +1,9 @@
+* 2020-06-12
+
+  - the downloading of messages should  be faster but now some threads
+    do not get automatic expansions.  Thread messages expansion can be
+    requested with a command, bound - by default- to "R".
+
 * 2020-06-11
   - The software try to skips over statuses authored from an ignored user
   - in the configuration file the directive

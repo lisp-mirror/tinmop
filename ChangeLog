@@ -7,10 +7,12 @@
 	* src/software-configuration.lisp
 	* src/thread-window.lisp
 	* src/tui-utils.lisp
+	* src/ui-goodies.lisp
 
-        - do not climb the thread  (probably colud be changed by a command
-	line switch in the future) when fetching messages.
-	- configurable color for root of rendered trees.
+        - do not climb the thread  (probably could be changed by a command
+	line switch in the future) when fetching messages;
+	- configurable color for root of rendered trees;
+	- made expanding thread command non blocking.
 
 2020-06-11 cage
 	* etc/shared.conf
