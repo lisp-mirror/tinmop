@@ -873,6 +873,7 @@
    :+key-background+
    :+key-foreground+
    :+key-width+
+   :+key-root+
    :+key-height+
    :+key-value+
    :+key-new-message-mark+
@@ -1044,6 +1045,7 @@
    :*check-follow-requests*
    :*reset-timeline-pagination*
    :*notify-mentions*
+   :*update-timeline-climb-message-tree*
    :manage-opts))
 
 (defpackage :specials

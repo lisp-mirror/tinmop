@@ -318,8 +318,10 @@ authorizations was performed with success."
                                           :since-id   since-id
                                           :min-id     min-id
                                           :limit      limit))
-         (trees             (flatten (loop for node-status in timeline-statuses collect
-                                          (expand-status-tree node-status))))
+         (trees             (if command-line:*update-timeline-climb-message-tree*
+                                (flatten (loop for node-status in timeline-statuses collect
+                                              (expand-status-tree node-status)))
+                                timeline-statuses))
          (event             (make-instance 'program-events:save-timeline-in-db-event
                                            :payload       trees
                                            :kind          kind
@@ -368,8 +370,12 @@ authorizations was performed with success."
     (let* ((timeline-statuses         (get-timeline-tag tag
                                                         :min-id min-id
                                                         :limit  limit))
-           (trees                     (flatten (loop for node-status in timeline-statuses collect
-                                                    (expand-status-tree node-status))))
+           (trees                     (if command-line:*update-timeline-climb-message-tree*
+                                          (flatten (loop
+                                                      for node-status in timeline-statuses
+                                                      collect
+                                                        (expand-status-tree node-status)))
+                                          timeline-statuses))
            (save-timeline-in-db-event (make-instance 'program-events:save-timeline-in-db-event
                                                      :payload       trees
                                                      :timeline-type db:+federated-timeline+

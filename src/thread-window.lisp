@@ -33,6 +33,10 @@
     :initform "!"
     :initarg  :sensitive-text
     :accessor sensitive-text)
+   (root-text
+    :initform "*"
+    :initarg  :root-text
+    :accessor root-text)
    (favourite-text-off
     :initform "~+1"
     :initarg  :favourite-text-off
@@ -45,6 +49,10 @@
     :initform "!"
     :initarg  :sensitive-text-off
     :accessor sensitive-text-off)
+   (root-text-off
+    :initform "*"
+    :initarg  :root-text-off
+    :accessor root-text-off)
    (read-fg
     :initform :black
     :initarg  :read-fg
@@ -236,7 +244,8 @@
                                       :attributes (attribute-invisible))))))
       (set-symbol 'favourite-text 'favourite-text-off swconf:+key-favourite+)
       (set-symbol 'sensitive-text 'sensitive-text-off swconf:+key-sensitive+)
-      (set-symbol 'boosted-text   'boosted-text-off   swconf:+key-boosted+))
+      (set-symbol 'boosted-text   'boosted-text-off   swconf:+key-boosted+)
+      (set-symbol 'root-text      'root-text-off      swconf:+key-root+))
     (win-move object
               (- (win-width *main-window*)
                  (win-width object))
@@ -440,7 +449,11 @@ db:renumber-timeline-message-index."
    (deletedp
     :initform nil
     :initarg  :deletedp
-    :accessor deletedp)))
+    :accessor deletedp)
+   (root-message-p
+    :initform nil
+    :initarg  :root-message-p
+    :accessor root-message-p)))
 
 (defun make-message-row-prefix (window fields index max-index max-author-length)
   (with-accessors ((favourite-text      favourite-text)
@@ -456,6 +469,7 @@ db:renumber-timeline-message-index."
              (created-at          (db-utils:db-getf  fields :created-at))
              (redp                (db-utils:db-getf  fields :redp))
              (deletedp            (db-utils:db-getf  fields :deletedp))
+             (rootp               (not (db-utils:db-getf  fields :in-reply-to-id)))
              (encoded-date        (db-utils:encode-datetime-string created-at))
              (formatted-date      (append-space (format-time encoded-date date-format)))
              (padding-index-count (num:count-digit max-index))
@@ -464,11 +478,12 @@ db:renumber-timeline-message-index."
              (padded-author       (append-space (text-utils:right-padding author
                                                                           max-author-length))))
         (make-instance 'row-prefix
-                       :index         padded-index
-                       :creation-date formatted-date
-                       :author        padded-author
-                       :redp          redp
-                       :deletedp      deletedp)))))
+                       :index          padded-index
+                       :creation-date  formatted-date
+                       :author         padded-author
+                       :redp           redp
+                       :deletedp       deletedp
+                       :root-message-p rootp)))))
 
 (defun pad-row-prefix (prefixes)
   (flet ((find-max (slot)
@@ -493,6 +508,8 @@ db:renumber-timeline-message-index."
                    (boosted-text-off   boosted-text-off)
                    (sensitive-text     sensitive-text)
                    (sensitive-text-off sensitive-text-off)
+                   (root-text          root-text)
+                   (root-text-off      root-text-off)
                    (read-fg            read-fg)
                    (read-bg            read-bg)
                    (read-attribute     read-attribute)
@@ -515,7 +532,8 @@ db:renumber-timeline-message-index."
            (message              (make-tui-string ""))
            (raw-selected-message "")
            (raw-deleted-message  "")
-           (redp                 (redp message-prefix-info))
+           (redp                 (redp           message-prefix-info))
+           (rootp                (root-message-p message-prefix-info))
            (fg                   (if redp
                                     read-fg
                                     unread-fg))
@@ -584,6 +602,15 @@ db:renumber-timeline-message-index."
               (deleted-message-invisible-text sensitive-text-off)
               (selected-message-invisible-text sensitive-text-off)
               (message-cat sensitive-text-off)))
+        (if rootp
+            (progn
+              (deleted-message-cat root-text)
+              (selected-message-cat root-text)
+              (message-cat root-text))
+            (progn
+              (deleted-message-invisible-text root-text-off)
+              (selected-message-invisible-text root-text-off)
+              (message-cat root-text-off)))
         (message-cat rendered-tree-line)
         (selected-message-cat rendered-tree-line)
         (deleted-message-cat rendered-tree-line)
@@ -665,8 +692,7 @@ db:renumber-timeline-message-index."
     object)
 
 (defmethod go-message-down ((object thread-window))
-  (with-accessors ((tree-color-map     tree-color-map)
-                   (selected-bg        selected-bg)
+  (with-accessors ((selected-bg        selected-bg)
                    (selected-fg        selected-fg)
                    (row-selected-index row-selected-index)
                    (timeline-type      timeline-type)
@@ -690,8 +716,7 @@ db:renumber-timeline-message-index."
         (draw object)))))
 
 (defmethod go-message-up ((object thread-window))
-  (with-accessors ((tree-color-map     tree-color-map)
-                   (selected-bg        selected-bg)
+  (with-accessors ((selected-bg        selected-bg)
                    (selected-fg        selected-fg)
                    (row-selected-index row-selected-index)
                    (timeline-type      timeline-type)

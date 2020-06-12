@@ -67,19 +67,21 @@
                              :long                      "notify-mentions")))
 
 
-(defparameter *start-folder*              nil)
+(defparameter *start-folder*                       nil)
 
-(defparameter *start-timeline*            nil)
+(defparameter *start-timeline*                     nil)
 
-(defparameter *update-timeline*           nil)
+(defparameter *update-timeline*                    nil)
 
-(defparameter *script-file*               nil)
+(defparameter *script-file*                        nil)
 
-(defparameter *check-follow-requests*     nil)
+(defparameter *check-follow-requests*              nil)
 
-(defparameter *reset-timeline-pagination* nil)
+(defparameter *reset-timeline-pagination*          nil)
 
-(defparameter *notify-mentions*           nil)
+(defparameter *notify-mentions*                    nil)
+
+(defparameter *update-timeline-climb-message-tree* nil)
 
 (defun exit-on-error (e)
   (format *error-output* "~a~%" e)

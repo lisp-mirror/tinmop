@@ -321,6 +321,7 @@
                    left
                    right
                    stopper
+                   root
                    width
                    height
                    error
@@ -678,6 +679,11 @@
                            tree-win-holder
                            +key-tree+
                            +key-data-leaf+
+                           +key-foreground+)
+          (access:accesses *software-configuration*
+                           tree-win-holder
+                           +key-tree+
+                           +key-root+
                            +key-foreground+)))
 
 (defun tree-config-rendering-values (tree-win-holder)
@@ -711,12 +717,13 @@
   (let ((tree-color-map ()))
     (flet ((add-color-pair (key color)
              (setf tree-color-map (acons key color tree-color-map))))
-      (multiple-value-bind (branch-color arrow-color data-color leaf-color)
+      (multiple-value-bind (branch-color arrow-color data-color leaf-color root-color)
           (swconf:tree-config-colors window-key)
         (add-color-pair :branch    branch-color)
         (add-color-pair :arrow     arrow-color)
         (add-color-pair :data      data-color)
-        (add-color-pair :data-leaf leaf-color))
+        (add-color-pair :data-leaf leaf-color)
+        (add-color-pair :data-root root-color))
       tree-color-map)))
 
 (defun thread-message-symbol-lookup (field key)

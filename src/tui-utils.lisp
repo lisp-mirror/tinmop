@@ -108,7 +108,8 @@
         (:branch    . branch-color)
         (:arrow     . arrow-color)
         (:data      . data-color)
-        (:data-leaf . leaf-color)"
+        (:data-leaf . leaf-color)
+        (:data-root . root-color)"
   (let ((semantic-value (annotated-text-symbol annotated-element))
         (value          (annotated-text-value  annotated-element)))
     (make-tui-string value :fgcolor (cdr (assoc semantic-value color-map)))))

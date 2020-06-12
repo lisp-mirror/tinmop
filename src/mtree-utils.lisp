@@ -600,7 +600,7 @@
                              (cat-line " ")))
                    (cond
                      ((rootp node)
-                      (append-build-element (cons :data data)))
+                      (append-build-element (cons :data-root data)))
                      ((last-child-p node child-pos)
                       (push indent-level empty-levels)
                       (build-element last-child-char data node))
