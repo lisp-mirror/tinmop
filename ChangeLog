@@ -1,3 +1,17 @@
+2020-06-12 cage
+	* etc/default-theme.conf
+	* src/api-client.lisp
+	* src/command-line.lisp
+	* src/mtree-utils.lisp
+	* src/package.lisp
+	* src/software-configuration.lisp
+	* src/thread-window.lisp
+	* src/tui-utils.lisp
+
+        - do not climb the thread  (probably colud be changed by a command
+	line switch in the future) when fetching messages.
+	- configurable color for root of rendered trees.
+
 2020-06-11 cage
 	* etc/shared.conf
 	* src/api-client.lisp
