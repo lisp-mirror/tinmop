@@ -1,3 +1,7 @@
+* 2020-06-13
+
+  - Fixed bugs when fetching messages that made the program crashed.
+
 * 2020-06-12
 
   - the downloading of messages should  be faster but now some threads
