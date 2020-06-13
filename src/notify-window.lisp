@@ -39,12 +39,18 @@
 (defun notify-window-p (thing)
   (typep thing 'notify-window))
 
+(defun notification-terminated-p (notification-window)
+  (< (life notification-window) 0.0))
+
+(defun notification-alive-p (notification-window)
+  (not (notification-terminated-p notification-window)))
+
 (defmethod refresh-config :after ((object notify-window))
   (refresh-config-colors object swconf:+key-notify-window+))
 
 (defmethod calculate ((object notify-window) dt)
   (with-accessors ((life life)) object
-    (when (< life 0.0)
+    (when (notification-terminated-p object)
       (let ((remove-win-event (make-instance 'program-events:remove-notify-user-event
                                              :payload object)))
         (win-close object)
@@ -58,7 +64,8 @@
 
 (defmethod draw-pending ((object notify-window))
   (with-accessors ((pending pending)) object
-    (when (> pending 0)
+    (when (and (> pending 0)
+               (notification-alive-p object))
       (print-text object
                   (format nil (n_ "~a pending"
                                   "~a pending"
