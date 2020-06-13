@@ -1,5 +1,13 @@
 2020-06-13 cage
+	* src/db.lisp
 	* src/notify-window.lisp
+	* src/package.lisp
+	* src/program-events.lisp
+
+	- prevent adding duplicate entries in +table-pagination-status+
+
+	This could  happened when concurrent fetching  messages command was
+	launched from the user.
 
 	-  preventing writing  a notification  window that  completerd his
 	life cycle.  'notify-window:draw-pending' checks if 'life' slot is
