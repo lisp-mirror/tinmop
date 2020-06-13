@@ -1,3 +1,11 @@
+2020-06-13 cage
+	* src/notify-window.lisp
+
+	-  preventing writing  a notification  window that  completerd his
+	life cycle.  'notify-window:draw-pending' checks if 'life' slot is
+	a positive number  before drawing, without the check  drawing on a
+	ncurses window pointer pointing to invalid memory was possible.
+
 2020-06-12 cage
 	* etc/default-theme.conf
 	* src/api-client.lisp
