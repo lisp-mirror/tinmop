@@ -761,6 +761,7 @@
    :first-ignored-status-id-timeline-folder
    :last-pagination-status-id-timeline-folder
    :first-pagination-status-id-timeline-folder
+   :find-pagination-status
    :add-to-pagination-status
    :remove-pagination-status
    :count-status-marked-to-delete

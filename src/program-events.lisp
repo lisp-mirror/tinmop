@@ -860,7 +860,7 @@
   (with-accessors ((status-id status-id)
                    (timeline  timeline)
                    (folder    folder)) object
-    (db:add-to-pagination-status status-id folder timeline)))
+    (db:add-to-pagination-status status-id folder timeline :ensure-no-duplicates t)))
 
 (defclass poll-vote-event (program-event)
   ((poll-id

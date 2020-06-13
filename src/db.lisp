@@ -1936,10 +1936,21 @@ to  `timeline' ,  `folder'  and possibly  `account-id', older  than
 (defun first-pagination-status-id-timeline-folder (timeline folder)
   (first-status-id-timeline-folder-table timeline folder :pagination-status))
 
-(defun add-to-pagination-status (status-id folder timeline)
-  (query (make-insert +table-pagination-status+
-                      (:status-id :folder :timeline)
-                      (status-id  folder  timeline))))
+(defun find-pagination-status (status-id folder timeline)
+  (fetch-single (select :*
+                  (from +table-pagination-status+)
+                  (where (:and (:= :status-id status-id)
+                               (:= :folder    folder)
+                               (:= :timeline  timeline))))))
+
+(defun add-to-pagination-status (status-id folder timeline &key (ensure-no-duplicates nil))
+  (let ((no-duplicate-p (if ensure-no-duplicates
+                            (not (find-pagination-status status-id folder timeline))
+                            t)))
+    (when no-duplicate-p
+      (query (make-insert +table-pagination-status+
+                          (:status-id :folder :timeline)
+                          (status-id  folder  timeline))))))
 
 (defun remove-pagination-status (folder timeline)
   "Removes  all  the pagination  data  (i.e.  all columns  from  table
