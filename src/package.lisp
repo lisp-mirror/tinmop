@@ -346,6 +346,7 @@
    :flush-left-mono-text
    :string-empty-p
    :string-not-empty-p
+   :string-starts-with-p
    :find-max-line-length
    :box-fit-single-column
    :box-fit-multiple-column

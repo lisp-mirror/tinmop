@@ -90,8 +90,8 @@ completed) and the common prefix of the completion string."
                                    for entry = (next)
                                    while entry collect
                                      (funcall namefun entry)))
-                    (re        (text-utils:strcat "^" string))
-                    (candidates (sort (remove-if-not (lambda (a) (cl-ppcre:scan re a))
+                    (candidates (sort (remove-if-not (lambda (a)
+                                                       (text-utils:string-starts-with-p string a))
                                                      all)
                                       (lambda (a b) (< (length a)
                                                        (length b))))))
@@ -100,7 +100,7 @@ completed) and the common prefix of the completion string."
 
 (defun starts-with-clsr (hint)
   (lambda (a)
-    (cl-ppcre:scan (text-utils:strcat "^" hint) a)))
+    (text-utils:string-starts-with-p hint a)))
 
 (defun remove-if-hidden (candidates)
   (remove-if #'db:hidden-recipient-p candidates))
