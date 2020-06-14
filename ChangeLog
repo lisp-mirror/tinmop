@@ -1,3 +1,14 @@
+2020-06-14
+	* LICENSES.org
+	* etc/init.lisp
+	* src/complete.lisp
+	* src/package.lisp
+	* src/text-utils.lisp
+
+	-  prevented crash  that happened  when using  an invalid  regular
+	expression to complete  input. There was no reason  to use regular
+	expression there but valid reasons to not use them. ;)
+
 2020-06-13 cage
 	* src/db.lisp
 	* src/notify-window.lisp
@@ -9,7 +20,7 @@
 	This could  happened when concurrent fetching  messages command was
 	launched from the user.
 
-	-  preventing writing  a notification  window that  completerd his
+	-  preventing writing  a notification  window that  completed his
 	life cycle.  'notify-window:draw-pending' checks if 'life' slot is
 	a positive number  before drawing, without the check  drawing on a
 	ncurses window pointer pointing to invalid memory was possible.
@@ -69,7 +80,7 @@
 	- moved pleroma specific API to i package :api-pleroma;
 	- renamed function: 'text-utils:left-padding-suffix' to 'text-utils:left-padding-prefix';
 	- rendered the choice index for poll's choices;
-	- shown if a poll allows multiple choiches;
+	- shown if a poll allows multiple choices;
 	- printed an error  to the user when trying to  vote for a message
 	  that does not contains a poll.
 
@@ -156,7 +167,7 @@
 	- added a class to represent a window with the links that a message contains
 
 	The    links     are    collected    by    the     new    function
-	text-utils:collect-links applyed on the rendered text of a status.
+	text-utils:collect-links applied on the rendered text of a status.
 
 2020-05-15 cage
 	- initial release

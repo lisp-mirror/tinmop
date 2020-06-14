@@ -223,6 +223,13 @@
 (defun string-not-empty-p (s)
   (not (string-empty-p s)))
 
+(defun string-starts-with-p (start s &key (test #'string=))
+  "Return non nil if `s' starts with the substring `start'.
+   Uses `test' to match strings (default #'string="
+  (when (>= (length s)
+            (length start))
+    (funcall test s start :start1 0 :end1 (length start))))
+
 (defun justify-monospaced-text (text &optional (chars-per-line 30))
   (if (null (split-words text))
       (list " ")
