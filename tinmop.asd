@@ -34,6 +34,7 @@
                :marshal
                :bordeaux-threads
                :cl-base64
+               :cl+ssl
                :log4cl
                :local-time
                :cl-colors2
@@ -68,6 +69,7 @@
                (:file "priority-queue")
                (:file "queue")
                (:file "stack")
+               (:file "gemini-parser")
                (:file "db-utils")
                (:file "db")
                (:file "date-formatter")

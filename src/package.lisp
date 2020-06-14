@@ -361,6 +361,13 @@
    :config
    :text-utils)
   (:export
+   :tag 
+   :attributes 
+   :attribute-key 
+   :attribute-value 
+   :children 
+   :tag= 
+   :find-attribute 
    :html->text))
 
 (defpackage :resources-utils
@@ -584,6 +591,21 @@
    :stack-raise-to-top
    :stack-empty-p
    :do-stack-element))
+
+(defpackage :gemini-parser
+  (:use
+   :cl
+   :alexandria
+   :cl-ppcre
+   :esrap
+   :config
+   :constants
+   :text-utils
+   :misc
+   :alexandria)
+  (:shadowing-import-from :misc :random-elt :shuffle)
+  (:export
+   :parse))
 
 (defpackage :db-utils
     (:use
