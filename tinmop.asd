@@ -69,7 +69,10 @@
                (:file "priority-queue")
                (:file "queue")
                (:file "stack")
-               (:file "gemini-parser")
+               (:module gemini
+                        :components ((:file "package")
+                                     (:file "gemini-parser")
+                                     (:file "client")))
                (:file "db-utils")
                (:file "db")
                (:file "date-formatter")

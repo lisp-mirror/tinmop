@@ -49,6 +49,9 @@
   ((seq
     :initarg :seq
     :reader seq))
+  (:report (lambda (condition stream)
+             (format stream "~s ~a" (seq condition) (text condition))))
+
   (:documentation "Length error"))
 
 (define-condition different-length-error (error)
@@ -60,7 +63,7 @@
     :reader seq2))
   (:report (lambda (condition stream)
              (format stream "~a ~a" (seq1 condition) (seq2 condition))))
-  (:documentation "Length error"))
+  (:documentation "Different length error"))
 
 (define-condition column-not-found (error)
   ((table

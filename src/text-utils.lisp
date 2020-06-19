@@ -230,6 +230,12 @@
             (length start))
     (funcall test s start :start1 0 :end1 (length start))))
 
+(defvar *blanks* '(#\Space #\Newline #\Backspace #\Tab
+                   #\Linefeed #\Page #\Return #\Rubout))
+
+(defun trim-blanks (s)
+  (string-trim *blanks* s))
+
 (defun justify-monospaced-text (text &optional (chars-per-line 30))
   (if (null (split-words text))
       (list " ")

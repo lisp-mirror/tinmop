@@ -27,7 +27,7 @@
   (:constant nil))
 
 (defrule cr-lf (and (? carriage-return) new-line)
-  (:constant ""))
+  (:constant nil))
 
 (defrule h1-prefix "#"
   (:constant :h1))
@@ -57,7 +57,10 @@
   (:constant :a))
 
 (defrule text-line (and (+ (not cr-lf)) cr-lf)
-  (:text t))
+  (:function (lambda (a)
+               (list :text
+                     nil
+                     (coerce (first a) 'string)))))
 
 (defrule link-url (+ (not (or space
                               cr-lf)))
@@ -81,28 +84,28 @@
   (:function (lambda (a)
                (list (first a)
                      nil
-                     (second a)))))
+                     (tag-value (second a))))))
 
 (defrule h2 (and h2-prefix
                  text-line)
   (:function (lambda (a)
                (list (first a)
                      nil
-                     (second a)))))
+                     (tag-value (second a))))))
 
 (defrule h3 (and h3-prefix
                  text-line)
   (:function (lambda (a)
                (list (first a)
                      nil
-                     (second a)))))
+                     (tag-value (second a))))))
 
 (defrule list-item (and list-bullet
                         text-line)
   (:function (lambda (a)
                (list (first a)
                      nil
-                     (second a)))))
+                     (tag-value (second a))))))
 
 (defrule preformatted-text (and preformatted-text-tag
                                 (* (not preformatted-text-tag))
@@ -114,7 +117,7 @@
                          text-line)
   (:function (lambda (a) (list (first a)
                                nil
-                               (second a)))))
+                               (tag-value (second a))))))
 
 (defrule gemini-file (* (or h3
                             h2
@@ -137,6 +140,32 @@
 
 (define-constant +bullet-line-prefix+ #\•  :test #'char=)
 
+(defclass gemini-link ()
+  ((target
+    :initform nil
+    :initarg  :target
+    :accessor target)
+   (name
+    :initform nil
+    :initarg  :name
+    :accessor name)))
+
+(defmethod print-object ((object gemini-link) stream)
+  (print-unreadable-object (object stream :type t :identity t)
+    (with-accessors ((target target)
+                     (name   name)) object
+      (format stream "target: ~s name: ~s" target name))))
+
+(defun tag-value (node)
+  (first (html-utils:children node)))
+
+(defun sexp->links (parsed-gemini)
+  (loop for node in parsed-gemini when (html-utils:tag= :a node) collect
+       (make-instance 'gemini-link
+                      :target (html-utils:attribute-value (html-utils:find-attribute :href
+                                                                                     node))
+                      :name   (tag-value node))))
+
 (defun sexp->text (parsed-gemini)
   (labels ((underlineize (stream text underline-char)
              (let* ((size      (length text))
@@ -152,8 +181,8 @@
     (with-output-to-string (stream)
       (loop for node in parsed-gemini do
            (cond
-             ((stringp node)
-              (format stream "~a~%" (trim node)))
+             ((null node)
+              (format stream "~%"))
              ((html-utils:tag= :h1 node)
               (underlineize stream
                             (text-value node)
@@ -187,3 +216,56 @@
                     (format stream "[~a]~%" link-name)
                     (format stream "[~a]~%" link-value)))))))))
 
+(defun parse-gemini-file (data)
+  (parse 'gemini-file data :junk-allowed t))
+
+;; response header
+
+(define-constant +max-meta-length+ 1024 :test #'=)
+
+(defrule response-first-digit (or "1" "2" "3" "4" "5" "6")
+  (:text t))
+
+(defrule response-second-digit (or "0" "1" "2" "3" "4" "5" "6" "7" "8" "9")
+  (:text t))
+
+(defrule meta (+ (not carriage-return))
+  (:text t))
+
+(defclass gemini-response ()
+  ((status-code
+    :initform nil
+    :initarg  :status-code
+    :accessor status-code)
+   (meta
+    :initarg  :meta
+    :accessor meta)))
+
+(defmethod print-object ((object gemini-response) stream)
+  (print-unreadable-object (object stream :type t :identity t)
+    (with-accessors ((status-code status-code)
+                     (meta        meta)) object
+      (format stream "status: ~a meta: ~a" status-code meta))))
+
+(defrule response (and response-first-digit
+                       response-second-digit
+                       space
+                       meta
+                       carriage-return
+                       new-line)
+  (:function (lambda (a)
+               (make-instance 'gemini-response
+                              :status-code (parse-integer (strcat (first a)
+                                                                  (second a)))
+                              :meta        (fourth a)))))
+
+(defun parse-gemini-response-header (data)
+  (let ((parsed (parse 'response data)))
+    (if (> (length (meta parsed))
+           +max-meta-length+)
+        (error 'conditions:length-error
+               :seq  (meta parsed)
+               :text (format nil
+                             " is too long. Maximum allowed length is ~a"
+                             +max-meta-length+))
+        parsed)))
