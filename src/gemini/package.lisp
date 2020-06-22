@@ -14,6 +14,14 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+(defpackage :gemini-constants
+  (:use
+   :cl
+   :alexandria)
+  (:export
+   :+gemini-scheme+
+   :+gemini-default-port+))
+
 (defpackage :gemini-parser
   (:use
    :cl
@@ -24,9 +32,11 @@
    :constants
    :text-utils
    :misc
-   :alexandria)
+   :alexandria
+   :gemini-constants)
   (:shadowing-import-from :misc :random-elt :shuffle)
   (:export
+   :+gemini-scheme+
    :gemini-link
    :target
    :name
@@ -34,6 +44,8 @@
    :status-code
    :meta
    :parse-gemini-file
+   :absolutize-link
+   :make-gemini-uri
    :sexp->links
    :sexp->text
    :parse-gemini-response-header))
@@ -49,10 +61,16 @@
    :text-utils
    :misc
    :alexandria
+   :gemini-constants
    :gemini-parser)
   (:shadowing-import-from :misc :random-elt :shuffle)
   (:export
+   :+gemini-default-port+
    :gemini-protocol-error
    :error-code
    :error-description
+   :response-input-p
+   :response-sensitive-input-p
+   :response-redirect-p
+   :absolute-url-p
    :request))

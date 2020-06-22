@@ -224,11 +224,18 @@
   (not (string-empty-p s)))
 
 (defun string-starts-with-p (start s &key (test #'string=))
-  "Return non nil if `s' starts with the substring `start'.
-   Uses `test' to match strings (default #'string="
+  "Returns non nil if `s' starts with the substring `start'.
+Uses `test' to match strings (default #'string=)"
   (when (>= (length s)
             (length start))
     (funcall test s start :start1 0 :end1 (length start))))
+
+(defun string-ends-with-p (end s &key (test #'string=))
+  "Returns t if s ends with the substring 'end', nil otherwise.
+Uses `test' to match strings (default #'string=)"
+  (when (>= (length s)
+            (length end))
+    (funcall test s end :start1 (- (length s) (length end)))))
 
 (defvar *blanks* '(#\Space #\Newline #\Backspace #\Tab
                    #\Linefeed #\Page #\Return #\Rubout))

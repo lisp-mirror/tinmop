@@ -68,4 +68,86 @@
     *open-message-link-window*))
 
 (defun open-message-link (url)
-  (os-utils:xdg-open url))
+  (if (string-starts-with-p gemini-constants:+gemini-scheme+ url)
+      (gemini-viewer:request url)
+      (os-utils:xdg-open url)))
+
+(defclass open-gemini-document-link-window (focus-marked-window
+                                            simple-line-navigation-window
+                                            title-window
+                                            border-window)
+  ((links
+    :initform ()
+    :initarg  :links
+    :accessor links)))
+
+(defmethod refresh-config :after ((object open-gemini-document-link-window))
+  (open-attach-window:refresh-view-links-window-config object
+                                                       swconf:+key-open-message-link-window+))
+
+(defmethod resync-rows-db ((object open-gemini-document-link-window)
+                           &key
+                             (redraw t)
+                             (suggested-message-index nil))
+  (with-accessors ((rows             rows)
+                   (links            links)
+                   (selected-line-bg selected-line-bg)
+                   (selected-line-fg selected-line-fg)) object
+    (flet ((make-rows (links bg fg)
+             (mapcar (lambda (link)
+                       (make-instance 'line
+                                      :normal-text   (gemini-parser:target link)
+                                      :selected-text (gemini-parser:target link)
+                                      :normal-bg     bg
+                                      :normal-fg     fg
+                                      :selected-bg   fg
+                                      :selected-fg   bg))
+                     links)))
+      (with-croatoan-window (croatoan-window object)
+        (setf rows (make-rows links
+                              selected-line-bg
+                              selected-line-fg))
+        (when suggested-message-index
+          (select-row object suggested-message-index))
+        (when redraw
+          (draw object))))))
+
+(defmethod draw :before ((object open-gemini-document-link-window))
+  (with-accessors ((links             links)
+                   (single-row-height single-row-height)
+                   (top-row-padding   top-row-padding)
+                   (new-messages-mark new-messages-mark)
+                   (top-rows-slice    top-rows-slice)
+                   (bottom-rows-slice bottom-rows-slice)) object
+    (renderizable-rows-data object) ; set top and bottom slice
+    (win-clear object)
+    (with-croatoan-window (croatoan-window object)
+      (loop
+         for link in (safe-subseq links top-rows-slice bottom-rows-slice)
+         for y from (+ 2 top-row-padding) by single-row-height do
+           (print-text object
+                       (gemini-parser:name link)
+                       1 y
+                       :bgcolor (bgcolor croatoan-window)
+                       :fgcolor (fgcolor croatoan-window))))))
+
+(defun init-gemini-links (links)
+  (let* ((low-level-window (make-croatoan-window :enable-function-keys t)))
+    (setf *open-message-link-window*
+          (make-instance 'open-gemini-document-link-window
+                         :title             (_ "Links")
+                         :links             links
+                         :single-row-height 2
+                         :uses-border-p     t
+                         :keybindings       keybindings:*open-message-link-keymap*
+                         :croatoan-window   low-level-window))
+    (refresh-config *open-message-link-window*)
+    (resync-rows-db *open-message-link-window* :redraw nil)
+    (when (rows *open-message-link-window*)
+      (select-row *open-message-link-window* 0))
+    (draw *open-message-link-window*)
+    *open-message-link-window*))
+
+(defun forget-gemini-link-window ()
+  (setf (keybindings *message-window*)
+        keybindings:*message-keymap*))

@@ -48,6 +48,8 @@
                :crypto-shortcuts
                :drakma
                :usocket
+               :babel
+               :puri
                :uiop)
   :components ((:file "package")
                (:file "config")
@@ -69,12 +71,15 @@
                (:file "priority-queue")
                (:file "queue")
                (:file "stack")
-               (:module gemini
-                        :components ((:file "package")
-                                     (:file "gemini-parser")
-                                     (:file "client")))
+               (:file "x509-ffi")
+               (:file "x509")
                (:file "db-utils")
                (:file "db")
+               (:module gemini
+                        :components ((:file "package")
+                                     (:file "gemini-constants")
+                                     (:file "gemini-parser")
+                                     (:file "client")))
                (:file "date-formatter")
                (:file "emoji-shortcodes")
                (:file "software-configuration")
@@ -105,6 +110,7 @@
                (:file "follow-requests")
                (:file "tags-window")
                (:file "conversations-window")
+               (:file "gemini-viewer")
                (:file "main-window")
                (:file "ui-goodies")
                (:file "modules")
@@ -118,6 +124,7 @@
                                      (:file "text-utils-tests")
                                      (:file "mtree-tests")
                                      (:file "thread-window-tests")
+                                     (:file "gemini-parser-tests")
                                      (:file "program-events-tests")))))
 
 ;; (push :debug-mode *features*)

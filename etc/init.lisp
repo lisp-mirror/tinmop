@@ -25,8 +25,8 @@
 ;;
 ;; can not be an anonymous function.
 
-(defun quit ()        ; define a custom function named 'quit' and no parameters
-  "Quit the  program" ; this  string after the function  name and parameters is
+(defun quit ()        ; define a custom function named 'quit' and no parameters.
+  "Quit the  program" ; This  string after the function  name and parameters is
                       ; called 'docstring' and will be presented to the
                       ; user as inline help
   (ui:clean-close-program))
@@ -120,6 +120,8 @@
 
 ;; (define "C-x a e"       #'bar)
 
+(defun gemini-search ()
+ (gemini-viewer:request "gemini://houston.coder.town/search"))
 
 ;; global keymap
 
@@ -128,6 +130,8 @@
 (define-key "C-a"       #'show-about-window)
 
 (define-key "?"         #'print-quick-help)
+
+(define-key "!"         #'gemini-search)
 
 ;; focus
 
@@ -274,6 +278,22 @@
 (define-key "npage"     #'message-scroll-next-page                    *message-keymap*)
 
 (define-key "ppage"     #'message-scroll-previous-page                *message-keymap*)
+
+;; gemini viewer keymap
+
+(define-key "up"        #'message-scroll-up                          *gemini-message-keymap*)
+
+(define-key "down"      #'message-scroll-down                        *gemini-message-keymap*)
+
+(define-key "home"      #'message-scroll-begin                       *gemini-message-keymap*)
+
+(define-key "end"       #'message-scroll-end                         *gemini-message-keymap*)
+
+(define-key "/"         #'message-search-regex                       *gemini-message-keymap*)
+
+(define-key "npage"     #'message-scroll-next-page                   *gemini-message-keymap*)
+
+(define-key "ppage"     #'message-scroll-previous-page               *gemini-message-keymap*)
 
 ;; tags keymap
 

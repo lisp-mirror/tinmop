@@ -291,15 +291,27 @@ in the directory \fC$HOME/.local/share/tinmop/\fP.
 
 .SH "Privacy"
 .PP
-This program do not interact with no other computer other than the
-mastodon instance that the user configured.
+The author of  this software collects no user  data information with
+this software.
 
 .PP
-If installed from the source note that the script
-\fCquick_quicklisp.sh\fP will contact \fIhttps://www.quicklisp.org/\fP,
-check the
-https://beta.quicklisp.org/quicklisp.lisp \fBat\fP \fIquicklisp sources\fP
-for details.
+But this software is a client to connect and interact to one or more
+remote computer.  So potentially it could share a lot of information
+with other actors but just after the user allowed it to do so.
+
+.PP
+It is the user responsibility to checks the privacy conditions of the
+instance this software connect to.
+
+.PP
+By default, pressing "!" will contact the remote service located at:
+"gemini://houston.coder.town/search".
+
+.PP
+Moreover    launching     \fCquick_quicklisp.sh\fP     will     contact
+\fIhttps://www.quicklisp.org/\fP,               check              the
+https://beta.quicklisp.org/quicklisp.lisp \fBat\fP \fIquicklisp sources\fP for
+details.
 
 .SH "Acknowledgment"
 .PP

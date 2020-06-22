@@ -1,5 +1,5 @@
-# List of source files which contain translatable strings.
 src/api-client.lisp
+src/api-pleroma.lisp
 src/box.lisp
 src/bs-tree.lisp
 src/command-line.lisp
@@ -7,6 +7,8 @@ src/command-window.lisp
 src/complete-window.lisp
 src/complete.lisp
 src/conditions.lisp
+src/config.lisp
+src/config.lisp.in
 src/constants.lisp
 src/conversations-window.lisp
 src/crypto-utils.lisp
@@ -16,6 +18,11 @@ src/db.lisp
 src/emoji-shortcodes.lisp
 src/filesystem-utils.lisp
 src/follow-requests.lisp
+src/gemini-viewer.lisp
+src/gemini/client.lisp
+src/gemini/gemini-constants.lisp
+src/gemini/gemini-parser.lisp
+src/gemini/package.lisp
 src/hooks.lisp
 src/html-utils.lisp
 src/interfaces.lisp

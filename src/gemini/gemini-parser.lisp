@@ -159,12 +159,118 @@
 (defun tag-value (node)
   (first (html-utils:children node)))
 
-(defun sexp->links (parsed-gemini)
+(defun path-last-dir (path)
+  (if (char= (last-elt path) #\/)
+      path
+      (fs:parent-dir-path path)))
+
+(defun make-gemini-uri (host path &optional (query nil) (port +gemini-default-port+))
+  (let* ((actual-path (if (string-starts-with-p "/" path)
+                          (subseq path 1)
+                          path))
+         (actual-port (if port
+                          (to-s port)
+                          (to-s +gemini-default-port+)))
+         (uri (strcat +gemini-scheme+ "://"
+                      host            ":"
+                      actual-port     "/"
+                      actual-path)))
+    (when query
+      (setf uri (strcat uri "?" query)))
+    uri))
+
+(defgeneric normalize-path (object))
+
+(defmethod normalize-path ((object null))
+  nil)
+
+(defmethod normalize-path ((object string))
+  (flet ((make-stack ()
+           (make-instance 'stack:stack
+                          :test-fn #'string=))
+         (fill-input-stack (stack)
+           (loop
+              for segment in (remove-if #'string-empty-p
+                                        (reverse (split "/" object)))
+              do
+                (stack:stack-push stack segment))))
+    (let* ((ends-with-separator-p (string-ends-with-p "/" object))
+           (ends-with-dots        nil)
+           (input-stack  (make-stack))
+           (output-stack (make-stack)))
+      (fill-input-stack input-stack)
+      (labels ((fill-output-buffer ()
+                 (when (not (stack:stack-empty-p input-stack))
+                   (let ((popped (stack:stack-pop input-stack)))
+                     (cond
+                       ((and (string= popped "..")
+                             (not (stack:stack-empty-p output-stack))
+                             (not (stack:stack-empty-p input-stack)))
+                        (stack:stack-pop output-stack))
+                       ((and (or (string= popped "..")
+                                 (string= popped "."))
+                             (stack:stack-empty-p input-stack))
+                        (setf ends-with-dots t))
+                       ((and (string/= popped ".")
+                             (string/= popped ".."))
+                        (stack:stack-push output-stack popped))))
+                   (fill-output-buffer)))
+               (output-stack->list ()
+                 (reverse (loop
+                             for segment = (stack:stack-pop output-stack)
+                             while segment
+                             collect segment))))
+        (fill-output-buffer)
+        (let* ((joinable (output-stack->list))
+               (merged   (if joinable
+                             (if (or ends-with-separator-p
+                                     ends-with-dots)
+                                 (wrap-with (join-with-strings joinable "/") "/")
+                                 (strcat "/" (join-with-strings joinable "/")))
+                             "/")))
+          (regex-replace-all "//" merged ""))))))
+
+(defmethod normalize-path ((object puri:uri))
+  (let ((clean-path (normalize-path (puri:uri-path object)))
+        (copy       (puri:copy-uri  object)))
+    (when clean-path
+      (setf (puri:uri-path copy) clean-path))
+    copy))
+
+(defmethod to-s ((object puri:uri))
+  (with-output-to-string (stream)
+    (puri:render-uri object stream)))
+
+(defun absolutize-link (link-value original-host original-port original-path)
+  (let ((parsed (puri:parse-uri link-value)))
+    (cond
+      ((null parsed)
+       (error "Unparsable address"))
+      ((null (puri:uri-host parsed))
+       (let* ((absolute-path-p (string-starts-with-p "/" link-value))
+              (path            (if absolute-path-p
+                                   link-value
+                                   (strcat (path-last-dir original-path)
+                                           link-value))))
+         (make-gemini-uri original-host
+                          (normalize-path path)
+                          nil
+                          original-port)))
+      ((null (puri:uri-scheme parsed))
+       (strcat +gemini-scheme+ ":"
+               (to-s (normalize-path parsed))))
+      (t
+       (to-s (normalize-path parsed))))))
+
+(defun sexp->links (parsed-gemini original-host original-port original-path)
   (loop for node in parsed-gemini when (html-utils:tag= :a node) collect
-       (make-instance 'gemini-link
-                      :target (html-utils:attribute-value (html-utils:find-attribute :href
-                                                                                     node))
-                      :name   (tag-value node))))
+       (let ((link-value (html-utils:attribute-value (html-utils:find-attribute :href node))))
+         (make-instance 'gemini-link
+                        :target (absolutize-link link-value
+                                                 original-host
+                                                 original-port
+                                                 original-path)
+                        :name   (tag-value node)))))
 
 (defun sexp->text (parsed-gemini)
   (labels ((underlineize (stream text underline-char)
@@ -183,6 +289,8 @@
            (cond
              ((null node)
               (format stream "~%"))
+             ((html-utils:tag= :text node)
+              (format stream "~a~%" (text-value node)))
              ((html-utils:tag= :h1 node)
               (underlineize stream
                             (text-value node)
@@ -217,7 +325,8 @@
                     (format stream "[~a]~%" link-value)))))))))
 
 (defun parse-gemini-file (data)
-  (parse 'gemini-file data :junk-allowed t))
+  (parse 'gemini-file (strcat data (string #\Newline))
+         :junk-allowed t))
 
 ;; response header
 

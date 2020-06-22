@@ -119,6 +119,9 @@ install_dependency () {
      --eval "(ql:quickload \"crypto-shortcuts\")" \
      --eval "(ql:quickload \"drakma\")"           \
      --eval "(ql:quickload \"usocket\")"          \
+     --eval "(ql:quickload \"cffi\")"             \
+     --eval "(ql:quickload \"babel\")"            \
+     --eval "(ql:quickload \"puri\")"             \
      --eval "(sb-ext:quit)";
 }
 

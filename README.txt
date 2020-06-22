@@ -247,6 +247,9 @@ Table of Contents
   <https://www.quicklisp.org/>, check the [quicklisp sources] for
   details.
 
+  By default, pressing "!" will contact the remote service located at:
+  "gemini://houston.coder.town/search".
+
 
 [quicklisp sources] <https://beta.quicklisp.org/quicklisp.lisp>
 

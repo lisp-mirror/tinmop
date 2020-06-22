@@ -77,3 +77,12 @@
         :all-tests
         :thread-window)
   (:export))
+
+(defpackage :gemini-parser-tests
+  (:use :cl
+        :clunit
+        :misc
+        :text-utils
+        :all-tests
+        :gemini-parser)
+  (:export))

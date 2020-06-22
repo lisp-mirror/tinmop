@@ -27,7 +27,15 @@
    (line-position-mark
     :initform (make-tui-string "0")
     :initarg  :line-position-mark
-    :accessor line-position-mark)))
+    :accessor line-position-mark)
+   (metadata
+    :initform nil
+    :initarg  :metadata
+    :accessor metadata)))
+
+(defun display-gemini-text-p (window)
+  (eq (keybindings window)
+      keybindings:*gemini-message-keymap*))
 
 (defgeneric prepare-for-rendering (object))
 

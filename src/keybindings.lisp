@@ -228,6 +228,9 @@ produces a tree and graft the latter on `existing-tree'"
 (defparameter *message-keymap* (make-starting-comand-tree)
   "The keymap for message window.")
 
+(defparameter *gemini-message-keymap* (make-starting-comand-tree)
+  "The keymap for message-window when displaing gemini text.")
+
 (defparameter *tags-keymap* (make-starting-comand-tree)
   "The keymap for tags window.")
 
@@ -245,6 +248,10 @@ produces a tree and graft the latter on `existing-tree'"
 
 (defparameter *open-message-link-keymap* (make-starting-comand-tree)
   "The keymap for window to open message's links.")
+
+(defparameter *open-gemini-link-keymap* (make-starting-comand-tree)
+  "The keymap for window to open gemini's links.")
+
 
 (defun define-key (key-sequence function &optional (existing-keymap *global-keymap*))
   "Define a key sequence that trigger a function:

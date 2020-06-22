@@ -17,10 +17,6 @@
 
 (in-package :gemini-client)
 
-(define-constant +gemini-scheme+       "gemini" :test #'string=)
-
-(define-constant +gemini-default-port+ 1965     :test #'=)
-
 (eval-when (:compile-toplevel :load-toplevel :execute)
   (defclass response-status-code ()
     ((code
@@ -137,6 +133,16 @@
       (header-code= header +61+)
       (header-code= header +62+)))
 
+(defun response-input-p (code)
+  (code= code +10+))
+
+(defun response-sensitive-input-p (code)
+  (code= code +11+))
+
+(defun response-redirect-p (code)
+  (or (code= code +30+)
+      (code= code +31+)))
+
 (define-condition gemini-protocol-error (error)
   ((error-code
     :initarg :error-code
@@ -146,12 +152,22 @@
     :reader  error-description))
   (:report (lambda (condition stream)
              (format stream
-                     "The server responded with the error ~a: ~a"
+                     (_ "The server responded with the error ~a: ~a")
                      (error-code condition)
                      (error-description condition))))
   (:documentation "The condition signalled for error codes (i.e. 4x and 5x)"))
 
-(defun parse-response (stream)
+(define-condition gemini-tofu-error (error)
+  ((host
+    :initarg :host
+    :reader host))
+  (:report (lambda (condition stream)
+             (format stream
+                     (_ "The certificate of host ~a has changed from your latest visit.")
+                     (host condition))))
+  (:documentation "The condition signalled when tofu failed"))
+
+(defun parse-response (stream host port path)
   (let* ((header        (read-line stream))
          (parsed-header (parse-gemini-response-header (format nil "~a~a" header #\Newline))))
     (with-accessors ((meta        meta)
@@ -165,13 +181,18 @@
           ((header-success-p parsed-header)
            (let ((body (read-all stream)))
              (if (mime-gemini-p meta)
-                 (let ((parsed (parse-gemini-file (babel:octets-to-string body))))
+                 (let ((parsed (parse-gemini-file (babel:octets-to-string body
+                                                                          :errorp nil))))
                    (values status-code
                            (description +20+)
                            meta
                            parsed
-                           (sexp->text  parsed)
-                           (sexp->links parsed)))
+                           (format nil
+                                   "-> ~a://~a:~a~a~2%~a"
+                                   +gemini-scheme+
+                                   host port path
+                                   (sexp->text  parsed))
+                           (sexp->links parsed host port path)))
                  (results +20+ body))))
           ((or (header-input-request-p parsed-header)
                (header-redirect-p parsed-header))
@@ -188,14 +209,14 @@
           (t
            parsed-header))))))
 
+(defun absolute-url-p (url)
+  (text-utils:string-starts-with-p +gemini-scheme+ url))
+
 (defun request (host path &key
                             (query nil)
                             (port  +gemini-default-port+))
-  (let ((uri (strcat +gemini-scheme+ "://"
-                     host            ":"
-                     (to-s port)     "/"
-                     path))
-        (ctx (cl+ssl:make-context :verify-mode cl+ssl:+ssl-verify-none+)))
+  (let* ((uri (make-gemini-uri host path query port))
+         (ctx (cl+ssl:make-context :verify-mode cl+ssl:+ssl-verify-none+)))
     (when query
       (setf uri (strcat uri "?" query)))
     (cl+ssl:with-global-context (ctx :auto-free-p t)
@@ -205,13 +226,17 @@
                                           :element-type '(unsigned-byte 8))
         (let* ((ssl-stream (cl+ssl:make-ssl-client-stream stream
                                                           :external-format
-                                                          '(:utf-8)
+                                                          '(:ASCII)
                                                           :unwrap-stream-p t
                                                           :verify          nil
                                                           :hostname       host))
-               (request    (format nil "~a~a~a" uri #\Return #\Newline)))
-          (write-string request ssl-stream)
-          (force-output ssl-stream)
-          (multiple-value-bind (status description meta body gemini-text gemini-links)
-              (parse-response ssl-stream)
-            (values status description meta body gemini-text gemini-links)))))))
+               (request    (format nil "~a~a~a" uri #\Return #\Newline))
+               (cert-hash  (crypto-shortcuts:sha512 (x509:dump-certificate ssl-stream))))
+          (if (not (db:tofu-passes-p host cert-hash))
+              (error 'gemini-tofu-error :host host)
+              (progn
+                (write-string request ssl-stream)
+                (force-output ssl-stream)
+                (multiple-value-bind (status description meta body gemini-text gemini-links)
+                    (parse-response ssl-stream host port path)
+                  (values status description meta body gemini-text gemini-links)))))))))

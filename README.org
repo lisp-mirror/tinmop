@@ -189,6 +189,9 @@
   [[https://beta.quicklisp.org/quicklisp.lisp][quicklisp sources]] for
   details.
 
+  By default, pressing "!" will contact the remote service located at:
+  "gemini://houston.coder.town/search".
+
 * Contributing
 
   Any help  is appreciated. If  you intend to contribute  please point

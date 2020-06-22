@@ -193,7 +193,8 @@
               (setf res (concatenate 'string res *directory-sep* i)))
          (setf res (concatenate 'string res *directory-sep*))
          res))
-      ((null splitted)
+      ((or (= (length splitted) 1)
+           (null splitted))
        *directory-sep*)
       (t
        path))))

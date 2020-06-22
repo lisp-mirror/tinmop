@@ -101,7 +101,17 @@
     :initform 0
     :initarg  :y-current-row
     :accessor y-current-row
-    :documentation "The active line position"))
+    :documentation "The active line position")
+   (top-rows-slice
+    :initform 0
+    :initarg  :top-rows-slice
+    :accessor top-rows-slice
+    :documentation "The start index of the visible rows")
+   (bottom-rows-slice
+    :initform 0
+    :initarg  :bottom-rows-slice
+    :accessor bottom-rows-slice
+    :documentation "The start index of the visible rows"))
   (:documentation "A widget that holds a selectable list of lines"))
 
 (defmethod initialize-instance :after ((object row-oriented-widget) &key &allow-other-keys)
@@ -138,15 +148,21 @@
   (with-accessors ((top-row-padding    top-row-padding)
                    (current-row-index  current-row-index)
                    (row-selected-index row-selected-index)
+                   (single-row-height  single-row-height)
+                   (top-rows-slice     top-rows-slice)
+                   (bottom-rows-slice  bottom-rows-slice)
                    (rows               rows))  object
     (let* ((window-height       (if (uses-border-p object)
                                     (win-height-no-border object)
                                     (win-height           object)))
-           (available-rows      (- window-height top-row-padding))
+           (available-rows      (truncate (/ (- window-height top-row-padding)
+                                             single-row-height)))
            (selected-top-offset (rem row-selected-index available-rows))
            (top                 (- row-selected-index selected-top-offset))
            (bottom              (+ row-selected-index
                                    (- available-rows selected-top-offset))))
+      (setf top-rows-slice    top
+            bottom-rows-slice bottom)
       (values (safe-subseq rows top bottom)
               selected-top-offset))))
 

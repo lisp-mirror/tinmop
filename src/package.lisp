@@ -347,6 +347,7 @@
    :string-empty-p
    :string-not-empty-p
    :string-starts-with-p
+   :string-ends-with-p
    :trim-blanks
    :find-max-line-length
    :box-fit-single-column
@@ -593,6 +594,13 @@
    :stack-raise-to-top
    :stack-empty-p
    :do-stack-element))
+
+(defpackage :x509
+  (:use
+   :cl
+   :alexandria)
+  (:export
+   :dump-certificate))
 
 (defpackage :db-utils
     (:use
@@ -842,7 +850,9 @@
    :cache-put
    :cache-get
    :cache-get-value
-   :cache-expired-p))
+   :cache-expired-p
+   :tofu-passes-p
+   :tofu-delete))
 
 (defpackage :date-formatter
   (:use
@@ -1291,10 +1301,12 @@
    :*tags-keymap*
    :*conversations-keymap*
    :*message-keymap*
+   :*gemini-message-keymap*
    :*send-message-keymap*
    :*follow-requests-keymap*
    :*open-attach-keymap*
    :*open-message-link-keymap*
+   :*open-gemini-link-keymap*
    :define-key
    :init-keyboard-mapping
    :find-keymap-node
@@ -1558,6 +1570,8 @@
    :rows
    :row-selected-index
    :y-current-row
+   :top-rows-slice
+   :bottom-rows-slice
    :renderizable-rows-data
    :unselect-all
    :select-row
@@ -1661,6 +1675,8 @@
   (:export
    :message-window
    :source-text
+   :metadata
+   :display-gemini-text-p
    :scroll-down
    :scroll-up
    :scroll-end
@@ -1713,9 +1729,10 @@
    :tui-utils)
   (:shadowing-import-from :misc :random-elt :shuffle)
   (:export
-   :open-message-link-window
    :open-message-link
-   :init))
+   :init
+   :init-gemini-links
+   :forget-gemini-link-window))
 
 (defpackage :command-window
   (:use
@@ -1844,6 +1861,25 @@
    :conversations-window
    :resync-rows-db
    :init))
+
+(defpackage :gemini-viewer
+  (:use
+   :cl
+   :alexandria
+   :cl-ppcre
+   :access
+   :croatoan
+   :config
+   :constants
+   :text-utils
+   :misc
+   :specials
+   :windows
+   :line-oriented-window
+   :tui-utils)
+  (:shadowing-import-from :misc :random-elt :shuffle)
+  (:export
+   :request))
 
 (defpackage :main-window
   (:use

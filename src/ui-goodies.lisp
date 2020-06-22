@@ -905,14 +905,21 @@ Force the checking for new message in the thread the selected message belong."
 (defun close-open-attach-window ()
   (close-window-and-return-to-threads specials:*open-attach-window*))
 
+(defun open-gemini-message-link-window ()
+  (let ((links (message-window:metadata specials:*message-window*)))
+    (open-message-link-window:init-gemini-links links)
+    (focus-to-open-message-link-window)))
+
 (defun open-message-link ()
   "Open message links window
 
-Browse and optionally open the links the messages contains."
-  (when-let* ((win              specials:*thread-window*)
-              (selected-message (line-oriented-window:selected-row-fields win)))
-    (open-message-link-window:init (db:row-message-status-id selected-message))
-    (focus-to-open-message-link-window)))
+Browse and optionally open the links the text of the message window contains."
+  (if (message-window:display-gemini-text-p specials:*message-window*)
+      (open-gemini-message-link-window)
+      (when-let* ((win              specials:*thread-window*)
+                  (selected-message (line-oriented-window:selected-row-fields win)))
+        (open-message-link-window:init (db:row-message-status-id selected-message))
+        (focus-to-open-message-link-window))))
 
 (defun open-message-link-move (amount)
   (ignore-errors
@@ -932,6 +939,8 @@ Browse and optionally open the links the messages contains."
   (open-message-link-window:open-message-link url)))
 
 (defun close-open-message-link-window ()
+  (when (message-window:display-gemini-text-p specials:*open-message-link-window*)
+    (open-message-link-window:forget-gemini-link-window))
   (close-window-and-return-to-threads specials:*open-message-link-window*))
 
 (defun prompt-for-username (prompt complete-function event

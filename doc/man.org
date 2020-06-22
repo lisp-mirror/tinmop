@@ -223,14 +223,23 @@
 
 * Privacy
 
-  This program do not interact with no other computer other than the
-  mastodon instance that the user configured.
+  The author of  this software collects no user  data information with
+  this software.
 
-  If installed from the source note that the script
-  ~quick_quicklisp.sh~ will contact [[https://www.quicklisp.org/]],
-  check the
-  [[https://beta.quicklisp.org/quicklisp.lisp][quicklisp sources]]
-  for details.
+  But this software is a client to connect and interact to one or more
+  remote computer.  So potentially it could share a lot of information
+  with other actors but just after the user allowed it to do so.
+
+  It is the user responsibility to checks the privacy conditions of the
+  instance this software connect to.
+
+  By default, pressing "!" will contact the remote service located at:
+  "gemini://houston.coder.town/search".
+
+  Moreover    launching     ~quick_quicklisp.sh~     will     contact
+  [[https://www.quicklisp.org/]],               check              the
+  [[https://beta.quicklisp.org/quicklisp.lisp][quicklisp sources]] for
+  details.
 
 * Acknowledgment
 

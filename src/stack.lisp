@@ -32,7 +32,7 @@
 
 (defmethod print-object ((object stack) stream)
   (print-unreadable-object (object stream :type t :identity nil)
-    (format stream "~a" (container object))))
+    (format stream "~s" (container object))))
 
 (defgeneric stack-push (object val))
 
@@ -57,8 +57,8 @@
   (with-accessors ((container container)) object
     (if (not (stack-empty-p object))
         (prog1
-            (alexandria:last-elt container)
-          (setf container (misc:safe-delete@ container (1- (length container)))))
+            (alexandria:first-elt container)
+          (setf container (misc:safe-delete@ container 0)))
       nil)))
 
 (defmethod stack-find ((object stack) val)

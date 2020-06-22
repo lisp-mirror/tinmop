@@ -113,6 +113,9 @@
 (define-constant +table-conversation+           :conversation
   :test #'eq)
 
+(define-constant +table-gemini-tofu-cert+       :gemini-tofu-cert
+  :test #'eq)
+
 (define-constant +federated-timeline+           "federated"
   :test #'string=)
 
@@ -474,6 +477,15 @@
                            " folder        TEXT NOT NULL  "
                            +make-close+)))
 
+(defun make-tofu-certs ()
+  (query-low-level (strcat (prepare-table +table-gemini-tofu-cert+ :autoincrementp t)
+                           " host TEXT NOT NULL, "
+                           " hash TEXT NOT NULL, "
+                           ;; timestamp
+                           " \"seen-at\" TEXT    NOT NULL,"
+                           " UNIQUE(hash) ON CONFLICT FAIL"
+                           +make-close+)))
+
 (defun build-all-indices ()
   (create-table-index +table-status+              '(:folder :timeline :status-id))
   (create-table-index +table-account+             '(:id :acct))
@@ -483,7 +495,8 @@
   (create-table-index +table-skipped-status+      '(:folder :timeline :status-id))
   (create-table-index +table-pagination-status+   '(:folder :timeline :status-id))
   (create-table-index +table-conversation+        '(:id))
-  (create-table-index +table-cache+               '(:id :key)))
+  (create-table-index +table-cache+               '(:id :key))
+  (create-table-index +table-gemini-tofu-cert+    '(:hash)))
 
 (defmacro gen-delete (suffix &rest names)
   `(progn
@@ -505,7 +518,8 @@
               +table-ignored-status+
               +table-skipped-status+
               +table-poll-option+
-              +table-poll+))
+              +table-poll+
+              +table-gemini-tofu-cert+))
 
 (defun build-views ())
 
@@ -534,6 +548,7 @@
     (make-pagination-status)
     (make-poll-option)
     (make-poll)
+    (make-tofu-certs)
     (build-all-indices)
     (fs:set-file-permissions (db-path) (logior fs:+s-irusr+ fs:+s-iwusr+))))
 
@@ -2523,3 +2538,26 @@ than `days-in-the-past' days (default: `(swconf:config-purge-cage-days-offset)'"
              (offset      (threshold-time days-in-the-past)))
          (local-time:timestamp< access-time
                                 offset)))))
+
+(defun tofu-passes-p (host hash)
+  (let ((known-hash (fetch-single (select :*
+                                    (from +table-gemini-tofu-cert+)
+                                    (where (:= :hash hash)))))
+        (known-host (fetch-single (select :*
+                                    (from +table-gemini-tofu-cert+)
+                                    (where (:= :host host))))))
+    (cond
+      (known-hash
+       (string= (db-getf known-hash :host)
+                host))
+      (known-host
+       nil)
+      (t
+       (with-db-current-timestamp (now)
+         (query (make-insert +table-gemini-tofu-cert+
+                             (:host :hash :seen-at)
+                             (host  hash  now)))
+         t)))))
+
+(defun tofu-delete (host)
+  (query (delete-from +table-gemini-tofu-cert+ (where (:= :host host)))))
