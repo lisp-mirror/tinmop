@@ -1,3 +1,7 @@
+2020-06-22
+
+  - The software includes a gemini client
+
 * 2020-06-13
 
   - Fixed bugs when fetching messages that made the program crashed.

@@ -1,3 +1,40 @@
+2020-06-22
+	* LICENSES.org
+	* README.org
+	* README.txt
+	* doc/man.org
+	* doc/tinmop.man
+	* etc/init.lisp
+	* etc/shared.conf
+	* po/POTFILES.in
+	* po/it.po
+	* po/tinmop.pot
+	* quick_quicklisp.sh.in
+	* src/db.lisp
+	* src/filesystem-utils.lisp
+	* src/gemini-viewer.lisp
+	* src/gemini/client.lisp
+	* src/gemini/gemini-constants.lisp
+	* src/gemini/gemini-parser.lisp
+	* src/gemini/package.lisp
+	* src/keybindings.lisp
+	* src/line-oriented-window.lisp
+	* src/message-window.lisp
+	* src/open-message-link-window.lisp
+	* src/package.lisp
+	* src/stack.lisp
+	* src/tests/gemini-parser-tests.lisp
+	* src/tests/package.lisp
+	* src/text-utils.lisp
+	* src/ui-goodies.lisp
+	* src/x509-ffi.lisp
+	* src/x509.lisp
+	* tinmop.asd
+
+	- gemini client works, but missing client authorization using certificates
+	  (codes 6x);
+	- TOFU works someway but appears to me it is an ugly hack.
+
 2020-06-14
 	* LICENSES.org
 	* etc/init.lisp
