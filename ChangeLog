@@ -1,13 +1,16 @@
 2020-06-23
-
 	* LICENSES.org
+	* doc/man.org
+	* doc/tinmop.man
 	* po/it.po
 	* po/tinmop.pot
+	* src/command-line.lisp
 	* src/db.lisp
 	* src/filesystem-utils.lisp
 	* src/gemini-viewer.lisp
 	* src/gemini/client.lisp
 	* src/gemini/package.lisp
+	* src/main.lisp
 	* src/package.lisp
 	* src/ui-goodies.lisp
 
@@ -15,6 +18,7 @@
 	- allowed the user to bypass TOFU exception;
 	- fixed TOFU check;
 	- used 'notify' instead of error message.
+	- added a command line option to retrieve a gemini URL.
 
 2020-06-22
 	* LICENSES.org
