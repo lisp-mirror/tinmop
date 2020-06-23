@@ -652,7 +652,7 @@ printed in the box column by column; in the example above the results are:
                    (list columns)))))
     (fit)))
 
-(defun collect-links (text &optional (schemes '("http" "https" "ftp")))
+(defun collect-links (text &optional (schemes '("http" "https" "ftp" "gemini")))
   "Collect all hyperlinks in a text marked from a list of valid `schemes'"
   (flet ((build-re-scheme ()
            (let ((res ""))
