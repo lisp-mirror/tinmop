@@ -2540,18 +2540,12 @@ than `days-in-the-past' days (default: `(swconf:config-purge-cage-days-offset)'"
                                 offset)))))
 
 (defun tofu-passes-p (host hash)
-  (let ((known-hash (fetch-single (select :*
-                                    (from +table-gemini-tofu-cert+)
-                                    (where (:= :hash hash)))))
-        (known-host (fetch-single (select :*
+  (let ((known-host (fetch-single (select :*
                                     (from +table-gemini-tofu-cert+)
                                     (where (:= :host host))))))
     (cond
-      (known-hash
-       (string= (db-getf known-hash :host)
-                host))
       (known-host
-       nil)
+       (string= (db-getf known-host :hash) hash))
       (t
        (with-db-current-timestamp (now)
          (query (make-insert +table-gemini-tofu-cert+

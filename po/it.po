@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tinmop 0.0.1\n"
 "Report-Msgid-Bugs-To: https://notabug.org/cage/tinmop/\n"
-"POT-Creation-Date: 2020-06-22 13:11+0200\n"
-"PO-Revision-Date: 2020-06-22 13:12+0200\n"
+"POT-Creation-Date: 2020-06-23 11:19+0200\n"
+"PO-Revision-Date: 2020-06-23 11:19+0200\n"
 "Last-Translator: cage <cage@invalid.org>\n"
 "Language-Team: Italian\n"
 "Language: it\n"
@@ -181,15 +181,24 @@ msgstr "Seguire la redirezione a ~s? [s/N] "
 msgid "Server ~s asks: ~s "
 msgstr "Il server ~s chiede: ~s "
 
-#: src/gemini-viewer.lisp:85
+#: src/gemini-viewer.lisp:94
 #, lisp-format
-msgid "Error getting ~s: ~a"
-msgstr "Errore connettendomi a ~s: ~a"
+msgid ""
+"Host ~s signature changed! This is a potential security risk! Ignore this "
+"warning? [y/N] "
+msgstr ""
+"La firma dell'host ~s è cambiata! Questo è un potenziale problema di "
+"sicurezza! Proseguire? [s/N]"
 
-#: src/gemini-viewer.lisp:87 src/tui-utils.lisp:478
+#: src/gemini-viewer.lisp:98 src/tui-utils.lisp:478
 #, lisp-format
 msgid "Error: ~a"
 msgstr "Errore: ~a"
+
+#: src/gemini-viewer.lisp:103
+#, lisp-format
+msgid "Error getting ~s: ~a"
+msgstr "Errore connettendomi a ~s: ~a"
 
 #: src/gemini/client.lisp:155
 #, lisp-format

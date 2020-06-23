@@ -81,9 +81,24 @@
                        (write-sequence body stream)
                        (force-output stream)
                        (os-utils:xdg-open fs:temp-file))))))
-            (error (e)
-              (ui:error-message (format nil (_ "Error getting ~s: ~a") url e)))
+            (gemini-client:gemini-tofu-error (e)
+              (let ((host (gemini-client:host e)))
+                (flet ((on-input-complete (maybe-accepted)
+                         (when (ui::boolean-input-accepted-p maybe-accepted)
+                           (db-utils:with-ready-database (:connect nil)
+                             (db:tofu-delete host)
+                             (request url)))))
+                  (ui:ask-string-input #'on-input-complete
+                                       :prompt
+                                       (format nil
+                                               (_ "Host ~s signature changed! This is a potential security risk! Ignore this warning? [y/N] ")
+                                               host)))))
             (conditions:not-implemented-error (e)
               (ui:error-message (format nil (_ "Error: ~a") e)))
             (gemini-client:gemini-protocol-error (e)
-              (ui:error-message (format nil "~a" e))))))))
+              (ui:error-message (format nil "~a" e)))
+            (error (e)
+              (ui:error-message (format nil
+                                        (_ "Error getting ~s: ~a")
+                                        url
+                                        e))))))))

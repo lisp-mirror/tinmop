@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: tinmop 0.0.7\n"
+"Project-Id-Version: tinmop 0.0.9\n"
 "Report-Msgid-Bugs-To: https://notabug.org/cage/tinmop/\n"
-"POT-Creation-Date: 2020-06-22 13:11+0200\n"
+"POT-Creation-Date: 2020-06-23 11:19+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -174,14 +174,21 @@ msgstr ""
 msgid "Server ~s asks: ~s "
 msgstr ""
 
-#: src/gemini-viewer.lisp:85
+#: src/gemini-viewer.lisp:94
 #, lisp-format
-msgid "Error getting ~s: ~a"
+msgid ""
+"Host ~s signature changed! This is a potential security risk! Ignore this "
+"warning? [y/N] "
 msgstr ""
 
-#: src/gemini-viewer.lisp:87 src/tui-utils.lisp:478
+#: src/gemini-viewer.lisp:98 src/tui-utils.lisp:478
 #, lisp-format
 msgid "Error: ~a"
+msgstr ""
+
+#: src/gemini-viewer.lisp:103
+#, lisp-format
+msgid "Error getting ~s: ~a"
 msgstr ""
 
 #: src/gemini/client.lisp:155

@@ -69,6 +69,8 @@
    :gemini-protocol-error
    :error-code
    :error-description
+   :gemini-tofu-error
+   :host
    :response-input-p
    :response-sensitive-input-p
    :response-redirect-p
