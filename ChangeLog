@@ -1,3 +1,16 @@
+2020-06-23
+
+	* LICENSES.org
+	* po/it.po
+	* po/tinmop.pot
+	* src/db.lisp
+	* src/gemini-viewer.lisp
+	* src/gemini/client.lisp
+	* src/gemini/package.lisp
+
+	- allowed the user to bypass TOFU exception;
+	- fixed TOFU check.
+
 2020-06-22
 	* LICENSES.org
 	* README.org
