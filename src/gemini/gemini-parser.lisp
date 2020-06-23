@@ -51,7 +51,6 @@
                (list :pre
                      (list (list :alt (coerce (second a) 'string)))))))
 
-
 (defrule link-prefix (and "=>"
                           (* space))
   (:constant :a))
@@ -314,8 +313,7 @@
                       +quote-line-prefix+
                       (text-value node)))
              ((html-utils:tag= :pre node)
-              (princ (text-value node)
-                     stream))
+              (write-sequence (text-value node :trim nil) stream))
              ((html-utils:tag= :a node)
               (let ((link-name  (text-value node :trim nil))
                     (link-value (html-utils:attribute-value (html-utils:find-attribute :href
