@@ -248,7 +248,7 @@
         (text-utils:strcat home *directory-sep*)
         home)))
 
-(defun temporary-filename (&optional (temp-directory nil))
+(defun temporary-file (&optional (temp-directory nil))
   (let ((tmpdir (or temp-directory
                     (os-utils:default-temp-dir))))
     (multiple-value-bind (x filename)
@@ -261,11 +261,12 @@
       filename)))
 
 (defmacro with-anaphoric-temp-file ((stream &key (prefix nil) (unlink nil)) &body body)
-  `(let ((temp-file (temporary-filename ,prefix))) ; anaphora
+  `(let ((temp-file (temporary-file ,prefix))) ; anaphora
        (unwind-protect
             (with-open-file (,stream temp-file
+                                     :element-type      '(unsigned-byte 8)
                                      :direction         :output
-                                     :if-exists         :error
+                                     :if-exists         :supersede
                                      :if-does-not-exist :create)
               ,@body)
          ,(if unlink

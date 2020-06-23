@@ -281,7 +281,7 @@
    :delete-file-if-exists
    :file-hash
    :home-dir
-   :temporary-filename
+   :temporary-file
    :with-anaphoric-temp-file
    :temp-file
    :file-can-write-p

@@ -98,7 +98,8 @@
             (gemini-client:gemini-protocol-error (e)
               (ui:error-message (format nil "~a" e)))
             (error (e)
-              (ui:error-message (format nil
-                                        (_ "Error getting ~s: ~a")
-                                        url
-                                        e))))))))
+              (ui:notify (format nil
+                                 (_ "Error getting ~s: ~a")
+                                 url
+                                 e)
+                         :as-error t)))))))

@@ -761,7 +761,7 @@ Force the checking for new message in the thread the selected message belong."
                      (reply-to   sending-message:reply-to)
                      (visibility sending-message:visibility))
         (sending-message:message-data specials:*send-message-window*)
-      (let ((temp-file (fs:temporary-filename)))
+      (let ((temp-file (fs:temporary-file)))
         (with-open-file (stream temp-file
                                 :direction         :output
                                 :if-exists         :supersede
@@ -835,7 +835,7 @@ Force the checking for new message in the thread the selected message belong."
                    (loop for line in quoted-lines do
                         (format stream "~a~%" line))))))
            (add-body ()
-             (let ((temp-file           (fs:temporary-filename))
+             (let ((temp-file           (fs:temporary-file))
                    (reference-open-file (get-universal-time)))
                (prepare-reply-body temp-file)
                (croatoan:end-screen)
