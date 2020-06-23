@@ -2,9 +2,11 @@
 	* LICENSES.org
 	* doc/man.org
 	* doc/tinmop.man
+	* etc/init.lisp
 	* po/it.po
 	* po/tinmop.pot
 	* src/command-line.lisp
+	* src/constants.lisp
 	* src/db.lisp
 	* src/filesystem-utils.lisp
 	* src/gemini-viewer.lisp
@@ -17,7 +19,7 @@
 	- changed function name: 'temporary-filename' to 'temporary-file';
 	- allowed the user to bypass TOFU exception;
 	- fixed TOFU check;
-	- used 'notify' instead of error message.
+	- used 'notify' instead of error message;
 	- added a command line option to retrieve a gemini URL.
 
 2020-06-22
