@@ -94,9 +94,11 @@
                                                (_ "Host ~s signature changed! This is a potential security risk! Ignore this warning? [y/N] ")
                                                host)))))
             (conditions:not-implemented-error (e)
-              (ui:error-message (format nil (_ "Error: ~a") e)))
+              (ui:notify (format nil (_ "Error: ~a") e)
+                         :as-error t))
             (gemini-client:gemini-protocol-error (e)
-              (ui:error-message (format nil "~a" e)))
+              (ui:notify (format nil "~a" e)
+                         :as-error t))
             (error (e)
               (ui:notify (format nil
                                  (_ "Error getting ~s: ~a")
