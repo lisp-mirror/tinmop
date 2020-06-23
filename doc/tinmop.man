@@ -24,6 +24,9 @@ Without options the program will start a terminal interface and will
 try to connect to your instance (see \fIConfiguration\fP)
 
 .TP
+\fB-o, --open-gemini-url ARG       \fP
+Open gemini url
+.TP
 \fB-m, --notify-mentions ARG       \fP
 Notify messages that mentions the user
 .TP

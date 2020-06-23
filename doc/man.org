@@ -20,6 +20,7 @@
   Without options the program will start a terminal interface and will
   try to connect to your instance (see [[Configuration]])
 
+  + -o, --open-gemini-url ARG        :: Open gemini url
   + -m, --notify-mentions ARG        :: Notify messages that mentions the user
   + -R, --reset-timeline-pagination  ::
     Reset the timeline pagination. By default the new toots are fetched

@@ -64,8 +64,12 @@
                              :description               (_ "Notify messages that mentions the user")
                              :short                     #\m
                              :arg-parser                #'identity
-                             :long                      "notify-mentions")))
-
+                             :long                      "notify-mentions")
+     (:name                  :open-gemini-url
+                             :description               (_ "Open gemini url")
+                             :short                     #\o
+                             :arg-parser                #'identity
+                             :long                      "open-gemini-url")))
 
 (defparameter *start-folder*                       nil)
 
@@ -80,6 +84,8 @@
 (defparameter *reset-timeline-pagination*          nil)
 
 (defparameter *notify-mentions*                    nil)
+
+(defparameter *gemini-url*                         nil)
 
 (defparameter *update-timeline-climb-message-tree* nil)
 
@@ -102,6 +108,8 @@
         (os-utils:exit-program))
       (when (getf options :folder)
         (setf *start-folder* (getf options :folder)))
+      (when (getf options :open-gemini-url)
+        (setf *gemini-url* (getf options :open-gemini-url)))
       (when (getf options :timeline)
         (setf *start-timeline* (getf options :timeline)))
       (when (getf options :reset-timeline-pagination)

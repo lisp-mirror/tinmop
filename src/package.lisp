@@ -1066,6 +1066,7 @@
    :*check-follow-requests*
    :*reset-timeline-pagination*
    :*notify-mentions*
+   :*gemini-url*
    :*update-timeline-climb-message-tree*
    :manage-opts))
 

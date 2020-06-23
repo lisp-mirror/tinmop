@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tinmop 0.0.9\n"
 "Report-Msgid-Bugs-To: https://notabug.org/cage/tinmop/\n"
-"POT-Creation-Date: 2020-06-23 11:19+0200\n"
+"POT-Creation-Date: 2020-06-23 15:48+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -122,6 +122,10 @@ msgstr ""
 msgid "Notify messages that mentions the user"
 msgstr ""
 
+#: src/command-line.lisp:69
+msgid "Open gemini url"
+msgstr ""
+
 #: src/command-window.lisp:299
 #, lisp-format
 msgid "Error: command ~a not found"
@@ -181,12 +185,12 @@ msgid ""
 "warning? [y/N] "
 msgstr ""
 
-#: src/gemini-viewer.lisp:98 src/tui-utils.lisp:478
+#: src/gemini-viewer.lisp:97 src/tui-utils.lisp:478
 #, lisp-format
 msgid "Error: ~a"
 msgstr ""
 
-#: src/gemini-viewer.lisp:103
+#: src/gemini-viewer.lisp:104
 #, lisp-format
 msgid "Error getting ~s: ~a"
 msgstr ""

@@ -116,17 +116,22 @@ etc.) happened"
     ;; now init the client
     (client:init)
     (client:authorize)
-    (let ((program-events:*process-events-immediately* t))
-      (when command-line:*start-timeline*
-        (change-timeline))
-      (when command-line:*start-folder*
-        (change-folder)))
-    (when command-line:*reset-timeline-pagination*
-      (reset-timeline-pagination))
-    (when command-line:*update-timeline*
-      (ui:update-current-timeline))
-    (when command-line:*check-follow-requests*
-      (ui:start-follow-request-processing))))
+    (if command-line:*gemini-url*
+        (progn
+          (gemini-viewer:request *gemini-url*)
+          (ui:focus-to-message-window))
+        (progn
+          (let ((program-events:*process-events-immediately* t))
+            (when command-line:*start-timeline*
+              (change-timeline))
+            (when command-line:*start-folder*
+              (change-folder)))
+          (when command-line:*reset-timeline-pagination*
+            (reset-timeline-pagination))
+          (when command-line:*update-timeline*
+            (ui:update-current-timeline))
+          (when command-line:*check-follow-requests*
+            (ui:start-follow-request-processing))))))
 
 (defun run ()
   (windows:with-croatoan-window (croatoan-window specials:*main-window*)

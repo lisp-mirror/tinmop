@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tinmop 0.0.1\n"
 "Report-Msgid-Bugs-To: https://notabug.org/cage/tinmop/\n"
-"POT-Creation-Date: 2020-06-23 11:19+0200\n"
-"PO-Revision-Date: 2020-06-23 11:19+0200\n"
+"POT-Creation-Date: 2020-06-23 15:48+0200\n"
+"PO-Revision-Date: 2020-06-23 15:49+0200\n"
 "Last-Translator: cage <cage@invalid.org>\n"
 "Language-Team: Italian\n"
 "Language: it\n"
@@ -126,6 +126,10 @@ msgstr "SCRIPT-FILE"
 msgid "Notify messages that mentions the user"
 msgstr "Notifica i messaggi che menzionano l'utente."
 
+#: src/command-line.lisp:69
+msgid "Open gemini url"
+msgstr "Apri un indirizzo gemini"
+
 #: src/command-window.lisp:299
 #, lisp-format
 msgid "Error: command ~a not found"
@@ -190,12 +194,12 @@ msgstr ""
 "La firma dell'host ~s è cambiata! Questo è un potenziale problema di "
 "sicurezza! Proseguire? [s/N]"
 
-#: src/gemini-viewer.lisp:98 src/tui-utils.lisp:478
+#: src/gemini-viewer.lisp:97 src/tui-utils.lisp:478
 #, lisp-format
 msgid "Error: ~a"
 msgstr "Errore: ~a"
 
-#: src/gemini-viewer.lisp:103
+#: src/gemini-viewer.lisp:104
 #, lisp-format
 msgid "Error getting ~s: ~a"
 msgstr "Errore connettendomi a ~s: ~a"
