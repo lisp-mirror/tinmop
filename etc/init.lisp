@@ -295,6 +295,8 @@
 
 (define-key "ppage"     #'message-scroll-previous-page               *gemini-message-keymap*)
 
+(define-key "l"         #'open-message-link                          *gemini-message-keymap*)
+
 ;; tags keymap
 
 (define-key "up"        #'tag-go-up                                   *tags-keymap*)
