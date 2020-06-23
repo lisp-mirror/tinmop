@@ -670,3 +670,6 @@ printed in the box column by column; in the example above the results are:
                     results
                     :test #'string=))
       results)))
+
+(defun percent-encode (string)
+  (percent-encoding:encode string :encoding :utf-8))

@@ -122,6 +122,7 @@ install_dependency () {
      --eval "(ql:quickload \"cffi\")"             \
      --eval "(ql:quickload \"babel\")"            \
      --eval "(ql:quickload \"puri\")"             \
+     --eval "(ql:quickload \"percent-encoding\")" \
      --eval "(sb-ext:quit)";
 }
 

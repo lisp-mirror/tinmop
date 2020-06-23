@@ -218,7 +218,7 @@
   (let* ((uri (make-gemini-uri host path query port))
          (ctx (cl+ssl:make-context :verify-mode cl+ssl:+ssl-verify-none+)))
     (when query
-      (setf uri (strcat uri "?" query)))
+      (setf uri (strcat uri "?" (percent-encode query))))
     (cl+ssl:with-global-context (ctx :auto-free-p t)
       (let ((socket (usocket:socket-connect host port :element-type '(unsigned-byte 8))))
         (unwind-protect

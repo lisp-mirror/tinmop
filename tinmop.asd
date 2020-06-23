@@ -50,6 +50,7 @@
                :usocket
                :babel
                :puri
+               :percent-encoding
                :uiop)
   :components ((:file "package")
                (:file "config")

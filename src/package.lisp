@@ -355,7 +355,8 @@
    :annotated-text-symbol
    :annotated-text-value
    :box-fit-multiple-column-annotated
-   :collect-links))
+   :collect-links
+   :percent-encode))
 
 (defpackage :html-utils
   (:use
