@@ -4,12 +4,17 @@
 	* po/it.po
 	* po/tinmop.pot
 	* src/db.lisp
+	* src/filesystem-utils.lisp
 	* src/gemini-viewer.lisp
 	* src/gemini/client.lisp
 	* src/gemini/package.lisp
+	* src/package.lisp
+	* src/ui-goodies.lisp
 
+	- changed function name: 'temporary-filename' to 'temporary-file';
 	- allowed the user to bypass TOFU exception;
-	- fixed TOFU check.
+	- fixed TOFU check;
+	- used 'notify' instead of error message.
 
 2020-06-22
 	* LICENSES.org
