@@ -351,6 +351,7 @@
                    locked
                    unlocked
                    account
+                   signature-file
                    main-window
                    thread-window
                    message-window
@@ -430,7 +431,20 @@
 
 (defparameter *allowed-attachment-type*   '("unknown" "image" "gifv" "video" "audio"))
 
+(define-constant +default-signature-filename+ ".signature" :test #'string=)
+
 ;;;; interface
+
+(defun signature-file-path ()
+  "Returns the filepath of the signature file, the $HOME is prepended."
+  (let* ((signature-file (or (access:accesses *software-configuration*
+                                              +key-signature-file+)
+                             +default-signature-filename+))
+         (signature-path (fs:cat-parent-dir (fs:home-dir)
+                                            signature-file)))
+    (if (fs:file-exists-p signature-path)
+        signature-path
+        nil)))
 
 (defun vote-vertical-bar ()
   (or (access:accesses *software-configuration*

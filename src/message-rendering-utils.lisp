@@ -274,3 +274,7 @@
               (format stream "~%~a~%" (_ "A single choice allowed")))
           (when expiredp
             (format stream "~%~a~%" (_ "The poll has expired"))))))))
+
+(defun signature ()
+  (when-let ((signature-file (swconf:signature-file-path)))
+    (format nil "-- ~%~a" (fs:slurp-file signature-file))))

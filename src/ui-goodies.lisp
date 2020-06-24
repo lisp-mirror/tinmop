@@ -835,18 +835,26 @@ Force the checking for new message in the thread the selected message belong."
                    (loop for line in quoted-lines do
                         (format stream "~a~%" line))))))
            (add-body ()
-             (let ((temp-file           (fs:temporary-file))
-                   (reference-open-file (get-universal-time)))
-               (prepare-reply-body temp-file)
-               (croatoan:end-screen)
-               (os-utils:open-with-editor temp-file)
-               (when (and (> (fs:file-size temp-file)
-                             0)
-                          (> (fs:get-stat-mtime temp-file)
-                             reference-open-file))
-                 (let ((body (fs:slurp-file temp-file)))
-                   (setf (sending-message:body *message-to-send*) body)
-                   (add-subject))))))
+             (let ((temp-file (fs:temporary-file))
+                   (signature (message-rendering-utils:signature)))
+               (when signature
+                 (with-open-file (stream
+                                  temp-file
+                                  :direction    :output
+                                  :element-type 'character
+                                  :if-exists    :supersede)
+                   (write-sequence signature stream)))
+               (let ((reference-open-file (get-universal-time)))
+                 (prepare-reply-body temp-file)
+                 (croatoan:end-screen)
+                 (os-utils:open-with-editor temp-file)
+                 (when (and (> (fs:file-size temp-file)
+                               0)
+                            (> (fs:get-stat-mtime temp-file)
+                               reference-open-file))
+                   (let ((body (fs:slurp-file temp-file)))
+                     (setf (sending-message:body *message-to-send*) body)
+                     (add-subject)))))))
     (add-body)))
 
 (defun reply-message ()

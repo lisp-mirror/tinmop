@@ -949,6 +949,7 @@
    :parse
    :load-config-file
    :external-editor
+   :signature-file-path
    :vote-vertical-bar
    :crypted-mark-value
    :quick-help-header-colors
@@ -1612,7 +1613,8 @@
    :status-attachments->text
    :message-original->text-body
    :message-original->text-header
-   :poll->text))
+   :poll->text
+   :signature))
 
 (defpackage :thread-window
   (:use
