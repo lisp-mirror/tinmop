@@ -346,3 +346,16 @@
 
 (define-key "q"         #'close-open-message-link-window
   *open-message-link-keymap*)
+
+;;;; hooks
+
+;;; this hooks will skips toots with contain less than 20 words
+;;; (note: it is commented out)
+
+;; (hooks:add-hook 'hooks:*skip-message-hook*
+;;                 (lambda (toot)
+;;                   (when-let* ((text        (html-utils:html->text (tooter:content toot)
+;;                                                                   :add-link-footnotes nil))
+;;                               (trimmed     (text-utils:trim-blanks text))
+;;                               (word-counts (length (text-utils:split-words trimmed))))
+;;                     (< word-counts 10))))

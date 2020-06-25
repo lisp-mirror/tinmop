@@ -1284,7 +1284,8 @@
    :*before-main-loop*
    :*before-quit*
    :*before-prepare-for-rendering-message*
-   :*before-sending-message*))
+   :*before-sending-message*
+   :*skip-message-hook*))
 
 (defpackage :keybindings
   (:use

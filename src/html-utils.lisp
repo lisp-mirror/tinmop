@@ -64,11 +64,11 @@
 (defun html->text (html &key (add-link-footnotes t))
   "Transform html to text, note that if `add-link-footnotes` is non nil footnotes that marks html link in the text are added aftere the body of the message
 
-This function uses a library that transhorm html5 text into s-expressions um the form
+This function uses a library that transform html5 text into s-expressions um the form
 
 '(name (attributes) children*)
 
-Some convenience functions are provided to works with this structures.
+Some convenience functions are provided to works with these structures.
 "
   (when html
     (let ((root       (append (list :root

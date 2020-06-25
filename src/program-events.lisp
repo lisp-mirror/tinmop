@@ -322,15 +322,19 @@
         (dbg "statuses ~a" dump))
       (loop for status in statuses do
            (let ((account-id (tooter:id (tooter:account status)))
-                 (status-id  (tooter:id status)))
-             (when (and (db:user-ignored-p account-id)
-                        (not (db:status-skipped-p status-id folder timeline-type)))
+                 (status-id  (tooter:id status))
+                 (skip-this-status nil))
+             (when (or (and (db:user-ignored-p account-id)
+                            (not (db:status-skipped-p status-id folder timeline-type)))
+                       (hooks:run-hook-until-success 'hooks:*skip-message-hook* status))
                (db:add-to-status-skipped status-id folder timeline-type)
-               (incf ignored-count)))
-           (db:update-db status
-                         :timeline       timeline-type
-                         :folder         folder
-                         :skip-ignored-p t))
+               (setf skip-this-status t)
+               (incf ignored-count))
+             (when (not skip-this-status)
+               (db:update-db status
+                             :timeline       timeline-type
+                             :folder         folder
+                             :skip-ignored-p t))))
       (db:renumber-timeline-message-index timeline-type
                                           folder
                                           :account-id nil)

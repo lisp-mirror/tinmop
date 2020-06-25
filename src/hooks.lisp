@@ -81,3 +81,7 @@ non-nil.")
   "Run this  hooks before sending  the message, note that  the message
   could  be encrypted  after this  hooks  runs, the  function takes  a
   message-window as parameter")
+
+(defparameter *skip-message-hook* '()
+  "Run this  hooks to check if a message must be skipped,
+all hooks must returns nil for this message to be not skipped")
