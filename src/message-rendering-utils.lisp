@@ -277,4 +277,4 @@
 
 (defun signature ()
   (when-let ((signature-file (swconf:signature-file-path)))
-    (format nil "-- ~%~a" (fs:slurp-file signature-file))))
+    (format nil "~%-- ~%~a" (fs:slurp-file signature-file))))

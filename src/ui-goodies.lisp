@@ -834,27 +834,28 @@ Force the checking for new message in the thread the selected message belong."
                    (format stream "~a~%" (msg-utils:add-mention-prefix reply-username))
                    (loop for line in quoted-lines do
                         (format stream "~a~%" line))))))
+           (add-signature (file)
+             (when-let ((signature (message-rendering-utils:signature)))
+               (with-open-file (stream
+                                file
+                                :direction    :output
+                                :element-type 'character
+                                :if-exists    :append)
+                   (write-sequence signature stream))))
            (add-body ()
-             (let ((temp-file (fs:temporary-file))
-                   (signature (message-rendering-utils:signature)))
-               (when signature
-                 (with-open-file (stream
-                                  temp-file
-                                  :direction    :output
-                                  :element-type 'character
-                                  :if-exists    :supersede)
-                   (write-sequence signature stream)))
-               (let ((reference-open-file (get-universal-time)))
+             (let ((temp-file (fs:temporary-file)))
                  (prepare-reply-body temp-file)
-                 (croatoan:end-screen)
-                 (os-utils:open-with-editor temp-file)
-                 (when (and (> (fs:file-size temp-file)
-                               0)
-                            (> (fs:get-stat-mtime temp-file)
-                               reference-open-file))
-                   (let ((body (fs:slurp-file temp-file)))
-                     (setf (sending-message:body *message-to-send*) body)
-                     (add-subject)))))))
+                 (add-signature temp-file)
+                 (let ((reference-open-file (get-universal-time)))
+                   (croatoan:end-screen)
+                   (os-utils:open-with-editor temp-file)
+                   (when (and (> (fs:file-size temp-file)
+                                 0)
+                              (> (fs:get-stat-mtime temp-file)
+                                 reference-open-file))
+                     (let ((body (fs:slurp-file temp-file)))
+                       (setf (sending-message:body *message-to-send*) body)
+                       (add-subject)))))))
     (add-body)))
 
 (defun reply-message ()
