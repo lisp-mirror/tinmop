@@ -179,8 +179,10 @@
   set the payload of this events with the user provided string."))
 
 (defmethod initialize-instance :after ((object ask-user-input-string-event)
-                                       &key &allow-other-keys)
-  (setf (priority object) (truncate (/ +standard-event-priority+ 2))))
+                                       &key (forced-priority nil) &allow-other-keys)
+  (if forced-priority
+        (setf (priority object) forced-priority)
+        (setf (priority object) (truncate (/ +standard-event-priority+ 2)))))
 
 (defmethod process-event ((object ask-user-input-string-event))
   (with-accessors ((prompt        prompt)
@@ -190,6 +192,7 @@
           object)
     (setf (point-tracker:prompt specials:*command-window*)
           prompt)
+    (command-window:remove-messages specials:*command-window*)
     (setf complete:*complete-function* complete-fn)
     (command-window:set-string-mode         specials:*command-window*)
     (command-window:set-history-most-recent specials:*command-window* prompt)
@@ -886,6 +889,17 @@
                    (choices  choices)) object
     (tui:with-notify-errors
       (api-client:poll-vote poll-id choices))))
+
+(defclass gemini-request-event (program-event)
+  ((url
+    :initform nil
+    :initarg  :url
+    :accessor url)))
+
+(defmethod process-event ((object gemini-request-event))
+  (with-accessors ((url url)) object
+    (ui:focus-to-message-window)
+    (gemini-viewer:request url)))
 
 (defclass function-event (program-event) ())
 

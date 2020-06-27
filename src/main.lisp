@@ -87,6 +87,11 @@ etc.) happened"
 (defun reset-timeline-pagination ()
   (ui:reset-timeline-pagination))
 
+(defun load-gemini-url (url)
+  (let* ((refresh-event (make-instance 'program-events:gemini-request-event
+                                       :url url)))
+    (program-events:push-event refresh-event)))
+
 (defun load-configuration-files ()
   (swconf:load-config-file swconf:+shared-conf-filename+)
   (swconf:load-config-file swconf:+conf-filename+))
@@ -117,9 +122,7 @@ etc.) happened"
     (client:init)
     (client:authorize)
     (if command-line:*gemini-url*
-        (progn
-          (gemini-viewer:request *gemini-url*)
-          (ui:focus-to-message-window))
+        (load-gemini-url command-line:*gemini-url*)
         (progn
           (let ((program-events:*process-events-immediately* t))
             (when command-line:*start-timeline*

@@ -1194,6 +1194,7 @@
    :report-status-event
    :add-crypto-data-event
    :poll-vote-event
+   :gemini-request-event
    :function-event
    :dispatch-program-events
    :add-pagination-status-event

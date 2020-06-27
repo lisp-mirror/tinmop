@@ -47,6 +47,7 @@
                                   (db-utils:with-ready-database (:connect nil)
                                     (request new-url))))))
                        (ui:ask-string-input #'on-input-complete
+                                            :priority program-events:+minimum-event-priority+
                                             :prompt
                                             (format nil
                                                     (_ "Redirects to ~s, follows redirect? [y/N] ")

@@ -142,15 +142,17 @@
 
 (defun ask-string-input (on-input-complete-fn
                          &key
+                           (priority      nil)
                            (initial-value nil)
                            (prompt        +default-command-prompt+)
                            (complete-fn   #'complete:directory-complete))
   (flet ((thread-fn ()
            (let ((event (make-instance 'ask-user-input-string-event
-                                       :initial-value initial-value
-                                       :complete-fn   complete-fn
-                                       :prompt        prompt
-                                       :payload       (box:dbox nil))))
+                                       :forced-priority priority
+                                       :initial-value   initial-value
+                                       :complete-fn     complete-fn
+                                       :prompt          prompt
+                                       :payload         (box:dbox nil))))
              (with-accessors ((lock               lock)
                               (condition-variable condition-variable)) event
                (push-event event)
