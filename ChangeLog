@@ -1,3 +1,13 @@
+2020-06-27
+	* etc/init.lisp
+	* src/db.lisp
+	* src/hooks.lisp
+	* src/program-events.lisp
+
+	- added more parameters for each function that could be added to
+	`*skip-message-hook*';
+	- changed unique constrains for TOFU table.
+
 2020-06-23
 	* LICENSES.org
 	* doc/man.org
