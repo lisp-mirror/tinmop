@@ -483,7 +483,7 @@
                            " hash TEXT NOT NULL, "
                            ;; timestamp
                            " \"seen-at\" TEXT    NOT NULL,"
-                           " UNIQUE(hash) ON CONFLICT FAIL"
+                           " UNIQUE(host) ON CONFLICT FAIL"
                            +make-close+)))
 
 (defun build-all-indices ()
@@ -496,7 +496,7 @@
   (create-table-index +table-pagination-status+   '(:folder :timeline :status-id))
   (create-table-index +table-conversation+        '(:id))
   (create-table-index +table-cache+               '(:id :key))
-  (create-table-index +table-gemini-tofu-cert+    '(:hash)))
+  (create-table-index +table-gemini-tofu-cert+    '(:host)))
 
 (defmacro gen-delete (suffix &rest names)
   `(progn

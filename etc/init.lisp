@@ -353,7 +353,8 @@
 ;;; (note: it is commented out)
 
 ;; (hooks:add-hook 'hooks:*skip-message-hook*
-;;                 (lambda (toot)
+;;                 (lambda (toot timeline folder kind localp)
+;;                   (declare (ignore timeline folder kind localp))
 ;;                   (when-let* ((text        (html-utils:html->text (tooter:content toot)
 ;;                                                                   :add-link-footnotes nil))
 ;;                               (trimmed     (text-utils:trim-blanks text))

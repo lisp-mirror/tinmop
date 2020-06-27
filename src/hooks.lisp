@@ -84,4 +84,7 @@ non-nil.")
 
 (defparameter *skip-message-hook* '()
   "Run this  hooks to check if a message must be skipped,
-all hooks must returns nil for this message to be not skipped")
+all hooks must returns nil for this message to be not skipped
+
+Each function takes 4 parameters: status, timeline, folder, kind (:home :public)
+localp")

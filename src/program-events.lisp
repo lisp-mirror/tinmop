@@ -326,7 +326,12 @@
                  (skip-this-status nil))
              (when (or (and (db:user-ignored-p account-id)
                             (not (db:status-skipped-p status-id folder timeline-type)))
-                       (hooks:run-hook-until-success 'hooks:*skip-message-hook* status))
+                       (hooks:run-hook-until-success 'hooks:*skip-message-hook*
+                                                     status
+                                                     timeline-type
+                                                     folder
+                                                     kind
+                                                     (localp object)))
                (db:add-to-status-skipped status-id folder timeline-type)
                (setf skip-this-status t)
                (incf ignored-count))
