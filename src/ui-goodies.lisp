@@ -750,6 +750,12 @@ Force the checking for new message in the thread the selected message belong."
      (setf ,window-to-close nil)
      (focus-to-thread-window)))
 
+(defmacro close-window-and-return-to-message (window-to-close)
+  `(progn
+     (win-close ,window-to-close)
+     (setf ,window-to-close nil)
+     (focus-to-message-window)))
+
 (defun cancel-send-message ()
   "Cancel sending operation"
   (close-window-and-return-to-threads specials:*send-message-window*))
@@ -952,7 +958,9 @@ Browse and optionally open the links the text of the message window contains."
 (defun close-open-message-link-window ()
   (when (message-window:display-gemini-text-p specials:*open-message-link-window*)
     (open-message-link-window:forget-gemini-link-window))
-  (close-window-and-return-to-threads specials:*open-message-link-window*))
+  (if (message-window:display-gemini-text-p specials:*message-window*)
+      (close-window-and-return-to-message specials:*open-message-link-window*)
+      (close-window-and-return-to-threads specials:*open-message-link-window*)))
 
 (defun prompt-for-username (prompt complete-function event
                             notify-starting-message
