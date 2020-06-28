@@ -299,6 +299,8 @@
 
 (define-key "l"         #'open-message-link                          *gemini-message-keymap*)
 
+(define-key "b"         #'gemini-history-back                        *gemini-message-keymap*)
+
 ;; tags keymap
 
 (define-key "up"        #'tag-go-up                                   *tags-keymap*)

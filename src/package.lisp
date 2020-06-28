@@ -1197,6 +1197,7 @@
    :add-crypto-data-event
    :poll-vote-event
    :gemini-request-event
+   :gemini-back-event
    :function-event
    :dispatch-program-events
    :add-pagination-status-event
@@ -1888,6 +1889,13 @@
    :tui-utils)
   (:shadowing-import-from :misc :random-elt :shuffle)
   (:export
+   :gemini-metadata-p
+   :make-gemini-metadata
+   :gemini-metadata-links
+   :gemini-metadata-p
+   :copy-gemini-metadata
+   :add-url-to-history
+   :history-back
    :request))
 
 (defpackage :main-window
@@ -2042,7 +2050,8 @@
    :show-about-window
    :reset-timeline-pagination
    :poll-vote
-   :open-gemini-address))
+   :open-gemini-address
+   :gemini-history-back))
 
 (defpackage :modules
   (:use

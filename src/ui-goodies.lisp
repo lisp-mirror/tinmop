@@ -922,7 +922,9 @@ Force the checking for new message in the thread the selected message belong."
   (close-window-and-return-to-threads specials:*open-attach-window*))
 
 (defun open-gemini-message-link-window ()
-  (let ((links (message-window:metadata specials:*message-window*)))
+  (let* ((window   specials:*message-window*)
+         (metadata (message-window:metadata window))
+         (links    (gemini-viewer:gemini-metadata-links metadata)))
     (open-message-link-window:init-gemini-links links)
     (focus-to-open-message-link-window)))
 
@@ -1333,7 +1335,7 @@ This command will remove those limits so that we can just jump to the last messa
   "Ask for a gemini addresss and try to load it"
   (flet ((on-input-complete (url)
            (if (gemini-parser:gemini-uri-p url)
-               (let* ((event (make-instance 'program-events:gemini-request-event
+               (let* ((event (make-instance 'gemini-request-event
                                             :url url)))
                  (program-events:push-event event))
                (error-message (_ "This is not a valid gemini address")))))
@@ -1341,3 +1343,7 @@ This command will remove those limits so that we can just jump to the last messa
       (ask-string-input #'on-input-complete
                         :prompt      prompt
                         :complete-fn (complete:make-complete-gemini-uri-fn prompt)))))
+
+(defun gemini-history-back ()
+  "Reopen a previous visited gemini address"
+  (push-event (make-instance 'gemini-back-event)))

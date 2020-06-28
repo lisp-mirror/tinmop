@@ -17,8 +17,25 @@
 
 (in-package :gemini-viewer)
 
+(defstruct gemini-metadata
+  (links)
+  (history))
+
+(defun add-url-to-history (window url)
+  (let* ((metadata (message-window:metadata window))
+         (history  (reverse (gemini-metadata-history metadata))))
+    (setf (gemini-metadata-history metadata)
+          (reverse (push url history)))))
+
+(defun maybe-initialize-metadata (window)
+  (when (not (gemini-metadata-p (message-window:metadata window)))
+    (setf (message-window:metadata window)
+          (make-gemini-metadata)))
+  (message-window:metadata window))
+
 (defun request (url)
   (let ((parsed-uri (puri:parse-uri url)))
+    (maybe-initialize-metadata specials:*message-window*)
     (if (null parsed-uri)
         (ui:error-message (format nil
                                   (_ "Could not understand the address ~s")
@@ -36,6 +53,7 @@
                                            :query query
                                            :port  port)
                   (declare (ignore x))
+                  (add-url-to-history specials:*message-window* url)
                   (cond
                     ((gemini-client:response-redirect-p status)
                      (flet ((on-input-complete (maybe-accepted)
@@ -72,7 +90,7 @@
                     (gemini-text
                      (setf (message-window:source-text *message-window*)
                            gemini-text)
-                     (setf (message-window:metadata *message-window*)
+                     (setf (gemini-metadata-links (message-window:metadata *message-window*))
                            gemini-links)
                      (setf (keybindings *message-window*)
                            keybindings:*gemini-message-keymap*)
@@ -106,3 +124,11 @@
                                  url
                                  e)
                          :as-error t)))))))
+
+(defun history-back (window)
+  (when-let* ((metadata (message-window:metadata window))
+              (history  (misc:safe-all-but-last-elt (gemini-metadata-history metadata)))
+              (last     (last-elt history)))
+    (setf (gemini-metadata-history metadata)
+          (misc:all-but-last-elt history))
+    (request last)))

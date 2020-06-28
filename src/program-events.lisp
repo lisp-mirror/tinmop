@@ -901,6 +901,11 @@
     (ui:focus-to-message-window)
     (gemini-viewer:request url)))
 
+(defclass gemini-back-event (program-event) ())
+
+(defmethod process-event ((object gemini-back-event))
+  (gemini-viewer:history-back specials:*message-window*))
+
 (defclass function-event (program-event) ())
 
 (defmethod process-event ((object function-event))
