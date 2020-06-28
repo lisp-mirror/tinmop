@@ -37,6 +37,10 @@
   (eq (keybindings window)
       keybindings:*gemini-message-keymap*))
 
+(defun prepare-for-display-status-mode (window)
+  (setf (keybindings window)
+        keybindings:*message-keymap*))
+
 (defgeneric prepare-for-rendering (object))
 
 (defmethod  prepare-for-rendering ((object message-window))

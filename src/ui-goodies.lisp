@@ -340,17 +340,16 @@ Metadata includes:
                      nil)
                  ,@windows-lose-focus)))
 
-(gen-focus-to-window thread-window
-                     specials:*thread-window*
-                     :documentation      "Move focus on thread window"
-                     :info-change-focus-message (_ "Focus passed on threads window")
-                     :windows-lose-focus (specials:*open-message-link-window*
-                                          specials:*open-attach-window*
-                                          specials:*conversations-window*
-                                          specials:*tags-window*
-                                          specials:*send-message-window*
-                                          specials:*message-window*
-                                          specials:*follow-requests-window*))
+(defun focus-to-thread-window (&key (print-message t))
+  "move focus on thread window"
+  (message-window:prepare-for-display-status-mode specials:*message-window*)
+  (give-focus *thread-window*
+              (if print-message
+                  (_ "focus passed on threads window")
+                  nil)
+              *open-message-link-window* *open-attach-window*
+              *conversations-window* *tags-window* *send-message-window*
+              *message-window* *follow-requests-window*))
 
 (gen-focus-to-window message-window
                      specials:*message-window*

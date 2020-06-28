@@ -1685,6 +1685,7 @@
    :source-text
    :metadata
    :display-gemini-text-p
+   :prepare-for-display-status-mode
    :scroll-down
    :scroll-up
    :scroll-end
