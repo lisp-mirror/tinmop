@@ -133,6 +133,8 @@
 
 (define-key "!"         #'gemini-search)
 
+(define-key ">"         #'open-gemini-address)
+
 ;; focus
 
 (define-key "f1"        #'focus-to-tags-window)

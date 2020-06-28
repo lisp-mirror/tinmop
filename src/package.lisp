@@ -712,6 +712,7 @@
    :next-in-history
    :most-recent-history-id
    :purge-history
+   :history-prompt->values
    :all-poll-options
    :find-poll
    :find-poll-option
@@ -1107,7 +1108,8 @@
    :unfollowed-user-complete
    :followed-user-complete
    :tags-complete
-   :conversation-folder))
+   :conversation-folder
+   :make-complete-gemini-uri-fn))
 
 (defpackage :program-events
   (:use
@@ -2038,7 +2040,8 @@
    :crypto-generate-key
    :show-about-window
    :reset-timeline-pagination
-   :poll-vote))
+   :poll-vote
+   :open-gemini-address))
 
 (defpackage :modules
   (:use

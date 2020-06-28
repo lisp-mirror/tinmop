@@ -1327,3 +1327,18 @@ This command will remove those limits so that we can just jump to the last messa
                               :prompt
                               (_ "Type the index (or space separated indices) of selected choices: "))
             (error-message (_ "This in not a poll")))))))
+
+;;;; gemini
+
+(defun open-gemini-address ()
+  "Ask for a gemini addresss and try to load it"
+  (flet ((on-input-complete (url)
+           (if (gemini-parser:gemini-uri-p url)
+               (let* ((event (make-instance 'program-events:gemini-request-event
+                                            :url url)))
+                 (program-events:push-event event))
+               (error-message (_ "This is not a valid gemini address")))))
+    (let ((prompt (_ "Open Gemini url: ")))
+      (ask-string-input #'on-input-complete
+                        :prompt      prompt
+                        :complete-fn (complete:make-complete-gemini-uri-fn prompt)))))

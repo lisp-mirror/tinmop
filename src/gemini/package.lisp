@@ -48,7 +48,8 @@
    :make-gemini-uri
    :sexp->links
    :sexp->text
-   :parse-gemini-response-header))
+   :parse-gemini-response-header
+   :gemini-uri-p))
 
 (defpackage :gemini-client
   (:use

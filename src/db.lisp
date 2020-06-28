@@ -700,6 +700,12 @@ than (swconf:config-purge-history-days-offset) days in the past"
     (query (make-delete +table-input-history+
                         (:< :date-added (prepare-for-db treshold))))))
 
+(defun history-prompt->values (prompt)
+  (mapcar #'second
+          (query (select :input
+                   (from +table-input-history+)
+                   (where (:= :prompt prompt))))))
+
 (defmethod prepare-for-db ((object tooter:application) &key &allow-other-keys)
   (tooter:name object))
 

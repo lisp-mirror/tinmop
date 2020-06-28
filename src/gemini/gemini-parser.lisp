@@ -376,3 +376,11 @@
                              " is too long. Maximum allowed length is ~a"
                              +max-meta-length+))
         parsed)))
+
+(defun gemini-uri-p (maybe-uri)
+  (conditions:with-default-on-error (nil)
+    (let ((parsed (puri:parse-uri maybe-uri)))
+      (and parsed
+           (string-equal +gemini-scheme+
+                         (puri:uri-scheme parsed))
+           (puri:uri-host parsed)))))

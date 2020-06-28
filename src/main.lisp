@@ -88,9 +88,9 @@ etc.) happened"
   (ui:reset-timeline-pagination))
 
 (defun load-gemini-url (url)
-  (let* ((refresh-event (make-instance 'program-events:gemini-request-event
+  (let* ((event (make-instance 'program-events:gemini-request-event
                                        :url url)))
-    (program-events:push-event refresh-event)))
+    (program-events:push-event event)))
 
 (defun load-configuration-files ()
   (swconf:load-config-file swconf:+shared-conf-filename+)
