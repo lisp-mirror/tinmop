@@ -22,10 +22,13 @@
   (history))
 
 (defun add-url-to-history (window url)
-  (let* ((metadata (message-window:metadata window))
-         (history  (reverse (gemini-metadata-history metadata))))
-    (setf (gemini-metadata-history metadata)
-          (reverse (push url history)))))
+  (let* ((metadata   (message-window:metadata window))
+         (history    (reverse (gemini-metadata-history metadata)))
+         (last-entry (safe-last-elt (gemini-metadata-history metadata))))
+    (when (string/= last-entry
+                    url)
+      (setf (gemini-metadata-history metadata)
+            (reverse (push url history))))))
 
 (defun maybe-initialize-metadata (window)
   (when (not (gemini-metadata-p (message-window:metadata window)))
@@ -130,5 +133,6 @@
               (history  (misc:safe-all-but-last-elt (gemini-metadata-history metadata)))
               (last     (last-elt history)))
     (setf (gemini-metadata-history metadata)
-          (misc:all-but-last-elt history))
+          history)
+    (ui:info-message (format nil (_ "Going back to: ~a") last))
     (request last)))
