@@ -1,15 +1,30 @@
+2020-06-29
+	* etc/next-previous-open.lisp
+	* po/it.po
+	* po/tinmop.pot
+	* src/gemini-viewer.lisp
+
+	- changed key for 'delete-and-move-next' command.
+	- updated italian translation.
+	- [gemini viewer] fixed history navigation.
+
 2020-06-28
+	* etc/init.lisp
 	* src/gemini-viewer.lisp
 	* src/main.lisp
+	* src/message-window.lisp
 	* src/package.lisp
 	* src/program-events.lisp
 	* src/ui-goodies.lisp
 
+	- [gemini browser] added a 'go-back' command.
 	- made the program  asks for redirects following only  when the event
 	queue is empty;
 	- added 'gemini-request-event';
 	- gave  focus back to message  window when closing link  window in
 	gemini mode.
+	- fixed bug that prevented to properly reset links list when in gemini mode;
+	- added command 'open-gemini-address';
 	- minor refactoring.
 
 2020-06-27
