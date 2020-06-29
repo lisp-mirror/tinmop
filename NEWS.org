@@ -1,4 +1,9 @@
-2020-06-22
+* 2020-06-29
+
+  - improved  gemini navigation.   It  is  possible to  go  back in  a
+    previous viewed address oe open an arbitrary URL.
+
+* 2020-06-22
 
   - The software includes a gemini client
 
