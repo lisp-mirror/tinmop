@@ -22,6 +22,6 @@
 
 (define-key "left"  #'open-previous            *thread-keymap*)
 
-(define-key "M-d"   #'delete-and-move-next     *thread-keymap*)
+(define-key "d"     #'delete-and-move-next     *thread-keymap*)
 
 (define-key "M-u"   #'delete-and-move-previous *thread-keymap*)
