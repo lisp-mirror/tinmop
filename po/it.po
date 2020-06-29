@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tinmop 0.0.1\n"
 "Report-Msgid-Bugs-To: https://notabug.org/cage/tinmop/\n"
-"POT-Creation-Date: 2020-06-23 15:48+0200\n"
-"PO-Revision-Date: 2020-06-23 15:49+0200\n"
+"POT-Creation-Date: 2020-06-29 12:30+0200\n"
+"PO-Revision-Date: 2020-06-29 12:31+0200\n"
 "Last-Translator: cage <cage@invalid.org>\n"
 "Language-Team: Italian\n"
 "Language: it\n"
@@ -135,7 +135,7 @@ msgstr "Apri un indirizzo gemini"
 msgid "Error: command ~a not found"
 msgstr "Errore: comando ~a non trovato"
 
-#: src/conditions.lisp:70 src/conditions.lisp:74 src/db.lisp:2432
+#: src/conditions.lisp:70 src/conditions.lisp:74 src/db.lisp:2438
 #: src/message-rendering-utils.lisp:132 src/message-rendering-utils.lisp:166
 #: src/message-rendering-utils.lisp:171
 msgid "unknown"
@@ -170,22 +170,22 @@ msgstr ""
 "cancelli un elemento la corrispondente richiesta sarà scartata altrimenti "
 "verrà accettata."
 
-#: src/gemini-viewer.lisp:24
+#: src/gemini-viewer.lisp:44
 #, lisp-format
 msgid "Could not understand the address ~s"
 msgstr "Non riesco ad interpretare l'indirizzo: ~s"
 
-#: src/gemini-viewer.lisp:52
+#: src/gemini-viewer.lisp:74
 #, lisp-format
 msgid "Redirects to ~s, follows redirect? [y/N] "
 msgstr "Seguire la redirezione a ~s? [s/N] "
 
-#: src/gemini-viewer.lisp:65
+#: src/gemini-viewer.lisp:87
 #, lisp-format
 msgid "Server ~s asks: ~s "
 msgstr "Il server ~s chiede: ~s "
 
-#: src/gemini-viewer.lisp:94
+#: src/gemini-viewer.lisp:116
 #, lisp-format
 msgid ""
 "Host ~s signature changed! This is a potential security risk! Ignore this "
@@ -194,15 +194,20 @@ msgstr ""
 "La firma dell'host ~s è cambiata! Questo è un potenziale problema di "
 "sicurezza! Proseguire? [s/N]"
 
-#: src/gemini-viewer.lisp:97 src/tui-utils.lisp:478
+#: src/gemini-viewer.lisp:119 src/tui-utils.lisp:478
 #, lisp-format
 msgid "Error: ~a"
 msgstr "Errore: ~a"
 
-#: src/gemini-viewer.lisp:104
+#: src/gemini-viewer.lisp:126
 #, lisp-format
 msgid "Error getting ~s: ~a"
 msgstr "Errore connettendomi a ~s: ~a"
+
+#: src/gemini-viewer.lisp:137
+#, lisp-format
+msgid "Going back to: ~a"
+msgstr "Ritorno a: ~a"
 
 #: src/gemini/client.lisp:155
 #, lisp-format
@@ -351,7 +356,7 @@ msgstr "È ammessa una sola scelta"
 msgid "The poll has expired"
 msgstr "Il sondaggio è scaduto"
 
-#: src/message-window.lisp:226
+#: src/message-window.lisp:230
 msgid "Messages"
 msgstr "Messaggi"
 
@@ -386,20 +391,20 @@ msgstr ""
 "Nessun editor trovato, per favore configura la direttiva 'editor' nel tuo "
 "file di configurazione."
 
-#: src/program-events.lisp:469
+#: src/program-events.lisp:481
 msgid "No message selected!"
 msgstr "Nessun messaggio selezionato!"
 
-#: src/program-events.lisp:619
+#: src/program-events.lisp:631
 msgid "Message sent."
 msgstr "Messaggio spedito"
 
-#: src/program-events.lisp:674
+#: src/program-events.lisp:686
 #, lisp-format
 msgid "Downloaded new messages for tag ~a"
 msgstr "Scaricati nuovi messaggi per l'etichetta ~a."
 
-#: src/program-events.lisp:786
+#: src/program-events.lisp:798
 #, lisp-format
 msgid "Got ~a notification"
 msgid_plural "Got ~a notifications"
@@ -432,7 +437,7 @@ msgstr "Oggetto del messaggio: "
 msgid "Visibility:"
 msgstr "Visibilità:"
 
-#: src/software-configuration.lisp:445
+#: src/software-configuration.lisp:459
 msgid "This message was crypted."
 msgstr "Questo messaggion era cifrato."
 
@@ -526,379 +531,387 @@ msgstr "Il file \"~a\" esiste. Lo sovrascrivo?"
 msgid "Request failed: error code ~d message \"~a\""
 msgstr "Richiesta fallita codice di errore: ~d, messaggio: ~a\""
 
-#: src/ui-goodies.lisp:175
+#: src/ui-goodies.lisp:177
 msgid "Jump to message: "
 msgstr "Vai al messaggio: "
 
-#: src/ui-goodies.lisp:192 src/ui-goodies.lisp:216 src/ui-goodies.lisp:316
+#: src/ui-goodies.lisp:194 src/ui-goodies.lisp:218 src/ui-goodies.lisp:318
 msgid "Search key: "
 msgstr "Criterio di ricerca: "
 
-#: src/ui-goodies.lisp:273
+#: src/ui-goodies.lisp:275
 msgid "Subscribe to: "
 msgstr "Abbonati a: "
 
-#: src/ui-goodies.lisp:289
+#: src/ui-goodies.lisp:291
 msgid "Unsubscribe to: "
 msgstr "Rimuovi la sottoscrizione a: "
 
-#: src/ui-goodies.lisp:330
+#: src/ui-goodies.lisp:332
 msgid "Focus changed"
 msgstr "Il focus e' cambiato"
 
-#: src/ui-goodies.lisp:344
-msgid "Focus passed on threads window"
+#: src/ui-goodies.lisp:348
+msgid "focus passed on threads window"
 msgstr "Il focus è passato alla finestra delle discussioni."
 
-#: src/ui-goodies.lisp:356
+#: src/ui-goodies.lisp:357
 msgid "Focus passed on message window"
 msgstr "Il focus è passato alla finestra del messaggio."
 
-#: src/ui-goodies.lisp:369
+#: src/ui-goodies.lisp:370
 msgid "Focus passed on send message window"
 msgstr "Il focus è passato alla finestra di spedizione dei messaggi."
 
-#: src/ui-goodies.lisp:381
+#: src/ui-goodies.lisp:382
 msgid "Focus passed on follow requests window"
 msgstr "Il focus è passato alla finestra delle richieste di seguirti."
 
-#: src/ui-goodies.lisp:393
+#: src/ui-goodies.lisp:394
 msgid "Focus passed on tags window"
 msgstr "Il focus è passato alla finestra delle sottoscrizioni."
 
-#: src/ui-goodies.lisp:404
+#: src/ui-goodies.lisp:405
 msgid "Focus passed on conversation window"
 msgstr "Il focus è passato alla finestra delle conversazioni."
 
-#: src/ui-goodies.lisp:416
+#: src/ui-goodies.lisp:417
 msgid "Focus passed on attach window"
 msgstr "Il focus è passato alla finestra degli allegati."
 
-#: src/ui-goodies.lisp:428
+#: src/ui-goodies.lisp:429
 msgid "Focus passed on link window"
 msgstr "Il focus è passato alla finestra dei link."
 
-#: src/ui-goodies.lisp:449
+#: src/ui-goodies.lisp:450
 #, lisp-format
 msgid "Saving messages in ~s"
 msgstr "Salvo i messaggi in ~s"
 
-#: src/ui-goodies.lisp:450
+#: src/ui-goodies.lisp:451
 #, lisp-format
 msgid "Saved message in ~s"
 msgstr "Salvati i messaggi in ~s"
 
-#: src/ui-goodies.lisp:453 src/ui-goodies.lisp:471
+#: src/ui-goodies.lisp:454 src/ui-goodies.lisp:472
 msgid "No folder specified."
 msgstr "Nessuna cartella indicata."
 
-#: src/ui-goodies.lisp:455
+#: src/ui-goodies.lisp:456
 msgid "Move to folder: "
 msgstr "Sposta nella cartella: "
 
-#: src/ui-goodies.lisp:469
+#: src/ui-goodies.lisp:470
 #, lisp-format
 msgid "Folder ~s does not exists."
 msgstr "La cartella ~s non esiste."
 
-#: src/ui-goodies.lisp:473
+#: src/ui-goodies.lisp:474
 msgid "Change folder: "
 msgstr "Spostati nella cartella: "
 
-#: src/ui-goodies.lisp:484
+#: src/ui-goodies.lisp:485
 msgid "No timeline specified."
 msgstr "Nessuna timeline indicata."
 
-#: src/ui-goodies.lisp:486
+#: src/ui-goodies.lisp:487
 msgid "This timeline is protected."
 msgstr "Questa timeline è protetta."
 
-#: src/ui-goodies.lisp:490
+#: src/ui-goodies.lisp:491
 msgid "Change timeline: "
 msgstr "Spostati nella timeline: "
 
-#: src/ui-goodies.lisp:531 src/ui-goodies.lisp:556
+#: src/ui-goodies.lisp:532 src/ui-goodies.lisp:557
 msgid "Downloading messages."
 msgstr "Scarico i messaggi."
 
-#: src/ui-goodies.lisp:532 src/ui-goodies.lisp:557 src/ui-goodies.lisp:599
+#: src/ui-goodies.lisp:533 src/ui-goodies.lisp:558 src/ui-goodies.lisp:600
 msgid "Messages downloaded."
 msgstr "Messaggi scaricati"
 
-#: src/ui-goodies.lisp:578
+#: src/ui-goodies.lisp:579
 msgid "Expanding thread"
 msgstr "Espandi l'albero dei messaggi"
 
-#: src/ui-goodies.lisp:598
+#: src/ui-goodies.lisp:599
 msgid "Downloading tags messages."
 msgstr "Scarico i messaggi dell'etichetta."
 
-#: src/ui-goodies.lisp:611
+#: src/ui-goodies.lisp:612
 msgid "Favorite this message?"
 msgstr "Conservare tra i favoriti questo messaggio?"
 
-#: src/ui-goodies.lisp:620
+#: src/ui-goodies.lisp:621
 msgid "Favouring message."
 msgstr "Conservo il messaggio tra i favoriti."
 
-#: src/ui-goodies.lisp:621
+#: src/ui-goodies.lisp:622
 msgid "Favoured message."
 msgstr "Messaggio conservato tra i favoriti."
 
-#: src/ui-goodies.lisp:626
+#: src/ui-goodies.lisp:627
 msgid "Remove this message from your favourites?"
 msgstr "Rimuovere dai preferiti questo messaggio?"
 
-#: src/ui-goodies.lisp:635
+#: src/ui-goodies.lisp:636
 msgid "Unfavouring message."
 msgstr "Rimuovo messaggio dai favoriti."
 
-#: src/ui-goodies.lisp:636
+#: src/ui-goodies.lisp:637
 msgid "Unfavoured message."
 msgstr "Rimuosso messaggio dai favoriti."
 
-#: src/ui-goodies.lisp:641
+#: src/ui-goodies.lisp:642
 msgid "Boost this message?"
 msgstr "Rilancia questo messaggio?"
 
-#: src/ui-goodies.lisp:650
+#: src/ui-goodies.lisp:651
 msgid "Boosting message."
 msgstr "Rilancio il messaggio."
 
-#: src/ui-goodies.lisp:651
+#: src/ui-goodies.lisp:652
 msgid "Boosted message."
 msgstr "Messaggio rilanciato."
 
-#: src/ui-goodies.lisp:656
+#: src/ui-goodies.lisp:657
 msgid "Unboost this message?"
 msgstr "Ritira il rilancio del messaggio?"
 
-#: src/ui-goodies.lisp:665
+#: src/ui-goodies.lisp:666
 msgid "Uboosting message."
 msgstr "Ritiro il rilancio del messaggio."
 
-#: src/ui-goodies.lisp:666
+#: src/ui-goodies.lisp:667
 msgid "Unboosted message."
 msgstr "Ritirato il rilancio del messaggio."
 
-#: src/ui-goodies.lisp:674
+#: src/ui-goodies.lisp:675
 #, lisp-format
 msgid "Ignore ~s?"
 msgstr "Ignorare ~s?"
 
-#: src/ui-goodies.lisp:677
+#: src/ui-goodies.lisp:678
 #, lisp-format
 msgid "Ignoring ~s"
 msgstr "Ignoro ~s"
 
-#: src/ui-goodies.lisp:678
+#: src/ui-goodies.lisp:679
 #, lisp-format
 msgid "User ~s ignored"
 msgstr "Utente ~s ignorato"
 
-#: src/ui-goodies.lisp:688
+#: src/ui-goodies.lisp:689
 msgid "No username specified."
 msgstr "Nessun nome utente indicato."
 
-#: src/ui-goodies.lisp:690
+#: src/ui-goodies.lisp:691
 msgid "Unignore username: "
 msgstr "Riprendere a leggere i messaggi di:"
 
-#: src/ui-goodies.lisp:719
+#: src/ui-goodies.lisp:720
 #, lisp-format
 msgid "File ~s does not exists."
 msgstr "Il file ~s non esiste."
 
-#: src/ui-goodies.lisp:721
+#: src/ui-goodies.lisp:722
 msgid "Message ready to be sent"
 msgstr "Messaggio pronto per essere spedito"
 
-#: src/ui-goodies.lisp:723
+#: src/ui-goodies.lisp:724
 msgid "Add attachment: "
 msgstr "Aggiungi allegato: "
 
-#: src/ui-goodies.lisp:733
+#: src/ui-goodies.lisp:734
 msgid "New subject: "
 msgstr "Nuovo oggetto del messaggio: "
 
-#: src/ui-goodies.lisp:742
+#: src/ui-goodies.lisp:743
 msgid "New visibility: "
 msgstr "Nuovo livello di visibilità: "
 
-#: src/ui-goodies.lisp:789
+#: src/ui-goodies.lisp:796
 #, lisp-format
 msgid "Your message is ~a character too long."
 msgid_plural "Your message is ~a characters too long."
 msgstr[0] "Il tuo messaggio e più lungo del limite ammesso di ~a carattere."
 msgstr[1] "Il tuo messaggio e più lungo del limite ammesso di ~a caratteri."
 
-#: src/ui-goodies.lisp:813
+#: src/ui-goodies.lisp:820
 msgid "Add subject: "
 msgstr "Oggetto del messaggio: "
 
-#: src/ui-goodies.lisp:872
+#: src/ui-goodies.lisp:888
 #, lisp-format
 msgid "The maximum allowed number of media is ~a."
 msgstr "Il numero massimo di file da allegare è ~a."
 
-#: src/ui-goodies.lisp:875
+#: src/ui-goodies.lisp:891
 msgid "Sending message"
 msgstr "Spedisco il messaggio"
 
-#: src/ui-goodies.lisp:962
+#: src/ui-goodies.lisp:982
 msgid "Follow: "
 msgstr "Segui: "
 
-#: src/ui-goodies.lisp:965
+#: src/ui-goodies.lisp:985
 #, lisp-format
 msgid "Following ~a"
 msgstr "Segui ~a"
 
-#: src/ui-goodies.lisp:966
+#: src/ui-goodies.lisp:986
 #, lisp-format
 msgid "Followed  ~a"
 msgstr "Adesso segui ~a "
 
-#: src/ui-goodies.lisp:970
+#: src/ui-goodies.lisp:990
 msgid "Unfollow: "
 msgstr "Abbandona: "
 
-#: src/ui-goodies.lisp:973
+#: src/ui-goodies.lisp:993
 #, lisp-format
 msgid "Unfollowing ~a"
 msgstr "Abbandona ~a"
 
-#: src/ui-goodies.lisp:974
+#: src/ui-goodies.lisp:994
 #, lisp-format
 msgid "Unfollowed  ~a"
 msgstr "Hai abbandonato ~a"
 
-#: src/ui-goodies.lisp:1003
+#: src/ui-goodies.lisp:1023
 msgid "Confirm operation?"
 msgstr "Confermi l'operazione?"
 
-#: src/ui-goodies.lisp:1041
+#: src/ui-goodies.lisp:1061
 msgid "Updating conversations."
 msgstr "Aggiorno le conversazioni"
 
-#: src/ui-goodies.lisp:1042
+#: src/ui-goodies.lisp:1062
 msgid "Conversations updated."
 msgstr "Conversazioni aggiornate"
 
-#: src/ui-goodies.lisp:1052
+#: src/ui-goodies.lisp:1072
 msgid "Open conversation: "
 msgstr "Apri una conversazione: "
 
-#: src/ui-goodies.lisp:1087
+#: src/ui-goodies.lisp:1107
 msgid "Old name: "
 msgstr "Nome precedente: "
 
-#: src/ui-goodies.lisp:1101
+#: src/ui-goodies.lisp:1121
 #, lisp-format
 msgid "A conversation with name ~a already exists."
 msgstr "Una conversazione con nome ~a esiste già."
 
-#: src/ui-goodies.lisp:1107
+#: src/ui-goodies.lisp:1127
 msgid "New name: "
 msgstr "Nuovo nome: "
 
-#: src/ui-goodies.lisp:1123
+#: src/ui-goodies.lisp:1143
 #, lisp-format
 msgid "Ignore conversation ~s? [y/N] "
 msgstr "Ignorare la conversazione ~s? [s/N] "
 
-#: src/ui-goodies.lisp:1139
+#: src/ui-goodies.lisp:1159
 #, lisp-format
 msgid "Delete conversation ~s? [y/N] "
 msgstr "Eliminare la conversazione ~s? [s/N] "
 
-#: src/ui-goodies.lisp:1158
+#: src/ui-goodies.lisp:1178
 #, lisp-format
 msgid "Comment too long by ~a character"
 msgid_plural "Comment too long by ~a characters"
 msgstr[0] "Il commento è troppo lungo di ~a caratteri"
 msgstr[1] "Il commento è troppo lungo di ~a caratteri"
 
-#: src/ui-goodies.lisp:1165
+#: src/ui-goodies.lisp:1185
 #, lisp-format
 msgid "Reporting user: ~s"
 msgstr "Segnalo l'utente ~s"
 
-#: src/ui-goodies.lisp:1166
+#: src/ui-goodies.lisp:1186
 msgid "Report trasmitted."
 msgstr "Segnalazione trasmessa."
 
-#: src/ui-goodies.lisp:1169
+#: src/ui-goodies.lisp:1189
 msgid "Comment on reports: "
 msgstr "Commento sulla segnalazione: "
 
-#: src/ui-goodies.lisp:1185 src/ui-goodies.lisp:1218 src/ui-goodies.lisp:1236
+#: src/ui-goodies.lisp:1205 src/ui-goodies.lisp:1238 src/ui-goodies.lisp:1256
 #, lisp-format
 msgid "User ~s does not exists in database"
 msgstr "L'utente ~s non esiste nel database"
 
-#: src/ui-goodies.lisp:1188 src/ui-goodies.lisp:1221 src/ui-goodies.lisp:1239
+#: src/ui-goodies.lisp:1208 src/ui-goodies.lisp:1241 src/ui-goodies.lisp:1259
 msgid "Username: "
 msgstr "Nome utente: "
 
-#: src/ui-goodies.lisp:1198
+#: src/ui-goodies.lisp:1218
 #, lisp-format
 msgid "Added crypto key for user ~s"
 msgstr "Aggiunta chiave crittografica per l'utente ~s"
 
-#: src/ui-goodies.lisp:1201
+#: src/ui-goodies.lisp:1221
 msgid "Key: "
 msgstr "Chiave: "
 
-#: src/ui-goodies.lisp:1215
+#: src/ui-goodies.lisp:1235
 #, lisp-format
 msgid "Generated key for user ~s"
 msgstr "Generata chiave crittografica per l'utente ~s"
 
-#: src/ui-goodies.lisp:1216
+#: src/ui-goodies.lisp:1236
 #, lisp-format
 msgid "user ~s key ~s"
 msgstr "utente ~s chiave ~s"
 
-#: src/ui-goodies.lisp:1232
+#: src/ui-goodies.lisp:1252
 #, lisp-format
 msgid "Added key for user ~s: ~a"
 msgstr "Aggiunta chiave crittografica per l'utente ~s: ~a"
 
-#: src/ui-goodies.lisp:1249
+#: src/ui-goodies.lisp:1269
 msgid "About this software"
 msgstr "Sul programma"
 
-#: src/ui-goodies.lisp:1261
+#: src/ui-goodies.lisp:1281
 msgid "Clearing pagination data"
 msgstr "Elimina i dati della paginazione"
 
-#: src/ui-goodies.lisp:1280
+#: src/ui-goodies.lisp:1300
 msgid "Invalid choices, usa a space separated list of positive integers."
 msgstr ""
 "Il formato ammesso è costituito da una lista di interi positivi separati da "
 "spazi."
 
-#: src/ui-goodies.lisp:1297
+#: src/ui-goodies.lisp:1317
 #, lisp-format
 msgid "Invalid choices, index choice out of range (max ~a)."
 msgstr "Intervallo dei valori delle scelte non valido (massimo ~a)."
 
-#: src/ui-goodies.lisp:1299
+#: src/ui-goodies.lisp:1319
 msgid "Voting... "
 msgstr "Votazione in corso..."
 
-#: src/ui-goodies.lisp:1300
+#: src/ui-goodies.lisp:1320
 msgid "Choice sent."
 msgstr "Voto inserito."
 
-#: src/ui-goodies.lisp:1309
+#: src/ui-goodies.lisp:1329
 msgid "Type the index (or space separated indices) of selected choices: "
 msgstr "Inserisci gli indici associati alle opzioni separati da spazi: "
 
-#: src/ui-goodies.lisp:1310
+#: src/ui-goodies.lisp:1330
 msgid "This in not a poll"
 msgstr "Questo messaggio non è un sondaggio."
+
+#: src/ui-goodies.lisp:1341
+msgid "This is not a valid gemini address"
+msgstr "Questo non è un indirizzo gemini valido"
+
+#: src/ui-goodies.lisp:1342
+msgid "Open Gemini url: "
+msgstr "Apri un indirizzo gemini: "
 
 #: src/windows.lisp:536 src/windows.lisp:592
 msgid "OK"
