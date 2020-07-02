@@ -249,7 +249,9 @@
        (let* ((absolute-path-p (string-starts-with-p "/" link-value))
               (path            (if absolute-path-p
                                    link-value
-                                   (strcat (path-last-dir original-path)
+                                   (strcat (if original-path
+                                               (path-last-dir original-path)
+                                               "/")
                                            link-value))))
          (make-gemini-uri original-host
                           (normalize-path path)
