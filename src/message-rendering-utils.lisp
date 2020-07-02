@@ -251,6 +251,7 @@
       (let ((expiredp              (db:row-poll-expired-p       poll))
             (multiple-vote-allowed (db:row-poll-multiple-vote-p poll)))
         (with-output-to-string (stream)
+          (format stream "~3%")
           (loop
              for title  in all-titles
              for index  in all-rendered-indices

@@ -567,7 +567,8 @@ Force the checking for new message in the thread the selected message belong."
                         (line-oriented-window:selected-row-fields specials:*thread-window*))
                        (timeline         (thread-window:timeline-type specials:*thread-window*))
                        (folder           (thread-window:timeline-folder specials:*thread-window*))
-                       (status-id        (db:row-message-status-id selected-message))
+                       (status-id        (or (db:row-message-reblog-id selected-message)
+                                             (db:row-message-status-id selected-message)))
                        (expand-event     (make-instance 'expand-thread-event
                                                         :new-folder   folder
                                                         :new-timeline timeline
