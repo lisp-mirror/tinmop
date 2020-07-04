@@ -1048,6 +1048,7 @@
      :combine-attributes
      :colorize-line
      :colorized-line->tui-string
+     :standard-error-notify-life
      :with-notify-errors))
 
 (defpackage :command-line

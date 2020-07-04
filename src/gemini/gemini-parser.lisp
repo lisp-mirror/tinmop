@@ -229,23 +229,23 @@
                              "/")))
           (regex-replace-all "//" merged ""))))))
 
-(defmethod normalize-path ((object puri:uri))
-  (let ((clean-path (normalize-path (puri:uri-path object)))
-        (copy       (puri:copy-uri  object)))
+(defmethod normalize-path ((object quri:uri))
+  (let ((clean-path (normalize-path (quri:uri-path object)))
+        (copy       (quri:copy-uri  object)))
     (when clean-path
-      (setf (puri:uri-path copy) clean-path))
+      (setf (quri:uri-path copy) clean-path))
     copy))
 
-(defmethod to-s ((object puri:uri))
+(defmethod to-s ((object quri:uri))
   (with-output-to-string (stream)
-    (puri:render-uri object stream)))
+    (quri:render-uri object stream)))
 
 (defun absolutize-link (link-value original-host original-port original-path)
-  (let ((parsed (puri:parse-uri link-value)))
+  (let ((parsed (quri:uri link-value)))
     (cond
       ((null parsed)
        (error "Unparsable address"))
-      ((null (puri:uri-host parsed))
+      ((null (quri:uri-host parsed))
        (let* ((absolute-path-p (string-starts-with-p "/" link-value))
               (path            (if absolute-path-p
                                    link-value
@@ -257,7 +257,7 @@
                           (normalize-path path)
                           nil
                           original-port)))
-      ((null (puri:uri-scheme parsed))
+      ((null (quri:uri-scheme parsed))
        (strcat +gemini-scheme+ ":"
                (to-s (normalize-path parsed))))
       (t
@@ -381,8 +381,8 @@
 
 (defun gemini-uri-p (maybe-uri)
   (conditions:with-default-on-error (nil)
-    (let ((parsed (puri:parse-uri maybe-uri)))
+    (let ((parsed (quri:uri maybe-uri)))
       (and parsed
            (string-equal +gemini-scheme+
-                         (puri:uri-scheme parsed))
-           (puri:uri-host parsed)))))
+                         (quri:uri-scheme parsed))
+           (quri:uri-host parsed)))))

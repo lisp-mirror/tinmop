@@ -469,6 +469,9 @@
     (loop for i across (complex-char-array object) do
          (print-debug i))))
 
+(defun standard-error-notify-life ()
+  (* (swconf:config-notification-life) 5))
+
 (defmacro with-notify-errors (&body body)
   #+debug-mode `(progn ,@body)
   #-debug-mode `(handler-case

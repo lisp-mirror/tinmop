@@ -37,16 +37,16 @@
   (message-window:metadata window))
 
 (defun request (url)
-  (let ((parsed-uri (puri:parse-uri url)))
+  (let ((parsed-uri (quri:uri url)))
     (maybe-initialize-metadata specials:*message-window*)
     (if (null parsed-uri)
         (ui:error-message (format nil
                                   (_ "Could not understand the address ~s")
                                   url))
-        (let ((host  (puri:uri-host  parsed-uri))
-              (path  (puri:uri-path  parsed-uri))
-              (query (puri:uri-query parsed-uri))
-              (port  (or (puri:uri-port  parsed-uri)
+        (let ((host  (quri:uri-host  parsed-uri))
+              (path  (quri:uri-path  parsed-uri))
+              (query (quri:uri-query parsed-uri))
+              (port  (or (quri:uri-port  parsed-uri)
                          gemini-client:+gemini-default-port+)))
           (handler-case
               (progn
@@ -62,9 +62,9 @@
                      (flet ((on-input-complete (maybe-accepted)
                               (when (ui::boolean-input-accepted-p maybe-accepted)
                                 (let ((new-url (gemini-parser:absolutize-link meta
-                                                                              (puri:uri-host parsed-uri)
-                                                                              (puri:uri-port parsed-uri)
-                                                                              (puri:uri-path parsed-uri))))
+                                                                              (quri:uri-host parsed-uri)
+                                                                              (quri:uri-port parsed-uri)
+                                                                              (quri:uri-path parsed-uri))))
                                   (db-utils:with-ready-database (:connect nil)
                                     (request new-url))))))
                        (ui:ask-string-input #'on-input-complete
@@ -121,6 +121,7 @@
             (gemini-client:gemini-protocol-error (e)
               (ui:notify (format nil "~a" e)
                          :as-error t))
+            #-debug-mode
             (error (e)
               (ui:notify (format nil
                                  (_ "Error getting ~s: ~a")

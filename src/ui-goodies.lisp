@@ -48,7 +48,9 @@
 
 (defun notify (message &key (life nil) (as-error nil))
   (let ((event (make-instance 'notify-user-event
-                              :life         life
+                              :life         (if as-error
+                                                (tui:standard-error-notify-life)
+                                                life)
                               :notify-error as-error
                               :payload      message)))
   (push-event event)))

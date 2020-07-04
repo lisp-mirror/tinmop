@@ -168,7 +168,11 @@
   (:documentation "The condition signalled when tofu failed"))
 
 (defun parse-response (stream host port path)
-  (let* ((header        (read-line stream))
+  (let* ((header-raw   (misc:list->array (loop for c = (read-byte stream)
+                                            while (/= c 10)
+                                            collect c)
+                                         '(unsigned-byte 8)))
+         (header       (babel:octets-to-string header-raw :errorp nil))
          (parsed-header (parse-gemini-response-header (format nil "~a~a" header #\Newline))))
     (with-accessors ((meta        meta)
                      (status-code status-code)) parsed-header
@@ -212,9 +216,7 @@
 (defun absolute-url-p (url)
   (text-utils:string-starts-with-p +gemini-scheme+ url))
 
-(defun request (host path &key
-                            (query nil)
-                            (port  +gemini-default-port+))
+(defun request (host path &key (query nil) (port  +gemini-default-port+))
   (let* ((uri (make-gemini-uri host path query port))
          (ctx (cl+ssl:make-context :verify-mode cl+ssl:+ssl-verify-none+)))
     (when query
@@ -225,7 +227,7 @@
             (when socket
               (let ((stream (usocket:socket-stream socket)))
                 (let* ((ssl-stream (cl+ssl:make-ssl-client-stream stream
-                                                                  :external-format '(:ascii)
+                                                                  :external-format nil
                                                                   :unwrap-stream-p t
                                                                   :verify          nil
                                                                   :hostname        host))
@@ -234,7 +236,7 @@
                   (if (not (db:tofu-passes-p host cert-hash))
                       (error 'gemini-tofu-error :host host)
                       (progn
-                        (write-string request ssl-stream)
+                        (write-sequence (babel:string-to-octets request) ssl-stream)
                         (force-output ssl-stream)
                         (multiple-value-bind (status description meta body gemini-text gemini-links)
                             (parse-response ssl-stream host port path)

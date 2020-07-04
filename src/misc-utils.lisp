@@ -577,8 +577,9 @@ Name from Emacs Lisp."
                                            el))))
               res)))
 
-(defun list->array (the-list)
+(defun list->array (the-list &optional (element-type t))
   (make-array (length the-list)
+              :element-type     element-type
               :fill-pointer     (length the-list)
               :adjustable       t
               :initial-contents (copy-list the-list)))

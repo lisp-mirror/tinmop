@@ -49,7 +49,7 @@
                :drakma
                :usocket
                :babel
-               :puri
+               :quri
                :percent-encoding
                :uiop)
   :components ((:file "package")
