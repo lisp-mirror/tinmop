@@ -85,17 +85,21 @@
 (defun queue-compare-predicate (a b)
   (let ((same-priority-p (= (priority a)
                             (priority b))))
-    (if same-priority-p
-        (< (event-id a)
-           (event-id b))
-        (cond
-          ((= (priority a) +maximum-event-priority+)
-           t)
-          ((= (priority b) +maximum-event-priority+)
-           nil)
-          (t
-           (< (priority a)
-              (priority b)))))))
+    (cond
+      ((= (priority a) +minimum-event-priority+)
+       nil)
+      ((= (priority b) +minimum-event-priority+)
+       t)
+      ((= (priority a) +maximum-event-priority+)
+       t)
+      ((= (priority b) +maximum-event-priority+)
+       nil)
+      (same-priority-p
+       (< (event-id a)
+          (event-id b)))
+      (t
+       (< (priority a)
+          (priority b))))))
 
 (defun queue-equals-predicate (a b)
   (= (event-id a)

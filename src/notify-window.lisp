@@ -52,7 +52,8 @@
   (with-accessors ((life life)) object
     (when (notification-terminated-p object)
       (let ((remove-win-event (make-instance 'program-events:remove-notify-user-event
-                                             :payload object)))
+                                             :priority program-events:+maximum-event-priority+
+                                             :payload  object)))
         (win-close object)
         (program-events:push-event remove-win-event)))
     (decf (life object) dt)))

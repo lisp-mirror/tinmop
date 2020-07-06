@@ -46,8 +46,9 @@
                                             delete-count))
           (quit-program)))))
 
-(defun notify (message &key (life nil) (as-error nil))
+(defun notify (message &key (life nil) (as-error nil) (priority +standard-event-priority+))
   (let ((event (make-instance 'notify-user-event
+                              :priority     priority
                               :life         (if as-error
                                                 (tui:standard-error-notify-life)
                                                 life)
@@ -504,47 +505,54 @@ and if fetch local (again, to server) statuses only."
     ((string= timeline db:+home-timeline+)
      (values :home nil))))
 
+(defun %update-timeline-event (event-payload-function)
+  (let ((event (make-instance 'function-event :payload event-payload-function)))
+    (notify (_ "Downloading messages.")
+            :priority +maximum-event-priority+
+            :life     (* (swconf:config-notification-life) 5))
+    (push-event event)
+    (notify (_ "Messages downloaded.")
+            :priority +minimum-event-priority+
+            :life     (* (swconf:config-notification-life) 5))))
+
 (defun update-current-timeline (&optional (recover-count 0))
   "Update current timeline
 
 This  command  also checks  notifications  about  mentioning the  user
 and (if  such mentions  exists) download the  mentioning toots  in the
 folder \"mentions\"."
-  (let* ((timeline (thread-window:timeline-type specials:*thread-window*))
-         (folder   (thread-window:timeline-folder specials:*thread-window*))
-         (max-id   (db:last-pagination-status-id-timeline-folder timeline folder)))
-    (multiple-value-bind (kind localp)
-        (timeline->kind timeline)
-      (flet ((update ()
+  (flet ((update-payload ()
+           (let* ((timeline (thread-window:timeline-type specials:*thread-window*))
+                  (folder   (thread-window:timeline-folder specials:*thread-window*))
+                  (max-id   (db:last-pagination-status-id-timeline-folder timeline folder)))
+             (multiple-value-bind (kind localp)
+                 (timeline->kind timeline)
                (with-notify-errors
-                 (client:update-timeline timeline
-                                         kind
-                                         folder
-                                         :recover-from-skipped-statuses t
-                                         :recover-count                 recover-count
-                                         :min-id                        max-id
-                                         :local                         localp)
+                   (client:update-timeline timeline
+                                           kind
+                                           folder
+                                           :recover-from-skipped-statuses t
+                                           :recover-count                 recover-count
+                                           :min-id                        max-id
+                                           :local                         localp)
                  (let ((update-mentions-event (make-instance 'update-mentions-event))
                        (refresh-event         (make-instance 'refresh-thread-windows-event)))
                    ;; updating home also triggers the checks for mentions
                    (when (eq kind :home)
                      (push-event update-mentions-event))
-                   (push-event refresh-event)))))
-        (notify-procedure #'update
-                          (_ "Downloading messages.")
-                          :ending-message (_ "Messages downloaded.")
-                          :life-start     (* (swconf:config-notification-life) 5))))))
+                   (push-event refresh-event)))))))
+    (%update-timeline-event #'update-payload)))
 
 (defun update-current-timeline-backwards (&optional (recover-count 0))
   "Update current timeline backwards
 
 Starting from the oldest toot and going back."
-  (let* ((timeline          (thread-window:timeline-type specials:*thread-window*))
-         (folder            (thread-window:timeline-folder specials:*thread-window*))
-         (min-id            (db:first-pagination-status-id-timeline-folder timeline folder)))
-    (multiple-value-bind (kind localp)
-        (timeline->kind timeline)
-      (flet ((update ()
+  (flet ((update-payload ()
+           (let* ((timeline          (thread-window:timeline-type specials:*thread-window*))
+                  (folder            (thread-window:timeline-folder specials:*thread-window*))
+                  (min-id            (db:first-pagination-status-id-timeline-folder timeline folder)))
+             (multiple-value-bind (kind localp)
+                 (timeline->kind timeline)
                (with-notify-errors
                  (client:update-timeline timeline
                                          kind
@@ -554,11 +562,8 @@ Starting from the oldest toot and going back."
                                          :max-id                        min-id
                                          :local                         localp)
                  (let ((refresh-event (make-instance 'refresh-thread-windows-event)))
-                   (push-event refresh-event)))))
-        (notify-procedure #'update
-                          (_ "Downloading messages.")
-                          :ending-message (_ "Messages downloaded.")
-                          :life-start     (* (swconf:config-notification-life) 5))))))
+                   (push-event refresh-event)))))))
+    (%update-timeline-event #'update-payload)))
 
 (defun refresh-thread ()
   "Check and download a thread
