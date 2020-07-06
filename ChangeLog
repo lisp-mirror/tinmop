@@ -1,3 +1,10 @@
+2020-07-06
+	* src/notify-window.lisp
+	* src/program-events.lisp
+	* src/ui-goodies.lisp
+
+	- correctly enqueued multiple "update timeline" commands.
+
 2020-07-04
 	* po/it.po
 	* po/tinmop.pot
