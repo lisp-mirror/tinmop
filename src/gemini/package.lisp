@@ -47,6 +47,14 @@
    :absolutize-link
    :make-gemini-uri
    :sexp->links
+   :gemini-page-theme
+   :link-prefix-gemini
+   :link-prefix-other
+   :h1-prefix
+   :h2-prefix
+   :h3-prefix
+   :quote-prefix
+   :bullet-prefix
    :sexp->text
    :parse-gemini-response-header
    :gemini-uri-p))
@@ -76,4 +84,5 @@
    :response-sensitive-input-p
    :response-redirect-p
    :absolute-url-p
+   :init-default-gemini-theme
    :request))

@@ -273,8 +273,51 @@
                                                  original-path)
                         :name   (tag-value node)))))
 
-(defun sexp->text (parsed-gemini)
-  (labels ((underlineize (stream text underline-char)
+(defun gemini-link-uri-p (uri)
+  (conditions:with-default-on-error (nil)
+    (or (text-utils:string-starts-with-p +gemini-scheme+ uri)
+        (null (quri:uri-scheme (quri:uri uri))))))
+
+(defclass gemini-page-theme ()
+  ((link-prefix-gemini
+    :initarg  :link-prefix-gemini
+    :initform "-> "
+    :accessor link-prefix-gemini)
+   (link-prefix-other
+    :initarg  :link-prefix-other
+    :initform "^ "
+    :accessor link-prefix-other)
+   (h1-prefix
+    :initarg  :h1-prefix
+    :initform "+ "
+    :accessor h1-prefix)
+   (h2-prefix
+    :initarg  :h2-prefix
+    :initform "+ "
+    :accessor h2-prefix)
+   (h3-prefix
+    :initarg  :h3-prefix
+    :initform "+ "
+    :accessor h3-prefix)
+   (quote-prefix
+    :initarg  :quote-prefix
+    :initform +quote-line-prefix+
+    :accessor quote-prefix)
+   (bullet-prefix
+    :initarg  :bullet-prefix
+    :initform +bullet-line-prefix+
+    :accessor bullet-prefix)))
+
+(defun sexp->text (parsed-gemini theme)
+  (labels ((header-prefix (prefix header)
+             (strcat prefix header))
+           (header-prefix-h1 (header)
+             (header-prefix (h1-prefix theme) header))
+           (header-prefix-h2 (header)
+              (header-prefix (h2-prefix theme) header))
+           (header-prefix-h3 (header)
+              (header-prefix (h3-prefix theme) header))
+           (underlineize (stream text underline-char)
              (let* ((size      (length text))
                     (underline (build-string size underline-char)))
                (format stream "~a~%~a~%" text underline)))
@@ -284,7 +327,11 @@
              (let ((text (first (html-utils:children node))))
                (if trim
                    (trim text)
-                   text))))
+                   text)))
+           (linkify (link-name link-value)
+             (if (gemini-link-uri-p link-value)
+                 (format nil "~a~a~%" (link-prefix-gemini theme) link-name)
+                 (format nil "~a~a~%" (link-prefix-other  theme) link-name))))
     (with-output-to-string (stream)
       (loop for node in parsed-gemini do
            (cond
@@ -294,25 +341,25 @@
               (format stream "~a~%" (text-value node)))
              ((html-utils:tag= :h1 node)
               (underlineize stream
-                            (text-value node)
+                            (header-prefix-h1 (text-value node))
                             +h1-underline+))
              ((html-utils:tag= :h2 node)
               (underlineize stream
-                            (text-value node)
+                            (header-prefix-h2 (text-value node))
                             +h2-underline+))
              ((html-utils:tag= :h1 node)
               (underlineize stream
-                            (text-value node)
+                            (header-prefix-h3 (text-value node))
                             +h3-underline+))
              ((html-utils:tag= :li node)
               (format stream
                       "~a ~a~%"
-                      +bullet-line-prefix+
+                      (bullet-prefix theme)
                       (text-value node)))
              ((html-utils:tag= :quote node)
               (format stream
                       "~a ~a~%"
-                      +quote-line-prefix+
+                      (quote-prefix theme)
                       (text-value node)))
              ((html-utils:tag= :pre node)
               (write-sequence (text-value node :trim nil) stream))
@@ -321,8 +368,8 @@
                     (link-value (html-utils:attribute-value (html-utils:find-attribute :href
                                                                                        node))))
                 (if link-name
-                    (format stream "[~a]~%" link-name)
-                    (format stream "[~a]~%" link-value)))))))))
+                    (write-string (linkify link-name link-value)  stream)
+                    (write-string (linkify link-value link-value) stream)))))))))
 
 (defun parse-gemini-file (data)
   (parse 'gemini-file (strcat data (string #\Newline))

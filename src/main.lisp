@@ -101,6 +101,7 @@ etc.) happened"
   (res:init)
   (load-configuration-files)
   (init-db)
+  (gemini-client:init-default-gemini-theme)
   (db-utils:with-ready-database (:connect nil)
     (modules:load-module +starting-init-file+)
     ;; init main window for first...

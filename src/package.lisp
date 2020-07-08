@@ -950,6 +950,14 @@
    :parse
    :load-config-file
    :external-editor
+   :gemini-link-prefix-to-gemini
+   :gemini-link-prefix-to-other
+   :gemini-quote-prefix
+   :gemini-quote-prefix
+   :gemini-h1-prefix
+   :gemini-h2-prefix
+   :gemini-h3-prefix
+   :gemini-bullet-prefix
    :signature-file-path
    :vote-vertical-bar
    :crypted-mark-value

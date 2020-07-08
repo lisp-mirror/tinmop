@@ -332,6 +332,14 @@
                    prefix
                    postfix
                    value
+                   scheme
+                   link
+                   quote
+                   h1
+                   h2
+                   h3
+                   bullet
+                   other
                    attribute
                    new-message
                    mark
@@ -372,6 +380,7 @@
                    open-message-link-window
                    command-window
                    command-separator
+                   gemini
                    tree
                    branch
                    arrow
@@ -435,13 +444,54 @@
 
 ;;;; interface
 
+(defun gemini-link-prefix (scheme)
+  (access:accesses *software-configuration*
+                   +key-gemini+
+                   +key-link+
+                   +key-scheme+
+                   scheme
+                   +key-prefix+))
+
+(defun gemini-link-prefix-to-gemini ()
+  (gemini-link-prefix +key-gemini+))
+
+(defun gemini-link-prefix-to-other ()
+  (gemini-link-prefix +key-other+))
+
+(defun gemini-quote-prefix ()
+  (access:accesses *software-configuration*
+                   +key-gemini+
+                   +key-quote+
+                   +key-prefix+))
+
+
+(defun gemini-h*-prefix (level)
+  (access:accesses *software-configuration*
+                   +key-gemini+
+                   level
+                   +key-prefix+))
+
+(defun gemini-h1-prefix ()
+  (gemini-h*-prefix +key-h1+))
+
+(defun gemini-h2-prefix ()
+  (gemini-h*-prefix +key-h2+))
+
+(defun gemini-h3-prefix ()
+  (gemini-h*-prefix +key-h3+))
+
+(defun gemini-bullet-prefix ()
+  (access:accesses *software-configuration*
+                   +key-gemini+
+                   +key-bullet+
+                   +key-prefix+))
+
 (defun signature-file-path ()
   "Returns the filepath of the signature file, the $HOME is prepended."
   (let* ((signature-file (or (access:accesses *software-configuration*
                                               +key-signature-file+)
                              +default-signature-filename+))
-         (signature-path (fs:cat-parent-dir (fs:home-dir)
-                                            signature-file)))
+         (signature-path (fs:cat-parent-dir (fs:home-dir) signature-file)))
     (if (fs:file-exists-p signature-path)
         signature-path
         nil)))

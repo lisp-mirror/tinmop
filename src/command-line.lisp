@@ -63,7 +63,6 @@
      (:name                  :notify-mentions
                              :description               (_ "Notify messages that mentions the user")
                              :short                     #\m
-                             :arg-parser                #'identity
                              :long                      "notify-mentions")
      (:name                  :open-gemini-url
                              :description               (_ "Open gemini url")

@@ -167,7 +167,20 @@
                      (host condition))))
   (:documentation "The condition signalled when tofu failed"))
 
-(defun parse-response (stream host port path)
+(defparameter *gemini-page-theme* nil)
+
+(defun init-default-gemini-theme ()
+  (setf *gemini-page-theme*
+        (make-instance 'gemini-parser:gemini-page-theme
+                       :link-prefix-other  (swconf:gemini-link-prefix-to-other)
+                       :link-prefix-gemini (swconf:gemini-link-prefix-to-gemini)
+                       :quote-prefix       (swconf:gemini-quote-prefix)
+                       :h1-prefix          (swconf:gemini-h1-prefix)
+                       :h2-prefix          (swconf:gemini-h2-prefix)
+                       :h3-prefix          (swconf:gemini-h3-prefix)
+                       :bullet-prefix      (swconf:gemini-bullet-prefix))))
+
+(defun parse-response (stream host port path &key (theme *gemini-page-theme*))
   (let* ((header-raw   (misc:list->array (loop for c = (read-byte stream)
                                             while (/= c 10)
                                             collect c)
@@ -195,7 +208,7 @@
                                    "-> ~a://~a:~a~a~2%~a"
                                    +gemini-scheme+
                                    host port path
-                                   (sexp->text  parsed))
+                                   (sexp->text parsed theme))
                            (sexp->links parsed host port path)))
                  (results +20+ body))))
           ((or (header-input-request-p parsed-header)
