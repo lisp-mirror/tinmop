@@ -1,3 +1,8 @@
+* 2020-07-08
+
+  This version improves appareance of  gemini page rendering and fixed
+  a bug in a command line switch.
+
 * 2020-07-04
 
   Fixed some bugs in gemini viewer.
