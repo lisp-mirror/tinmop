@@ -1,3 +1,25 @@
+2020-07-08
+	* etc/default-theme.conf
+	* etc/shared.conf
+	* src/command-line.lisp
+	* src/gemini/client.lisp
+	* src/gemini/gemini-parser.lisp
+	* src/gemini/package.lisp
+	* src/main.lisp
+	* src/package.lisp
+	* src/software-configuration.lisp
+	* tinmop.asd
+
+	- [gemini] made some elements of page rendering customizable
+
+	using 'gemini-page-theme'  class some elements of  the rendered page
+	(header prefix, bullet and so on) can be customized.
+
+	users can use configuration files directive to change the appearance of said elements
+	(both character and color or font variants);
+
+	- removed unused argument from command line switch: '-m'.
+
 2020-07-06
 	* src/notify-window.lisp
 	* src/program-events.lisp
