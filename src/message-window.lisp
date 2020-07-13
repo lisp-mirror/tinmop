@@ -67,7 +67,7 @@
                                     (loop for re in color-re do
                                          (setf res (colorize-line res re)))
                                     (colorized-line->tui-string res)))))
-        (setf (rows               object)
+        (setf (rows   object)
               (mapcar (lambda (text-line)
                         (make-instance 'line
                                        :normal-text text-line))

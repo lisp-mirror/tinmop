@@ -263,7 +263,7 @@
                                         (/ (db:row-votes-count option)
                                            vote-sum)
                                       (error () 0)))
-                      (vote         (left-padding (format nil "~a%" (* 100 rate)) 4))
+                      (vote         (left-padding (format nil "~f%" (* 100 rate)) 4))
                       (bar-w        (truncate (* rate max-bar-width))))
                  (format stream "~a~a " padded-index padded-title)
                  (loop for i from 0 below bar-w do
