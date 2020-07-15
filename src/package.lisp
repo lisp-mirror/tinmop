@@ -1901,10 +1901,12 @@
    :gemini-metadata-p
    :make-gemini-metadata
    :gemini-metadata-links
+   :gemini-metadata-source-file
    :gemini-metadata-p
    :copy-gemini-metadata
    :add-url-to-history
    :history-back
+   :view-source
    :request))
 
 (defpackage :main-window
@@ -2060,7 +2062,8 @@
    :reset-timeline-pagination
    :poll-vote
    :open-gemini-address
-   :gemini-history-back))
+   :gemini-history-back
+   :gemini-view-source))
 
 (defpackage :modules
   (:use

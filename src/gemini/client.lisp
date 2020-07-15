@@ -180,7 +180,58 @@
                        :h3-prefix          (swconf:gemini-h3-prefix)
                        :bullet-prefix      (swconf:gemini-bullet-prefix))))
 
-(defun parse-response (stream host port path &key (theme *gemini-page-theme*))
+(defclass gemini-file-response ()
+  ((status-code
+    :initform nil
+    :initarg  :status-code
+    :accessor status-code)
+   (status-code-message
+    :initform ""
+    :initarg  :status-code-message
+    :accessor status-code-message)
+   (meta
+    :initform nil
+    :initarg  :meta
+    :accessor meta)
+   (parsed-file
+    :initform nil
+    :initarg  :parsed-file
+    :accessor parsed-file)
+   (rendered-file
+    :initform nil
+    :initarg  :rendered-file
+    :accessor rendered-file)
+   (source-url
+    :initform nil
+    :initarg  :source-url
+    :accessor source-url)
+   (source
+    :initform nil
+    :initarg  :source
+    :accessor source)
+   (links
+    :initform nil
+    :initarg  :links
+    :accessor links)))
+
+(defun gemini-file-response-p (object)
+  (typep object 'gemini-file-response))
+
+(defun make-gemini-file-response (status-code   status-code-message
+                                  meta          parsed-file
+                                  rendered-file source-url
+                                  source        links)
+  (make-instance 'gemini-file-response
+                 :status-code              status-code
+                 :status-code-message      status-code-message
+                 :meta                     meta
+                 :parsed-file              parsed-file
+                 :rendered-file            rendered-file
+                 :source-url               source-url
+                 :source                   source
+                 :links                    links))
+
+(defun parse-response (stream host port path query &key (theme *gemini-page-theme*))
   (let* ((header-raw   (misc:list->array (loop for c = (read-byte stream)
                                             while (/= c 10)
                                             collect c)
@@ -198,18 +249,23 @@
           ((header-success-p parsed-header)
            (let ((body (read-all stream)))
              (if (mime-gemini-p meta)
-                 (let ((parsed (parse-gemini-file (babel:octets-to-string body
-                                                                          :errorp nil))))
+                 (let* ((file-string (babel:octets-to-string body :errorp nil))
+                        (parsed      (parse-gemini-file file-string))
+                        (url         (make-gemini-uri host path query)))
                    (values status-code
                            (description +20+)
                            meta
-                           parsed
-                           (format nil
-                                   "-> ~a://~a:~a~a~2%~a"
-                                   +gemini-scheme+
-                                   host port path
-                                   (sexp->text parsed theme))
-                           (sexp->links parsed host port path)))
+                           (make-gemini-file-response status-code
+                                                      (description +20+)
+                                                      meta
+                                                      parsed
+                                                      (format nil
+                                                              "-> ~a~2%~a"
+                                                              url
+                                                              (sexp->text parsed theme))
+                                                      url
+                                                      file-string
+                                                      (sexp->links parsed host port path))))
                  (results +20+ body))))
           ((or (header-input-request-p parsed-header)
                (header-redirect-p parsed-header))
@@ -252,7 +308,7 @@
                         (write-sequence (babel:string-to-octets request) ssl-stream)
                         (force-output ssl-stream)
                         (multiple-value-bind (status description meta body gemini-text gemini-links)
-                            (parse-response ssl-stream host port path)
+                            (parse-response ssl-stream host port path query)
                           (values status description meta body gemini-text
                                   gemini-links)))))))
           (when socket

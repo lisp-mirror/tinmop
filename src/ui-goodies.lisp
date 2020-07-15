@@ -1355,3 +1355,7 @@ This command will remove those limits so that we can just jump to the last messa
 (defun gemini-history-back ()
   "Reopen a previous visited gemini address"
   (push-event (make-instance 'gemini-back-event)))
+
+(defun gemini-view-source ()
+  "Shows the source of current gemini page"
+  (gemini-viewer:view-source specials:*message-window*))

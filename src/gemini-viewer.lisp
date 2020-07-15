@@ -19,7 +19,8 @@
 
 (defstruct gemini-metadata
   (links)
-  (history))
+  (history)
+  (source-file))
 
 (defun add-url-to-history (window url)
   (let* ((metadata   (message-window:metadata window))
@@ -50,7 +51,7 @@
                          gemini-client:+gemini-default-port+)))
           (handler-case
               (progn
-                (multiple-value-bind (status x meta body gemini-text gemini-links)
+                (multiple-value-bind (status x meta response)
                     (gemini-client:request host
                                            path
                                            :query query
@@ -90,17 +91,19 @@
                     ((gemini-client:response-sensitive-input-p status)
                      (error 'conditions:not-implemented-error
                             :text "Sensitive input not implemented"))
-                    (gemini-text
+                    ((gemini-client:gemini-file-response-p response)
                      (setf (message-window:source-text *message-window*)
-                           gemini-text)
+                           (gemini-client:rendered-file response))
                      (setf (gemini-metadata-links (message-window:metadata *message-window*))
-                           gemini-links)
+                           (gemini-client:links response))
+                     (setf (gemini-metadata-source-file (message-window:metadata *message-window*))
+                           (gemini-client:source response))
                      (setf (keybindings *message-window*)
                            keybindings:*gemini-message-keymap*)
                      (draw *message-window*))
                     (t
                      (fs:with-anaphoric-temp-file (stream)
-                       (write-sequence body stream)
+                       (write-sequence response stream)
                        (force-output stream)
                        (os-utils:xdg-open fs:temp-file))))))
             (gemini-client:gemini-tofu-error (e)
@@ -137,3 +140,11 @@
           history)
     (ui:info-message (format nil (_ "Going back to: ~a") last))
     (request last)))
+
+(defun view-source (window)
+  (when-let* ((metadata (message-window:metadata window))
+              (source   (gemini-metadata-source-file metadata))
+              (last     (misc:safe-last-elt (gemini-metadata-history metadata))))
+    (setf (message-window:source-text window) source)
+    (draw window)
+    (ui:info-message (format nil (_ "Viewing source of ~a") last))))

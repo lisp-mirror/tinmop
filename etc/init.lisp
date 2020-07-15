@@ -301,6 +301,8 @@
 
 (define-key "b"         #'gemini-history-back                        *gemini-message-keymap*)
 
+(define-key "U"         #'gemini-view-source                         *gemini-message-keymap*)
+
 ;; tags keymap
 
 (define-key "up"        #'tag-go-up                                   *tags-keymap*)

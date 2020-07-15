@@ -85,4 +85,14 @@
    :response-redirect-p
    :absolute-url-p
    :init-default-gemini-theme
+   :gemini-file-response
+   :status-code
+   :status-code-message
+   :meta
+   :parsed-file
+   :rendered-file
+   :source-url
+   :source
+   :links
+   :gemini-file-response-p
    :request))
