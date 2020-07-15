@@ -347,7 +347,7 @@
               (underlineize stream
                             (header-prefix-h2 (text-value node))
                             +h2-underline+))
-             ((html-utils:tag= :h1 node)
+             ((html-utils:tag= :h3 node)
               (underlineize stream
                             (header-prefix-h3 (text-value node))
                             +h3-underline+))
