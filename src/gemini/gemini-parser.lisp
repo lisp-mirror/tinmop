@@ -71,7 +71,7 @@
 (defrule link (and link-prefix
                    link-url
                    (? (and space
-                           link-name))
+                           (? link-name)))
                    cr-lf)
   (:function (lambda (a)
                (list (first a)
