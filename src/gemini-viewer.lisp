@@ -147,4 +147,4 @@
               (last     (misc:safe-last-elt (gemini-metadata-history metadata))))
     (setf (message-window:source-text window) source)
     (draw window)
-    (ui:info-message (format nil (_ "Viewing source of ~a") last))))
+    (ui:info-message (format nil (_ "Viewing source of: ~a") last))))
