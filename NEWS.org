@@ -1,3 +1,8 @@
+* 2020-07-15
+
+  This version fixes some bugs in gemini page rendering and add an
+  option to display the source of a page.
+
 * 2020-07-08
 
   This version improves appareance of  gemini page rendering and fixed
