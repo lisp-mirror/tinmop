@@ -1,3 +1,32 @@
+2020-07-15
+	* etc/init.lisp
+	* po/it.po
+	* po/tinmop.pot
+	* src/gemini-viewer.lisp
+	* src/gemini-viewer.lisp
+	* src/gemini/client.lisp
+	* src/gemini/gemini-parser.lisp
+	* src/gemini/package.lisp
+	* src/package.lisp
+	* src/ui-goodies.lisp
+
+	- [gemini] parse link even if link name is empty
+	sometimes you can met a link like:
+
+	=>URI<space><linebreak>
+
+	even if this  is, in my opinion,  a malformed link (there  should be a
+	text -the link name- after the space) parse anyway as if the link name
+	exists and is empty;
+
+	- [gemini] added the option to view gemini page's source.
+
+	- [gemini] fixed bug that prevented rendering of levels 3 headers;
+
+	- [gemini] fixed information string;
+
+	- updated italian translation.
+
 2020-07-13
 	* etc/shared.conf
 	* src/message-rendering-utils.lisp
