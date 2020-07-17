@@ -378,7 +378,13 @@
 
 (defmethod process-event ((object search-regex-message-content-event))
   (let ((regexp (payload object)))
-    (message-window:search-regex specials:*message-window* regexp)))
+    (when (text-utils:string-not-empty-p regexp)
+      (handler-case
+          (progn
+            (cl-ppcre:create-scanner regexp)
+            (message-window:search-regex specials:*message-window* regexp))
+        (error ()
+          (ui:error-message (_ "Invalid regular expression")))))))
 
 (defclass thread-goto-message (program-event) ())
 
