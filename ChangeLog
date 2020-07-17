@@ -1,3 +1,9 @@
+2020-07-17
+	* src/program-events.lisp
+
+	- prevented a crash if an invalid regular expression is used
+	when searching in a message window.
+
 2020-07-15
 	* etc/init.lisp
 	* po/it.po
