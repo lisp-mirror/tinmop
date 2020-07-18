@@ -39,6 +39,22 @@
         (when (mention-p first-mention)
           first-mention)))))
 
+(defun local-mention->acct (text-line usernames-table)
+  "Substitute in  `text-line' '@user' with '@user@server',  if '@user'
+  is found as key in the alist `usernames-table'"
+  (flet ((find-all-username (key)
+           (let ((found (mapcar #'cdr
+                                (remove-if-not (lambda (a) (string= (car a) key))
+                                               usernames-table))))
+             (join-with-strings found ", "))))
+    (let ((results text-line))
+      (loop for pair in usernames-table do
+           (when-let* ((local-mention    (car pair))
+                       (local-mention-re (strcat " " local-mention))
+                       (actual-mention   (find-all-username local-mention)))
+             (setf results (regex-replace-all local-mention-re results actual-mention))))
+      results)))
+
 (defun crypto-message-destination-user (message-data)
   (with-accessors ((body       sending-message:body)
                    (subject    sending-message:subject)

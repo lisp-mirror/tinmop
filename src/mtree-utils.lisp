@@ -154,6 +154,8 @@
 
 (defgeneric count-nodes (object))
 
+(defgeneric collect-nodes-data (object))
+
 (defgeneric mtree-equal (tree-1 tree-2 &key key-fn compare-fn))
 
 (defgeneric root-node (object))
@@ -427,6 +429,12 @@
     (top-down-visit object #'(lambda (n)
                                (declare (ignore n))
                                (incf results)))
+    results))
+
+(defmethod collect-nodes-data ((object m-tree))
+  (let ((results ()))
+    (top-down-visit object #'(lambda (n)
+                               (push (data n) results)))
     results))
 
 (defmethod mtree-equal ((tree-1 m-tree) (tree-2 m-tree)

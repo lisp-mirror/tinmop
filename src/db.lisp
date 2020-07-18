@@ -1459,6 +1459,30 @@ forms a messages thread"
                  node)))
       (add-children results))))
 
+(defun message->thread-users (timeline folder status-id
+                              &key
+                                (names-as-mention t))
+  "Given a tuple that identify a message (`timeline' `folder' `status-id'),
+returns an alist of (local-username . acct).
+
+if `names-as-mention' is non nil prepends '@' to the names."
+  (let ((all-messages (mtree:collect-nodes-data (message-id->tree timeline folder status-id)))
+        (results      ()))
+    (loop for message in all-messages do
+         (let* ((user-id    (db-getf message :account-id))
+                (account    (user-id->user user-id))
+                (local-name (db-getf account :username))
+                (username   (user-id->username user-id))
+                (pair       (if names-as-mention
+                                (cons (msg-utils:add-mention-prefix local-name)
+                                      (msg-utils:add-mention-prefix username))
+                                (cons local-name username))))
+           (pushnew pair results :test (lambda (a b) (and (string= (car a)
+                                                                   (car b))
+                                                          (string= (cdr a)
+                                                                   (cdr b)))))))
+    results))
+
 (defmacro gen-access-message-row (name column)
   "Convenience macro to generate function to access a value of a table
 row."

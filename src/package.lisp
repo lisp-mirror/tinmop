@@ -465,6 +465,7 @@
    :find-child-if
    :count-leaves
    :count-nodes
+   :collect-nodes-data
    :mtree-equal
    :root-node
    :sorted-m-tree
@@ -721,6 +722,7 @@
    :message-root
    :message-children
    :message-root->tree
+   :message->thread-users
    :message-id->tree
    :message-from-timeline-folder-message-index
    :message-index->tree
@@ -1620,6 +1622,7 @@
   (:export
    :add-mention-prefix
    :strip-mention-prefix
+   :local-mention->acct
    :crypto-message-destination-user
    :maybe-crypt-message
    :attachment-type->description

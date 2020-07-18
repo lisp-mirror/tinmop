@@ -806,7 +806,7 @@ Force the checking for new message in the thread the selected message belong."
                              exceeding)
                          exceeding)))
 
-(defun compose-message (&optional reply-id subject (visibility +status-public-visibility+))
+(defun compose-message (&optional timeline folder reply-id subject (visibility +status-public-visibility+))
   "Compose a new message"
   (setf *message-to-send* (make-instance 'sending-message:message-ready-to-send
                                          :visibility visibility
@@ -841,14 +841,20 @@ Force the checking for new message in the thread the selected message belong."
                            (lines          (split-lines quoted-text))
                            (quote-mark     (swconf:quote-char))
                            (quoted-lines   (mapcar (lambda (a) (strcat quote-mark a))
-                                                   lines)))
+                                                   lines))
+                           (thread-users   (db:message->thread-users timeline
+                                                                     folder
+                                                                     reply-id)))
                  (with-open-file (stream file
                                          :if-exists    :append
                                          :direction    :output
                                          :element-type 'character)
                    (format stream "~a~%" (msg-utils:add-mention-prefix reply-username))
                    (loop for line in quoted-lines do
-                        (format stream "~a~%" line))))))
+                        (let ((line-fixed-mentions
+                               (message-rendering-utils:local-mention->acct line
+                                                                            thread-users)))
+                          (format stream "~a~%" line-fixed-mentions)))))))
            (add-signature (file)
              (when-let ((signature (message-rendering-utils:signature)))
                (with-open-file (stream
@@ -877,11 +883,13 @@ Force the checking for new message in the thread the selected message belong."
   "Reply to message"
   (when-let* ((win              specials:*thread-window*)
               (selected-message (line-oriented-window:selected-row-fields win))
+              (timeline         (thread-window:timeline-type   win))
+              (folder           (thread-window:timeline-folder win))
               (username         (db:row-message-username   selected-message))
               (visibility       (db:row-message-visibility selected-message))
               (reply-id         (db:row-message-status-id  selected-message)))
     (let ((subject (db:row-message-subject selected-message)))
-      (compose-message reply-id subject visibility))))
+      (compose-message timeline folder reply-id subject visibility))))
 
 (defun send-message ()
   "Send message"
