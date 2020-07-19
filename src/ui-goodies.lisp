@@ -844,7 +844,11 @@ Force the checking for new message in the thread the selected message belong."
                                                    lines))
                            (thread-users   (db:message->thread-users timeline
                                                                      folder
-                                                                     reply-id)))
+                                                                     reply-id
+                                                                     :local-name-prefix
+                                                                     message-rendering-utils:+temp-mention-prefix+
+                                                                     :acct-prefix
+                                                                     +mention-prefix+)))
                  (with-open-file (stream file
                                          :if-exists    :append
                                          :direction    :output

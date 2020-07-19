@@ -16,6 +16,8 @@
 
 (in-package :message-rendering-utils)
 
+(define-constant +temp-mention-prefix+ "/at/" :test #'string=)
+
 (defun mention-p (maybe-mention)
   (scan (strcat "^" +mention-prefix+)
         maybe-mention))
@@ -47,11 +49,17 @@
                                 (remove-if-not (lambda (a) (string= (car a) key))
                                                usernames-table))))
              (join-with-strings found ", "))))
-    (let ((results text-line))
+    (let ((results text-line)
+          (local-mention-prefix      (strcat " " +mention-prefix+))
+          (local-mention-temp-prefix (strcat " " +temp-mention-prefix+)))
+      (setf results (regex-replace-all local-mention-prefix
+                                       results
+                                       local-mention-temp-prefix))
       (loop for pair in usernames-table do
-           (when-let* ((local-mention    (car pair))
-                       (local-mention-re (strcat " " local-mention))
-                       (actual-mention   (find-all-username local-mention)))
+           (when-let* ((local-mention             (car pair))
+                       (local-mention-re          (strcat " " local-mention))
+                       (actual-mention            (strcat " "
+                                                          (find-all-username local-mention))))
              (setf results (regex-replace-all local-mention-re results actual-mention))))
       results)))
 

@@ -1620,6 +1620,7 @@
   (:nicknames :msg-utils)
   (:shadowing-import-from :misc :random-elt :shuffle)
   (:export
+   :+temp-mention-prefix+
    :add-mention-prefix
    :strip-mention-prefix
    :local-mention->acct
