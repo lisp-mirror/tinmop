@@ -1,5 +1,11 @@
 * 2020-07-17
 
+  The gemini client fetch documents from remote server in a concurrent
+  way  now.  This way  streamed  contents  could be  accessed  without
+  blocking the client.
+
+* 2020-07-17
+
   Prevented  a crash  if an  invalid regular  expression is  used when
   searching in a message window.
 
@@ -10,7 +16,7 @@
 
 * 2020-07-08
 
-  This version improves appareance of  gemini page rendering and fixed
+  This version improves appearance of  gemini page rendering and fixed
   a bug in a command line switch.
 
 * 2020-07-04
@@ -21,7 +27,7 @@
 * 2020-06-29
 
   - improved  gemini navigation.   It  is  possible to  go  back in  a
-    previous viewed address oe open an arbitrary URL.
+    previous viewed address or open an arbitrary URL.
 
 * 2020-06-22
 
