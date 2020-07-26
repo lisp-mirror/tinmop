@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: tinmop 0.1.2\n"
+"Project-Id-Version: tinmop 0.1.4\n"
 "Report-Msgid-Bugs-To: https://notabug.org/cage/tinmop/\n"
-"POT-Creation-Date: 2020-07-15 12:41+0200\n"
+"POT-Creation-Date: 2020-07-26 13:31+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -131,9 +131,9 @@ msgstr ""
 msgid "Error: command ~a not found"
 msgstr ""
 
-#: src/conditions.lisp:70 src/conditions.lisp:74 src/db.lisp:2438
-#: src/message-rendering-utils.lisp:132 src/message-rendering-utils.lisp:166
-#: src/message-rendering-utils.lisp:171
+#: src/conditions.lisp:70 src/conditions.lisp:74 src/db.lisp:2472
+#: src/message-rendering-utils.lisp:156 src/message-rendering-utils.lisp:190
+#: src/message-rendering-utils.lisp:195
 msgid "unknown"
 msgstr ""
 
@@ -163,65 +163,69 @@ msgid ""
 "accepted, deleted ones will be rejected:"
 msgstr ""
 
-#: src/gemini-viewer.lisp:45
+#: src/gemini-viewer.lisp:88
+msgid "Gemini document downloading completed"
+msgstr ""
+
+#: src/gemini-viewer.lisp:110
 #, lisp-format
 msgid "Could not understand the address ~s"
 msgstr ""
 
-#: src/gemini-viewer.lisp:75
+#: src/gemini-viewer.lisp:139
 #, lisp-format
 msgid "Redirects to ~s, follows redirect? [y/N] "
 msgstr ""
 
-#: src/gemini-viewer.lisp:88
+#: src/gemini-viewer.lisp:152
 #, lisp-format
 msgid "Server ~s asks: ~s "
 msgstr ""
 
-#: src/gemini-viewer.lisp:119
+#: src/gemini-viewer.lisp:190
 #, lisp-format
 msgid ""
 "Host ~s signature changed! This is a potential security risk! Ignore this "
 "warning? [y/N] "
 msgstr ""
 
-#: src/gemini-viewer.lisp:122 src/tui-utils.lisp:481
+#: src/gemini-viewer.lisp:193 src/tui-utils.lisp:481
 #, lisp-format
 msgid "Error: ~a"
 msgstr ""
 
-#: src/gemini-viewer.lisp:130
+#: src/gemini-viewer.lisp:201
 #, lisp-format
 msgid "Error getting ~s: ~a"
 msgstr ""
 
-#: src/gemini-viewer.lisp:141
+#: src/gemini-viewer.lisp:212
 #, lisp-format
 msgid "Going back to: ~a"
 msgstr ""
 
-#: src/gemini-viewer.lisp:150
+#: src/gemini-viewer.lisp:221
 #, lisp-format
 msgid "Viewing source of: ~a"
 msgstr ""
 
-#: src/gemini/client.lisp:155
+#: src/gemini/client.lisp:152
 #, lisp-format
 msgid "The server responded with the error ~a: ~a"
 msgstr ""
 
-#: src/gemini/client.lisp:166
+#: src/gemini/client.lisp:163
 #, lisp-format
 msgid "The certificate of host ~a has changed from your latest visit."
 msgstr ""
 
-#: src/gemini/client.lisp:281
+#: src/gemini/client.lisp:258
 msgid ""
 "The server requested a certificate but client validation is not implemented "
 "by this program"
 msgstr ""
 
-#: src/html-utils.lisp:104
+#: src/html-utils.lisp:108
 msgid "No address found"
 msgstr ""
 
@@ -267,90 +271,90 @@ msgstr ""
 msgid "Folder ~s does not exists"
 msgstr ""
 
-#: src/message-rendering-utils.lisp:69
+#: src/message-rendering-utils.lisp:93
 msgid "This message will *not* be crypted"
 msgstr ""
 
-#: src/message-rendering-utils.lisp:77
+#: src/message-rendering-utils.lisp:101
 #, lisp-format
 msgid "No key to crypt message for ~s found"
 msgstr ""
 
-#: src/message-rendering-utils.lisp:114
+#: src/message-rendering-utils.lisp:138
 #, lisp-format
 msgid "Unable to find the crypto key for user ~s."
 msgstr ""
 
-#: src/message-rendering-utils.lisp:129
+#: src/message-rendering-utils.lisp:153
 msgid "invalid type"
 msgstr ""
 
-#: src/message-rendering-utils.lisp:132
+#: src/message-rendering-utils.lisp:156
 msgid "image"
 msgstr ""
 
-#: src/message-rendering-utils.lisp:132
+#: src/message-rendering-utils.lisp:156
 msgid "gifv"
 msgstr ""
 
-#: src/message-rendering-utils.lisp:132
+#: src/message-rendering-utils.lisp:156
 msgid "video"
 msgstr ""
 
-#: src/message-rendering-utils.lisp:132
+#: src/message-rendering-utils.lisp:156
 msgid "audio"
 msgstr ""
 
-#: src/message-rendering-utils.lisp:138
+#: src/message-rendering-utils.lisp:162
 #, lisp-format
 msgid "description: ~a~%"
 msgstr ""
 
-#: src/message-rendering-utils.lisp:141
+#: src/message-rendering-utils.lisp:165
 #, lisp-format
 msgid "size: ~aX~a pixels~%"
 msgstr ""
 
-#: src/message-rendering-utils.lisp:148
+#: src/message-rendering-utils.lisp:172
 #, lisp-format
 msgid "duration: ~a~%"
 msgstr ""
 
-#: src/message-rendering-utils.lisp:159 src/open-attach-window.lisp:88
+#: src/message-rendering-utils.lisp:183 src/open-attach-window.lisp:88
 #: src/sending-message.lisp:132
 msgid "Attachments"
 msgstr ""
 
-#: src/message-rendering-utils.lisp:168
+#: src/message-rendering-utils.lisp:192
 #, lisp-format
 msgid "type: ~a~%metadata~%~a~%address: ~a~2%"
 msgstr ""
 
-#: src/message-rendering-utils.lisp:210
+#: src/message-rendering-utils.lisp:234
 msgid "From: "
 msgstr ""
 
-#: src/message-rendering-utils.lisp:211
+#: src/message-rendering-utils.lisp:235
 msgid "Boosted: "
 msgstr ""
 
-#: src/message-rendering-utils.lisp:215
+#: src/message-rendering-utils.lisp:239
 msgid "Date: "
 msgstr ""
 
-#: src/message-rendering-utils.lisp:274
+#: src/message-rendering-utils.lisp:298
 msgid "Multiple choices allowed"
 msgstr ""
 
-#: src/message-rendering-utils.lisp:275
+#: src/message-rendering-utils.lisp:299
 msgid "A single choice allowed"
 msgstr ""
 
-#: src/message-rendering-utils.lisp:277
+#: src/message-rendering-utils.lisp:301
 msgid "The poll has expired"
 msgstr ""
 
-#: src/message-window.lisp:230
+#: src/message-window.lisp:242
 msgid "Messages"
 msgstr ""
 
@@ -381,20 +385,24 @@ msgid ""
 "configuration file"
 msgstr ""
 
-#: src/program-events.lisp:485
+#: src/program-events.lisp:387
+msgid "Invalid regular expression"
+msgstr ""
+
+#: src/program-events.lisp:491
 msgid "No message selected!"
 msgstr ""
 
-#: src/program-events.lisp:635
+#: src/program-events.lisp:641
 msgid "Message sent."
 msgstr ""
 
-#: src/program-events.lisp:690
+#: src/program-events.lisp:696
 #, lisp-format
 msgid "Downloaded new messages for tag ~a"
 msgstr ""
 
-#: src/program-events.lisp:802
+#: src/program-events.lisp:808
 #, lisp-format
 msgid "Got ~a notification"
 msgid_plural "Got ~a notifications"
@@ -729,173 +737,173 @@ msgstr[1] ""
 msgid "Add subject: "
 msgstr ""
 
-#: src/ui-goodies.lisp:896
+#: src/ui-goodies.lisp:908
 #, lisp-format
 msgid "The maximum allowed number of media is ~a."
 msgstr ""
 
-#: src/ui-goodies.lisp:899
+#: src/ui-goodies.lisp:911
 msgid "Sending message"
 msgstr ""
 
-#: src/ui-goodies.lisp:990
+#: src/ui-goodies.lisp:1002
 msgid "Follow: "
 msgstr ""
 
-#: src/ui-goodies.lisp:993
+#: src/ui-goodies.lisp:1005
 #, lisp-format
 msgid "Following ~a"
 msgstr ""
 
-#: src/ui-goodies.lisp:994
+#: src/ui-goodies.lisp:1006
 #, lisp-format
 msgid "Followed  ~a"
 msgstr ""
 
-#: src/ui-goodies.lisp:998
+#: src/ui-goodies.lisp:1010
 msgid "Unfollow: "
 msgstr ""
 
-#: src/ui-goodies.lisp:1001
+#: src/ui-goodies.lisp:1013
 #, lisp-format
 msgid "Unfollowing ~a"
 msgstr ""
 
-#: src/ui-goodies.lisp:1002
+#: src/ui-goodies.lisp:1014
 #, lisp-format
 msgid "Unfollowed  ~a"
 msgstr ""
 
-#: src/ui-goodies.lisp:1031
+#: src/ui-goodies.lisp:1043
 msgid "Confirm operation?"
 msgstr ""
 
-#: src/ui-goodies.lisp:1069
+#: src/ui-goodies.lisp:1081
 msgid "Updating conversations."
 msgstr ""
 
-#: src/ui-goodies.lisp:1070
+#: src/ui-goodies.lisp:1082
 msgid "Conversations updated."
 msgstr ""
 
-#: src/ui-goodies.lisp:1080
+#: src/ui-goodies.lisp:1092
 msgid "Open conversation: "
 msgstr ""
 
-#: src/ui-goodies.lisp:1115
+#: src/ui-goodies.lisp:1127
 msgid "Old name: "
 msgstr ""
 
-#: src/ui-goodies.lisp:1129
+#: src/ui-goodies.lisp:1141
 #, lisp-format
 msgid "A conversation with name ~a already exists."
 msgstr ""
 
-#: src/ui-goodies.lisp:1135
+#: src/ui-goodies.lisp:1147
 msgid "New name: "
 msgstr ""
 
-#: src/ui-goodies.lisp:1151
+#: src/ui-goodies.lisp:1163
 #, lisp-format
 msgid "Ignore conversation ~s? [y/N] "
 msgstr ""
 
-#: src/ui-goodies.lisp:1167
+#: src/ui-goodies.lisp:1179
 #, lisp-format
 msgid "Delete conversation ~s? [y/N] "
 msgstr ""
 
-#: src/ui-goodies.lisp:1186
+#: src/ui-goodies.lisp:1198
 #, lisp-format
 msgid "Comment too long by ~a character"
 msgid_plural "Comment too long by ~a characters"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/ui-goodies.lisp:1193
+#: src/ui-goodies.lisp:1205
 #, lisp-format
 msgid "Reporting user: ~s"
 msgstr ""
 
-#: src/ui-goodies.lisp:1194
+#: src/ui-goodies.lisp:1206
 msgid "Report trasmitted."
 msgstr ""
 
-#: src/ui-goodies.lisp:1197
+#: src/ui-goodies.lisp:1209
 msgid "Comment on reports: "
 msgstr ""
 
-#: src/ui-goodies.lisp:1213 src/ui-goodies.lisp:1246 src/ui-goodies.lisp:1264
+#: src/ui-goodies.lisp:1225 src/ui-goodies.lisp:1258 src/ui-goodies.lisp:1276
 #, lisp-format
 msgid "User ~s does not exists in database"
 msgstr ""
 
-#: src/ui-goodies.lisp:1216 src/ui-goodies.lisp:1249 src/ui-goodies.lisp:1267
+#: src/ui-goodies.lisp:1228 src/ui-goodies.lisp:1261 src/ui-goodies.lisp:1279
 msgid "Username: "
 msgstr ""
 
-#: src/ui-goodies.lisp:1226
+#: src/ui-goodies.lisp:1238
 #, lisp-format
 msgid "Added crypto key for user ~s"
 msgstr ""
 
-#: src/ui-goodies.lisp:1229
+#: src/ui-goodies.lisp:1241
 msgid "Key: "
 msgstr ""
 
-#: src/ui-goodies.lisp:1243
+#: src/ui-goodies.lisp:1255
 #, lisp-format
 msgid "Generated key for user ~s"
 msgstr ""
 
-#: src/ui-goodies.lisp:1244
+#: src/ui-goodies.lisp:1256
 #, lisp-format
 msgid "user ~s key ~s"
 msgstr ""
 
-#: src/ui-goodies.lisp:1260
+#: src/ui-goodies.lisp:1272
 #, lisp-format
 msgid "Added key for user ~s: ~a"
 msgstr ""
 
-#: src/ui-goodies.lisp:1277
+#: src/ui-goodies.lisp:1289
 msgid "About this software"
 msgstr ""
 
-#: src/ui-goodies.lisp:1289
+#: src/ui-goodies.lisp:1301
 msgid "Clearing pagination data"
 msgstr ""
 
-#: src/ui-goodies.lisp:1308
+#: src/ui-goodies.lisp:1320
 msgid "Invalid choices, usa a space separated list of positive integers."
 msgstr ""
 
-#: src/ui-goodies.lisp:1325
+#: src/ui-goodies.lisp:1337
 #, lisp-format
 msgid "Invalid choices, index choice out of range (max ~a)."
 msgstr ""
 
-#: src/ui-goodies.lisp:1327
+#: src/ui-goodies.lisp:1339
 msgid "Voting... "
 msgstr ""
 
-#: src/ui-goodies.lisp:1328
+#: src/ui-goodies.lisp:1340
 msgid "Choice sent."
 msgstr ""
 
-#: src/ui-goodies.lisp:1337
+#: src/ui-goodies.lisp:1349
 msgid "Type the index (or space separated indices) of selected choices: "
 msgstr ""
 
-#: src/ui-goodies.lisp:1338
+#: src/ui-goodies.lisp:1350
 msgid "This in not a poll"
 msgstr ""
 
-#: src/ui-goodies.lisp:1349
+#: src/ui-goodies.lisp:1361
 msgid "This is not a valid gemini address"
 msgstr ""
 
-#: src/ui-goodies.lisp:1350
+#: src/ui-goodies.lisp:1362
 msgid "Open Gemini url: "
 msgstr ""
 
