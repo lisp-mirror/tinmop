@@ -1,3 +1,26 @@
+2020-07-26
+	* src/db.lisp
+	* src/gemini-viewer.lisp
+	* src/gemini/client.lisp
+	* src/gemini/gemini-parser.lisp
+	* src/gemini/package.lisp
+	* src/html-utils.lisp
+	* src/line-oriented-window.lisp
+	* src/message-window.lisp
+	* src/misc-utils.lisp
+	* src/package.lisp
+	* src/program-events.lisp
+	* tinmop.asd
+
+
+    - [gemini]  the parser  has been  modified to  renders (in  a separate
+      thread) the contents of a gemini  file parsed so far without waiting
+      for the whole document to be read from the socket.
+
+      This  feature should  prevent blocking  the client  when the  server
+      never close the socket (i.e. for streamed contents).
+
+
 2020-07-17
 	* src/program-events.lisp
 
