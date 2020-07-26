@@ -52,7 +52,7 @@
   (message-window:metadata window))
 
 
-(defun request-stream-thread (socket stream host
+(defun request-stream-gemini-document-thread (socket stream host
                               port path query
                               status-code status-code-description meta)
   (lambda ()
@@ -85,7 +85,22 @@
                   (event    (make-instance 'program-events:gemini-got-line-event
                                            :payload response)))
              (program-events:push-event event)))
+      (ui:notify (_ "Gemini document downloading completed"))
       (gemini-client:close-ssl-socket socket))))
+
+(defun request-stream-other-document-thread (socket stream host
+                                             port path query
+                                             status-code status-code-description meta)
+  (declare (ignorable host
+                      port path query
+                      status-code status-code-description meta))
+  (lambda ()
+    (fs:with-anaphoric-temp-file (out-stream)
+      (let* ((buffer (misc:read-all stream)))
+        (gemini-client:close-ssl-socket socket)
+        (write-sequence buffer out-stream)
+        (force-output out-stream)
+        (os-utils:xdg-open fs:temp-file)))))
 
 (defun request (url)
   (let ((parsed-uri (quri:uri url)))
@@ -142,20 +157,26 @@
                             :text "Sensitive input not implemented"))
                     ((streamp response)
                      (let ((stream response))
-                       (bt:make-thread (request-stream-thread socket
-                                                              stream
-                                                              host
-                                                              port
-                                                              path
-                                                              query
-                                                              status
-                                                              code-description
-                                                              meta))))
-                    (t
-                     (fs:with-anaphoric-temp-file (stream)
-                       (write-sequence response stream)
-                       (force-output stream)
-                       (os-utils:xdg-open fs:temp-file))))))
+                       (if (gemini-client:mime-gemini-p meta)
+                           (bt:make-thread (request-stream-gemini-document-thread socket
+                                                                                  stream
+                                                                                  host
+                                                                                  port
+                                                                                  path
+                                                                                  query
+                                                                                  status
+                                                                                  code-description
+                                                                                  meta))
+
+                           (bt:make-thread (request-stream-other-document-thread socket
+                                                                                 stream
+                                                                                 host
+                                                                                 port
+                                                                                 path
+                                                                                 query
+                                                                                 status
+                                                                                 code-description
+                                                                                 meta))))))))
             (gemini-client:gemini-tofu-error (e)
               (let ((host (gemini-client:host e)))
                 (flet ((on-input-complete (maybe-accepted)

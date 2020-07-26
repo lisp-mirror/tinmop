@@ -80,6 +80,7 @@
    :description
    :find-code-description
    :find-code-class
+   :mime-gemini-p
    :gemini-protocol-error
    :error-code
    :error-description

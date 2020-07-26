@@ -457,6 +457,14 @@ Name from Emacs Lisp."
     (read-sequence bytes stream)
     bytes))
 
+(defun read-all (stream)
+  "Read all the octent from stream ad returns them as array"
+  (let ((raw (loop
+                for c = (read-byte stream nil nil)
+                while c
+                collect c)))
+    (coerce raw '(vector (unsigned-byte 8)))))
+
 (defun read-line-into-array (stream &key (add-newline-stopper t))
   "Read a line as array of unsigned octets or nil if stream is exausted.
 if `add-newline-stopper' is  non nil a newline (ASCII  10) is appended

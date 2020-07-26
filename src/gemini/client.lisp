@@ -93,13 +93,6 @@
   (when-let ((found (find-code-class code)))
     (description found)))
 
-(defun read-all (stream)
-  (let ((raw (loop
-                for c = (read-byte stream nil nil)
-                while c
-                collect c)))
-    (coerce raw '(vector (unsigned-byte 8)))))
-
 (defun mime-gemini-p (header-meta)
   (string-starts-with-p "text/gemini" header-meta))
 
@@ -247,13 +240,10 @@
                        body)))
         (cond
           ((header-success-p parsed-header)
-           (if (mime-gemini-p meta)
-               (values status-code
-                       (description +20+)
-                       meta
-                       stream)
-               (let ((body (read-all stream)))
-                 (results +20+ body))))
+           (values status-code
+                   (description +20+)
+                   meta
+                   stream))
           ((or (header-input-request-p parsed-header)
                (header-redirect-p parsed-header))
            (results (find-code-class status-code) nil))
@@ -276,9 +266,8 @@
   (usocket:socket-close socket))
 
 (defun request (host path &key (query nil) (port  +gemini-default-port+))
-  (let* ((uri                (make-gemini-uri host path query port))
-         (ctx                (cl+ssl:make-context :verify-mode cl+ssl:+ssl-verify-none+))
-         (response-is-stream nil))
+  (let* ((uri (make-gemini-uri host path query port))
+         (ctx (cl+ssl:make-context :verify-mode cl+ssl:+ssl-verify-none+)))
     (when query
       (setf uri (strcat uri "?" (percent-encode query))))
     (cl+ssl:with-global-context (ctx :auto-free-p t)
@@ -300,9 +289,4 @@
                         (force-output ssl-stream)
                         (multiple-value-bind (status description meta response)
                             (parse-response ssl-stream)
-                          (when (streamp response)
-                            (setf response-is-stream t))
-                          (values status description meta response socket)))))))
-          (when (and (null response-is-stream)
-                     socket)
-            (close-ssl-socket socket)))))))
+                          (values status description meta response socket))))))))))))

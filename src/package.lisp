@@ -168,6 +168,7 @@
    :define-parse-header-chunk
    :read-list
    :read-array
+   :read-all
    :read-line-into-array
    :definline
    :+cache-invalid-value+
