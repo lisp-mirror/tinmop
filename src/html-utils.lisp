@@ -27,6 +27,10 @@
 
 (define-constant +attribute-url+  "href" :test #'string=)
 
+(defun make-tag-node (tag attributes value)
+  "create a node"
+  (list tag attributes value))
+
 (defun tag (node)
   "Given a node returns the tag part"
   (first node))

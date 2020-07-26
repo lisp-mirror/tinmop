@@ -41,41 +41,6 @@
   (setf (keybindings window)
         keybindings:*message-keymap*))
 
-(defgeneric prepare-for-rendering (object))
-
-(defmethod  prepare-for-rendering ((object message-window))
-  (flet ((fit-lines (lines)
-           (let ((res ()))
-             (loop for line in lines do
-                  (if (string-empty-p line)
-                      (push nil res)
-                      (loop
-                         for fitted-line in
-                           (flush-left-mono-text (split-words line)
-                                                 (win-width-no-border object))
-                         do
-                           (push fitted-line res))))
-             (reverse res))))
-    (with-accessors ((source-text source-text)) object
-      (when hooks:*before-prepare-for-rendering-message*
-        (hooks:run-hook 'hooks:*before-prepare-for-rendering-message* object))
-      (let* ((lines          (split-lines source-text))
-             (fitted-lines   (fit-lines lines))
-             (color-re       (swconf:color-regexps))
-             (new-rows       (loop for line in fitted-lines collect
-                                  (let ((res line))
-                                    (loop for re in color-re do
-                                         (setf res (colorize-line res re)))
-                                    (colorized-line->tui-string res)))))
-        (setf (rows   object)
-              (mapcar (lambda (text-line)
-                        (make-instance 'line
-                                       :normal-text text-line))
-
-                      new-rows))
-        (select-row object 0)
-        object))))
-
 (defmethod (setf source-text) (new-text (object message-window))
   (setf (slot-value object 'source-text) new-text)
   (prepare-for-rendering object))
@@ -140,6 +105,11 @@
       (draw-buffer-line-mark object))
     (call-next-method)))
 
+(defgeneric prepare-for-rendering (object &key (jump-to-first-row)))
+
+(defgeneric append-source-text (object text
+                                &key prepare-for-rendering jump-to-first-row))
+
 (defgeneric scroll-down  (object &optional amount))
 
 (defgeneric scroll-up    (object &optional amount))
@@ -153,6 +123,48 @@
 (defgeneric scroll-previous-page (object))
 
 (defgeneric search-regex (object regex))
+
+(defmethod prepare-for-rendering ((object message-window) &key (jump-to-first-row t))
+  (flet ((fit-lines (lines)
+           (let ((res ()))
+             (loop for line in lines do
+                  (if (string-empty-p line)
+                      (push nil res)
+                      (loop
+                         for fitted-line in
+                           (flush-left-mono-text (split-words line)
+                                                 (win-width-no-border object))
+                         do
+                           (push fitted-line res))))
+             (reverse res))))
+    (with-accessors ((source-text source-text)) object
+      (when hooks:*before-prepare-for-rendering-message*
+        (hooks:run-hook 'hooks:*before-prepare-for-rendering-message* object))
+      (let* ((lines        (split-lines source-text))
+             (fitted-lines (fit-lines lines))
+             (color-re     (swconf:color-regexps))
+             (new-rows     (loop for line in fitted-lines collect
+                                (let ((res line))
+                                  (loop for re in color-re do
+                                       (setf res (colorize-line res re)))
+                                  (colorized-line->tui-string res)))))
+        (setf (rows object)
+              (mapcar (lambda (text-line)
+                        (make-instance 'line
+                                       :normal-text text-line))
+                      new-rows))
+        (when jump-to-first-row
+          (select-row object 0))
+        object))))
+
+(defmethod append-source-text ((object message-window) text
+                               &key
+                                 (prepare-for-rendering nil)
+                                 (jump-to-first-row     nil))
+  (with-slots (source-text) object
+    (setf source-text (strcat source-text text))
+    (when prepare-for-rendering
+      (prepare-for-rendering object :jump-to-first-row jump-to-first-row))))
 
 (defmethod scroll-down ((object message-window) &optional (amount 1))
   (when (/= (row-move object amount)

@@ -22,6 +22,20 @@
   (history)
   (source-file))
 
+(defgeneric append-metadata-link (object link))
+
+(defgeneric append-metadata-source (object source-text))
+
+(defmethod append-metadata-link ((object gemini-metadata) link)
+  (setf (gemini-metadata-links object)
+        (append (gemini-metadata-links object)
+                link)))
+
+(defmethod append-metadata-source ((object gemini-metadata) source-file)
+  (setf (gemini-metadata-source-file object)
+        (strcat (gemini-metadata-source-file object)
+                source-file)))
+
 (defun add-url-to-history (window url)
   (let* ((metadata   (message-window:metadata window))
          (history    (reverse (gemini-metadata-history metadata)))
@@ -37,6 +51,42 @@
           (make-gemini-metadata)))
   (message-window:metadata window))
 
+
+(defun request-stream-thread (socket stream host
+                              port path query
+                              status-code status-code-description meta)
+  (lambda ()
+    (let* ((url          (gemini-parser:make-gemini-uri host path query))
+           (parsed-url   (gemini-parser:parse-gemini-file (format nil "-> ~a~%" url)))
+           (url-response (gemini-client:make-gemini-file-response nil
+                                                                  nil
+                                                                  nil
+                                                                  parsed-url
+                                                                  nil
+                                                                  ""
+                                                                  nil))
+           (url-event    (make-instance 'program-events:gemini-got-line-event
+                                        :payload     url-response
+                                        :append-text nil)))
+      (program-events:push-event url-event)
+      (loop
+         for line-as-array = (read-line-into-array stream)
+         while line-as-array do
+           (let* ((line     (babel:octets-to-string line-as-array :errorp nil))
+                  (parsed   (gemini-parser:parse-gemini-file line))
+                  (links    (gemini-parser:sexp->links parsed host port path))
+                  (response (gemini-client:make-gemini-file-response status-code
+                                                                     status-code-description
+                                                                     meta
+                                                                     parsed
+                                                                     url
+                                                                     line
+                                                                     links))
+                  (event    (make-instance 'program-events:gemini-got-line-event
+                                           :payload response)))
+             (program-events:push-event event)))
+      (gemini-client:close-ssl-socket socket))))
+
 (defun request (url)
   (let ((parsed-uri (quri:uri url)))
     (maybe-initialize-metadata specials:*message-window*)
@@ -51,12 +101,11 @@
                          gemini-client:+gemini-default-port+)))
           (handler-case
               (progn
-                (multiple-value-bind (status x meta response)
+                (multiple-value-bind (status code-description meta response socket)
                     (gemini-client:request host
                                            path
                                            :query query
                                            :port  port)
-                  (declare (ignore x))
                   (add-url-to-history specials:*message-window* url)
                   (cond
                     ((gemini-client:response-redirect-p status)
@@ -91,16 +140,17 @@
                     ((gemini-client:response-sensitive-input-p status)
                      (error 'conditions:not-implemented-error
                             :text "Sensitive input not implemented"))
-                    ((gemini-client:gemini-file-response-p response)
-                     (setf (message-window:source-text *message-window*)
-                           (gemini-client:rendered-file response))
-                     (setf (gemini-metadata-links (message-window:metadata *message-window*))
-                           (gemini-client:links response))
-                     (setf (gemini-metadata-source-file (message-window:metadata *message-window*))
-                           (gemini-client:source response))
-                     (setf (keybindings *message-window*)
-                           keybindings:*gemini-message-keymap*)
-                     (draw *message-window*))
+                    ((streamp response)
+                     (let ((stream response))
+                       (bt:make-thread (request-stream-thread socket
+                                                              stream
+                                                              host
+                                                              port
+                                                              path
+                                                              query
+                                                              status
+                                                              code-description
+                                                              meta))))
                     (t
                      (fs:with-anaphoric-temp-file (stream)
                        (write-sequence response stream)

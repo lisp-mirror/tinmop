@@ -75,10 +75,16 @@
   (:shadowing-import-from :misc :random-elt :shuffle)
   (:export
    :+gemini-default-port+
+   :response-status-code
+   :code
+   :description
+   :find-code-description
+   :find-code-class
    :gemini-protocol-error
    :error-code
    :error-description
    :gemini-tofu-error
+   :make-gemini-file-response
    :host
    :response-input-p
    :response-sensitive-input-p
@@ -90,9 +96,11 @@
    :status-code-message
    :meta
    :parsed-file
-   :rendered-file
+   :url-header
    :source-url
    :source
    :links
+   :text-rendering-theme
    :gemini-file-response-p
+   :close-ssl-socket
    :request))

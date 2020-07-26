@@ -916,6 +916,39 @@
 (defmethod process-event ((object gemini-back-event))
   (gemini-viewer:history-back specials:*message-window*))
 
+(defclass gemini-got-line-event (program-event)
+  ((append-text
+    :initform t
+    :initarg  :append-text
+    :accessor append-text)))
+
+(defmethod process-event ((object gemini-got-line-event))
+  (with-accessors ((response    payload)
+                   (append-text append-text)) object
+    (with-accessors ((status-code          gemini-client:status-code)
+                     (status-code-message  gemini-client:status-code-message)
+                     (meta                 gemini-client:meta)
+                     (parsed-file          gemini-client:parsed-file)
+                     (url-header           gemini-client:url-header)
+                     (source-url           gemini-client:source-url)
+                     (source               gemini-client:source)
+                     (links                gemini-client:links)
+                     (text-rendering-theme gemini-client:text-rendering-theme)) response
+      (let* ((win specials:*message-window*)
+             (rendered-line (gemini-parser:sexp->text parsed-file
+                                                      text-rendering-theme)))
+        (if append-text
+            (progn
+              (message-window:append-source-text win rendered-line :prepare-for-rendering t)
+              (gemini-viewer:append-metadata-link (message-window:metadata win)
+                                                  links)
+              (gemini-viewer:append-metadata-source (message-window:metadata win)
+                                                    source)
+              (setf (windows:keybindings win)
+                    keybindings:*gemini-message-keymap*))
+            (setf (message-window:source-text win) rendered-line))
+        (windows:draw win)))))
+
 (defclass function-event (program-event) ())
 
 (defmethod process-event ((object function-event))

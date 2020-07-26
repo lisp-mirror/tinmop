@@ -168,6 +168,7 @@
    :define-parse-header-chunk
    :read-list
    :read-array
+   :read-line-into-array
    :definline
    :+cache-invalid-value+
    :defcached
@@ -365,6 +366,7 @@
    :config
    :text-utils)
   (:export
+   :make-tag-node
    :tag
    :attributes
    :attribute-key
@@ -1210,6 +1212,7 @@
    :gemini-request-event
    :gemini-back-event
    :function-event
+   :gemini-got-line-event
    :dispatch-program-events
    :add-pagination-status-event
    :status-id
@@ -1700,6 +1703,7 @@
    :metadata
    :display-gemini-text-p
    :prepare-for-display-status-mode
+   :append-source-text
    :scroll-down
    :scroll-up
    :scroll-end
@@ -1908,6 +1912,8 @@
    :gemini-metadata-source-file
    :gemini-metadata-p
    :copy-gemini-metadata
+   :append-metadata-link
+   :append-metadata-source
    :add-url-to-history
    :history-back
    :view-source

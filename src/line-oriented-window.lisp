@@ -77,7 +77,7 @@
     :accessor rows
     :documentation "The rows of data for this widget")
    (row-selected-index
-    :initform -1
+    :initform 0
     :initarg  :row-selected-index
     :accessor row-selected-index
     :documentation "The index of the selected row")
@@ -223,13 +223,13 @@ this exact quantity wold go beyond the length or fows or zero."
                    (row-selected-index row-selected-index)) object
     (when (/= 0 amount)
       (let* ((desired-amount (+ amount row-selected-index))
-             (actual-amount    (if (< amount 0)
-                                   (max (- desired-amount
-                                           row-selected-index)
-                                        (- row-selected-index))
-                                   (- (min desired-amount
-                                           (1- (length rows)))
-                                      row-selected-index))))
+             (actual-amount  (if (< amount 0)
+                                 (max (- desired-amount
+                                         row-selected-index)
+                                      (- row-selected-index))
+                                 (- (min desired-amount
+                                         (1- (length rows)))
+                                    row-selected-index))))
         (select-row object (+ row-selected-index
                               actual-amount))
         actual-amount))))

@@ -89,6 +89,10 @@
 (defun find-code-class (code)
   (find-if (lambda (a) (code= code a)) *all-codes*))
 
+(defun find-code-description (code)
+  (when-let ((found (find-code-class code)))
+    (description found)))
+
 (defun read-all (stream)
   (let ((raw (loop
                 for c = (read-byte stream nil nil)
@@ -197,10 +201,6 @@
     :initform nil
     :initarg  :parsed-file
     :accessor parsed-file)
-   (rendered-file
-    :initform nil
-    :initarg  :rendered-file
-    :accessor rendered-file)
    (source-url
     :initform nil
     :initarg  :source-url
@@ -212,30 +212,30 @@
    (links
     :initform nil
     :initarg  :links
-    :accessor links)))
+    :accessor links)
+   (text-rendering-theme
+    :initform *gemini-page-theme*
+    :initarg  :text-rendering-theme
+    :accessor text-rendering-theme)))
 
 (defun gemini-file-response-p (object)
   (typep object 'gemini-file-response))
 
 (defun make-gemini-file-response (status-code   status-code-message
                                   meta          parsed-file
-                                  rendered-file source-url
-                                  source        links)
+                                  source-url    source
+                                  links)
   (make-instance 'gemini-file-response
                  :status-code              status-code
                  :status-code-message      status-code-message
                  :meta                     meta
                  :parsed-file              parsed-file
-                 :rendered-file            rendered-file
                  :source-url               source-url
                  :source                   source
                  :links                    links))
 
-(defun parse-response (stream host port path query &key (theme *gemini-page-theme*))
-  (let* ((header-raw   (misc:list->array (loop for c = (read-byte stream)
-                                            while (/= c 10)
-                                            collect c)
-                                         '(unsigned-byte 8)))
+(defun parse-response (stream)
+  (let* ((header-raw   (read-line-into-array stream :add-newline-stopper nil))
          (header       (babel:octets-to-string header-raw :errorp nil))
          (parsed-header (parse-gemini-response-header (format nil "~a~a" header #\Newline))))
     (with-accessors ((meta        meta)
@@ -247,25 +247,12 @@
                        body)))
         (cond
           ((header-success-p parsed-header)
-           (let ((body (read-all stream)))
-             (if (mime-gemini-p meta)
-                 (let* ((file-string (babel:octets-to-string body :errorp nil))
-                        (parsed      (parse-gemini-file file-string))
-                        (url         (make-gemini-uri host path query)))
-                   (values status-code
-                           (description +20+)
-                           meta
-                           (make-gemini-file-response status-code
-                                                      (description +20+)
-                                                      meta
-                                                      parsed
-                                                      (format nil
-                                                              "-> ~a~2%~a"
-                                                              url
-                                                              (sexp->text parsed theme))
-                                                      url
-                                                      file-string
-                                                      (sexp->links parsed host port path))))
+           (if (mime-gemini-p meta)
+               (values status-code
+                       (description +20+)
+                       meta
+                       stream)
+               (let ((body (read-all stream)))
                  (results +20+ body))))
           ((or (header-input-request-p parsed-header)
                (header-redirect-p parsed-header))
@@ -285,9 +272,13 @@
 (defun absolute-url-p (url)
   (text-utils:string-starts-with-p +gemini-scheme+ url))
 
+(defun close-ssl-socket (socket)
+  (usocket:socket-close socket))
+
 (defun request (host path &key (query nil) (port  +gemini-default-port+))
-  (let* ((uri (make-gemini-uri host path query port))
-         (ctx (cl+ssl:make-context :verify-mode cl+ssl:+ssl-verify-none+)))
+  (let* ((uri                (make-gemini-uri host path query port))
+         (ctx                (cl+ssl:make-context :verify-mode cl+ssl:+ssl-verify-none+))
+         (response-is-stream nil))
     (when query
       (setf uri (strcat uri "?" (percent-encode query))))
     (cl+ssl:with-global-context (ctx :auto-free-p t)
@@ -307,9 +298,11 @@
                       (progn
                         (write-sequence (babel:string-to-octets request) ssl-stream)
                         (force-output ssl-stream)
-                        (multiple-value-bind (status description meta body gemini-text gemini-links)
-                            (parse-response ssl-stream host port path query)
-                          (values status description meta body gemini-text
-                                  gemini-links)))))))
-          (when socket
-            (usocket:socket-close socket)))))))
+                        (multiple-value-bind (status description meta response)
+                            (parse-response ssl-stream)
+                          (when (streamp response)
+                            (setf response-is-stream t))
+                          (values status description meta response socket)))))))
+          (when (and (null response-is-stream)
+                     socket)
+            (close-ssl-socket socket)))))))

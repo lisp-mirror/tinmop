@@ -17,6 +17,8 @@
 
 (in-package :gemini-parser)
 
+(defparameter *raw-mode* nil)
+
 (defrule space (or #\Space #\Tab)
   (:constant nil))
 
@@ -48,8 +50,11 @@
                                     (* (not cr-lf))
                                     cr-lf)
   (:function (lambda (a)
-               (list :pre
-                     (list (list :alt (coerce (second a) 'string)))))))
+               (let ((saved-mode *raw-mode*))
+                 (setf *raw-mode* (not *raw-mode*))
+                 (when (not saved-mode)
+                   (list :pre
+                         (list (list :alt (coerce (second a) 'string)))))))))
 
 (defrule link-prefix (and "=>"
                           (* space))
@@ -121,13 +126,12 @@
 (defrule gemini-file (* (or h3
                             h2
                             h1
-                            preformatted-text
+                            preformatted-text-tag
                             link
                             list-item
                             quote-line
                             text-line
                             cr-lf)))
-
 
 (define-constant +h1-underline+       #\━  :test #'char=)
 
@@ -337,6 +341,8 @@
            (cond
              ((null node)
               (format stream "~%"))
+             ((html-utils:tag= :as-is node)
+              (format stream "~a~%" (text-value node)))
              ((html-utils:tag= :text node)
               (format stream "~a~%" (text-value node)))
              ((html-utils:tag= :h1 node)
@@ -372,8 +378,14 @@
                     (write-string (linkify link-value link-value) stream)))))))))
 
 (defun parse-gemini-file (data)
-  (parse 'gemini-file (strcat data (string #\Newline))
-         :junk-allowed t))
+  (let ((was-raw-mode *raw-mode*)
+        (parsed       (parse 'gemini-file (strcat data (string #\Newline))
+                             :junk-allowed t)))
+    (if was-raw-mode
+        (if *raw-mode*
+            (list (html-utils:make-tag-node :as-is nil data))
+            nil)
+        parsed)))
 
 ;; response header
 

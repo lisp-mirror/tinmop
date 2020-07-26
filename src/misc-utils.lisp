@@ -457,6 +457,23 @@ Name from Emacs Lisp."
     (read-sequence bytes stream)
     bytes))
 
+(defun read-line-into-array (stream &key (add-newline-stopper t))
+  "Read a line as array of unsigned octets or nil if stream is exausted.
+if `add-newline-stopper' is  non nil a newline (ASCII  10) is appended
+to the array"
+  (let ((first-byte (read-byte stream nil nil)))
+    (when first-byte
+      (let ((raw (loop
+                    for c = (read-byte stream nil 10)
+                    while (/= c 10)
+                    collect c)))
+        (push first-byte raw)
+        (when add-newline-stopper
+          (let ((rev (reverse raw)))
+            (push (char-code #\Newline) rev)
+            (setf raw (reverse rev))))
+        (misc:list->array raw '(unsigned-byte 8))))))
+
 ;; sequence utils
 
 (defun safe-elt (sequence index)

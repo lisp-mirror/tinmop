@@ -2270,8 +2270,11 @@ status has been downloaded from the net and ignored because belog to an ignored 
                  '(:asc :id)))
     (fetch-all-rows query)))
 
-(defun all-subscribed-tags-name (&key (sort-data nil))
-  (mapcar #'row-id (all-subscribed-tags :sort-data sort-data)))
+(defun all-subscribed-tags-name (&key (sort-data nil) (as-folder-name t))
+  (let ((names (mapcar #'row-id (all-subscribed-tags :sort-data sort-data))))
+    (if as-folder-name
+        names
+        (mapcar #'folder-name->tag  names))))
 
 (defun tag-folder-name-p (name)
   "Returns non nil if name is a valid folder name for subsribed tags"
