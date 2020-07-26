@@ -1,4 +1,6 @@
 2020-07-26
+
+	* etc/init.lisp
 	* src/db.lisp
 	* src/gemini-viewer.lisp
 	* src/gemini/client.lisp
@@ -10,6 +12,7 @@
 	* src/misc-utils.lisp
 	* src/package.lisp
 	* src/program-events.lisp
+	* src/ui-goodies.lisp
 	* tinmop.asd
 
 
@@ -20,6 +23,7 @@
       This  feature should  prevent blocking  the client  when the  server
       never close the socket (i.e. for streamed contents).
 
+    - [gemini] added the possibility to abort current page download.
 
 2020-07-17
 	* src/program-events.lisp
