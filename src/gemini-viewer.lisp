@@ -51,6 +51,21 @@
           (make-gemini-metadata)))
   (message-window:metadata window))
 
+(defparameter *download-thread-lock* (bt:make-recursive-lock "download-gemini"))
+
+(defparameter *download-thread-blocked* nil)
+
+(misc:defun-w-lock abort-downloading ()
+    *download-thread-lock*
+  (setf *download-thread-blocked* t))
+
+(misc:defun-w-lock allow-downloading ()
+    *download-thread-lock*
+  (setf *download-thread-blocked* nil))
+
+(misc:defun-w-lock downloading-allowed-p ()
+    *download-thread-lock*
+  (not *download-thread-blocked*))
 
 (defun request-stream-gemini-document-thread (socket stream host
                               port path query
@@ -70,9 +85,11 @@
                                         :append-text nil)))
       (program-events:push-event url-event)
       (loop
+         named download-loop
          for line-as-array = (read-line-into-array stream)
          while line-as-array do
-           (let* ((line     (babel:octets-to-string line-as-array :errorp nil))
+           (if (downloading-allowed-p)
+               (let* ((line     (babel:octets-to-string line-as-array :errorp nil))
                   (parsed   (gemini-parser:parse-gemini-file line))
                   (links    (gemini-parser:sexp->links parsed host port path))
                   (response (gemini-client:make-gemini-file-response status-code
@@ -84,8 +101,13 @@
                                                                      links))
                   (event    (make-instance 'program-events:gemini-got-line-event
                                            :payload response)))
-             (program-events:push-event event)))
-      (ui:notify (_ "Gemini document downloading completed"))
+                 (program-events:push-event event))
+               (progn
+                 (return-from download-loop nil))))
+      (if (not (downloading-allowed-p))
+          (ui:notify (_ "Gemini document downloading aborted"))
+          (ui:notify (_ "Gemini document downloading completed")))
+      (allow-downloading)
       (gemini-client:close-ssl-socket socket))))
 
 (defun request-stream-other-document-thread (socket stream host

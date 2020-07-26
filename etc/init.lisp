@@ -303,6 +303,8 @@
 
 (define-key "U"         #'gemini-view-source                         *gemini-message-keymap*)
 
+(define-key "a"         #'gemini-abort-download                      *gemini-message-keymap*)
+
 ;; tags keymap
 
 (define-key "up"        #'tag-go-up                                   *tags-keymap*)

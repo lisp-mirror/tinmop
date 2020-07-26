@@ -1371,3 +1371,9 @@ This command will remove those limits so that we can just jump to the last messa
 (defun gemini-view-source ()
   "Shows the source of current gemini page"
   (gemini-viewer:view-source specials:*message-window*))
+
+(defun gemini-abort-download ()
+  "Stop a transferring data from a gemini server"
+  (let ((event (make-instance 'gemini-abort-downloading-event
+                              :priority program-events:+maximum-event-priority+)))
+    (push-event event)))

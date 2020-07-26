@@ -934,22 +934,28 @@
                      (source               gemini-client:source)
                      (links                gemini-client:links)
                      (text-rendering-theme gemini-client:text-rendering-theme)) response
-      (let* ((win specials:*message-window*)
-             (rendered-line   (gemini-parser:sexp->text parsed-file
-                                                        text-rendering-theme))
-             (window-metadata (message-window:metadata win)))
-        (if append-text
-            (progn
-              (message-window:append-source-text win rendered-line :prepare-for-rendering t)
-              (gemini-viewer:append-metadata-link window-metadata links)
-              (gemini-viewer:append-metadata-source window-metadata source)
-              (setf (windows:keybindings win)
-                    keybindings:*gemini-message-keymap*))
-            (progn
-              (setf (message-window:source-text win) rendered-line)
-              (setf (gemini-viewer:gemini-metadata-source-file window-metadata) rendered-line)
-              (setf (gemini-viewer:gemini-metadata-links window-metadata) links)))
-        (windows:draw win)))))
+      (when (gemini-viewer:downloading-allowed-p)
+        (let* ((win specials:*message-window*)
+               (rendered-line   (gemini-parser:sexp->text parsed-file
+                                                          text-rendering-theme))
+               (window-metadata (message-window:metadata win)))
+          (if append-text
+              (progn
+                (message-window:append-source-text win rendered-line :prepare-for-rendering t)
+                (gemini-viewer:append-metadata-link window-metadata links)
+                (gemini-viewer:append-metadata-source window-metadata source)
+                (setf (windows:keybindings win)
+                      keybindings:*gemini-message-keymap*))
+              (progn
+                (setf (message-window:source-text win) rendered-line)
+                (setf (gemini-viewer:gemini-metadata-source-file window-metadata) rendered-line)
+                (setf (gemini-viewer:gemini-metadata-links window-metadata) links)))
+          (windows:draw win))))))
+
+(defclass gemini-abort-downloading-event (program-event) ())
+
+(defmethod process-event ((object gemini-abort-downloading-event))
+  (gemini-viewer:abort-downloading))
 
 (defclass function-event (program-event) ())
 

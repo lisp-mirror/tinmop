@@ -1214,6 +1214,7 @@
    :gemini-back-event
    :function-event
    :gemini-got-line-event
+   :gemini-abort-downloading-event
    :dispatch-program-events
    :add-pagination-status-event
    :status-id
@@ -1918,6 +1919,8 @@
    :add-url-to-history
    :history-back
    :view-source
+   :abort-downloading
+   :downloading-allowed-p
    :request))
 
 (defpackage :main-window
@@ -2074,7 +2077,8 @@
    :poll-vote
    :open-gemini-address
    :gemini-history-back
-   :gemini-view-source))
+   :gemini-view-source
+   :gemini-abort-download))
 
 (defpackage :modules
   (:use
