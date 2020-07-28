@@ -100,7 +100,9 @@
     (let ((options (opts:get-opts)))
       (when (getf options :help)
         (print-version)
-        (opts:describe :usage-of +program-name+)
+        (opts:describe :usage-of                +program-name+
+                       :usage-of-label          (_ "Usage")
+                       :available-options-label (_ "Available options"))
         (os-utils:exit-program))
       (when (getf options :version)
         (print-version)

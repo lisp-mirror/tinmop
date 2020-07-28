@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tinmop 0.0.1\n"
 "Report-Msgid-Bugs-To: https://notabug.org/cage/tinmop/\n"
-"POT-Creation-Date: 2020-07-26 13:31+0200\n"
-"PO-Revision-Date: 2020-07-26 13:32+0200\n"
+"POT-Creation-Date: 2020-07-28 15:52+0200\n"
+"PO-Revision-Date: 2020-07-28 15:52+0200\n"
 "Last-Translator: cage <cage@invalid.org>\n"
 "Language-Team: Italian\n"
 "Language: it\n"
@@ -130,6 +130,14 @@ msgstr "Notifica i messaggi che menzionano l'utente."
 msgid "Open gemini url"
 msgstr "Apri un indirizzo gemini"
 
+#: src/command-line.lisp:104
+msgid "Usage"
+msgstr "Uso"
+
+#: src/command-line.lisp:105
+msgid "Available options"
+msgstr "Opzioni diponibili"
+
 #: src/command-window.lisp:299
 #, lisp-format
 msgid "Error: command ~a not found"
@@ -170,26 +178,30 @@ msgstr ""
 "cancelli un elemento la corrispondente richiesta sarà scartata altrimenti "
 "verrà accettata."
 
-#: src/gemini-viewer.lisp:88
+#: src/gemini-viewer.lisp:108
+msgid "Gemini document downloading aborted"
+msgstr "Scaricamento del documento in formato gemini interrotto"
+
+#: src/gemini-viewer.lisp:109
 msgid "Gemini document downloading completed"
 msgstr "Scaricamento del documento in formato gemini completato"
 
-#: src/gemini-viewer.lisp:110
+#: src/gemini-viewer.lisp:132
 #, lisp-format
 msgid "Could not understand the address ~s"
 msgstr "Non riesco ad interpretare l'indirizzo: ~s"
 
-#: src/gemini-viewer.lisp:139
+#: src/gemini-viewer.lisp:161
 #, lisp-format
 msgid "Redirects to ~s, follows redirect? [y/N] "
 msgstr "Seguire la redirezione a ~s? [s/N] "
 
-#: src/gemini-viewer.lisp:152
+#: src/gemini-viewer.lisp:174
 #, lisp-format
 msgid "Server ~s asks: ~s "
 msgstr "Il server ~s chiede: ~s "
 
-#: src/gemini-viewer.lisp:190
+#: src/gemini-viewer.lisp:212
 #, lisp-format
 msgid ""
 "Host ~s signature changed! This is a potential security risk! Ignore this "
@@ -198,22 +210,22 @@ msgstr ""
 "La firma dell'host ~s è cambiata! Questo è un potenziale problema di "
 "sicurezza! Proseguire? [s/N]"
 
-#: src/gemini-viewer.lisp:193 src/tui-utils.lisp:481
+#: src/gemini-viewer.lisp:215 src/tui-utils.lisp:481
 #, lisp-format
 msgid "Error: ~a"
 msgstr "Errore: ~a"
 
-#: src/gemini-viewer.lisp:201
+#: src/gemini-viewer.lisp:223
 #, lisp-format
 msgid "Error getting ~s: ~a"
 msgstr "Errore connettendomi a ~s: ~a"
 
-#: src/gemini-viewer.lisp:212
+#: src/gemini-viewer.lisp:234
 #, lisp-format
 msgid "Going back to: ~a"
 msgstr "Ritorno a: ~a"
 
-#: src/gemini-viewer.lisp:221
+#: src/gemini-viewer.lisp:243
 #, lisp-format
 msgid "Viewing source of: ~a"
 msgstr "Visualizzo il sorgente di: ~a"
