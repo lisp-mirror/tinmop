@@ -225,7 +225,7 @@ height, position and so on)"
 (defun win-set-background (window bg)
   "Set window background
    - window an instance of 'wrapper-window';
-   - bg the returns value of 'tui-utils:make-background'"
+   - bg the returns value of 'tui-utils:make-win-background'"
   (with-croatoan-window (inner window)
     (setf (background inner) bg)))
 
@@ -287,7 +287,7 @@ height, position and so on)"
             block
             :x current-x
             :y y)
-       (incf current-x (text-width block)))
+       (incf current-x (text-length block)))
   object)
 
 (defmethod print-text ((object wrapper-window) text x y &key &allow-other-keys)
@@ -342,7 +342,7 @@ height, position and so on)"
         (fg (swconf:win-fg conf-key)))
     (with-croatoan-window (croatoan-window window)
       (setf (background croatoan-window)
-            (tui:make-background bg))
+            (tui:make-win-background bg))
       (setf (bgcolor    croatoan-window) bg)
       (setf (fgcolor    croatoan-window) fg))
     window))
@@ -421,7 +421,7 @@ list of strings (the text lines)."
          (y                (truncate (- (/ (win-height screen) 2)
                                         (/ win-h 2)))))
     (setf (background low-level-window)
-          (tui:make-background bg))
+          (tui:make-win-background bg))
     (setf (bgcolor low-level-window) bg)
     (setf (fgcolor low-level-window) fg)
     (win-resize window win-w win-h)
@@ -556,7 +556,7 @@ insetred by the user"
                                                                   'label  style-form)))
            (window           (make-instance 'wrapper-window
                                             :croatoan-window low-level-window)))
-      (win-set-background window (make-background bg :color-fg fg))
+      (win-set-background window (make-win-background bg :color-fg fg))
       (add-flush-left-text window message 2 :has-border-p t)
       (win-refresh        window)
       (setf (callback button-accept) 'accept)
@@ -605,7 +605,7 @@ insetred by the user"
                                             :color-pair           (list fg bg)))
             (window           (make-instance 'wrapper-window
                                              :croatoan-window low-level-window)))
-      (win-set-background window (make-background bg :color-fg fg))
+      (win-set-background window (make-win-background bg :color-fg fg))
       (win-refresh        window)
       (setf (callback button-accept) 'accept)
       (setf (callback button-cancel) 'cancel)

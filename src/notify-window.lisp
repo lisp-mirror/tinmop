@@ -78,7 +78,7 @@
 (defun force-error-colors (window)
   (with-croatoan-window (croatoan-window window)
     (setf (background croatoan-window)
-          (tui:make-background :red))
+          (tui:make-win-background :red))
     (setf (bgcolor    croatoan-window) :red)
     (setf (fgcolor    croatoan-window) :yellow))
   window)

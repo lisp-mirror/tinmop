@@ -52,7 +52,7 @@
       (setf new-messages-mark new-message-value)
       (setf histogram-fg (swconf:tags-histogram-foreground))
       (setf (background croatoan-window)
-            (tui:make-background bg))
+            (tui:make-win-background bg))
       (setf (bgcolor croatoan-window) bg)
       (setf (fgcolor croatoan-window) fg)
       (win-resize object width height)

@@ -87,7 +87,7 @@
                                         (/ width 2))))
            (attach-y-start +header-send-window-height+))
       (setf (background croatoan-window)
-            (tui:make-background bg))
+            (tui:make-win-background bg))
       (setf (bgcolor croatoan-window) bg)
       (setf (fgcolor croatoan-window) fg)
       (setf style theme-style)
@@ -156,8 +156,8 @@
                          max-field-length
                          3
                          input-bg input-fg)
-            (print-field (right-padding (text-ellipsize label-attachments
-                                                        (win-width-no-border object))
+            (print-field (right-padding (text-ellipsis label-attachments
+                                                       (win-width-no-border object))
                                         (win-width-no-border object))
                          1
                          4

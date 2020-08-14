@@ -211,7 +211,7 @@ be either `:keybinding' or `:string'.  the former for key command the latter for
                      (print-text object command advance 0)
                      (incf advance (length command))
                      (print-text object commands-separator advance 0)
-                     (incf advance (text-width commands-separator)))
+                     (incf advance (text-length commands-separator)))
                 (print-text object (last-elt command-line) advance 0)))
             (draw-string-mode object))))
     (win-refresh object)))

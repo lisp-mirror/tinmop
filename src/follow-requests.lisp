@@ -59,7 +59,7 @@
            (x              (truncate (- (/ (win-width  screen) 2)
                                         (/ width 2)))))
       (setf (background croatoan-window)
-            (tui:make-background bg))
+            (tui:make-win-background bg))
       (setf (bgcolor croatoan-window) bg)
       (setf (fgcolor croatoan-window) fg)
       (setf style theme-style)

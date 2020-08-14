@@ -52,12 +52,12 @@
                 for block in line
                 with x = 1 do
                   (print-text window block x row-count)
-                  (incf x (text-width block))))))))
+                  (incf x (text-length block))))))))
 
 (defmethod draw :after ((object keybindings-window))
   (labels ((column-size (column)
              (let ((line (first column)))
-               (loop for block in line sum (text-width block)))))
+               (loop for block in line sum (text-length block)))))
     (with-accessors ((keybindings-tree keybindings-tree)
                      (paginated-info   paginated-info)
                      (current-page     current-page)) object
@@ -77,7 +77,7 @@
                          for block in row
                          with x = 1 do
                            (print-text object block (+ x column-count) row-count)
-                           (incf x (text-width block)))
+                           (incf x (text-length block)))
                       (incf row-count))
                  (incf column-count column-size)))
           (draw-pagination-info object))

@@ -41,7 +41,7 @@
            (y           (truncate (- (/ (win-height specials:*main-window*) 2)
                                      (/ win-h 2)))))
       (setf (background croatoan-window)
-            (tui:make-background bg))
+            (tui:make-win-background bg))
       (setf (bgcolor croatoan-window) bg)
       (setf (fgcolor croatoan-window) fg)
       (setf selected-line-fg selected-fg)

@@ -92,7 +92,7 @@
                                                :fgcolor modeline-fg
                                                :bgcolor modeline-bg)))))
              (setf res (cat-tui-string res executed))))
-      (setf res (text-ellipsize res (win-width-no-border object)))
+      (setf res (text-ellipsis res (win-width-no-border object)))
       (setf modeline-text res))))
 
 (defun refresh-modeline-config (win key)
@@ -119,7 +119,7 @@
                    (modeline-text modeline-text)) object
     (when-window-shown (object)
       (let* ((line        modeline-text)
-             (line-length (text-width line))
+             (line-length (text-length line))
              (max-width   (win-width-no-border object)))
         (when (< line-length max-width)
           (setf line

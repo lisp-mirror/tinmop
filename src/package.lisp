@@ -1029,7 +1029,7 @@
     (:nicknames :tui)
     (:import-from :misc-utils :defalias)
     (:export
-     :make-background
+     :make-win-background
      :make-croatoan-window
      :make-blocking-croatoan-window
      :make-screen
@@ -1039,15 +1039,14 @@
      :decode-key-event
      :colorize-tree-element
      :colorize-tree-line
-     :text-width
-     :text-slice
+     :text-length
      :find-max-line-width
-     :nconcat-complex-string
-     :concat-complex-string
+     :ncat-complex-string
+     :cat-complex-string
      :complex-char->char
      :cat-tui-string
      :tui-string->chars-string
-     :text-ellipsize
+     :text-ellipsis
      :right-pad-text
      :text->tui-attribute
      :assemble-attributes

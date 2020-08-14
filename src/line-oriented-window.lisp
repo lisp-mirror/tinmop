@@ -264,15 +264,15 @@ this exact quantity wold go beyond the length or fows or zero."
            for row in rows do
              (if (selectedp row)
                  (print-text object
-                             (right-pad-text (text-ellipsize (selected-text row)
-                                                             max-line-size)
+                             (right-pad-text (text-ellipsis (selected-text row)
+                                                            max-line-size)
                                              max-line-size)
                              x y
                              :bgcolor (selected-bg row)
                              :fgcolor (selected-fg row))
                  (print-text object
-                             (right-pad-text (text-ellipsize (normal-text row)
-                                                             max-line-size)
+                             (right-pad-text (text-ellipsis (normal-text row)
+                                                            max-line-size)
                                              max-line-size)
                              x y
                              :bgcolor (normal-bg row)
@@ -312,7 +312,7 @@ will fire the `callback' function (with the selected field from `all-fields'
              (win-box high-level-window)
              (print-text high-level-window title 2 0)))
       (setf (background low-level-window)
-            (tui:make-background bg))
+            (tui:make-win-background bg))
       (setf (fgcolor low-level-window)
             fg)
       (win-resize high-level-window window-width window-height)
