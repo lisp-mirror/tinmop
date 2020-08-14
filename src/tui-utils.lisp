@@ -185,15 +185,15 @@
 (defmethod clone ((object complex-string))
   (with-simple-clone (object 'complex-string)))
 
-(defun ncat-complex-string (a b)
+(defun nconcat-complex-string (a b)
   (with-accessors ((inner-array-a complex-char-array)) a
     (with-accessors ((inner-array-b complex-char-array)) b
       (setf inner-array-a
             (concatenate 'vector inner-array-a inner-array-b)))))
 
-(defgeneric cat-complex-string (a b &key color-attributes-contagion))
+(defgeneric concat-complex-string (a b &key color-attributes-contagion))
 
-(defun cat-complex-string-no-contagion (a b)
+(defun concat-complex-string-no-contagion (a b)
   (with-accessors ((inner-array-a complex-char-array)) a
     (let* ((res (make-instance 'complex-string
                                :complex-char-array (copy-array inner-array-a))))
@@ -206,10 +206,10 @@
              b))
       res)))
 
-(defmethod cat-complex-string ((a complex-string) (b sequence)
+(defmethod concat-complex-string ((a complex-string) (b sequence)
                                &key (color-attributes-contagion t))
   (if (not color-attributes-contagion)
-      (cat-complex-string-no-contagion a b)
+      (concat-complex-string-no-contagion a b)
       (with-accessors ((inner-array-a complex-char-array)) a
         (let* ((res                  (make-instance 'complex-string
                                                     :complex-char-array (copy-array inner-array-a)))
@@ -233,7 +233,7 @@
                  b))
           res))))
 
-(defmethod cat-complex-string ((a complex-string) (b complex-string)
+(defmethod concat-complex-string ((a complex-string) (b complex-string)
                                &key (color-attributes-contagion t))
   (declare (ignore color-attributes-contagion))
   (with-accessors ((inner-array-a complex-char-array)) a
@@ -245,7 +245,7 @@
                (vector-push-extend i inner-array-res))
           res)))))
 
-(defalias cat-tui-string #'cat-complex-string)
+(defalias cat-tui-string #'concat-complex-string)
 
 (defun complex-char->char (complex-char)
   (simple-char complex-char))
@@ -277,8 +277,8 @@
           (text-width truncate-string))
        (text-slice object 0 len))
       (t
-       (cat-complex-string (text-slice object 0 (- len (text-width truncate-string)))
-                           truncate-string)))))
+       (concat-complex-string (text-slice object 0 (- len (text-width truncate-string)))
+                              truncate-string)))))
 
 (defgeneric right-pad-text (object total-size &key padding-char))
 
@@ -441,7 +441,7 @@
 (defmethod colorized-line->tui-string ((line list) &key &allow-other-keys)
   "Line is a list of simple or complex strings"
   (reduce (lambda (a b)
-            (cat-complex-string a b :color-attributes-contagion nil))
+            (concat-complex-string a b :color-attributes-contagion nil))
           line
           :initial-value (make-tui-string "")))
 

@@ -1042,8 +1042,8 @@
      :text-width
      :text-slice
      :find-max-line-width
-     :ncat-complex-string
-     :cat-complex-string
+     :nconcat-complex-string
+     :concat-complex-string
      :complex-char->char
      :cat-tui-string
      :tui-string->chars-string

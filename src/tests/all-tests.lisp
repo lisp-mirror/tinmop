@@ -19,4 +19,4 @@
 (defsuite all-suite ())
 
 (defun run-all-tests (&key (use-debugger nil))
-  (clunit:run-suite 'all-suite :use-debugger use-debugger))
+  (clunit:run-suite 'all-suite :use-debugger use-debugger :report-progress t))
