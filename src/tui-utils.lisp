@@ -17,6 +17,9 @@
 (in-package :tui-utils)
 
 (defun make-background (color-bg &key (color-fg nil) (char #\Space))
+  "Makes an object suitable as background for a window using `color-bg' as background color,
+`color-fg' as  foreground color (default to  `color-bg') and character
+`char'."
   (make-instance 'complex-char
                  :simple-char char
                  :color-pair (if color-fg
@@ -92,6 +95,8 @@
                     :bgcolor     ,bgcolor))
 
 (defun complex-string-length (complex-string)
+  "Returns the length (in characters  units) of a complex string passed
+as argument `complex-string'."
   (length (complex-char-array complex-string)))
 
 (defun decode-key-event (event)
@@ -122,9 +127,13 @@
     (setf res-line (reverse res-line))
     res-line))
 
-(defgeneric text-width (object))
+(defgeneric text-width (object)
+  (:documentation "Returns the length (in characters  units) of a complex string passed
+as argument `complex-string'."))
 
-(defgeneric text-slice (object start &optional end))
+(defgeneric text-slice (object start &optional end)
+  (:documentation  "Returns a sub sequence of `object' starting from
+  `start` and terminating at `end'. If end in nil the the sub sequence ends alt the last element of the sequence"))
 
 (defmethod text-width ((object string))
   (length object))
@@ -186,14 +195,20 @@
   (with-simple-clone (object 'complex-string)))
 
 (defun nconcat-complex-string (a b)
+  "Destructively concatenate the `complex-string' `a' and `b'"
   (with-accessors ((inner-array-a complex-char-array)) a
     (with-accessors ((inner-array-b complex-char-array)) b
       (setf inner-array-a
             (concatenate 'vector inner-array-a inner-array-b)))))
 
-(defgeneric concat-complex-string (a b &key color-attributes-contagion))
+(defgeneric concat-complex-string (a b &key color-attributes-contagion)
+  (:documentation "Return  a new `complex-string' that  is the results
+  of concatenating `a' and 'b'. If `color-attributes-contagion' is non
+  nil `b' will inherit all the attributes and color of a."))
 
 (defun concat-complex-string-no-contagion (a b)
+  "Concatenate two  `complex-strings': the args `b' does not inherit
+the color and attributes of `a'."
   (with-accessors ((inner-array-a complex-char-array)) a
     (let* ((res (make-instance 'complex-string
                                :complex-char-array (copy-array inner-array-a))))
@@ -207,7 +222,11 @@
       res)))
 
 (defmethod concat-complex-string ((a complex-string) (b sequence)
-                               &key (color-attributes-contagion t))
+                                  &key (color-attributes-contagion t))
+  "Return a  complex string  that is the  results of  concatenating of
+  `a'    (a    `complex-string')    and     `b'    (a    string)    If
+  `color-attributes-contagion'  is non  nil `b'  will inherit  all the
+  attributes and color of a."
   (if (not color-attributes-contagion)
       (concat-complex-string-no-contagion a b)
       (with-accessors ((inner-array-a complex-char-array)) a
@@ -234,7 +253,10 @@
           res))))
 
 (defmethod concat-complex-string ((a complex-string) (b complex-string)
-                               &key (color-attributes-contagion t))
+                                  &key (color-attributes-contagion t))
+  "Return a complex string that is the results of concatenating of `a'
+  and  `b': two  `complex-string'. If  `color-attributes-contagion' is
+  non nil `b' will inherit all the attributes and color of a."
   (declare (ignore color-attributes-contagion))
   (with-accessors ((inner-array-a complex-char-array)) a
     (with-accessors ((inner-array-b complex-char-array)) b
@@ -248,9 +270,11 @@
 (defalias cat-tui-string #'concat-complex-string)
 
 (defun complex-char->char (complex-char)
+  "Convert a `complex-char' to a `char'"
   (simple-char complex-char))
 
 (defun tui-string->chars-string (tui-string)
+  "Convert a `tui-string' to a `string'."
   (with-accessors ((complex-char-array complex-char-array)) tui-string
     (let ((res (misc:make-fresh-array 0 #\a 'character nil)))
       (with-output-to-string (stream res)
@@ -258,17 +282,17 @@
              (format stream "~a" (complex-char->char i)))
         res))))
 
-(defgeneric text-ellipsize (object len &key truncate-string))
+(defgeneric text-ellipsize (object len &key truncate-string)
+  (:documentation "If `object''s length is bigger  than `len', cut the last characters
+  out.  Also replaces the last n  characters (where n is the length of
+  `truncate-string')     of     the      shortened     string     with
+  `truncate-string'. It  defaults to  \"...\", but can  be nil  or the
+  empty string."))
 
 (defmethod text-ellipsize ((object string) len &key (truncate-string "..."))
   (ellipsize object len :truncate-string truncate-string))
 
 (defmethod text-ellipsize ((object complex-string) len &key (truncate-string "..."))
-  "If 'string''s length is bigger  than 'len', cut the last characters
-  out.  Also replaces the last n  characters (where n is the length of
-  'truncate-string')     of     the      shortened     string     with
-  'truncate-string'. It  defaults to  \"...\", but can  be nil  or the
-  empty string."
   (let ((string-len (text-width object)))
     (cond
       ((<= string-len len)
@@ -280,7 +304,9 @@
        (concat-complex-string (text-slice object 0 (- len (text-width truncate-string)))
                               truncate-string)))))
 
-(defgeneric right-pad-text (object total-size &key padding-char))
+(defgeneric right-pad-text (object total-size &key padding-char)
+  (:documentation "Prepend a number of copies of `padding-char' to `object' so that the
+latter has a length equals to `total-size'"))
 
 (defmethod right-pad-text ((object string) (total-size number) &key (padding-char #\Space))
   (assert (> total-size 0))
