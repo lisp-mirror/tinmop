@@ -399,6 +399,7 @@
                    input
                    read
                    unread
+                   password-echo-character
                    color-re
                    ignore-user-re
                    purge-history-days-offset
@@ -656,6 +657,9 @@
 
 (gen-simple-access (username)
                    +key-username+)
+
+(gen-simple-access (password-echo-character)
+                   +key-password-echo-character+)
 
 (defun config-win-focus-mark ()
   (values (access:accesses  *software-configuration*

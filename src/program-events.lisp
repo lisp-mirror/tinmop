@@ -172,6 +172,10 @@
     :initform nil
     :initarg  :initial-value
     :accessor initial-value)
+    (echo-character
+     :initform nil
+     :initarg  :echo-character
+     :accessor echo-character)
     (complete-fn
     :initform nil
     :initarg  :complete-fn
@@ -189,9 +193,10 @@
         (setf (priority object) (truncate (/ +standard-event-priority+ 2)))))
 
 (defmethod process-event ((object ask-user-input-string-event))
-  (with-accessors ((prompt        prompt)
-                   (initial-value initial-value)
-                   (complete-fn   complete-fn)) object
+  (with-accessors ((prompt         prompt)
+                   (initial-value  initial-value)
+                   (complete-fn    complete-fn)
+                   (echo-character echo-character)) object
     (setf (command-window:event-to-answer specials:*command-window*)
           object)
     (setf (point-tracker:prompt specials:*command-window*)
@@ -203,7 +208,9 @@
     (setf (command-window:command-line specials:*command-window*)
           initial-value)
     (point-tracker:move-point-to-end        specials:*command-window* initial-value)
-    (windows:draw                           specials:*command-window*)))
+    (setf (command-window:echo-character specials:*command-window*)
+          echo-character)
+    (windows:draw specials:*command-window*)))
 
 (defclass user-input-string-event (ask-user-input-string-event)
   ()
@@ -220,6 +227,8 @@
 (defmethod process-event ((object user-input-string-event))
   (with-accessors ((lock               lock)
                    (condition-variable condition-variable)) object
+    (setf (command-window:echo-character specials:*command-window*)
+          nil)
     (with-lock (lock)
       (bt:condition-notify condition-variable))))
 

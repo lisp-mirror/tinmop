@@ -22,6 +22,13 @@
     :initarg  :command-line
     :accessor command-line
     :documentation "A list of keys so far inserted by the user")
+   (echo-character
+    :initform nil
+    :initarg  :echo-character
+    :accessor echo-character
+    :documentation "If  non nil  print a number  of copies  (equals to
+  length  of  slot  'command-line'  of  this  string  instead  of  the
+  command-line itself")
    (error-message
     :initform nil
     :initarg  :error-message
@@ -159,23 +166,31 @@ be either `:keybinding' or `:string'.  the former for key command the latter for
                    (point-position point-position)
                    (point-bg       point-bg)
                    (point-fg       point-fg)
-                   (prompt         prompt)) win
-    (let* ((length-cmd-line     (length command-line))
-           (no-prompt-point-pos (no-prompt-point-pos win))
-           (cursor-value    (if (and (> length-cmd-line 0)
-                                     (< no-prompt-point-pos
-                                        length-cmd-line))
-                                (elt command-line no-prompt-point-pos)
-                                #\Space)))
-      (print-text win prompt 0 0)
-      (when command-line
-        (print-text win command-line (length prompt) 0))
-      (print-text win
-                  cursor-value
-                  point-position
-                  0
-                  :fgcolor point-fg
-                  :bgcolor point-bg))))
+                   (prompt         prompt)
+                   (echo-character echo-character)) win
+    (flet ((print-echo-character ()
+             (let ((echoed (with-output-to-string (stream)
+                             (loop repeat (length command-line) do
+                                  (princ echo-character stream)))))
+               (print-text win echoed (length prompt) 0))))
+      (let* ((length-cmd-line     (length command-line))
+             (no-prompt-point-pos (no-prompt-point-pos win))
+             (cursor-value    (if (and (> length-cmd-line 0)
+                                       (< no-prompt-point-pos
+                                          length-cmd-line))
+                                  (elt command-line no-prompt-point-pos)
+                                  #\Space)))
+        (print-text win prompt 0 0)
+        (when command-line
+          (if echo-character
+              (print-echo-character)
+              (print-text win command-line (length prompt) 0)))
+        (print-text win
+                    cursor-value
+                    point-position
+                    0
+                    :fgcolor point-fg
+                    :bgcolor point-bg)))))
 
 (defmethod draw ((object command-window))
   (with-accessors ((command-line              command-line)

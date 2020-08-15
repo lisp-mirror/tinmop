@@ -993,6 +993,7 @@
    :config-notification-life
    :config-server-name
    :config-username
+   :config-password-echo-character
    :config-win-focus-mark
    :thread-message-symbol
    :thread-message-read-colors
@@ -1784,6 +1785,7 @@
    :print-error
    :command-window
    :command-line
+   :echo-character
    :event-to-answer
    :prompt
    :add-error-message

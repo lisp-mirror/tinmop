@@ -145,17 +145,21 @@
 
 (defun ask-string-input (on-input-complete-fn
                          &key
-                           (priority      nil)
-                           (initial-value nil)
-                           (prompt        +default-command-prompt+)
-                           (complete-fn   #'complete:directory-complete))
+                           (hide-input      nil)
+                           (priority        nil)
+                           (initial-value   nil)
+                           (prompt          +default-command-prompt+)
+                           (complete-fn     #'complete:directory-complete))
   (flet ((thread-fn ()
-           (let ((event (make-instance 'ask-user-input-string-event
-                                       :forced-priority priority
-                                       :initial-value   initial-value
-                                       :complete-fn     complete-fn
-                                       :prompt          prompt
-                                       :payload         (box:dbox nil))))
+           (let* ((password-echo (and hide-input
+                                      (swconf:config-password-echo-character)))
+                  (event         (make-instance 'ask-user-input-string-event
+                                                :echo-character  password-echo
+                                                :forced-priority priority
+                                                :initial-value   initial-value
+                                                :complete-fn     complete-fn
+                                                :prompt          prompt
+                                                :payload         (box:dbox nil))))
              (with-accessors ((lock               lock)
                               (condition-variable condition-variable)) event
                (push-event event)
