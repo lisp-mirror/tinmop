@@ -163,6 +163,9 @@ as argument `complex-string'."
 
 (defalias cat-tui-string #'cat-complex-string)
 
+(defun tui-char->char (complex-char)
+  (simple-char complex-char))
+
 (defun tui-string->chars-string (tui-string)
   "Convert a `tui-string' to a `string'."
   (croatoan:complex-string->chars-string tui-string))
@@ -381,3 +384,27 @@ latter has a length equals to `total-size'"))
                     (ui:notify (format nil (_ "Error: ~a") e)
                                :life     (* (swconf:config-notification-life) 5)
                                :as-error t))))
+
+(defun make-tui-char (char
+                      &key
+                        (attributes nil)
+                        (fgcolor    nil)
+                        (bgcolor    nil))
+  "Make a `complex-char'"
+  (make-instance 'complex-char
+                 :simple-char char
+                 :attributes  attributes
+                 :fgcolor     fgcolor
+                 :bgcolor     bgcolor))
+
+(defun make-tui-string (string
+                        &key
+                          (attributes nil)
+                          (fgcolor    nil)
+                          (bgcolor    nil))
+  "Make a `complex-string' using `string' for text contents"
+  (make-instance 'complex-string
+                 :string      string
+                 :attributes  attributes
+                 :fgcolor     fgcolor
+                 :bgcolor     bgcolor))

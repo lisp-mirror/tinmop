@@ -1044,8 +1044,8 @@
      :find-max-line-width
      :ncat-complex-string
      :cat-complex-string
-     :complex-char->char
      :cat-tui-string
+     :tui-char->char
      :tui-string->chars-string
      :text-ellipsis
      :right-pad-text
@@ -1062,7 +1062,9 @@
      :colorize-line
      :colorized-line->tui-string
      :standard-error-notify-life
-     :with-notify-errors))
+     :with-notify-errors
+     :make-tui-char
+     :make-tui-string))
 
 (defpackage :command-line
   (:use
