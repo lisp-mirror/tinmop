@@ -137,7 +137,20 @@
               (port  (or (quri:uri-port  parsed-uri)
                          gemini-client:+gemini-default-port+)))
           (handler-case
-              (progn
+              (flet ((get-user-input (hide-input host prompt)
+                       (flet ((on-input-complete (input)
+                                (when (string-not-empty-p input)
+                                  (db-utils:with-ready-database (:connect nil)
+                                    (request (gemini-parser:make-gemini-uri host
+                                                                            path
+                                                                            input
+                                                                            port))))))
+                         (ui:ask-string-input #'on-input-complete
+                                              :hide-input hide-input
+                                              :prompt (format nil
+                                                      (_ "Server ~s asks: ~s ")
+                                                      host
+                                                      prompt)))))
                 (multiple-value-bind (status code-description meta response socket)
                     (gemini-client:request host
                                            path
@@ -161,22 +174,9 @@
                                                     (_ "Redirects to ~s, follows redirect? [y/N] ")
                                                     meta))))
                     ((gemini-client:response-input-p status)
-                     (flet ((on-input-complete (input)
-                              (when (string-not-empty-p input)
-                                (db-utils:with-ready-database (:connect nil)
-                                  (request (gemini-parser:make-gemini-uri host
-                                                                          path
-                                                                          input
-                                                                          port))))))
-                       (ui:ask-string-input #'on-input-complete
-                                            :prompt
-                                            (format nil
-                                                    (_ "Server ~s asks: ~s ")
-                                                    host
-                                                    meta))))
+                     (get-user-input nil host meta))
                     ((gemini-client:response-sensitive-input-p status)
-                     (error 'conditions:not-implemented-error
-                            :text "Sensitive input not implemented"))
+                     (get-user-input t host meta))
                     ((streamp response)
                      (let ((stream response))
                        (if (gemini-client:mime-gemini-p meta)
