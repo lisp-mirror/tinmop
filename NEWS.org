@@ -1,3 +1,12 @@
+* 2020-08-19
+
+  The gemini  client could  now manage  secret input  if asked  by the
+  server.
+
+  Secret input here means that a placeholder character is printed on
+  the  screen  instead of  the  character  corresponding to  the  key
+  pressed by the user (like a password input).
+
 * 2020-07-17
 
   The gemini client fetch documents from remote server in a concurrent

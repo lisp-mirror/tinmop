@@ -1,3 +1,32 @@
+2020-08-19
+
+	* po/it.po
+	* po/tinmop.pot
+	* src/command-line.lisp
+	* src/command-window.lisp
+	* src/conversations-window.lisp
+	* src/follow-requests.lisp
+	* src/keybindings-window.lisp
+	* src/line-oriented-window.lisp
+	* src/modeline-window.lisp
+	* src/notify-window.lisp
+	* src/open-attach-window.lisp
+	* src/package.lisp
+	* src/sending-message.lisp
+	* src/tags-window.lisp
+	* src/tests/all-tests.lisp
+	* src/thread-window.lisp
+	* src/tui-utils.lisp
+	* src/windows.lisp
+
+	- [gemini] allowed secret input;
+	- tracking changes in croatoan
+	  some  function   in  'tui-utils'  are  just   wrappers  for  the
+	  equivalents in the library;
+	- added more docstrings;
+	- use new  i18n feature form unix-opt to  localize program's usage
+	  messages.
+
 2020-07-26
 
 	* etc/init.lisp
