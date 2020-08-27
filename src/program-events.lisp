@@ -926,14 +926,19 @@
   (gemini-viewer:history-back specials:*message-window*))
 
 (defclass gemini-got-line-event (program-event)
-  ((append-text
+  ((wrapper-object
+    :initform nil
+    :initarg  :wrapper-object
+    :accessor wrapper-object)
+   (append-text
     :initform t
     :initarg  :append-text
     :accessor append-text)))
 
 (defmethod process-event ((object gemini-got-line-event))
-  (with-accessors ((response    payload)
-                   (append-text append-text)) object
+  (with-accessors ((response       payload)
+                   (append-text    append-text)
+                   (wrapper-object wrapper-object)) object
     (with-accessors ((status-code          gemini-client:status-code)
                      (status-code-message  gemini-client:status-code-message)
                      (meta                 gemini-client:meta)
@@ -943,7 +948,7 @@
                      (source               gemini-client:source)
                      (links                gemini-client:links)
                      (text-rendering-theme gemini-client:text-rendering-theme)) response
-      (when (gemini-viewer:downloading-allowed-p)
+      (when (gemini-viewer:downloading-allowed-p wrapper-object)
         (let* ((win specials:*message-window*)
                (rendered-line   (gemini-parser:sexp->text parsed-file
                                                           text-rendering-theme))
