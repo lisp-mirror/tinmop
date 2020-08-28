@@ -244,22 +244,39 @@ this exact quantity wold go beyond the length or fows or zero."
     :initform :red
     :initarg  :selected-line-fg
     :accessor selected-line-fg
-   :documentation "The foreground color for a selected line"))
+    :documentation "The foreground color for a selected line")
+   (line
+    :initform :red
+    :initarg  :selected-line-fg
+    :accessor selected-line-fg
+    :documentation "The foreground color for a selected line")
+   (top-horizontal-padding
+    :initform 0
+    :initarg  :top-horizontal-padding
+    :accessor top-horizontal-padding
+    :documentation "The vertical padding (from top) of each single row"))
   (:documentation "A window that displays a navigable list of objects"))
 
 (defmethod draw :after ((object simple-line-navigation-window))
-  (with-accessors ((uses-border-p     uses-border-p)
-                   (single-row-height single-row-height)
-                   (top-row-padding   top-row-padding)) object
+  (with-accessors ((uses-border-p          uses-border-p)
+                   (single-row-height      single-row-height)
+                   (top-row-padding        top-row-padding)
+                   (top-horizontal-padding top-horizontal-padding)) object
     (let ((max-line-size (if uses-border-p
                              (win-width-no-border object)
                              (win-width           object))))
-      (let ((rows (renderizable-rows-data object))
-            (x    (if (uses-border-p object)
-                      1
-                      0)))
+      (let ((rows    (renderizable-rows-data object))
+            (x       (if (uses-border-p object)
+                         1
+                         0))
+            (y-start (if (uses-border-p object)
+                         1
+                         0)))
         (loop
-           for y from (1+ top-row-padding) by single-row-height
+           for y from (+ y-start
+                         top-horizontal-padding
+                         top-row-padding)
+           by single-row-height
            for ct from 0
            for row in rows do
              (if (selectedp row)

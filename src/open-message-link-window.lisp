@@ -114,33 +114,39 @@
 
 (defmethod draw :before ((object open-gemini-document-link-window))
   (with-accessors ((links             links)
+                   (uses-border-p     uses-border-p)
                    (single-row-height single-row-height)
                    (top-row-padding   top-row-padding)
                    (new-messages-mark new-messages-mark)
                    (top-rows-slice    top-rows-slice)
                    (bottom-rows-slice bottom-rows-slice)) object
-    (renderizable-rows-data object) ; set top and bottom slice
-    (win-clear object)
-    (with-croatoan-window (croatoan-window object)
-      (loop
-         for link in (safe-subseq links top-rows-slice bottom-rows-slice)
-         for y from (+ 2 top-row-padding) by single-row-height do
-           (print-text object
-                       (gemini-parser:name link)
-                       1 y
-                       :bgcolor (bgcolor croatoan-window)
-                       :fgcolor (fgcolor croatoan-window))))))
+    (let ((y-start (if uses-border-p
+                       1
+                       0)))
+      (renderizable-rows-data object)   ; set top and bottom slice
+      (win-clear object)
+      (with-croatoan-window (croatoan-window object)
+        (loop
+           for link in (safe-subseq links top-rows-slice bottom-rows-slice)
+           for y from (+ y-start top-row-padding) by single-row-height do
+             (print-text object
+                         (gemini-parser:name link)
+                         1 y
+                         :bgcolor (bgcolor croatoan-window)
+                         :fgcolor (fgcolor croatoan-window)))))))
 
 (defun init-gemini-links (links)
   (let* ((low-level-window (make-croatoan-window :enable-function-keys t)))
     (setf *open-message-link-window*
           (make-instance 'open-gemini-document-link-window
-                         :title             (_ "Links")
-                         :links             links
-                         :single-row-height 2
-                         :uses-border-p     t
-                         :keybindings       keybindings:*open-message-link-keymap*
-                         :croatoan-window   low-level-window))
+                         :top-row-padding        0
+                         :top-horizontal-padding 1
+                         :title                  (_ "Links")
+                         :links                  links
+                         :single-row-height      2
+                         :uses-border-p          t
+                         :keybindings            keybindings:*open-message-link-keymap*
+                         :croatoan-window        low-level-window))
     (refresh-config *open-message-link-window*)
     (resync-rows-db *open-message-link-window* :redraw nil)
     (when (rows *open-message-link-window*)
