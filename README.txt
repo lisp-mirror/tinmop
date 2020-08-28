@@ -31,13 +31,19 @@ Table of Contents
 1 Introduction
 ══════════════
 
-  Tinmop is an opinionated client for Pleroma (using the mastodon
-  API). It offer a distraction free terminal interface.
+  Tinmop is an opinionated client for [Pleroma] (using the mastodon API)
+  and [gemini protocol].  It offer a distraction free terminal
+  interface.
 
   The name is a recursive acronym: "Tinmop Is Not Mutt or Pine".  The
   older of us can remember that, in turn, Pine is sometimes considered
   an acronym as well: "Pine Is Not Elm" and, finally, Elm means
   (according to Wikipedia): "Electronic Mail".
+
+
+[Pleroma] <https://pleroma.social/>
+
+[gemini protocol] <https://gemini.circumlunar.space/>
 
 
 2 Peculiar Features
