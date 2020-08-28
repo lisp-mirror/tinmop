@@ -1,34 +1,36 @@
+2020-08-28
+
+	* src/line-oriented-window.lisp
+	* src/open-message-link-window.lisp
+	* src/gemini-viewer.lisp
+	* src/misc-utils.lisp
+
+    - added vertical top padding for 'line-oriented-window'.
+
+      This means  also that the gemini  links window will render  the link
+      name on top of the link uri.
+
+    - [gemini] wrapped non gemini download thread.
+
+      Also added a few of useful slots like temporary file path and number of
+      bytes downloaded so far.
+
+2020-08-27
+
+	* src/gemini-viewer.lisp
+	* src/program-events.lisp
+
+	- added 'gemini-stream' class.
+
+	Starting  wrapping  streaming  of   gemini's  data  using  hi  level
+	structures  (this way  we can  associate a  for aecha  stream), this
+	could be useful to let the user start or stop the stream or open the
+	data downloaded so far.
+
 2020-08-19
 
-	* po/it.po
-	* po/tinmop.pot
-	* src/command-line.lisp
-	* src/command-window.lisp
-	* src/conversations-window.lisp
-	* src/follow-requests.lisp
-	* src/keybindings-window.lisp
-	* src/line-oriented-window.lisp
-	* src/modeline-window.lisp
-	* src/notify-window.lisp
-	* src/open-attach-window.lisp
-	* src/package.lisp
-	* src/sending-message.lisp
-	* src/tags-window.lisp
-	* src/tests/all-tests.lisp
-	* src/thread-window.lisp
-	* src/tui-utils.lisp
-	* src/windows.lisp
-
-	- [gemini] allowed secret input;
-	- tracking changes in croatoan
-	  some  function   in  'tui-utils'  are  just   wrappers  for  the
-	  equivalents in the library;
-	- added more docstrings;
-	- use new  i18n feature form unix-opt to  localize program's usage
-	  messages.
-
-2020-07-26
-
+	* .gitignore
+	* Makefile.in
 	* etc/init.lisp
 	* src/db.lisp
 	* src/gemini-viewer.lisp
@@ -44,6 +46,16 @@
 	* src/ui-goodies.lisp
 	* tinmop.asd
 
+	- Added Makefile.in.
+	- [gemini] allowed secret input;
+	- tracking changes in croatoan
+	  some  function   in  'tui-utils'  are  just   wrappers  for  the
+	  equivalents in the library;
+	- added more docstrings;
+	- use new  i18n feature form unix-opt to  localize program's usage
+	  messages.
+
+2020-07-26
 
     - [gemini]  the parser  has been  modified to  renders (in  a separate
       thread) the contents of a gemini  file parsed so far without waiting
