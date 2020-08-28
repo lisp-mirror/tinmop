@@ -453,9 +453,9 @@ Name from Emacs Lisp."
 (defun read-array (stream size &key (offset nil))
   (when offset
     (file-position stream offset))
-  (let* ((bytes (misc-utils:make-array-frame size 0 '(unsigned-byte 8) t)))
-    (read-sequence bytes stream)
-    bytes))
+  (let* ((bytes       (misc-utils:make-array-frame size 0 '(unsigned-byte 8) t))
+         (read-so-far (read-sequence bytes stream)))
+    (values bytes read-so-far)))
 
 (defun read-all (stream)
   "Read all the octent from stream ad returns them as array"

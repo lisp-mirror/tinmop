@@ -81,6 +81,14 @@
     :initform nil
     :initarg  :download-socket
     :accessor download-socket)
+   (support-file
+    :initform (fs:temporary-file)
+    :initarg  :support-file
+    :accessor support-file)
+   (octect-count
+    :initform 0
+    :initarg  :octect-count
+    :accessor octect-count)
    (thread
     :initform nil
     :initarg  :thread
@@ -123,66 +131,117 @@
 
 (defclass gemini-file-stream (gemini-stream) ())
 
+(defclass gemini-others-data-stream (gemini-stream) ())
+
+(defmacro with-open-support-file ((stream file &optional (element-type '(unsigned-byte 8)))
+                                  &body body)
+  `(with-open-file (,stream ,file
+                            :element-type      ',element-type
+                            :direction         :output
+                            :element-type      'character
+                            :if-exists         :supersede
+                            :if-does-not-exist :create)
+     ,@body))
+
+(defgeneric increment-bytes-count (object data &key &allow-other-keys))
+
+(defmethod increment-bytes-count ((object gemini-stream) data
+                                  &key (convert-to-octects nil))
+  (with-accessors ((octect-count octect-count)) object
+    (if convert-to-octects
+        (incf octect-count (babel:string-size-in-octets data
+                                                        :errorp nil))
+        (incf octect-count (length data)))))
+
+(defmethod increment-bytes-count ((object gemini-stream) (data number)
+                                  &key &allow-other-keys)
+  (with-accessors ((octect-count octect-count)) object
+    (incf octect-count data)))
+
 (defun request-stream-gemini-document-thread (wrapper-object host
                                               port path query
                                               status-code status-code-description meta)
   (with-accessors ((download-socket download-socket)
-                   (download-stream download-stream)) wrapper-object
+                   (download-stream download-stream)
+                   (octect-count    octect-count)
+                   (support-file    support-file)) wrapper-object
     (lambda ()
-      (let* ((url          (gemini-parser:make-gemini-uri host path query port))
-             (parsed-url   (gemini-parser:parse-gemini-file (format nil "-> ~a~%" url)))
-             (url-response (gemini-client:make-gemini-file-response nil
-                                                                    nil
-                                                                    nil
-                                                                    parsed-url
-                                                                    nil
-                                                                    ""
-                                                                    nil))
-             (url-event    (make-instance 'program-events:gemini-got-line-event
-                                          :wrapper-object  wrapper-object
-                                          :payload         url-response
-                                          :append-text     nil)))
-        (program-events:push-event url-event)
-        (loop
-           named download-loop
-           for line-as-array = (read-line-into-array download-stream)
-           while line-as-array do
-             (if (downloading-allowed-p wrapper-object)
-                 (let* ((line     (babel:octets-to-string line-as-array :errorp nil))
-                        (parsed   (gemini-parser:parse-gemini-file line))
-                        (links    (gemini-parser:sexp->links parsed host port path))
-                        (response (gemini-client:make-gemini-file-response status-code
-                                                                           status-code-description
-                                                                           meta
-                                                                           parsed
-                                                                           url
-                                                                           line
-                                                                           links))
-                        (event    (make-instance 'program-events:gemini-got-line-event
-                                                 :wrapper-object  wrapper-object
-                                                 :payload         response)))
-                   (program-events:push-event event))
-                 (progn
-                   (return-from download-loop nil))))
-        (if (not (downloading-allowed-p wrapper-object))
-            (ui:notify (_ "Gemini document downloading aborted"))
-            (ui:notify (_ "Gemini document downloading completed")))
-        (allow-downloading wrapper-object)
-        (gemini-client:close-ssl-socket download-socket)))))
+      (with-open-support-file (file-stream support-file character)
+        (let* ((url          (gemini-parser:make-gemini-uri host path query port))
+               (parsed-url   (gemini-parser:parse-gemini-file (format nil "-> ~a~%" url)))
+               (url-response (gemini-client:make-gemini-file-response nil
+                                                                      nil
+                                                                      nil
+                                                                      parsed-url
+                                                                      nil
+                                                                      ""
+                                                                      nil))
+               (url-event    (make-instance 'program-events:gemini-got-line-event
+                                            :wrapper-object  wrapper-object
+                                            :payload         url-response
+                                            :append-text     nil)))
+          (program-events:push-event url-event)
+          (loop
+             named download-loop
+             for line-as-array = (read-line-into-array download-stream)
+             while line-as-array do
+               (if (downloading-allowed-p wrapper-object)
+                   (let* ((line     (babel:octets-to-string line-as-array :errorp nil))
+                          (parsed   (gemini-parser:parse-gemini-file line))
+                          (links    (gemini-parser:sexp->links parsed host port path))
+                          (response (gemini-client:make-gemini-file-response status-code
+                                                                             status-code-description
+                                                                             meta
+                                                                             parsed
+                                                                             url
+                                                                             line
+                                                                             links))
+                          (event    (make-instance 'program-events:gemini-got-line-event
+                                                   :wrapper-object  wrapper-object
+                                                   :payload         response)))
+                     (write-sequence line file-stream)
+                     (increment-bytes-count wrapper-object line :convert-to-octects t)
+                     (program-events:push-event event))
+                   (progn
+                     (return-from download-loop nil))))
+          (if (not (downloading-allowed-p wrapper-object))
+              (ui:notify (_ "Gemini document downloading aborted"))
+              (ui:notify (_ "Gemini document downloading completed")))
+          (allow-downloading wrapper-object)
+          (gemini-client:close-ssl-socket download-socket)))
+      (fs:delete-file-if-exists support-file))))
 
-(defun request-stream-other-document-thread (socket stream host
-                                             port path query
+(defun request-stream-other-document-thread (wrapper-object
+                                             socket
+                                             host
+                                             port
+                                             path
+                                             query
                                              status-code status-code-description meta)
   (declare (ignorable host
                       port path query
                       status-code status-code-description meta))
-  (lambda ()
-    (fs:with-anaphoric-temp-file (out-stream)
-      (let* ((buffer (misc:read-all stream)))
-        (gemini-client:close-ssl-socket socket)
-        (write-sequence buffer out-stream)
-        (force-output out-stream)
-        (os-utils:xdg-open fs:temp-file)))))
+  (with-accessors ((download-socket download-socket)
+                   (download-stream download-stream)
+                   (octect-count    octect-count)
+                   (support-file    support-file)) wrapper-object
+
+    (lambda ()
+      (with-open-support-file (file-stream support-file)
+        (labels ((%fill-buffer ()
+                   (multiple-value-bind (buffer read-so-far)
+                       (read-array download-stream 1024)
+                     (increment-bytes-count wrapper-object read-so-far)
+                     (if (< read-so-far (length buffer))
+                         (progn
+                           (write-sequence buffer file-stream :start 0 :end read-so-far)
+                           (force-output file-stream)
+                           (gemini-client:close-ssl-socket socket)
+                           (os-utils:xdg-open support-file))
+                         (progn
+                           (write-sequence buffer file-stream)
+                           (%fill-buffer))))))
+          (%fill-buffer))))))
 
 (defun request (url)
   (let ((parsed-uri (quri:uri url)))
@@ -208,9 +267,9 @@
                          (ui:ask-string-input #'on-input-complete
                                               :hide-input hide-input
                                               :prompt (format nil
-                                                      (_ "Server ~s asks: ~s ")
-                                                      host
-                                                      prompt)))))
+                                                              (_ "Server ~s asks: ~s ")
+                                                              host
+                                                              prompt)))))
                 (multiple-value-bind (status code-description meta response socket)
                     (gemini-client:request host
                                            path
@@ -238,35 +297,44 @@
                     ((gemini-client:response-sensitive-input-p status)
                      (get-user-input t host meta))
                     ((streamp response)
-                     (let ((stream response))
-                       (if (gemini-client:mime-gemini-p meta)
-                           (let* ((gemini-stream (make-instance 'gemini-file-stream
-                                                                :download-stream response
-                                                                :download-socket socket))
-                                  (thread-fn
-                                   (request-stream-gemini-document-thread gemini-stream
-                                                                          host
-                                                                          port
-                                                                          path
-                                                                          query
-                                                                          status
-                                                                          code-description
-                                                                          meta)))
-                             (downloading-start-thread gemini-stream
-                                                       thread-fn
-                                                       host
-                                                       port
-                                                       path
-                                                       query))
-                           (bt:make-thread (request-stream-other-document-thread socket
-                                                                                 stream
-                                                                                 host
-                                                                                 port
-                                                                                 path
-                                                                                 query
-                                                                                 status
-                                                                                 code-description
-                                                                                 meta))))))))
+                     (if (gemini-client:mime-gemini-p meta)
+                         (let* ((gemini-stream (make-instance 'gemini-file-stream
+                                                              :download-stream response
+                                                              :download-socket socket))
+                                (thread-fn
+                                 (request-stream-gemini-document-thread gemini-stream
+                                                                        host
+                                                                        port
+                                                                        path
+                                                                        query
+                                                                        status
+                                                                        code-description
+                                                                        meta)))
+                           (downloading-start-thread gemini-stream
+                                                     thread-fn
+                                                     host
+                                                     port
+                                                     path
+                                                     query))
+                         (let* ((gemini-stream (make-instance 'gemini-others-data-stream
+                                                              :download-stream response
+                                                              :download-socket socket))
+                                (thread-fn
+                                 (request-stream-other-document-thread gemini-stream
+                                                                       socket
+                                                                       host
+                                                                       port
+                                                                       path
+                                                                       query
+                                                                       status
+                                                                       code-description
+                                                                       meta)))
+                           (downloading-start-thread gemini-stream
+                                                     thread-fn
+                                                     host
+                                                     port
+                                                     path
+                                                     query)))))))
             (gemini-client:gemini-tofu-error (e)
               (let ((host (gemini-client:host e)))
                 (flet ((on-input-complete (maybe-accepted)
