@@ -242,7 +242,7 @@
                            (%fill-buffer))))))
           (%fill-buffer))))))
 
-(defun request (url)
+(defun request (url &key (enqueue nil))
   (let ((parsed-uri (quri:uri url)))
     (maybe-initialize-metadata specials:*message-window*)
     (if (null parsed-uri)
@@ -255,20 +255,30 @@
               (port  (or (quri:uri-port  parsed-uri)
                          gemini-client:+gemini-default-port+)))
           (handler-case
-              (flet ((get-user-input (hide-input host prompt)
-                       (flet ((on-input-complete (input)
-                                (when (string-not-empty-p input)
-                                  (db-utils:with-ready-database (:connect nil)
-                                    (request (gemini-parser:make-gemini-uri host
-                                                                            path
-                                                                            input
-                                                                            port))))))
-                         (ui:ask-string-input #'on-input-complete
-                                              :hide-input hide-input
-                                              :prompt (format nil
-                                                              (_ "Server ~s asks: ~s ")
-                                                              host
-                                                              prompt)))))
+              (labels ((gemini-file-stream-p (meta)
+                         (gemini-client:mime-gemini-p meta))
+                       (starting-status (meta)
+                         (if (gemini-file-stream-p meta)
+                             (if enqueue
+                                 nil
+                                 :rendering)
+                             (if enqueue
+                                 nil
+                                 nil)))
+                       (get-user-input (hide-input host prompt)
+                         (flet ((on-input-complete (input)
+                                  (when (string-not-empty-p input)
+                                    (db-utils:with-ready-database (:connect nil)
+                                      (request (gemini-parser:make-gemini-uri host
+                                                                              path
+                                                                              input
+                                                                              port))))))
+                           (ui:ask-string-input #'on-input-complete
+                                                :hide-input hide-input
+                                                :prompt (format nil
+                                                                (_ "Server ~s asks: ~s ")
+                                                                host
+                                                                prompt)))))
                 (multiple-value-bind (status code-description meta response socket)
                     (gemini-client:request host
                                            path
@@ -296,10 +306,12 @@
                     ((gemini-client:response-sensitive-input-p status)
                      (get-user-input t host meta))
                     ((streamp response)
-                     (if (gemini-client:mime-gemini-p meta)
-                         (let* ((gemini-stream (make-instance 'gemini-file-stream
-                                                              :download-stream response
-                                                              :download-socket socket))
+                     (if (gemini-file-stream-p meta)
+                         (let* ((starting-status (starting-status meta))
+                                (gemini-stream   (make-instance 'gemini-file-stream
+                                                                :stream-status   starting-status
+                                                                :download-stream response
+                                                                :download-socket socket))
                                 (thread-fn
                                  (request-stream-gemini-document-thread gemini-stream
                                                                         host
