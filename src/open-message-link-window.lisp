@@ -123,7 +123,7 @@
     (let ((y-start (if uses-border-p
                        1
                        0)))
-      (renderizable-rows-data object)   ; set top and bottom slice
+      (renderizable-rows-data object) ; set top and bottom slice
       (win-clear object)
       (with-croatoan-window (croatoan-window object)
         (loop

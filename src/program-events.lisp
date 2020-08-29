@@ -969,7 +969,8 @@
 (defclass gemini-abort-downloading-event (program-event) ())
 
 (defmethod process-event ((object gemini-abort-downloading-event))
-  (gemini-viewer:abort-downloading))
+  (with-accessors ((download-stream payload)) object
+    (gemini-viewer:abort-downloading download-stream)))
 
 (defclass function-event (program-event) ())
 

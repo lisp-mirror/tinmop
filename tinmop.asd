@@ -89,6 +89,7 @@
                (:file "specials")
                (:file "keybindings")
                (:file "complete")
+               (:file "gemini-viewer-metadata")
                (:file "program-events")
                (:file "api-pleroma")
                (:file "api-client")
