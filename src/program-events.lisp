@@ -969,8 +969,17 @@
 (defclass gemini-abort-downloading-event (program-event) ())
 
 (defmethod process-event ((object gemini-abort-downloading-event))
-  (with-accessors ((download-stream payload)) object
-    (gemini-viewer:abort-downloading download-stream)))
+  (with-accessors ((uri payload)) object
+    (when-let ((stream-object (gemini-viewer:find-db-stream-url uri)))
+      (gemini-viewer:abort-downloading stream-object)
+      (gemini-viewer:remove-db-stream stream-object)
+      (line-oriented-window:resync-rows-db specials:*gemini-streams-window*))))
+
+(defclass gemini-enqueue-download-event (program-event) ())
+
+(defmethod process-event ((object gemini-enqueue-download-event))
+  (with-accessors ((stream-object payload)) object
+    (gemini-viewer:push-db-stream stream-object)))
 
 (defclass function-event (program-event) ())
 

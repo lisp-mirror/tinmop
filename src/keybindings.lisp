@@ -252,6 +252,8 @@ produces a tree and graft the latter on `existing-tree'"
 (defparameter *open-gemini-link-keymap* (make-starting-comand-tree)
   "The keymap for window to open gemini's links.")
 
+(defparameter *gemini-downloads-keymap* (make-starting-comand-tree)
+  "The keymap for window that shows all gemini streams.")
 
 (defun define-key (key-sequence function &optional (existing-keymap *global-keymap*))
   "Define a key sequence that trigger a function:

@@ -51,3 +51,6 @@
 
 (defparameter *open-message-link-window*        nil
   "The window that shows links in a message.")
+
+(defparameter *gemini-streams-window*           nil
+  "The window that shows all gemini-streams.")

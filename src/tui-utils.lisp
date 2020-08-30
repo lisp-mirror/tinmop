@@ -141,6 +141,11 @@ as argument `complex-string'."
   "Destructively concatenate the `complex-string' `a' and `b'"
   (croatoan:nconcat-complex-string a b))
 
+(defgeneric to-tui-string (object &key &allow-other-keys))
+
+(defmethod to-tui-string ((object string) &key &allow-other-keys)
+  (make-tui-string object))
+
 (defgeneric cat-complex-string (a b &key color-attributes-contagion)
   (:documentation "Return  a new `complex-string' that  is the results
   of concatenating `a' and 'b'. If `color-attributes-contagion' is non

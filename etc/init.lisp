@@ -303,7 +303,19 @@
 
 (define-key "U"         #'gemini-view-source                         *gemini-message-keymap*)
 
-(define-key "a"         #'gemini-abort-download                      *gemini-message-keymap*)
+(define-key "d"         #'gemini-open-streams-window                 *gemini-message-keymap*)
+
+;; gemini stream window keymap
+
+(define-key "a"         #'gemini-abort-download                      *gemini-downloads-keymap*)
+
+(define-key "up"        #'gemini-streams-window-up                   *gemini-downloads-keymap*)
+
+(define-key "down"      #'gemini-streams-window-down                 *gemini-downloads-keymap*)
+
+(define-key "q"         #'gemini-streams-window-close                *gemini-downloads-keymap*)
+
+(define-key "C-J"       #'gemini-streams-window-open-stream          *gemini-downloads-keymap*)
 
 ;; tags keymap
 

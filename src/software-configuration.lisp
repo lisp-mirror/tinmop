@@ -378,6 +378,7 @@
                    suggestions-window
                    open-attach-window
                    open-message-link-window
+                   open-gemini-stream-window
                    command-window
                    command-separator
                    gemini

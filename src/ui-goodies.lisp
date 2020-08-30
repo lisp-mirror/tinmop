@@ -354,15 +354,21 @@ Metadata includes:
               (if print-message
                   (_ "focus passed on threads window")
                   nil)
-              *open-message-link-window* *open-attach-window*
-              *conversations-window* *tags-window* *send-message-window*
-              *message-window* *follow-requests-window*))
+              *gemini-streams-window*
+              *open-message-link-window*
+              *open-attach-window*
+              *conversations-window*
+              *tags-window*
+              *send-message-window*
+              *message-window*
+              *follow-requests-window*))
 
 (gen-focus-to-window message-window
                      specials:*message-window*
                      :documentation      "Move focus on message window"
                      :info-change-focus-message (_ "Focus passed on message window")
-                     :windows-lose-focus (specials:*open-message-link-window*
+                     :windows-lose-focus (specials:*gemini-streams-window*
+                                          specials:*open-message-link-window*
                                           specials:*open-attach-window*
                                           specials:*conversations-window*
                                           specials:*tags-window*
@@ -370,12 +376,12 @@ Metadata includes:
                                           specials:*send-message-window*
                                           specials:*follow-requests-window*))
 
-
 (gen-focus-to-window send-message-window
                      specials:*send-message-window*
                      :documentation      "Move focus on send message window"
                      :info-change-focus-message (_ "Focus passed on send message window")
-                     :windows-lose-focus (specials:*open-message-link-window*
+                     :windows-lose-focus (specials:*gemini-streams-window*
+                                          specials:*open-message-link-window*
                                           specials:*open-attach-window*
                                           specials:*conversations-window*
                                           specials:*tags-window*
@@ -387,7 +393,8 @@ Metadata includes:
                      specials:*follow-requests-window*
                      :documentation      "Move focus on follow requests window"
                      :info-change-focus-message (_ "Focus passed on follow requests window")
-                     :windows-lose-focus (specials:*open-message-link-window*
+                     :windows-lose-focus (specials:*gemini-streams-window*
+                                          specials:*open-message-link-window*
                                           specials:*open-attach-window*
                                           specials:*conversations-window*
                                           specials:*tags-window*
@@ -399,7 +406,8 @@ Metadata includes:
                      specials:*tags-window*
                      :documentation      "Move focus on tags window"
                      :info-change-focus-message (_ "Focus passed on tags window")
-                     :windows-lose-focus (specials:*open-message-link-window*
+                     :windows-lose-focus (specials:*gemini-streams-window*
+                                          specials:*open-message-link-window*
                                           specials:*open-attach-window*
                                           specials:*conversations-window*
                                           specials:*follow-requests-window*
@@ -410,7 +418,8 @@ Metadata includes:
                      specials:*conversations-window*
                      :documentation      "Move focus on conversations window"
                      :info-change-focus-message (_ "Focus passed on conversation window")
-                     :windows-lose-focus (specials:*open-message-link-window*
+                     :windows-lose-focus (specials:*gemini-streams-window*
+                                          specials:*open-message-link-window*
                                           specials:*open-attach-window*
                                           specials:*tags-window*
                                           specials:*follow-requests-window*
@@ -422,7 +431,8 @@ Metadata includes:
                      specials:*open-attach-window*
                      :documentation      "Move focus on open-attach window"
                      :info-change-focus-message (_ "Focus passed on attach window")
-                     :windows-lose-focus (specials:*open-message-link-window*
+                     :windows-lose-focus (specials:*gemini-streams-window*
+                                          specials:*open-message-link-window*
                                           specials:*conversations-window*
                                           specials:*tags-window*
                                           specials:*follow-requests-window*
@@ -434,7 +444,8 @@ Metadata includes:
                      specials:*open-message-link-window*
                      :documentation      "Move focus on open-link window"
                      :info-change-focus-message (_ "Focus passed on link window")
-                     :windows-lose-focus (specials:*conversations-window*
+                     :windows-lose-focus (specials:*gemini-streams-window*
+                                          specials:*conversations-window*
                                           specials:*open-attach-window*
                                           specials:*tags-window*
                                           specials:*follow-requests-window*
@@ -442,6 +453,18 @@ Metadata includes:
                                           specials:*message-window*
                                           specials:*send-message-window*))
 
+(gen-focus-to-window open-gemini-stream-windows
+                     specials:*gemini-streams-window*
+                     :documentation      "Move focus on open gemini streams window"
+                     :info-change-focus-message (_ "Focus passed on gemini-stream window")
+                     :windows-lose-focus (specials:*open-message-link-window*
+                                          specials:*conversations-window*
+                                          specials:*open-attach-window*
+                                          specials:*tags-window*
+                                          specials:*follow-requests-window*
+                                          specials:*thread-window*
+                                          specials:*message-window*
+                                          specials:*send-message-window*))
 (defun print-quick-help ()
   "Print a quick help"
   (keybindings:print-help specials:*main-window*))
@@ -1378,6 +1401,38 @@ This command will remove those limits so that we can just jump to the last messa
 
 (defun gemini-abort-download ()
   "Stop a transferring data from a gemini server"
-  (let ((event (make-instance 'gemini-abort-downloading-event
-                              :priority program-events:+maximum-event-priority+)))
+  (when-let* ((fields (line-oriented-window:selected-row-fields specials:*gemini-streams-window*))
+              (uri-to-abort (gemini-viewer:download-uri fields))
+              (event        (make-instance 'gemini-abort-downloading-event
+                                           :payload  uri-to-abort
+                                           :priority program-events:+maximum-event-priority+)))
     (push-event event)))
+
+(defun gemini-open-streams-window ()
+  "Open a window listing the gemini streams"
+  (gemini-viewer:open-gemini-stream-window)
+  (focus-to-open-gemini-stream-windows))
+
+(defun gemini-streams-move (amount)
+  (ignore-errors
+    (line-oriented-window:unselect-all specials:*gemini-streams-window*)
+    (line-oriented-window:row-move     specials:*gemini-streams-window* amount)
+    (draw specials:*gemini-streams-window*)))
+
+(defun gemini-streams-window-up ()
+  "Move to the upper stream in the list."
+  (gemini-streams-move -1))
+
+(defun gemini-streams-window-down ()
+  "Move to the lower stream in the list."
+  (gemini-streams-move 1))
+
+(defun gemini-streams-window-close ()
+  "Close the streams window."
+  (close-window-and-return-to-message specials:*gemini-streams-window*))
+
+(defun gemini-streams-window-open-stream ()
+  "Open the selected stream."
+  (when-let* ((fields (line-oriented-window:selected-row-fields specials:*gemini-streams-window*))
+              (uri-to-open (gemini-viewer:download-uri fields)))
+    (gemini-viewer:db-entry-to-foreground uri-to-open)))

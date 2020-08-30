@@ -35,3 +35,18 @@
   (setf (gemini-metadata-source-file object)
         (strcat (gemini-metadata-source-file object)
                 source-file)))
+
+(defun add-url-to-history (window url)
+  (let* ((metadata   (message-window:metadata window))
+         (history    (reverse (gemini-metadata-history metadata)))
+         (last-entry (safe-last-elt (gemini-metadata-history metadata))))
+    (when (string/= last-entry
+                    url)
+      (setf (gemini-metadata-history metadata)
+            (reverse (push url history))))))
+
+(defun maybe-initialize-metadata (window)
+  (when (not (gemini-metadata-p (message-window:metadata window)))
+    (setf (message-window:metadata window)
+          (make-gemini-metadata)))
+  (message-window:metadata window))

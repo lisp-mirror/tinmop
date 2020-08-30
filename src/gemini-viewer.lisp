@@ -17,24 +17,37 @@
 
 (in-package :gemini-viewer)
 
-(defun add-url-to-history (window url)
-  (let* ((metadata   (message-window:metadata window))
-         (history    (reverse (gemini-metadata-history metadata)))
-         (last-entry (safe-last-elt (gemini-metadata-history metadata))))
-    (when (string/= last-entry
-                    url)
-      (setf (gemini-metadata-history metadata)
-            (reverse (push url history))))))
+(define-constant +read-buffer-size+ 1024
+  :documentation "Chunk's size of the buffer when reading non gemini contents from stream")
 
-(defun maybe-initialize-metadata (window)
-  (when (not (gemini-metadata-p (message-window:metadata window)))
-    (setf (message-window:metadata window)
-          (make-gemini-metadata)))
-  (message-window:metadata window))
+(defparameter *gemini-streams-db* ())
 
-(defparameter *download-thread-lock* (bt:make-recursive-lock "download-gemini"))
+(defun push-db-stream (stream-object)
+  (pushnew stream-object
+           *gemini-streams-db*
+           :test (lambda (a b)
+                   (string= (download-uri a)
+                            (download-uri b))))
+  *gemini-streams-db*)
 
-(defparameter *download-thread-blocked* nil)
+(defun remove-db-stream (stream-object)
+  (setf *gemini-streams-db*
+        (remove stream-object *gemini-streams-db*))
+  *gemini-streams-db*)
+
+(defun find-db-stream-if (predicate)
+  (find-if predicate *gemini-streams-db*))
+
+(defun find-db-stream-url (url)
+  (find-db-stream-if (lambda (a) (string= (download-uri a) url))))
+
+(defun db-entry-to-foreground (uri)
+  (when-let* ((stream-object (find-db-stream-url uri)))
+    (with-accessors ((support-file support-file)
+                     (meta         meta)) stream-object
+      (if (gemini-client:mime-gemini-p meta)
+          (setf (stream-status stream-object) :rendering)
+          (os-utils:xdg-open support-file)))))
 
 (defclass gemini-stream ()
   ((download-thread-lock
@@ -73,10 +86,66 @@
     :initform 0
     :initarg  :octect-count
     :accessor octect-count)
+   (port
+    :initform nil
+    :initarg  :port
+    :accessor port)
+   (status-code
+    :initform nil
+    :initarg  :status-code
+    :accessor status-code)
+   (status-code-description
+    :initform nil
+    :initarg  :status-code-description
+    :accessor status-code-description)
+   (meta
+    :initform nil
+    :initarg  :meta
+    :accessor meta)
+   (path
+    :initform nil
+    :initarg  :path
+    :accessor path)
+   (host
+    :initform nil
+    :initarg  :host
+    :accessor host)
    (thread
     :initform nil
     :initarg  :thread
     :accessor thread)))
+
+(defmethod print-object ((object gemini-stream) stream)
+  (print-unreadable-object (object stream :type t :identity t)
+    (format stream
+            "~a ~d ~a ~a"
+            (download-uri  object)
+            (octect-count  object)
+            (meta           object)
+            (stream-status  object))))
+
+(defmethod to-tui-string ((object gemini-stream) &key (window nil))
+  (flet ((pad (string width)
+           (right-padding (ellipsize string width) width)))
+    (let* ((window-width   (win-width window))
+           (url-w          (truncate (* window-width 2/3)))
+           (octect-count-w (truncate (* window-width 1/9)))
+           (meta-w         (truncate (* window-width 1/9)))
+           (status-w       (truncate (* window-width 1/9)))
+           (color-re       (swconf:color-regexps))
+           (fitted-line    (format nil
+                                   "~a ~d ~a ~a"
+                                   (pad (download-uri object) url-w)
+                                   (pad (to-s (octect-count object))
+                                        octect-count-w)
+                                   (pad (meta object) meta-w)
+                                   (ellipsize (string-downcase (format nil
+                                                                       "~s"
+                                                                       (stream-status object)))
+                                              status-w))))
+      (loop for re in color-re do
+           (setf fitted-line (colorize-line fitted-line re)))
+      (colorized-line->tui-string fitted-line))))
 
 (defgeneric abort-downloading (object))
 
@@ -88,6 +157,7 @@
 
 (defmethod abort-downloading ((object gemini-stream))
   (with-accessors ((download-thread-lock download-thread-lock)) object
+    (setf (stream-status object) :aborted)
     (with-lock (download-thread-lock)
       (setf (download-thread-blocked object) t))))
 
@@ -105,7 +175,7 @@
   (with-accessors ((download-thread-lock download-thread-lock)
                    (stream-status        stream-status)) object
     (with-lock (download-thread-lock)
-      (setf stream-status val))))
+      (setf (slot-value object 'stream-status) val))))
 
 (defmethod stream-status ((object gemini-stream))
   (with-accessors ((download-thread-lock download-thread-lock)) object
@@ -126,6 +196,15 @@
     object))
 
 (defclass gemini-file-stream (gemini-stream) ())
+
+(defmethod (setf stream-status) :after ((val (eql :rendering)) (object gemini-file-stream))
+  (with-accessors ((download-thread-lock download-thread-lock)
+                   (support-file         support-file)) object
+    (with-lock (download-thread-lock)
+      (let ((event (make-gemini-download-event (fs:slurp-file support-file)
+                                               object
+                                               nil)))
+        (program-events:push-event event)))))
 
 (defclass gemini-others-data-stream (gemini-stream) ())
 
@@ -154,9 +233,30 @@
   (with-accessors ((octect-count octect-count)) object
     (incf octect-count data)))
 
+(defun make-gemini-download-event (src-data stream-object append-text)
+  (with-accessors ((download-uri            download-uri)
+                   (host                    host)
+                   (port                    port)
+                   (path                    path)
+                   (meta                    meta)
+                   (status-code             status-code)
+                   (status-code-description status-code-description)) stream-object
+    (let* ((parsed   (gemini-parser:parse-gemini-file src-data))
+           (links    (gemini-parser:sexp->links parsed host port path))
+           (response (gemini-client:make-gemini-file-response status-code
+                                                              status-code-description
+                                                              meta
+                                                              parsed
+                                                              download-uri
+                                                              src-data
+                                                              links)))
+      (make-instance 'program-events:gemini-got-line-event
+                     :wrapper-object  stream-object
+                     :payload         response
+                     :append-text     append-text))))
+
 (defun request-stream-gemini-document-thread (wrapper-object host
-                                              port path query
-                                              status-code status-code-description meta)
+                                              port path query)
   (with-accessors ((download-socket download-socket)
                    (download-stream download-stream)
                    (octect-count    octect-count)
@@ -167,7 +267,8 @@
       (lambda ()
         (with-open-support-file (file-stream support-file character)
           (let* ((url          (gemini-parser:make-gemini-uri host path query port))
-                 (parsed-url   (gemini-parser:parse-gemini-file (format nil "-> ~a~%" url)))
+                 (url-header   (format nil "-> ~a~%" url))
+                 (parsed-url   (gemini-parser:parse-gemini-file url-header))
                  (url-response (gemini-client:make-gemini-file-response nil
                                                                         nil
                                                                         nil
@@ -179,25 +280,16 @@
                                               :wrapper-object  wrapper-object
                                               :payload         url-response
                                               :append-text     nil)))
+            (write-sequence url-header file-stream)
+            (increment-bytes-count wrapper-object url-header :convert-to-octects t)
             (maybe-render-line url-event)
             (loop
                named download-loop
                for line-as-array = (read-line-into-array download-stream)
                while line-as-array do
                  (if (downloading-allowed-p wrapper-object)
-                     (let* ((line     (babel:octets-to-string line-as-array :errorp nil))
-                            (parsed   (gemini-parser:parse-gemini-file line))
-                            (links    (gemini-parser:sexp->links parsed host port path))
-                            (response (gemini-client:make-gemini-file-response status-code
-                                                                               status-code-description
-                                                                               meta
-                                                                               parsed
-                                                                               url
-                                                                               line
-                                                                               links))
-                            (event    (make-instance 'program-events:gemini-got-line-event
-                                                     :wrapper-object  wrapper-object
-                                                     :payload         response)))
+                     (let* ((line   (babel:octets-to-string line-as-array :errorp nil))
+                            (event  (make-gemini-download-event line wrapper-object t)))
                        (write-sequence line file-stream)
                        (increment-bytes-count wrapper-object line :convert-to-octects t)
                        (maybe-render-line event))
@@ -205,10 +297,12 @@
                        (return-from download-loop nil))))
             (if (not (downloading-allowed-p wrapper-object))
                 (ui:notify (_ "Gemini document downloading aborted"))
-                (ui:notify (_ "Gemini document downloading completed")))
-            (allow-downloading wrapper-object)
-            (gemini-client:close-ssl-socket download-socket)))
-        (fs:delete-file-if-exists support-file)))))
+                (progn
+                  (ui:notify (_ "Gemini document downloading completed"))
+                  (setf (stream-status wrapper-object) :completed)))
+            ;; (allow-downloading wrapper-object)
+            (gemini-client:close-ssl-socket download-socket)))))))
+;;        (fs:delete-file-if-exists support-file)))))
 
 (defun request-stream-other-document-thread (wrapper-object
                                              socket
@@ -228,18 +322,20 @@
     (lambda ()
       (with-open-support-file (file-stream support-file)
         (labels ((%fill-buffer ()
+                   (when (downloading-allowed-p wrapper-object)
                    (multiple-value-bind (buffer read-so-far)
-                       (read-array download-stream 1024)
+                       (read-array download-stream +read-buffer-size+)
                      (increment-bytes-count wrapper-object read-so-far)
                      (if (< read-so-far (length buffer))
                          (progn
                            (write-sequence buffer file-stream :start 0 :end read-so-far)
                            (force-output file-stream)
+                           (setf (stream-status wrapper-object) :completed)
                            (gemini-client:close-ssl-socket socket)
                            (os-utils:xdg-open support-file))
                          (progn
                            (write-sequence buffer file-stream)
-                           (%fill-buffer))))))
+                           (%fill-buffer)))))))
           (%fill-buffer))))))
 
 (defun request (url &key (enqueue nil))
@@ -264,7 +360,7 @@
                                  :rendering)
                              (if enqueue
                                  nil
-                                 nil)))
+                                 :running)))
                        (get-user-input (hide-input host prompt)
                          (flet ((on-input-complete (input)
                                   (when (string-not-empty-p input)
@@ -309,6 +405,13 @@
                      (if (gemini-file-stream-p meta)
                          (let* ((starting-status (starting-status meta))
                                 (gemini-stream   (make-instance 'gemini-file-stream
+                                                                :host            host
+                                                                :port            port
+                                                                :path            path
+                                                                :meta            meta
+                                                                :status-code     status
+                                                                :status-code-description
+                                                                code-description
                                                                 :stream-status   starting-status
                                                                 :download-stream response
                                                                 :download-socket socket))
@@ -317,19 +420,21 @@
                                                                         host
                                                                         port
                                                                         path
-                                                                        query
-                                                                        status
-                                                                        code-description
-                                                                        meta)))
+                                                                        query))
+                                (enqueue-event (make-instance 'program-events:gemini-enqueue-download-event
+                                                              :payload gemini-stream)))
+                           (program-events:push-event enqueue-event)
                            (downloading-start-thread gemini-stream
                                                      thread-fn
                                                      host
                                                      port
                                                      path
                                                      query))
-                         (let* ((gemini-stream (make-instance 'gemini-others-data-stream
-                                                              :download-stream response
-                                                              :download-socket socket))
+                         (let* ((starting-status (starting-status meta))
+                                (gemini-stream   (make-instance 'gemini-others-data-stream
+                                                                :stream-status   starting-status
+                                                                :download-stream response
+                                                                :download-socket socket))
                                 (thread-fn
                                  (request-stream-other-document-thread gemini-stream
                                                                        socket
@@ -339,7 +444,10 @@
                                                                        query
                                                                        status
                                                                        code-description
-                                                                       meta)))
+                                                                       meta))
+                                (enqueue-event (make-instance 'program-events:gemini-enqueue-download-event
+                                                              :payload gemini-stream)))
+                           (program-events:push-event enqueue-event)
                            (downloading-start-thread gemini-stream
                                                      thread-fn
                                                      host
@@ -388,3 +496,90 @@
     (setf (message-window:source-text window) source)
     (draw window)
     (ui:info-message (format nil (_ "Viewing source of: ~a") last))))
+
+(defclass gemini-streams-window (focus-marked-window
+                                 simple-line-navigation-window
+                                 title-window
+                                 border-window)
+  ())
+
+(defmethod refresh-config :after ((object gemini-streams-window))
+  (open-attach-window:refresh-view-links-window-config object
+                                                       swconf:+key-open-gemini-stream-window+)
+  (let* ((win-w (truncate (* (win-width  specials:*main-window*) 3/4)))
+         (win-h (truncate (* (win-height specials:*main-window*) 3/4)))
+         (x           (truncate (- (/ (win-width specials:*main-window*) 2)
+                                   (/ win-w 2))))
+         (y           (truncate (- (/ (win-height specials:*main-window*) 2)
+                                   (/ win-h 2)))))
+    (win-resize object win-w win-h)
+    (win-move object x y)
+    object))
+
+(defmethod resync-rows-db ((object gemini-streams-window)
+                           &key
+                             (redraw t)
+                             (suggested-message-index nil))
+  (with-accessors ((rows             rows)
+                   (selected-line-bg selected-line-bg)
+                   (selected-line-fg selected-line-fg)) object
+    (flet ((make-rows (streams bg fg)
+             (mapcar (lambda (stream-object)
+                       (let ((unselected-line (to-tui-string stream-object :window object)))
+                         (make-instance 'line
+                                        :normal-text   unselected-line
+                                        :selected-text (tui-string->chars-string unselected-line)
+                                        :fields        stream-object
+                                        :normal-bg     bg
+                                        :normal-fg     fg
+                                        :selected-bg   fg
+                                        :selected-fg   bg)))
+                     streams)))
+      (with-croatoan-window (croatoan-window object)
+        (setf rows (make-rows *gemini-streams-db*
+                              selected-line-bg
+                              selected-line-fg))
+        (when suggested-message-index
+          (select-row object suggested-message-index))
+        (when redraw
+          (draw object))))))
+
+(defmethod draw :before ((object gemini-streams-window))
+  (with-accessors ((rows              rows)
+                   (uses-border-p     uses-border-p)
+                   (single-row-height single-row-height)
+                   (top-row-padding   top-row-padding)
+                   (new-messages-mark new-messages-mark)
+                   (top-rows-slice    top-rows-slice)
+                   (bottom-rows-slice bottom-rows-slice)) object
+    (let ((y-start (if uses-border-p
+                       1
+                       0)))
+      (renderizable-rows-data object) ; set top and bottom slice
+      (win-clear object)
+      (with-croatoan-window (croatoan-window object)
+        (loop
+           for gemini-stream in (safe-subseq rows top-rows-slice bottom-rows-slice)
+           for y from (+ y-start top-row-padding) by single-row-height do
+             (print-text object
+                         gemini-stream
+                         1 y
+                         :bgcolor (bgcolor croatoan-window)
+                         :fgcolor (fgcolor croatoan-window)))))))
+
+(defun open-gemini-stream-window ()
+  (let* ((low-level-window (make-croatoan-window :enable-function-keys t)))
+    (setf  *gemini-streams-window*
+          (make-instance 'gemini-streams-window
+                         :top-row-padding   0
+                         :title             (_ "Current gemini streams")
+                         :single-row-height 1
+                         :uses-border-p     t
+                         :keybindings       keybindings:*gemini-downloads-keymap*
+                         :croatoan-window   low-level-window))
+    (refresh-config  *gemini-streams-window*)
+    (resync-rows-db  *gemini-streams-window* :redraw nil)
+    (when (rows  *gemini-streams-window*)
+      (select-row  *gemini-streams-window* 0))
+    (draw  *gemini-streams-window*)
+     *gemini-streams-window*))

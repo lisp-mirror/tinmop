@@ -925,6 +925,7 @@
    :+key-tags-window+
    :+key-open-attach-window+
    :+key-open-message-link-window+
+   :+key-open-gemini-stream-window+
    :+key-conversations-window+
    :+key-keybindings-window+
    :+key-suggestions-window+
@@ -1043,6 +1044,7 @@
      :text-length
      :find-max-line-width
      :ncat-complex-string
+     :to-tui-string
      :cat-complex-string
      :cat-tui-string
      :tui-char->char
@@ -1105,7 +1107,8 @@
    :*tags-window*
    :*conversations-window*
    :*open-attach-window*
-   :*open-message-link-window*))
+   :*open-message-link-window*
+   :*gemini-streams-window*))
 
 (defpackage :complete
   (:use
@@ -1217,6 +1220,7 @@
    :function-event
    :gemini-got-line-event
    :gemini-abort-downloading-event
+   :gemini-enqueue-download-event
    :dispatch-program-events
    :add-pagination-status-event
    :status-id
@@ -1333,6 +1337,7 @@
    :*open-attach-keymap*
    :*open-message-link-keymap*
    :*open-gemini-link-keymap*
+   :*gemini-downloads-keymap*
    :define-key
    :init-keyboard-mapping
    :find-keymap-node
@@ -1911,6 +1916,11 @@
    :tui-utils)
   (:shadowing-import-from :misc :random-elt :shuffle)
   (:export
+   :push-db-stream
+   :remove-db-stream
+   :find-db-stream-if
+   :find-db-stream-url
+   :db-entry-to-foreground
    :gemini-metadata-p
    :make-gemini-metadata
    :gemini-metadata-links
@@ -1922,9 +1932,24 @@
    :add-url-to-history
    :history-back
    :view-source
+   :gemini-stream
+   :download-uri
+   :start-time
+   :download-stream
+   :download-socket
+   :support-file
+   :octect-count
+   :port
+   :status-code
+   :status-code-description
+   :meta
+   :path
+   :host
+   :thread
    :abort-downloading
    :downloading-allowed-p
-   :request))
+   :request
+   :open-gemini-stream-window))
 
 (defpackage :main-window
   (:use
@@ -2081,7 +2106,12 @@
    :open-gemini-address
    :gemini-history-back
    :gemini-view-source
-   :gemini-abort-download))
+   :gemini-abort-download
+   :gemini-open-streams-window
+   :gemini-streams-window-up
+   :gemini-streams-window-down
+   :gemini-streams-window-close
+   :gemini-streams-window-open-stream))
 
 (defpackage :modules
   (:use
