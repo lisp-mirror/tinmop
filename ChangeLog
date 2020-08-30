@@ -1,3 +1,34 @@
+2020-08-30  cage
+
+        * po/it.po, po/tinmop.pot:
+
+	- updated italian translation.
+
+2020-08-30  cage
+
+        * etc/default-theme.conf, etc/init.lisp, etc/shared.conf,
+        src/gemini-viewer-metadata.lisp, src/gemini-viewer.lisp,
+        src/keybindings.lisp, src/package.lisp, src/program-events.lisp,
+        src/software-configuration.lisp, src/specials.lisp,
+        src/tui-utils.lisp, src/ui-goodies.lisp:
+
+	- [gemini] added a window to manage all the gemini streams opened.
+
+2020-08-29  cage
+
+        * src/gemini-viewer.lisp:
+
+	- [gemini] starting download thread in ':rendering' status.
+
+2020-08-29  cage
+
+        * configure, src/gemini-viewer-metadata.lisp,
+        src/gemini-viewer.lisp, src/open-message-link-window.lisp,
+        src/program-events.lisp, tinmop.asd:
+
+	- [gemini] added slot 'status-stream'.
+	  This will allow to enqueue multiple documents download.
+
 2020-08-28
 
 	* src/line-oriented-window.lisp

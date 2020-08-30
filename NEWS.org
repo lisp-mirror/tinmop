@@ -1,3 +1,9 @@
+* 2020-08-30  cage
+
+  Added a  window to manage all  the gemini streams opened.   The user
+  can ispect the status o all the streams as well abort or open them.
+
+
 * 2020-08-19
 
   The gemini  client could  now manage  secret input  if asked  by the
