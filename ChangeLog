@@ -1,3 +1,21 @@
+2020-09-02  cage
+
+        * src/api-pleroma.lisp, src/package.lisp:
+
+	- [pleroma-API] added a few function to use chats.
+
+2020-08-30  cage
+
+        * configure, configure.ac, tinmop.asd:
+
+	- increased version.
+
+2020-08-30  cage
+
+        * ChangeLog, NEWS.org:
+
+	- tracking changes.
+
 2020-08-30  cage
 
         * po/it.po, po/tinmop.pot:
