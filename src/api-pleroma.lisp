@@ -126,6 +126,15 @@ media `media'. Returns a `chat-message' instance"
                                         :media-id (tooter:id (tooter:make-media object
                                                                                 path-media))))))
 
+(defgeneric fetch-chat-messages (object chat-id &key min-id))
+
+(defmethod fetch-chat-messages ((object tooter:client) chat-id &key (min-id nil))
+  (decode-chat-message (tooter:query object
+                                     (format nil
+                                             "/api/v1/pleroma/chats/~a/messages"
+                                             chat-id)
+                                     :min-id min-id)))
+
 (defgeneric delete-chat-message (object chat-id message-id))
 
 (defmethod delete-chat-message ((object tooter:client) (chat-id string) (message-id string))

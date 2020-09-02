@@ -1244,6 +1244,7 @@
    :create-chat
    :get-all-chats
    :post-chat-message
+   :fetch-chat-messages
    :delete-chat-message))
 
 (defpackage :api-client
