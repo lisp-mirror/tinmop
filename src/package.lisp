@@ -1233,7 +1233,18 @@
    :config
    :constants)
   (:export
-   :delete-notification))
+   :delete-notification
+   :message-id
+   :nreadp
+   :updated-at
+   :content
+   :chat-id
+   :unreadp
+   :emojis
+   :create-chat
+   :get-all-chats
+   :post-chat-message
+   :delete-chat-message))
 
 (defpackage :api-client
   (:use

@@ -25,3 +25,111 @@
 
 (defmethod delete-notification ((object tooter:client) (notification tooter:notification))
   (delete-notification object (tooter:id notification)))
+
+(defmacro gen-translate-fn (class-name)
+  `(defun ,(misc:format-fn-symbol t "decode-~a" class-name) (a)
+     (tooter:decode-entity ',class-name a)))
+
+(gen-translate-fn tooter:account)
+
+(gen-translate-fn tooter:emoji)
+
+(gen-translate-fn tooter:attachment)
+
+(gen-translate-fn tooter:card)
+
+(tooter:define-entity chat-message
+  (message-id :field "id")
+  (unreadp)
+  (emojis :translate-with #'decode-emoji)
+  (updated-at :translate-with #'tooter:convert-timestamp)
+  (content)
+  (chat-id :field "chat_id")
+  (card :translate-with #'decode-card)
+  (attachment :translate-with #'decode-attachment)
+  (account-id :field "account_id"))
+
+(defmethod print-object ((object chat-message) stream)
+  (print-unreadable-object (object stream :type t)
+    (with-accessors ((message-id message-id)
+                     (chat-id    chat-id)
+                     (unreadp    unreadp)
+                     (content    content)
+                     (account-id account-id)) object
+      (format stream
+              "chat ~a id ~a unread ~a content ~s sender account ~a"
+              chat-id
+              message-id
+              unreadp
+              content
+              account-id))))
+
+(tooter:define-entity chat
+  (chat-id :field "id")
+  (updated-at :translate-with #'tooter:convert-timestamp)
+  (unreadp)
+  (last-message :field "last_message" :translate-with #'decode-chat-message)
+  (account :translate-with #'decode-account))
+
+(defmethod print-object ((object chat) stream)
+  (print-unreadable-object (object stream :type t)
+    (with-accessors ((chat-id      chat-id)
+                     (updated-at   updated-at)
+                     (unreadp      unreadp)
+                     (last-message last-message)
+                     (account      account)) object
+      (format stream
+              "id ~a updated-at ~a unread ~a last-message ~a account ~a"
+              chat-id
+              updated-at
+              unreadp
+              last-message
+              account))))
+
+(defgeneric create-chat (object user-id))
+
+(defmethod create-chat ((object tooter:client) (account-id string))
+  "Connect with `client' and create a new chat with user identified by `account-id'"
+  (decode-chat (tooter:submit object
+                              (format nil
+                                      "/api/v1/pleroma/chats/by-account-id/~a"
+                                      account-id))))
+
+(defgeneric get-all-chats (object))
+
+(defmethod get-all-chats ((object tooter:client))
+  "Geat a list o all chats, ordered from the more recent updated."
+  (decode-chat (tooter:query object "/api/v1/pleroma/chats")))
+
+(defgeneric post-chat-message (object chat-id content media))
+
+(defun post-chat-path (chat-id)
+  (format nil "/api/v1/pleroma/chats/~a/messages" chat-id))
+
+(defmethod post-chat-message ((object tooter:client) (chat-id string) (content string) (media null))
+  "Post a message to chat identified by `chat-id' with text `content` or
+media `media'."
+  (decode-chat-message (tooter:submit object
+                                      (post-chat-path chat-id)
+                                      :content  content
+                                      :media-id media)))
+
+(defmethod post-chat-message ((object tooter:client) (chat-id string) (content null) (media string))
+  "Post a message to chat identified by `chat-id' with text `content` or
+media `media'. Returns a `chat-message' instance"
+  (let ((path-media (fs:namestring->pathname media)))
+    (decode-chat-message (tooter:submit object
+                                        (post-chat-path chat-id)
+                                        :content  content
+                                        :media-id (tooter:id (tooter:make-media object
+                                                                                path-media))))))
+
+(defgeneric delete-chat-message (object chat-id message-id))
+
+(defmethod delete-chat-message ((object tooter:client) (chat-id string) (message-id string))
+  (decode-chat-message (tooter:submit object
+                                      (format nil
+                                              "/api/v1/pleroma/chats/~a/messages/~a"
+                                              chat-id
+                                              message-id)
+                                      :http-method :delete)))
