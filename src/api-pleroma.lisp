@@ -40,7 +40,7 @@
 
 (tooter:define-entity chat-message
   (message-id :field "id")
-  (unreadp)
+  (unreadp :field "unread")
   (emojis :translate-with #'decode-emoji)
   (updated-at :translate-with #'tooter:convert-timestamp)
   (content)
@@ -55,19 +55,21 @@
                      (chat-id    chat-id)
                      (unreadp    unreadp)
                      (content    content)
-                     (account-id account-id)) object
+                     (account-id account-id)
+                     (attachment attachment)) object
       (format stream
-              "chat ~a id ~a unread ~a content ~s sender account ~a"
+              "chat ~a id ~a unread ~a content ~s sender account ~a attachment ~a"
               chat-id
               message-id
               unreadp
               content
-              account-id))))
+              account-id
+              attachment))))
 
 (tooter:define-entity chat
   (chat-id :field "id")
   (updated-at :translate-with #'tooter:convert-timestamp)
-  (unreadp)
+  (unread-count :field "unread")
   (last-message :field "last_message" :translate-with #'decode-chat-message)
   (account :translate-with #'decode-account))
 
@@ -75,14 +77,14 @@
   (print-unreadable-object (object stream :type t)
     (with-accessors ((chat-id      chat-id)
                      (updated-at   updated-at)
-                     (unreadp      unreadp)
+                     (unread-count unread-count)
                      (last-message last-message)
                      (account      account)) object
       (format stream
               "id ~a updated-at ~a unread ~a last-message ~a account ~a"
               chat-id
               updated-at
-              unreadp
+              unread-count
               last-message
               account))))
 
