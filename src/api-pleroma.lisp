@@ -83,11 +83,9 @@ media `media'. Returns a `chat-message' instance"
                                               message-id)
                                       :http-method :delete)))
 
-
 (defun-w-lock get-chat-messages (chat-id min-id)
     api-client:*client-lock*
   (fetch-chat-messages api-client:*client* chat-id :min-id min-id))
-
 
 (defun-w-lock get-chats ()
     api-client:*client-lock*

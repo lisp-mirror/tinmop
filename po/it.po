@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: tinmop 0.0.1\n"
 "Report-Msgid-Bugs-To: https://notabug.org/cage/tinmop/\n"
 "POT-Creation-Date: 2020-09-05 17:03+0200\n"
-"PO-Revision-Date: 2020-09-05 17:04+0200\n"
+"PO-Revision-Date: 2020-09-05 17:07+0200\n"
 "Last-Translator: cage <cage@invalid.org>\n"
 "Language-Team: Italian\n"
 "Language: it\n"
@@ -76,7 +76,7 @@ msgstr "Inizializzo credenziali vuote (segnaposto) nel file ~a"
 #: src/chats-list-window.lisp:41
 #, lisp-format
 msgid "~@[~a~]~@[~a~] ~a unread: ~a"
-msgstr "~@[~a~]~@[~a~] ~a non letti: ~a\""
+msgstr "~@[~a~]~@[~a~] ~a non letti: ~a"
 
 #: src/chats-list-window.lisp:64
 #, lisp-format

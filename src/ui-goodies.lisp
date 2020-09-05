@@ -489,7 +489,6 @@ Metadata includes:
                                           specials:*message-window*
                                           specials:*send-message-window*))
 
-
 (defun print-quick-help ()
   "Print a quick help"
   (keybindings:print-help specials:*main-window*))
@@ -1400,7 +1399,6 @@ This command will remove those limits so that we can just jump to the last messa
                               :prompt
                               (_ "Type the index (or space separated indices) of selected choices: "))
             (error-message (_ "This in not a poll")))))))
-
 
 ;;;; chats
 

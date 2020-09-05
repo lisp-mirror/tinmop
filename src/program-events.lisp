@@ -981,7 +981,6 @@
   (with-accessors ((stream-object payload)) object
     (gemini-viewer:push-db-stream stream-object)))
 
-
 ;;;; pleroma
 
 (defclass get-chat-messages-event (program-event)
@@ -1043,7 +1042,6 @@
   (with-accessors ((payload payload)) object
     (assert (functionp payload))
     (funcall payload)))
-
 
 ;;;; end events
 
