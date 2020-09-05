@@ -363,6 +363,7 @@
                    main-window
                    thread-window
                    message-window
+                   chat-window
                    attachment-header
                    max-numbers-allowed-attachments
                    max-message-length

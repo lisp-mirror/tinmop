@@ -354,6 +354,7 @@ Metadata includes:
               (if print-message
                   (_ "focus passed on threads window")
                   nil)
+              *chats-list-window*
               *gemini-streams-window*
               *open-message-link-window*
               *open-attach-window*
@@ -367,7 +368,8 @@ Metadata includes:
                      specials:*message-window*
                      :documentation      "Move focus on message window"
                      :info-change-focus-message (_ "Focus passed on message window")
-                     :windows-lose-focus (specials:*gemini-streams-window*
+                     :windows-lose-focus (*chats-list-window*
+                                          specials:*gemini-streams-window*
                                           specials:*open-message-link-window*
                                           specials:*open-attach-window*
                                           specials:*conversations-window*
@@ -380,7 +382,8 @@ Metadata includes:
                      specials:*send-message-window*
                      :documentation      "Move focus on send message window"
                      :info-change-focus-message (_ "Focus passed on send message window")
-                     :windows-lose-focus (specials:*gemini-streams-window*
+                     :windows-lose-focus (*chats-list-window*
+                                          specials:*gemini-streams-window*
                                           specials:*open-message-link-window*
                                           specials:*open-attach-window*
                                           specials:*conversations-window*
@@ -393,7 +396,8 @@ Metadata includes:
                      specials:*follow-requests-window*
                      :documentation      "Move focus on follow requests window"
                      :info-change-focus-message (_ "Focus passed on follow requests window")
-                     :windows-lose-focus (specials:*gemini-streams-window*
+                     :windows-lose-focus (*chats-list-window*
+                                          specials:*gemini-streams-window*
                                           specials:*open-message-link-window*
                                           specials:*open-attach-window*
                                           specials:*conversations-window*
@@ -406,7 +410,8 @@ Metadata includes:
                      specials:*tags-window*
                      :documentation      "Move focus on tags window"
                      :info-change-focus-message (_ "Focus passed on tags window")
-                     :windows-lose-focus (specials:*gemini-streams-window*
+                     :windows-lose-focus (*chats-list-window*
+                                          specials:*gemini-streams-window*
                                           specials:*open-message-link-window*
                                           specials:*open-attach-window*
                                           specials:*conversations-window*
@@ -418,7 +423,8 @@ Metadata includes:
                      specials:*conversations-window*
                      :documentation      "Move focus on conversations window"
                      :info-change-focus-message (_ "Focus passed on conversation window")
-                     :windows-lose-focus (specials:*gemini-streams-window*
+                     :windows-lose-focus (*chats-list-window*
+                                          specials:*gemini-streams-window*
                                           specials:*open-message-link-window*
                                           specials:*open-attach-window*
                                           specials:*tags-window*
@@ -431,7 +437,8 @@ Metadata includes:
                      specials:*open-attach-window*
                      :documentation      "Move focus on open-attach window"
                      :info-change-focus-message (_ "Focus passed on attach window")
-                     :windows-lose-focus (specials:*gemini-streams-window*
+                     :windows-lose-focus (*chats-list-window*
+                                          specials:*gemini-streams-window*
                                           specials:*open-message-link-window*
                                           specials:*conversations-window*
                                           specials:*tags-window*
@@ -444,7 +451,8 @@ Metadata includes:
                      specials:*open-message-link-window*
                      :documentation      "Move focus on open-link window"
                      :info-change-focus-message (_ "Focus passed on link window")
-                     :windows-lose-focus (specials:*gemini-streams-window*
+                     :windows-lose-focus (*chats-list-window*
+                                          specials:*gemini-streams-window*
                                           specials:*conversations-window*
                                           specials:*open-attach-window*
                                           specials:*tags-window*
@@ -457,7 +465,8 @@ Metadata includes:
                      specials:*gemini-streams-window*
                      :documentation      "Move focus on open gemini streams window"
                      :info-change-focus-message (_ "Focus passed on gemini-stream window")
-                     :windows-lose-focus (specials:*open-message-link-window*
+                     :windows-lose-focus (*chats-list-window*
+                                          specials:*open-message-link-window*
                                           specials:*conversations-window*
                                           specials:*open-attach-window*
                                           specials:*tags-window*
@@ -465,6 +474,22 @@ Metadata includes:
                                           specials:*thread-window*
                                           specials:*message-window*
                                           specials:*send-message-window*))
+
+(gen-focus-to-window chats-list-window
+                     *chats-list-window*
+                     :documentation      "Move focus on chats list window"
+                     :info-change-focus-message (_ "Focus passed on chats list window")
+                     :windows-lose-focus (specials:*gemini-streams-window*
+                                          specials:*open-message-link-window*
+                                          specials:*conversations-window*
+                                          specials:*open-attach-window*
+                                          specials:*tags-window*
+                                          specials:*follow-requests-window*
+                                          specials:*thread-window*
+                                          specials:*message-window*
+                                          specials:*send-message-window*))
+
+
 (defun print-quick-help ()
   "Print a quick help"
   (keybindings:print-help specials:*main-window*))
@@ -1375,6 +1400,44 @@ This command will remove those limits so that we can just jump to the last messa
                               :prompt
                               (_ "Type the index (or space separated indices) of selected choices: "))
             (error-message (_ "This in not a poll")))))))
+
+
+;;;; chats
+
+(defun refresh-chats ()
+  "Refresh the chats, but not the chat's messages"
+  (program-events:push-event (make-instance 'program-events:get-chats-event)))
+
+(defun refresh-chat-messages ()
+  "Force the refresh of the chat's messages"
+  (when-let* ((fields  (line-oriented-window:selected-row-fields *chats-list-window*))
+              (chat-id (db:row-id fields)))
+    (let* ((min-message-id  (db:last-chat-message-id chat-id))
+           (event           (make-instance 'program-events:get-chat-messages-event
+                                           :chat-id        chat-id
+                                           :min-message-id min-message-id)))
+      (program-events:push-event event))))
+
+(defun open-chats-list-window ()
+  "open a window  containing the list of active chat  ordered from the
+mot recent updated to least recent"
+  (chats-list-window:open-chats-list-window)
+  (focus-to-chats-list-window))
+
+(defun close-chats-list-window ()
+  (close-window-and-return-to-threads specials:*chats-list-window*))
+
+(defun update-all-chats-data ()
+  (refresh-chats)
+  (program-events:push-event (make-instance 'program-events:update-all-chat-messages-event)))
+
+(defun show-chat-to-screen ()
+  (when-let* ((fields  (line-oriented-window:selected-row-fields *chats-list-window*))
+              (chat-id (db:row-id fields))
+              (chat    (db:find-chat chat-id))
+              (event   (make-instance 'program-events:chat-show-event
+                                      :chat chat)))
+      (program-events:push-event event)))
 
 ;;;; gemini
 

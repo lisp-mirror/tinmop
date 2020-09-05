@@ -144,11 +144,12 @@ etc.) happened"
       (unwind-protect
            (progn
              (hooks:run-hooks 'hooks:*before-main-loop*)
+             (ui:update-all-chats-data)
              (run-event-loop croatoan-window))
         (end-screen)))))
 
 (defun load-script-file ()
-  "Load (exexute) a lisp file used in requests of a command line switch"
+  "Load (execute) a lisp file used in requests of a command line switch"
   (setf program-events:*process-events-immediately* t)
   (load-configuration-files)
   (init-db)

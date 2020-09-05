@@ -981,12 +981,69 @@
   (with-accessors ((stream-object payload)) object
     (gemini-viewer:push-db-stream stream-object)))
 
+
+;;;; pleroma
+
+(defclass get-chat-messages-event (program-event)
+  ((chat-id
+    :initform nil
+    :initarg  :chat-id
+    :accessor chat-id)
+   (min-message-id
+    :initform nil
+    :initarg  :min-message-id
+    :accessor min-message-id)))
+
+(defmethod process-event ((object get-chat-messages-event))
+  (with-accessors ((chat-id        chat-id)
+                   (min-message-id min-message-id)) object
+    (let ((messages (api-pleroma:get-chat-messages chat-id min-message-id)))
+      (dolist (message messages)
+        (db:update-db message)))))
+
+(defclass get-chats-event (program-event) ())
+
+(defmethod process-event ((object get-chats-event))
+  (with-accessors ((chat-id        chat-id)
+                   (min-message-id min-message-id)) object
+    (let ((chats (api-pleroma:get-chats)))
+      (dolist (chat chats)
+        (db:update-db chat)))))
+
+(defclass update-all-chat-messages-event (program-event) ())
+
+(defmethod process-event ((object update-all-chat-messages-event))
+  (let ((all-chats (db:all-chats)))
+    (dolist (chat all-chats)
+      (let* ((chat-id (db:row-id chat))
+             (min-id  (db:last-chat-message-id chat-id)))
+        (program-events:push-event (make-instance 'program-events:get-chat-messages-event
+                                                  :chat-id        chat-id
+                                                  :min-message-id min-id))))))
+
+(defclass chat-show-event (program-event)
+  ((chat
+    :initform nil
+    :initarg :chat
+    :accessor chat)))
+
+(defmethod process-event ((object chat-show-event))
+  (with-accessors ((chat chat)) object
+    (let* ((chat-id (db:row-id chat)))
+      (db:mark-all-chat-messages-read chat-id)
+      (setf (message-window:source-text specials:*message-window*)
+            (chats-list-window:chat->text chat))
+      (windows:draw specials:*message-window*))))
+
+;;;; general usage
+
 (defclass function-event (program-event) ())
 
 (defmethod process-event ((object function-event))
   (with-accessors ((payload payload)) object
     (assert (functionp payload))
     (funcall payload)))
+
 
 ;;;; end events
 

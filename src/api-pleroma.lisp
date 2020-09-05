@@ -26,68 +26,6 @@
 (defmethod delete-notification ((object tooter:client) (notification tooter:notification))
   (delete-notification object (tooter:id notification)))
 
-(defmacro gen-translate-fn (class-name)
-  `(defun ,(misc:format-fn-symbol t "decode-~a" class-name) (a)
-     (tooter:decode-entity ',class-name a)))
-
-(gen-translate-fn tooter:account)
-
-(gen-translate-fn tooter:emoji)
-
-(gen-translate-fn tooter:attachment)
-
-(gen-translate-fn tooter:card)
-
-(tooter:define-entity chat-message
-  (message-id :field "id")
-  (unreadp :field "unread")
-  (emojis :translate-with #'decode-emoji)
-  (updated-at :translate-with #'tooter:convert-timestamp)
-  (content)
-  (chat-id :field "chat_id")
-  (card :translate-with #'decode-card)
-  (attachment :translate-with #'decode-attachment)
-  (account-id :field "account_id"))
-
-(defmethod print-object ((object chat-message) stream)
-  (print-unreadable-object (object stream :type t)
-    (with-accessors ((message-id message-id)
-                     (chat-id    chat-id)
-                     (unreadp    unreadp)
-                     (content    content)
-                     (account-id account-id)
-                     (attachment attachment)) object
-      (format stream
-              "chat ~a id ~a unread ~a content ~s sender account ~a attachment ~a"
-              chat-id
-              message-id
-              unreadp
-              content
-              account-id
-              attachment))))
-
-(tooter:define-entity chat
-  (chat-id :field "id")
-  (updated-at :translate-with #'tooter:convert-timestamp)
-  (unread-count :field "unread")
-  (last-message :field "last_message" :translate-with #'decode-chat-message)
-  (account :translate-with #'decode-account))
-
-(defmethod print-object ((object chat) stream)
-  (print-unreadable-object (object stream :type t)
-    (with-accessors ((chat-id      chat-id)
-                     (updated-at   updated-at)
-                     (unread-count unread-count)
-                     (last-message last-message)
-                     (account      account)) object
-      (format stream
-              "id ~a updated-at ~a unread ~a last-message ~a account ~a"
-              chat-id
-              updated-at
-              unread-count
-              last-message
-              account))))
-
 (defgeneric create-chat (object user-id))
 
 (defmethod create-chat ((object tooter:client) (account-id string))
@@ -100,7 +38,7 @@
 (defgeneric get-all-chats (object))
 
 (defmethod get-all-chats ((object tooter:client))
-  "Geat a list o all chats, ordered from the more recent updated."
+  "Get a list of all chats, ordered from the more recent updated."
   (decode-chat (tooter:query object "/api/v1/pleroma/chats")))
 
 (defgeneric post-chat-message (object chat-id content media))
@@ -144,3 +82,13 @@ media `media'. Returns a `chat-message' instance"
                                               chat-id
                                               message-id)
                                       :http-method :delete)))
+
+
+(defun-w-lock get-chat-messages (chat-id min-id)
+    api-client:*client-lock*
+  (fetch-chat-messages api-client:*client* chat-id :min-id min-id))
+
+
+(defun-w-lock get-chats ()
+    api-client:*client-lock*
+  (get-all-chats api-client:*client*))

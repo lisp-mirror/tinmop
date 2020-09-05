@@ -54,3 +54,6 @@
 
 (defparameter *gemini-streams-window*           nil
   "The window that shows all gemini-streams.")
+
+(defparameter *chats-list-window*               nil
+  "The window that shows all the chats.")

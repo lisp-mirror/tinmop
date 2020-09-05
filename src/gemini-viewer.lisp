@@ -544,28 +544,28 @@
         (when redraw
           (draw object))))))
 
-(defmethod draw :before ((object gemini-streams-window))
-  (with-accessors ((rows              rows)
-                   (uses-border-p     uses-border-p)
-                   (single-row-height single-row-height)
-                   (top-row-padding   top-row-padding)
-                   (new-messages-mark new-messages-mark)
-                   (top-rows-slice    top-rows-slice)
-                   (bottom-rows-slice bottom-rows-slice)) object
-    (let ((y-start (if uses-border-p
-                       1
-                       0)))
-      (renderizable-rows-data object) ; set top and bottom slice
-      (win-clear object)
-      (with-croatoan-window (croatoan-window object)
-        (loop
-           for gemini-stream in (safe-subseq rows top-rows-slice bottom-rows-slice)
-           for y from (+ y-start top-row-padding) by single-row-height do
-             (print-text object
-                         gemini-stream
-                         1 y
-                         :bgcolor (bgcolor croatoan-window)
-                         :fgcolor (fgcolor croatoan-window)))))))
+;; (defmethod draw :before ((object gemini-streams-window))
+;;   (with-accessors ((rows              rows)
+;;                    (uses-border-p     uses-border-p)
+;;                    (single-row-height single-row-height)
+;;                    (top-row-padding   top-row-padding)
+;;                    (new-messages-mark new-messages-mark)
+;;                    (top-rows-slice    top-rows-slice)
+;;                    (bottom-rows-slice bottom-rows-slice)) object
+;;     (let ((y-start (if uses-border-p
+;;                        1
+;;                        0)))
+;;       (renderizable-rows-data object) ; set top and bottom slice
+;;       (win-clear object)
+;;       (with-croatoan-window (croatoan-window object)
+;;         (loop
+;;            for gemini-stream in (safe-subseq rows top-rows-slice bottom-rows-slice)
+;;            for y from (+ y-start top-row-padding) by single-row-height do
+;;              (print-text object
+;;                          gemini-stream
+;;                          1 y
+;;                          :bgcolor (bgcolor croatoan-window)
+;;                          :fgcolor (fgcolor croatoan-window)))))))
 
 (defun open-gemini-stream-window ()
   (let* ((low-level-window (make-croatoan-window :enable-function-keys t)))

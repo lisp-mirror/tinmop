@@ -721,6 +721,14 @@
    :find-poll
    :find-poll-option
    :find-poll-bound-to-status
+   :chat-message-exists-p
+   :find-chat
+   :mark-all-chat-messages-read
+   :count-unread-chat-messages
+   :chat-exists-p
+   :all-chats
+   :all-chat-messages
+   :last-chat-message-id
    :update-db
    :message-root
    :message-children
@@ -733,6 +741,8 @@
    :find-message-id
    :data-id
    :row-id
+   :row-type
+   :row-label
    :row-message-visibility
    :row-message-status-id
    :row-message-index
@@ -756,8 +766,13 @@
    :row-poll-multiple-vote-p
    :row-title
    :row-expire-date
+   :row-account-id
+   :row-updated-at
+   :row-created-at
+   :row-chat-id
    :row-votes-count
    :row-message-reply-to-id
+   :row-text-url
    :next-status-tree
    :previous-status-tree
    :message-tree-root-equal
@@ -765,6 +780,7 @@
    :renumber-timeline-message-index
    :renumber-all-timelines
    :all-attachments-to-status
+   :attachment-to-chat-message
    :all-attachments-urls-to-status
    :mark-status-red-p
    :mark-status-unread
@@ -919,6 +935,7 @@
    :+key-main-window+
    :+key-thread-window+
    :+key-message-window+
+   :+key-chat-window+
    :+key-favourite+
    :+key-sensitive+
    :+key-boosted+
@@ -1108,7 +1125,8 @@
    :*conversations-window*
    :*open-attach-window*
    :*open-message-link-window*
-   :*gemini-streams-window*))
+   :*gemini-streams-window*
+   :*chats-list-window*))
 
 (defpackage :complete
   (:use
@@ -1217,10 +1235,14 @@
    :poll-vote-event
    :gemini-request-event
    :gemini-back-event
-   :function-event
    :gemini-got-line-event
    :gemini-abort-downloading-event
    :gemini-enqueue-download-event
+   :get-chat-messages-event
+   :get-chats-event
+   :chat-show-event
+   :update-all-chat-messages-event
+   :function-event
    :dispatch-program-events
    :add-pagination-status-event
    :status-id
@@ -1231,21 +1253,32 @@
    :cl
    :alexandria
    :config
-   :constants)
+   :constants
+   :misc)
+  (:shadowing-import-from :misc :random-elt :shuffle)
   (:export
    :delete-notification
+   :chat-message
    :message-id
    :nreadp
+   :emojis
    :updated-at
+   :created-at
    :content
    :chat-id
-   :unreadp
-   :emojis
+   :attachment
+   :account-id
+   :chat
+   :unread-count
+   :last-message
+   :account
    :create-chat
    :get-all-chats
    :post-chat-message
    :fetch-chat-messages
-   :delete-chat-message))
+   :delete-chat-message
+   :get-chat-messages
+   :get-chats))
 
 (defpackage :api-client
   (:use
@@ -1261,6 +1294,7 @@
   (:nicknames :client)
   (:export
    :*client*
+   :*client-lock*
    :forget-credentials
    :authorize
    :favourite-status
@@ -1350,6 +1384,7 @@
    :*open-message-link-keymap*
    :*open-gemini-link-keymap*
    :*gemini-downloads-keymap*
+   :*chats-list-keymap*
    :define-key
    :init-keyboard-mapping
    :find-keymap-node
@@ -1911,6 +1946,28 @@
    :resync-rows-db
    :init))
 
+(defpackage :chats-list-window
+  (:use
+   :cl
+   :alexandria
+   :cl-ppcre
+   :access
+   :croatoan
+   :config
+   :constants
+   :text-utils
+   :misc
+   :mtree
+   :specials
+   :windows
+   :line-oriented-window
+   :tui-utils)
+  (:shadowing-import-from :misc :random-elt :shuffle)
+  (:export
+   :chats-list-window
+   :chat->text
+   :open-chats-list-window))
+
 (defpackage :gemini-viewer
   (:use
    :cl
@@ -2115,6 +2172,12 @@
    :show-about-window
    :reset-timeline-pagination
    :poll-vote
+   :refresh-chats
+   :refresh-chat-messages
+   :close-chats-list-window
+   :update-all-chats-data
+   :open-chats-list-window
+   :show-chat-to-screen
    :open-gemini-address
    :gemini-history-back
    :gemini-view-source

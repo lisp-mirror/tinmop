@@ -135,6 +135,8 @@
 
 (define-key ">"         #'open-gemini-address)
 
+(define-key "M-c"       #'open-chats-list-window)
+
 ;; focus
 
 (define-key "f1"        #'focus-to-tags-window)
@@ -355,17 +357,21 @@
 
 ;; message links keymap
 
-(define-key "C-J"       #'open-message-link-perform-opening
-  *open-message-link-keymap*)
+(define-key "C-J"       #'open-message-link-perform-opening             *open-message-link-keymap*)
 
-(define-key "up"        #'open-message-link-go-up
-  *open-message-link-keymap*)
+(define-key "up"        #'open-message-link-go-up                       *open-message-link-keymap*)
 
-(define-key "down"      #'open-message-link-go-down
-  *open-message-link-keymap*)
+(define-key "down"      #'open-message-link-go-down                     *open-message-link-keymap*)
 
-(define-key "q"         #'close-open-message-link-window
-  *open-message-link-keymap*)
+(define-key "q"         #'close-open-message-link-window                *open-message-link-keymap*)
+
+;; chat window
+
+(define-key "r"         #'refresh-chat-messages                         *chats-list-keymap*)
+
+(define-key "q"         #'close-chats-list-window                       *chats-list-keymap*)
+
+(define-key "C-J"       #'show-chat-to-screen                           *chats-list-keymap*)
 
 ;;;; hooks
 
