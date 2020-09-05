@@ -1,7 +1,9 @@
 src/api-client.lisp
+src/api-pleroma-entities.lisp
 src/api-pleroma.lisp
 src/box.lisp
 src/bs-tree.lisp
+src/chats-list-window.lisp
 src/command-line.lisp
 src/command-window.lisp
 src/complete-window.lisp
@@ -18,6 +20,7 @@ src/db.lisp
 src/emoji-shortcodes.lisp
 src/filesystem-utils.lisp
 src/follow-requests.lisp
+src/gemini-viewer-metadata.lisp
 src/gemini-viewer.lisp
 src/gemini/client.lisp
 src/gemini/gemini-constants.lisp
@@ -60,3 +63,5 @@ src/thread-window.lisp
 src/tui-utils.lisp
 src/ui-goodies.lisp
 src/windows.lisp
+src/x509-ffi.lisp
+src/x509.lisp
