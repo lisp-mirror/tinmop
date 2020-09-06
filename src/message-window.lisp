@@ -89,7 +89,7 @@
                    (row-selected-index   row-selected-index)
                    (line-position-mark line-position-mark)) window
     (let* ((height     (1- (win-height-no-border window)))
-           (rows-count (length rows))
+           (rows-count (- (length rows) height))
            (fraction   (/ row-selected-index
                           (max 1 (1- rows-count))))
            (mark-y   (1+ (truncate (* fraction height))))
