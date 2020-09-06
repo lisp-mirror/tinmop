@@ -64,7 +64,7 @@
                   (_ "~a ~a wrote:~%~a ~a~2%")
                   formatted-created-date
                   username
-                  content
+                  (html-utils:html->text content)
                   attachment-type))))))
 
 (defmethod resync-rows-db ((object chats-list-window)

@@ -373,6 +373,28 @@
 
 (define-key "C-J"       #'show-chat-to-screen                           *chats-list-keymap*)
 
+;; chats
+
+(defun write-to-chat ()
+  (chat-loop (message-window:metadata specials:*message-window*)))
+
+(define-key "M-c"       #'write-to-chat                                 *chat-message-keymap*)
+
+(define-key "up"        #'message-scroll-up                             *chat-message-keymap*)
+
+(define-key "down"      #'message-scroll-down                           *chat-message-keymap*)
+
+(define-key "home"      #'message-scroll-begin                          *chat-message-keymap*)
+
+(define-key "end"       #'message-scroll-end                            *chat-message-keymap*)
+
+(define-key "/"         #'message-search-regex                          *chat-message-keymap*)
+
+(define-key "npage"     #'message-scroll-next-page                      *chat-message-keymap*)
+
+(define-key "ppage"     #'message-scroll-previous-page                  *chat-message-keymap*)
+
+
 ;;;; hooks
 
 ;;; this hooks will skips toots with contain less than 20 words

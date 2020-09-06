@@ -1388,6 +1388,7 @@
    :*open-gemini-link-keymap*
    :*gemini-downloads-keymap*
    :*chats-list-keymap*
+   :*chat-message-keymap*
    :define-key
    :init-keyboard-mapping
    :find-keymap-node
@@ -1761,6 +1762,7 @@
    :source-text
    :metadata
    :display-gemini-text-p
+   :display-chat-p
    :prepare-for-display-status-mode
    :append-source-text
    :scroll-down

@@ -68,6 +68,10 @@
 
 (defgeneric process-event (object))
 
+#+debug
+(defmethod process-event :before (object)
+  (misc:dbg "processing event ~a" object))
+
 (defgeneric reinitialize-id (object))
 
 (defmacro wrapped-in-lock ((queue) &body body)
@@ -1016,9 +1020,9 @@
     (dolist (chat all-chats)
       (let* ((chat-id (db:row-id chat))
              (min-id  (db:last-chat-message-id chat-id)))
-        (program-events:push-event (make-instance 'program-events:get-chat-messages-event
-                                                  :chat-id        chat-id
-                                                  :min-message-id min-id))))))
+        (process-event (make-instance 'program-events:get-chat-messages-event
+                                      :chat-id        chat-id
+                                      :min-message-id min-id))))))
 
 (defclass chat-show-event (program-event)
   ((chat
@@ -1030,9 +1034,13 @@
   (with-accessors ((chat chat)) object
     (let* ((chat-id (db:row-id chat)))
       (db:mark-all-chat-messages-read chat-id)
+      (setf (windows:keybindings specials:*message-window*)
+            keybindings:*chat-message-keymap*)
       (setf (message-window:source-text specials:*message-window*)
             (chats-list-window:chat->text chat))
       (message-window:scroll-end specials:*message-window*)
+      (setf (message-window:metadata specials:*message-window*)
+            chat)
       (windows:draw specials:*message-window*))))
 
 (defclass chat-post-message-event (program-event)

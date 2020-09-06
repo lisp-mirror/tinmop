@@ -258,6 +258,9 @@ produces a tree and graft the latter on `existing-tree'"
 (defparameter *chats-list-keymap* (make-starting-comand-tree)
   "The keymap for window that shows all the chats.")
 
+(defparameter *chat-message-keymap* (make-starting-comand-tree)
+  "The keymap for message-window when shows chat.")
+
 (defun define-key (key-sequence function &optional (existing-keymap *global-keymap*))
   "Define a key sequence that trigger a function:
 

@@ -37,6 +37,10 @@
   (eq (keybindings window)
       keybindings:*gemini-message-keymap*))
 
+(defun display-chat-p (window)
+  (eq (keybindings window)
+      keybindings:*chat-message-keymap*))
+
 (defun prepare-for-display-status-mode (window)
   (setf (keybindings window)
         keybindings:*message-keymap*))

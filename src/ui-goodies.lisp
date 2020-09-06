@@ -1444,6 +1444,7 @@ mot recent updated to least recent"
     (chat-loop chat)))
 
 (defun chat-loop (chat)
+  "Start writing to chat"
   (labels ((post-message (message)
              (let ((event (make-instance 'program-events:chat-post-message-event
                                          :priority +maximum-event-priority+
@@ -1456,8 +1457,8 @@ mot recent updated to least recent"
                           (post-message message)
                           (update-all-chats-messages)
                           (let ((show-event (make-instance 'program-events:chat-show-event
-                                                           :priority    +minimum-event-priority+
-                                                           :chat chat)))
+                                                           :priority +minimum-event-priority+
+                                                           :chat     chat)))
                             (push-event show-event)
                             (%loop))))
                       (ask-fn ()
