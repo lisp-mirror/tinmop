@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tinmop 0.1.8\n"
 "Report-Msgid-Bugs-To: https://notabug.org/cage/tinmop/\n"
-"POT-Creation-Date: 2020-09-06 12:27+0200\n"
+"POT-Creation-Date: 2020-09-06 20:18+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -153,7 +153,7 @@ msgstr ""
 msgid "Error: command ~a not found"
 msgstr ""
 
-#: src/conditions.lisp:70 src/conditions.lisp:74 src/db.lisp:2633
+#: src/conditions.lisp:70 src/conditions.lisp:74 src/db.lisp:2645
 #: src/message-rendering-utils.lisp:156 src/message-rendering-utils.lisp:190
 #: src/message-rendering-utils.lisp:195
 msgid "unknown"
@@ -259,35 +259,35 @@ msgstr ""
 msgid "No address found"
 msgstr ""
 
-#: src/keybindings.lisp:411
+#: src/keybindings.lisp:414
 msgid "Enter"
 msgstr ""
 
-#: src/keybindings.lisp:413
+#: src/keybindings.lisp:416
 msgid "Delete"
 msgstr ""
 
-#: src/keybindings.lisp:415
+#: src/keybindings.lisp:418
 msgid "Page-up"
 msgstr ""
 
-#: src/keybindings.lisp:417
+#: src/keybindings.lisp:420
 msgid "Page-down"
 msgstr ""
 
-#: src/keybindings.lisp:473
+#: src/keybindings.lisp:476
 msgid "No documentation available, you can help! :-)"
 msgstr ""
 
-#: src/keybindings.lisp:505
+#: src/keybindings.lisp:508
 msgid "Focused window keys"
 msgstr ""
 
-#: src/keybindings.lisp:506
+#: src/keybindings.lisp:509
 msgid "Global keys"
 msgstr ""
 
-#: src/keybindings.lisp:522
+#: src/keybindings.lisp:525
 msgid "Quick help"
 msgstr ""
 
@@ -384,7 +384,7 @@ msgstr ""
 msgid "The poll has expired"
 msgstr ""
 
-#: src/message-window.lisp:260
+#: src/message-window.lisp:264
 msgid "Messages"
 msgstr ""
 
@@ -409,30 +409,34 @@ msgstr[1] ""
 msgid "Links"
 msgstr ""
 
+#: src/open-message-link-window.lisp:206
+msgid "Chat attachments"
+msgstr ""
+
 #: src/os-utils.lisp:55
 msgid ""
 "No editor found, please configure the 'editor' directive in your "
 "configuration file"
 msgstr ""
 
-#: src/program-events.lisp:396
+#: src/program-events.lisp:400
 msgid "Invalid regular expression"
 msgstr ""
 
-#: src/program-events.lisp:500
+#: src/program-events.lisp:504
 msgid "No message selected!"
 msgstr ""
 
-#: src/program-events.lisp:650
+#: src/program-events.lisp:654
 msgid "Message sent."
 msgstr ""
 
-#: src/program-events.lisp:705
+#: src/program-events.lisp:709
 #, lisp-format
 msgid "Downloaded new messages for tag ~a"
 msgstr ""
 
-#: src/program-events.lisp:817
+#: src/program-events.lisp:821
 #, lisp-format
 msgid "Got ~a notification"
 msgid_plural "Got ~a notifications"
@@ -937,11 +941,15 @@ msgstr ""
 msgid "This in not a poll"
 msgstr ""
 
-#: src/ui-goodies.lisp:1452
+#: src/ui-goodies.lisp:1468
+msgid "Add message (enter to quit): "
+msgstr ""
+
+#: src/ui-goodies.lisp:1492
 msgid "This is not a valid gemini address"
 msgstr ""
 
-#: src/ui-goodies.lisp:1453
+#: src/ui-goodies.lisp:1493
 msgid "Open Gemini url: "
 msgstr ""
 
