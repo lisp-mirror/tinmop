@@ -394,6 +394,7 @@
 
 (define-key "ppage"     #'message-scroll-previous-page                  *chat-message-keymap*)
 
+(define-key "a"         #'open-chat-link-window                         *chat-message-keymap*)
 
 ;;;; hooks
 

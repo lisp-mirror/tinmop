@@ -157,3 +157,65 @@
 (defun forget-gemini-link-window ()
   (setf (keybindings *message-window*)
         keybindings:*message-keymap*))
+
+(defclass open-chat-document-link-window (focus-marked-window
+                                            simple-line-navigation-window
+                                            title-window
+                                            border-window)
+  ((links
+    :initform ()
+    :initarg  :links
+    :accessor links)))
+
+(defmethod refresh-config :after ((object open-chat-document-link-window))
+  (open-attach-window:refresh-view-links-window-config object
+                                                       swconf:+key-open-message-link-window+))
+
+(defmethod resync-rows-db ((object open-chat-document-link-window)
+                           &key
+                             (redraw t)
+                             (suggested-message-index nil))
+  (with-accessors ((rows             rows)
+                   (links            links)
+                   (selected-line-bg selected-line-bg)
+                   (selected-line-fg selected-line-fg)) object
+    (flet ((make-rows (links bg fg)
+             (mapcar (lambda (link)
+                       (make-instance 'line
+                                      :normal-text   link
+                                      :selected-text link
+                                      :normal-bg     bg
+                                      :normal-fg     fg
+                                      :selected-bg   fg
+                                      :selected-fg   bg))
+                     links)))
+      (with-croatoan-window (croatoan-window object)
+        (setf rows (make-rows links
+                              selected-line-bg
+                              selected-line-fg))
+        (when suggested-message-index
+          (select-row object suggested-message-index))
+        (when redraw
+          (draw object))))))
+
+(defun init-chat-links (links)
+  (let* ((low-level-window (make-croatoan-window :enable-function-keys t)))
+    (setf *open-message-link-window*
+          (make-instance 'open-chat-document-link-window
+                         :top-row-padding        0
+                         :title                  (_ "Chat attachments")
+                         :links                  links
+                         :single-row-height      1
+                         :uses-border-p          t
+                         :keybindings            keybindings:*open-message-link-keymap*
+                         :croatoan-window        low-level-window))
+    (refresh-config *open-message-link-window*)
+    (resync-rows-db *open-message-link-window* :redraw nil)
+    (when (rows *open-message-link-window*)
+      (select-row *open-message-link-window* 0))
+    (draw *open-message-link-window*)
+    *open-message-link-window*))
+
+(defun forget-chat-link-window ()
+  (setf (keybindings *message-window*)
+        keybindings:*message-keymap*))

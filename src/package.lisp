@@ -728,6 +728,7 @@
    :chat-exists-p
    :all-chats
    :all-chat-messages
+   :all-chat-links
    :last-chat-message-id
    :update-db
    :message-root
@@ -1820,7 +1821,9 @@
    :open-message-link
    :init
    :init-gemini-links
-   :forget-gemini-link-window))
+   :forget-gemini-link-window
+   :init-chat-links
+   :forget-chat-link-window))
 
 (defpackage :command-window
   (:use
@@ -2185,6 +2188,7 @@
    :open-chats-list-window
    :show-chat-to-screen
    :chat-loop
+   :open-chat-link-window
    :open-gemini-address
    :gemini-history-back
    :gemini-view-source

@@ -1296,6 +1296,18 @@ in ascending order"
            (where (:= :chat-id chat-id))
            (order-by (:asc :id)))))
 
+(defun all-chat-links (chat-id)
+  "Return all links belonging  to `chat-id' ordered by message `id'
+in ascending order"
+  (let ((all (query (select ((:as :attachment.text-url :url))
+                      (from :attachment)
+                      (join :chat-message :on (:and (:= :chat-message.attachment-id
+                                                        :attachment.id)
+                                              (:not-null :chat-message.attachment-id)))
+                      (where (:= :chat-message.chat-id chat-id))
+                      (order-by (:asc :chat-message.id))))))
+    (remove-duplicates (mapcar #'second all) :test #'string=)))
+
 (defun last-chat-message-id (chat-id)
   (second (fetch-single (select ((:as (fields (:max :id)) :max-id))
                           (from +table-chat-message+)

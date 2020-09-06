@@ -1472,6 +1472,14 @@ mot recent updated to least recent"
                                             :payload (ask-fn))))))
     (%loop)))
 
+(defun open-chat-link-window ()
+  (let* ((window   specials:*message-window*)
+         (chat     (message-window:metadata window))
+         (chat-id  (db:row-id chat))
+         (links    (db:all-chat-links chat-id)))
+    (open-message-link-window:init-chat-links links)
+    (focus-to-open-message-link-window)))
+
 ;;;; gemini
 
 (defun open-gemini-address ()
