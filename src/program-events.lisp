@@ -1034,6 +1034,21 @@
             (chats-list-window:chat->text chat))
       (windows:draw specials:*message-window*))))
 
+(defclass chat-post-message-event (program-event)
+  ((message
+    :initform nil
+    :initarg :message
+    :accessor message)
+   (chat-id
+    :initform nil
+    :initarg  :chat-id
+    :accessor chat-id)))
+
+(defmethod process-event ((object chat-post-message-event))
+  (with-accessors ((message message)
+                   (chat-id chat-id)) object
+    (api-pleroma:post-on-chat chat-id message)))
+
 ;;;; general usage
 
 (defclass function-event (program-event) ())

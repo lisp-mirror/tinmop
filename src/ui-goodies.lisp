@@ -1425,9 +1425,12 @@ mot recent updated to least recent"
 (defun close-chats-list-window ()
   (close-window-and-return-to-threads specials:*chats-list-window*))
 
+(defun update-all-chats-messages ()
+  (program-events:push-event (make-instance 'program-events:update-all-chat-messages-event)))
+
 (defun update-all-chats-data ()
   (refresh-chats)
-  (program-events:push-event (make-instance 'program-events:update-all-chat-messages-event)))
+  (update-all-chats-messages))
 
 (defun show-chat-to-screen ()
   (when-let* ((fields  (line-oriented-window:selected-row-fields *chats-list-window*))
@@ -1435,12 +1438,42 @@ mot recent updated to least recent"
               (chat    (db:find-chat chat-id))
               (event   (make-instance 'program-events:chat-show-event
                                       :chat chat)))
-      (program-events:push-event event)))
+    (close-chats-list-window)
+    (program-events:push-event event)
+    (chat-loop chat)))
+
+(defun chat-loop (chat)
+  (labels ((post-message (message)
+             (let ((event (make-instance 'program-events:chat-post-message-event
+                                         :priority +maximum-event-priority+
+                                         :message  message
+                                         :chat-id  (db:row-id chat))))
+               (push-event event)))
+           (%loop ()
+             (labels ((on-message-composed (message)
+                        (when (string-not-empty-p message)
+                          (post-message message)
+                          (update-all-chats-messages)
+                          (let ((show-event (make-instance 'program-events:chat-show-event
+                                                           :priority    +minimum-event-priority+
+                                                           :chat chat)))
+                            (push-event show-event)
+                            (%loop))))
+                      (ask-fn ()
+                        (lambda ()
+                          (ask-string-input #'on-message-composed
+                                            :priority    +minimum-event-priority+
+                                            :prompt      (_ "Add message (enter to quit): ")
+                                            :complete-fn #'complete:complete-chat-message))))
+                 (push-event (make-instance 'function-event
+                                            :priority    +minimum-event-priority+
+                                            :payload (ask-fn))))))
+    (%loop)))
 
 ;;;; gemini
 
 (defun open-gemini-address ()
-  "Ask for a gemini addresss and try to load it"
+  "Ask for a gemini address and try to load it"
   (flet ((on-input-complete (url)
            (if (gemini-parser:gemini-uri-p url)
                (let* ((event (make-instance 'gemini-request-event

@@ -91,7 +91,7 @@
     (let* ((height     (1- (win-height-no-border window)))
            (rows-count (- (length rows) height))
            (fraction   (/ row-selected-index
-                          (max 1 (1- rows-count))))
+                          (max 1 rows-count)))
            (mark-y   (1+ (truncate (* fraction height))))
            (mark-x   (1- (win-width window))))
       (print-text window line-position-mark mark-x mark-y))))

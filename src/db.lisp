@@ -1289,12 +1289,12 @@ than (swconf:config-purge-history-days-offset) days in the past"
                  (order-by (:desc :updated-at)))))
 
 (defun all-chat-messages (chat-id)
-  "Return all messages belonging  to `chat-id' ordered by `message-id'
+  "Return all messages belonging  to `chat-id' ordered by `id'
 in ascending order"
   (query (select :*
            (from +table-chat-message+)
            (where (:= :chat-id chat-id))
-           (order-by (:asc :message-id)))))
+           (order-by (:asc :id)))))
 
 (defun last-chat-message-id (chat-id)
   (second (fetch-single (select ((:as (fields (:max :id)) :max-id))

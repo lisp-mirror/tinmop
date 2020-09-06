@@ -157,3 +157,7 @@ list af all possible candidtae for completion."
     (when-let ((matched (remove-if-not (starts-with-clsr hint)
                                        (funcall #'db:history-prompt->values prompt))))
       (values matched (reduce-to-common-prefix matched)))))
+
+(defun complete-chat-message (hint)
+  (append (username-complete hint)
+          (directory-complete hint)))

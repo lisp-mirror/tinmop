@@ -46,7 +46,10 @@
 (defun post-chat-path (chat-id)
   (format nil "/api/v1/pleroma/chats/~a/messages" chat-id))
 
-(defmethod post-chat-message ((object tooter:client) (chat-id string) (content string) (media null))
+(defmethod post-chat-message ((object tooter:client)
+                              (chat-id string)
+                              (content string)
+                              (media null))
   "Post a message to chat identified by `chat-id' with text `content` or
 media `media'."
   (decode-chat-message (tooter:submit object
@@ -54,7 +57,10 @@ media `media'."
                                       :content  content
                                       :media-id media)))
 
-(defmethod post-chat-message ((object tooter:client) (chat-id string) (content null) (media string))
+(defmethod post-chat-message ((object tooter:client)
+                              (chat-id string)
+                              (content null)
+                              (media string))
   "Post a message to chat identified by `chat-id' with text `content` or
 media `media'. Returns a `chat-message' instance"
   (let ((path-media (fs:namestring->pathname media)))
@@ -90,3 +96,9 @@ media `media'. Returns a `chat-message' instance"
 (defun-w-lock get-chats ()
     api-client:*client-lock*
   (get-all-chats api-client:*client*))
+
+(defun-w-lock post-on-chat (chat-id message)
+    api-client:*client-lock*
+  (if (cl-ppcre:scan "^/" message)
+      (api-pleroma:post-chat-message api-client:*client* chat-id nil message)
+      (api-pleroma:post-chat-message api-client:*client* chat-id message nil)))

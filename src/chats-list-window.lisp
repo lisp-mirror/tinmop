@@ -61,7 +61,7 @@
                                            ""))
                (username               (db:user-id->username (db:row-account-id message))))
           (format stream
-                  (_ "~a ~a said:~%~a ~a~2%")
+                  (_ "~a ~a wrote:~%~a ~a~2%")
                   formatted-created-date
                   username
                   content

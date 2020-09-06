@@ -17,12 +17,17 @@
 
 (in-package :main)
 
-(defparameter *tick* 0.0)
+(defparameter *time* 0.0)
+
+(defparameter *ticks* 0)
 
 (define-constant +dt+ (/ 1 +fps+) :test #'=)
 
 (defun incf-dt ()
-  (incf *tick* +dt+))
+  (incf *time* +dt+))
+
+(defun incf-ticks ()
+  (incf *ticks*))
 
 (defun setup-bindings ()
   "This is where an  UI event is bound to a function  the event nil is
@@ -50,6 +55,8 @@ etc.) happened"
           (lambda (w e)
             (declare (ignore w e))
             (incf-dt)
+            (incf-ticks)
+            ;(scheduled-events:run-scheduled-events *ticks*)
             (program-events:dispatch-program-events)
             (windows:calculate-all +dt+)))))
 
@@ -144,7 +151,6 @@ etc.) happened"
       (unwind-protect
            (progn
              (hooks:run-hooks 'hooks:*before-main-loop*)
-             (ui:update-all-chats-data)
              (run-event-loop croatoan-window))
         (end-screen)))))
 

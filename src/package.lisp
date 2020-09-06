@@ -1146,7 +1146,8 @@
    :followed-user-complete
    :tags-complete
    :conversation-folder
-   :make-complete-gemini-uri-fn))
+   :make-complete-gemini-uri-fn
+   :complete-chat-message))
 
 (defpackage :program-events
   (:use
@@ -1242,6 +1243,7 @@
    :get-chats-event
    :chat-show-event
    :update-all-chat-messages-event
+   :chat-post-message-event
    :function-event
    :dispatch-program-events
    :add-pagination-status-event
@@ -1278,7 +1280,8 @@
    :fetch-chat-messages
    :delete-chat-message
    :get-chat-messages
-   :get-chats))
+   :get-chats
+   :post-on-chat))
 
 (defpackage :api-client
   (:use
@@ -2176,8 +2179,10 @@
    :refresh-chat-messages
    :close-chats-list-window
    :update-all-chats-data
+   :update-all-chats-messages
    :open-chats-list-window
    :show-chat-to-screen
+   :chat-loop
    :open-gemini-address
    :gemini-history-back
    :gemini-view-source
@@ -2187,6 +2192,23 @@
    :gemini-streams-window-down
    :gemini-streams-window-close
    :gemini-streams-window-open-stream))
+
+(defpackage :scheduled-events
+  (:use
+   :cl
+   :alexandria
+   :cl-ppcre
+   :croatoan
+   :config
+   :constants
+   :misc-utils
+   :text-utils
+   :specials)
+  (:shadowing-import-from :misc :random-elt :shuffle)
+  (:export
+   :refresh-refresh-all-chats-data
+   :refresh-refresh-all-chats-messages
+   :run-scheduled-events))
 
 (defpackage :modules
   (:use

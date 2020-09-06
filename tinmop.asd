@@ -117,6 +117,7 @@
                (:file "gemini-viewer")
                (:file "main-window")
                (:file "ui-goodies")
+               (:file "scheduled-events")
                (:file "modules")
                (:file "main")
                (:module tests
