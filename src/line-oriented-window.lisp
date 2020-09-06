@@ -221,18 +221,19 @@ actual of  rows moved. This can  be different from `amount'  if moving
 this exact quantity wold go beyond the length or fows or zero."
   (with-accessors ((rows               rows)
                    (row-selected-index row-selected-index)) object
-    (when (/= 0 amount)
-      (let* ((desired-amount (+ amount row-selected-index))
-             (actual-amount  (if (< amount 0)
-                                 (max (- desired-amount
-                                         row-selected-index)
-                                      (- row-selected-index))
-                                 (- (min desired-amount
-                                         (1- (length rows)))
-                                    row-selected-index))))
-        (select-row object (+ row-selected-index
-                              actual-amount))
-        actual-amount))))
+    (if (/= 0 amount)
+        (let* ((desired-amount (+ amount row-selected-index))
+               (actual-amount  (if (< amount 0)
+                                   (max (- desired-amount
+                                           row-selected-index)
+                                        (- row-selected-index))
+                                   (- (min desired-amount
+                                           (1- (length rows)))
+                                      row-selected-index))))
+          (select-row object (+ row-selected-index
+                                actual-amount))
+          actual-amount)
+        0)))
 
 (defclass simple-line-navigation-window (wrapper-window row-oriented-widget border-window)
   ((selected-line-bg

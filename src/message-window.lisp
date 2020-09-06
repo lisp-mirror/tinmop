@@ -166,9 +166,26 @@
     (when prepare-for-rendering
       (prepare-for-rendering object :jump-to-first-row jump-to-first-row))))
 
+(defun offset-to-move-end (win)
+  (with-accessors ((rows                 rows)
+                   (row-selected-index   row-selected-index)) win
+    (let ((win-height (win-height-no-border win)))
+      (- (- (length rows)
+            (- win-height 1))
+         row-selected-index))))
+
+(defun scroll-end-reached-p (win)
+  (with-accessors ((rows                 rows)
+                   (row-selected-index   row-selected-index)) win
+    (let* ((win-height (win-height-no-border win))
+           (rows-left  (- (length rows) row-selected-index)))
+      (< rows-left
+         win-height))))
+
 (defmethod scroll-down ((object message-window) &optional (amount 1))
-  (when (/= (row-move object amount)
-            0)
+    (when (not (or (scroll-end-reached-p object)
+                   (= (row-move object amount)
+                      0)))
     (draw object)))
 
 (defmethod scroll-up   ((object message-window) &optional (amount 1))
@@ -179,9 +196,10 @@
 (defmethod scroll-end ((object message-window))
   (with-accessors ((rows                 rows)
                    (row-selected-index   row-selected-index)) object
-    (when (/= (row-move object (- (length rows) row-selected-index))
-              0)
-      (draw object))))
+    (let ((offset (offset-to-move-end object)))
+      (when (/= (row-move object offset)
+                0)
+        (draw object)))))
 
 (defmethod scroll-begin  ((object message-window))
   (with-accessors ((rows                 rows)
