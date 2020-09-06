@@ -1440,6 +1440,7 @@ mot recent updated to least recent"
                                       :chat chat)))
     (close-chats-list-window)
     (program-events:push-event event)
+    (focus-to-message-window)
     (chat-loop chat)))
 
 (defun chat-loop (chat)

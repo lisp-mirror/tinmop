@@ -1032,6 +1032,7 @@
       (db:mark-all-chat-messages-read chat-id)
       (setf (message-window:source-text specials:*message-window*)
             (chats-list-window:chat->text chat))
+      (message-window:scroll-end specials:*message-window*)
       (windows:draw specials:*message-window*))))
 
 (defclass chat-post-message-event (program-event)
