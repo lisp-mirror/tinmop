@@ -44,28 +44,30 @@
           (db:user-id->username (db:row-account-id chat-db-row))
           (db:count-unread-chat-messages (db:row-id chat-db-row))))
 
-(defun chat->text (chat-db-row)
+(defun chat->text (chat-db-row &key (skip-ignored-user t))
   (with-output-to-string (stream)
     (let ((all-messages (db:all-chat-messages (db:row-id chat-db-row))))
       (dolist (message all-messages)
-        (let* ((date-fmt               (or (swconf:date-fmt swconf:+key-chat-window+)
-                                           (swconf:date-fmt swconf:+key-thread-window+)))
-               (created-date           (db:row-created-at message))
-               (encoded-created-date   (db-utils:encode-datetime-string created-date))
-               (formatted-created-date (format-time encoded-created-date date-fmt))
-               (attachment             (db:attachment-to-chat-message (db:row-id message)))
-               (attachment-type        (if attachment
-                                           (format nil "~a attachment" (db:row-type attachment))
-                                           ""))
-               (content                (or (db:row-message-content message)
-                                           ""))
-               (username               (db:user-id->username (db:row-account-id message))))
-          (format stream
-                  (_ "~a ~a wrote:~%~a ~a~2%")
-                  formatted-created-date
-                  username
-                  (html-utils:html->text content)
-                  attachment-type))))))
+        (when (and skip-ignored-user
+                   (not (db:user-ignored-p (db:row-account-id message))))
+          (let* ((date-fmt               (or (swconf:date-fmt swconf:+key-chat-window+)
+                                             (swconf:date-fmt swconf:+key-thread-window+)))
+                 (created-date           (db:row-created-at message))
+                 (encoded-created-date   (db-utils:encode-datetime-string created-date))
+                 (formatted-created-date (format-time encoded-created-date date-fmt))
+                 (attachment             (db:attachment-to-chat-message (db:row-id message)))
+                 (attachment-type        (if attachment
+                                             (format nil "~a attachment" (db:row-type attachment))
+                                             ""))
+                 (content                (or (db:row-message-content message)
+                                             ""))
+                 (username               (db:user-id->username (db:row-account-id message))))
+            (format stream
+                    (_ "~a ~a wrote:~%~a ~a~2%")
+                    formatted-created-date
+                    username
+                    (html-utils:html->text content)
+                    attachment-type)))))))
 
 (defmethod resync-rows-db ((object chats-list-window)
                            &key
