@@ -1277,6 +1277,15 @@ than (swconf:config-purge-history-days-offset) days in the past"
                              actual-updated-at
                              actual-created-at)))))))
 
+(defun chat-change-label (chat-id label)
+  (assert (stringp chat-id))
+  (assert (stringp label))
+  (assert (chat-exists-p chat-id))
+  (query (make-update +table-chat+
+                      (:label)
+                      (label)
+                      (:= :id chat-id))))
+
 (defun chat-exists-p (chat-id)
   (query (select :*
            (from +table-chat+)

@@ -116,8 +116,8 @@
 (defmethod resync-rows-db ((object conversations-window) &key
                                                            (redraw t)
                                                            (suggested-message-index nil))
-  "Resync   this  window   ehit  he   conversation  in   database,  if
-`suggested-message-index' is not nil masrk as selected the message in
+  "Resync  this   window  whit   the  conversation  in   database,  if
+`suggested-message-index' is not nil marks  as selected the message in
 position indicated by this variable."
   (with-accessors ((rows             rows)
                    (selected-line-bg selected-line-bg)

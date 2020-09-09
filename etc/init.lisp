@@ -365,7 +365,7 @@
 
 (define-key "q"         #'close-open-message-link-window                *open-message-link-keymap*)
 
-;; chat window
+;; chats list window
 
 (define-key "r"         #'refresh-chat-messages                         *chats-list-keymap*)
 
@@ -373,7 +373,9 @@
 
 (define-key "C-J"       #'show-chat-to-screen                           *chats-list-keymap*)
 
-;; chats
+(define-key "l"         #'change-chat-label                             *chats-list-keymap*)
+
+;; chat  window
 
 (defun write-to-chat ()
   (chat-loop (message-window:metadata specials:*message-window*)))
@@ -395,6 +397,8 @@
 (define-key "ppage"     #'message-scroll-previous-page                  *chat-message-keymap*)
 
 (define-key "a"         #'open-chat-link-window                         *chat-message-keymap*)
+
+
 
 ;;;; hooks
 

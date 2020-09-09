@@ -40,7 +40,7 @@
   (ui:update-all-chats-messages)
   (when (message-window:display-chat-p *message-window*)
     (let ((show-event (make-instance 'program-events:chat-show-event
-                                     :chat     (message-window:metadata *message-window*))))
+                                     :chat (message-window:metadata *message-window*))))
       (program-events:push-event show-event))))
 
 (defun run-scheduled-events (ticks)

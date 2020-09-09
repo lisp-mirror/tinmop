@@ -1002,7 +1002,10 @@
                    (min-message-id min-message-id)) object
     (let ((messages (api-pleroma:get-chat-messages chat-id min-message-id)))
       (dolist (message messages)
-        (db:update-db message)))))
+        (db:update-db message)
+        (when (and specials:*chats-list-window*
+                   (windows:win-shown-p specials:*chats-list-window*))
+          (line-oriented-window:resync-rows-db specials:*chats-list-window*))))))
 
 (defclass get-chats-event (program-event) ())
 
@@ -1057,6 +1060,22 @@
   (with-accessors ((message message)
                    (chat-id chat-id)) object
     (api-pleroma:post-on-chat chat-id message)))
+
+(defclass chat-change-label-event (program-event)
+  ((label
+    :initform nil
+    :initarg :label
+    :accessor label)
+   (chat-id
+    :initform nil
+    :initarg  :chat-id
+    :accessor chat-id)))
+
+(defmethod process-event ((object chat-change-label-event))
+  (with-accessors ((label label)
+                   (chat-id chat-id)) object
+    (db:chat-change-label chat-id label)
+    (line-oriented-window:resync-rows-db specials:*chats-list-window*)))
 
 ;;;; general usage
 

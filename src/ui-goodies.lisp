@@ -362,7 +362,9 @@ Metadata includes:
               *tags-window*
               *send-message-window*
               *message-window*
-              *follow-requests-window*))
+              *follow-requests-window*)
+  (when-window-shown (*chats-list-window*)
+    (close-chats-list-window)))
 
 (gen-focus-to-window message-window
                      specials:*message-window*
@@ -1479,6 +1481,18 @@ mot recent updated to least recent"
          (links    (db:all-chat-links chat-id)))
     (open-message-link-window:init-chat-links links)
     (focus-to-open-message-link-window)))
+
+(defun change-chat-label ()
+  (let* ((fields  (line-oriented-window:selected-row-fields *chats-list-window*))
+         (chat-id (db:row-id fields)))
+    (flet ((on-input-complete (new-label)
+             (when (string-not-empty-p new-label)
+               (push-event (make-instance 'chat-change-label-event
+                                          :chat-id chat-id
+                                          :label   new-label)))))
+      (ask-string-input #'on-input-complete
+                        :prompt      (_ "Type the new label of the chat: ")
+                        :complete-fn #'complete:complete-chat-message))))
 
 ;;;; gemini
 

@@ -725,6 +725,7 @@
    :find-chat
    :mark-all-chat-messages-read
    :count-unread-chat-messages
+   :chat-change-label
    :chat-exists-p
    :all-chats
    :all-chat-messages
@@ -937,6 +938,7 @@
    :+key-thread-window+
    :+key-message-window+
    :+key-chat-window+
+   :+key-chats-list-window+
    :+key-favourite+
    :+key-sensitive+
    :+key-boosted+
@@ -1245,6 +1247,7 @@
    :chat-show-event
    :update-all-chat-messages-event
    :chat-post-message-event
+   :chat-change-label-event
    :function-event
    :dispatch-program-events
    :add-pagination-status-event
@@ -2189,6 +2192,7 @@
    :show-chat-to-screen
    :chat-loop
    :open-chat-link-window
+   :change-chat-label
    :open-gemini-address
    :gemini-history-back
    :gemini-view-source

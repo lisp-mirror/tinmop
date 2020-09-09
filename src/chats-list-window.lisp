@@ -25,21 +25,21 @@
 
 (defmethod refresh-config :after ((object chats-list-window))
   (open-attach-window:refresh-view-links-window-config object
-                                                       swconf:+key-open-gemini-stream-window+)
-  (let* ((win-w (truncate (* (win-width  specials:*main-window*) 1/2)))
-         (win-h (truncate (* (win-height specials:*main-window*) 1/2)))
-         (x           (truncate (- (/ (win-width specials:*main-window*) 2)
-                                   (/ win-w 2))))
-         (y           (truncate (- (/ (win-height specials:*main-window*) 2)
-                                   (/ win-h 2)))))
-    (win-resize object win-w win-h)
-    (win-move object x y)
-    object))
+                                                       swconf:+key-chats-list-window+)
+  (refresh-config-sizes object swconf:+key-thread-window+)
+  (win-move object
+            (- (win-width *main-window*)
+               (win-width object))
+            0)
+  (win-move object
+            (- (win-width *main-window*)
+               (win-width object))
+            0)
+  object)
 
 (defun chat->list-item (chat-db-row)
   (format nil
-          (_ "~@[~a~]~@[~a~] ~a unread: ~a")
-          (db:row-id    chat-db-row)
+          (_ "~a ~a unread: ~a")
           (db:row-label chat-db-row)
           (db:user-id->username (db:row-account-id chat-db-row))
           (db:count-unread-chat-messages (db:row-id chat-db-row))))

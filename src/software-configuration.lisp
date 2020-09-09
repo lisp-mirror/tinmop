@@ -364,6 +364,7 @@
                    thread-window
                    message-window
                    chat-window
+                   chats-list-window
                    attachment-header
                    max-numbers-allowed-attachments
                    max-message-length
