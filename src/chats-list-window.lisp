@@ -82,10 +82,10 @@
                                       :normal-text   (chat->list-item chat)
                                       :selected-text (chat->list-item chat)
                                       :fields        chat
-                                      :normal-bg     bg
-                                      :normal-fg     fg
-                                      :selected-bg   fg
-                                      :selected-fg   bg))
+                                      :normal-bg     fg
+                                      :normal-fg     bg
+                                      :selected-bg   bg
+                                      :selected-fg   fg))
                      chats)))
       (with-croatoan-window (croatoan-window object)
         (setf rows (make-rows (db:all-chats)
