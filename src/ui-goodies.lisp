@@ -1483,6 +1483,7 @@ mot recent updated to least recent"
     (focus-to-open-message-link-window)))
 
 (defun change-chat-label ()
+  "Change the name (called label) of a chat"
   (let* ((fields  (line-oriented-window:selected-row-fields *chats-list-window*))
          (chat-id (db:row-id fields)))
     (flet ((on-input-complete (new-label)
@@ -1493,6 +1494,43 @@ mot recent updated to least recent"
       (ask-string-input #'on-input-complete
                         :prompt      (_ "Type the new label of the chat: ")
                         :complete-fn #'complete:complete-chat-message))))
+
+(defun chat-create-new ()
+  "Start a new chat"
+  (let ((chat-user-id  nil)
+        (chat-username nil))
+    (labels  ((on-user-id-complete (username)
+                (when (string-not-empty-p username)
+                  (when-let* ((user-id (db:username->id username)))
+                    (setf chat-user-id  user-id)
+                    (setf chat-username username)
+                    (ask-string-input #'on-label-complete
+                                      :prompt (_ "Type the new label of the chat: ")))))
+              (on-label-complete (chat-label)
+                (when (string-not-empty-p chat-label)
+                  (push-event (make-instance 'chat-create-event
+                                             :chat-label chat-label
+                                             :user-id    chat-user-id))
+                  (update-all-chats-data)
+                  (notify (format nil
+                                  (_ "Chat ~a with ~a created")
+                                  chat-label
+                                  chat-username)))))
+      (ask-string-input #'on-user-id-complete
+                        :prompt      (_ "Type the user to chat with: ")
+                        :complete-fn #'complete:username-complete))))
+
+(defun chat-list-move (amount)
+  (ignore-errors
+    (line-oriented-window:unselect-all specials:*chats-list-window*)
+    (line-oriented-window:row-move     specials:*chats-list-window* amount)
+    (draw specials:*chats-list-window*)))
+
+(defun chat-list-go-up ()
+  (chat-list-move -1))
+
+(defun chat-list-go-down ()
+  (chat-list-move 1))
 
 ;;;; gemini
 

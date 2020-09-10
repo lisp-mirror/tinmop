@@ -1077,6 +1077,25 @@
     (db:chat-change-label chat-id label)
     (line-oriented-window:resync-rows-db specials:*chats-list-window*)))
 
+(defclass chat-create-event (program-event)
+  ((user-id
+    :initform nil
+    :initarg :user-id
+    :accessor user-id)
+   (chat-label
+    :initform (_ "no label")
+    :initarg  :chat-label
+    :accessor chat-label)))
+
+(defmethod process-event ((object chat-create-event))
+  (with-accessors ((chat-label chat-label)
+                   (user-id    user-id)) object
+    (let ((chat (api-pleroma:create-new-chat user-id)))
+      (db:update-db chat)
+      (process-event (make-instance 'chat-change-label-event
+                                    :chat-id (api-pleroma:chat-id chat)
+                                    :label   chat-label)))))
+
 ;;;; general usage
 
 (defclass function-event (program-event) ())

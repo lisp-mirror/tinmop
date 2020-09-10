@@ -375,6 +375,12 @@
 
 (define-key "l"         #'change-chat-label                             *chats-list-keymap*)
 
+(define-key "c"         #'chat-create-new                               *chats-list-keymap*)
+
+(define-key "up"        #'chat-list-go-up                               *chats-list-keymap*)
+
+(define-key "down"      #'chat-list-go-down                             *chats-list-keymap*)
+
 ;; chat  window
 
 (defun write-to-chat ()

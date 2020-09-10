@@ -47,7 +47,10 @@
 
 (defmethod (setf source-text) (new-text (object message-window))
   (setf (slot-value object 'source-text) new-text)
-  (prepare-for-rendering object))
+  (handler-bind ((conditions:out-of-bounds
+                  (lambda (e)
+                    (invoke-restart 'ignore-selecting-action e))))
+    (prepare-for-rendering object)))
 
 (defun refresh-line-mark-config (window)
   (multiple-value-bind (mark-value mark-fg mark-bg)

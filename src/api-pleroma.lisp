@@ -102,3 +102,7 @@ media `media'. Returns a `chat-message' instance"
   (if (cl-ppcre:scan "^/" message)
       (api-pleroma:post-chat-message api-client:*client* chat-id nil message)
       (api-pleroma:post-chat-message api-client:*client* chat-id message nil)))
+
+(defun-w-lock create-new-chat (user-id)
+    api-client:*client-lock*
+  (create-chat api-client:*client* user-id))

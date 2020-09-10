@@ -218,10 +218,12 @@
 (defmethod row-move ((object row-oriented-widget) amount)
   "Navigate the lines, move the  selected row by `amount', returns the
 actual of  rows moved. This can  be different from `amount'  if moving
-this exact quantity wold go beyond the length or fows or zero."
+this exact quantity wold go beyond the length or rows or zero."
   (with-accessors ((rows               rows)
                    (row-selected-index row-selected-index)) object
-    (if (/= 0 amount)
+    (if (and rows
+             row-selected-index
+             (/= 0 amount))
         (let* ((desired-amount (+ amount row-selected-index))
                (actual-amount  (if (< amount 0)
                                    (max (- desired-amount

@@ -1248,6 +1248,7 @@
    :update-all-chat-messages-event
    :chat-post-message-event
    :chat-change-label-event
+   :chat-create-event
    :function-event
    :dispatch-program-events
    :add-pagination-status-event
@@ -1285,7 +1286,8 @@
    :delete-chat-message
    :get-chat-messages
    :get-chats
-   :post-on-chat))
+   :post-on-chat
+   :create-new-chat))
 
 (defpackage :api-client
   (:use
@@ -2193,6 +2195,9 @@
    :chat-loop
    :open-chat-link-window
    :change-chat-label
+   :chat-create-new
+   :chat-list-go-up
+   :chat-list-go-down
    :open-gemini-address
    :gemini-history-back
    :gemini-view-source
