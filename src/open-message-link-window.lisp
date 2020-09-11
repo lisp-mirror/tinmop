@@ -67,9 +67,9 @@
     (draw *open-message-link-window*)
     *open-message-link-window*))
 
-(defun open-message-link (url)
+(defun open-message-link (url enqueue)
   (if (string-starts-with-p gemini-constants:+gemini-scheme+ url)
-      (gemini-viewer:request url)
+      (gemini-viewer:request url :enqueue enqueue)
       (os-utils:xdg-open url)))
 
 (defclass open-gemini-document-link-window (focus-marked-window

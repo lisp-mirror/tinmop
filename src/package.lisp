@@ -2148,6 +2148,7 @@
    :open-message-link-go-up
    :open-message-link-go-down
    :open-message-link-perform-opening
+   :open-message-link-open-enqueue
    :close-open-message-link-window
    :attach-go-up
    :attach-go-down

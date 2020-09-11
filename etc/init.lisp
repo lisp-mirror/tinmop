@@ -365,6 +365,8 @@
 
 (define-key "q"         #'close-open-message-link-window                *open-message-link-keymap*)
 
+(define-key "e"         #'open-message-link-open-enqueue                *open-message-link-keymap*)
+
 ;; chats list window
 
 (define-key "r"         #'refresh-chat-messages                         *chats-list-keymap*)
@@ -403,8 +405,6 @@
 (define-key "ppage"     #'message-scroll-previous-page                  *chat-message-keymap*)
 
 (define-key "a"         #'open-chat-link-window                         *chat-message-keymap*)
-
-
 
 ;;;; hooks
 

@@ -93,7 +93,7 @@
                                 (buttons nil)
                                 (title (_ "Information"))
                                 (append-ok-button t))
-  (let ((dialog-window (windows:make-info-message-dialog specials:*main-window*
+  (let ((dialog-window (windows:make-info-message-dialog *main-window*
                                                          title
                                                          message
                                                          buttons
@@ -105,7 +105,7 @@
                                  (buttons nil)
                                  (title (_ "Error"))
                                  (append-ok-button t))
-  (let ((dialog-window (windows:make-error-message-dialog specials:*main-window*
+  (let ((dialog-window (windows:make-error-message-dialog *main-window*
                                                          title
                                                          message
                                                          buttons
@@ -113,7 +113,7 @@
     (windows:menu-select dialog-window)))
 
 (defun input-dialog-immediate (message)
-  (windows:make-input-dialog specials:*main-window* specials:*main-window* message))
+  (windows:make-input-dialog *main-window* *main-window* message))
 
 (defun error-message (message)
   (let ((event (make-instance 'error-message-event
@@ -169,10 +169,10 @@
       (bt:make-thread #'thread-fn)))
 
 (defun thread-go-up ()
-  (thread-window:go-message-up specials:*thread-window*))
+  (thread-window:go-message-up *thread-window*))
 
 (defun thread-go-down ()
-  (thread-window:go-message-down specials:*thread-window*))
+  (thread-window:go-message-down *thread-window*))
 
 (defun thread-goto-message ()
   "Jump to message"
@@ -185,11 +185,11 @@
 
 (defun thread-goto-first-message ()
   "Jump to first message"
-  (thread-window:goto-first-message specials:*thread-window*))
+  (thread-window:goto-first-message *thread-window*))
 
 (defun thread-goto-last-message ()
   "Jump to last message"
-  (thread-window:goto-last-message specials:*thread-window*))
+  (thread-window:goto-last-message *thread-window*))
 
 (defun thread-search-message-body (direction)
   "Search in messages body"
@@ -250,20 +250,20 @@ Metadata includes:
 
 (defun thread-search-next-unread-message ()
   "Jump to next unread message"
-  (thread-window:search-next-unread specials:*thread-window*))
+  (thread-window:search-next-unread *thread-window*))
 
 (defun thread-open-selected-message ()
   "Open selected message"
-  (thread-window:open-message specials:*thread-window*))
+  (thread-window:open-message *thread-window*))
 
 (defun thread-mark-delete-selected-message ()
   "Mark selected message for deletion"
-  (thread-window:mark-selected-message-to-delete specials:*thread-window*
+  (thread-window:mark-selected-message-to-delete *thread-window*
                                                  :move-down-selected-message t))
 
 (defun thread-mark-prevent-delete-selected-message ()
   "Unmark selected message for deletion"
-  (thread-window:mark-selected-message-prevent-delete specials:*thread-window*
+  (thread-window:mark-selected-message-prevent-delete *thread-window*
                                                       :move-down-selected-message t))
 
 (defun subscribe-to-hash ()
@@ -274,7 +274,7 @@ Metadata includes:
                  (refresh-event  (make-instance 'refresh-tag-window-event)))
              (push-event refresh-event)
              (push-event event))))
-    (let* ((selected-row (line-oriented-window:selected-row-fields specials:*thread-window*))
+    (let* ((selected-row (line-oriented-window:selected-row-fields *thread-window*))
            (tags         (and selected-row
                               (db:row-message-tags selected-row))))
       (ask-string-input #'on-input-complete
@@ -299,22 +299,22 @@ Metadata includes:
                       :complete-fn   #'complete:tags-complete)))
 
 (defun message-scroll-up ()
-  (message-window:scroll-up specials:*message-window*))
+  (message-window:scroll-up *message-window*))
 
 (defun message-scroll-down ()
-  (message-window:scroll-down specials:*message-window*))
+  (message-window:scroll-down *message-window*))
 
 (defun message-scroll-begin ()
-  (message-window:scroll-begin specials:*message-window*))
+  (message-window:scroll-begin *message-window*))
 
 (defun message-scroll-end ()
-  (message-window:scroll-end specials:*message-window*))
+  (message-window:scroll-end *message-window*))
 
 (defun message-scroll-next-page ()
-  (message-window:scroll-next-page specials:*message-window*))
+  (message-window:scroll-next-page *message-window*))
 
 (defun message-scroll-previous-page ()
-  (message-window:scroll-previous-page specials:*message-window*))
+  (message-window:scroll-previous-page *message-window*))
 
 (defun message-search-regex ()
   "Search regular expression in message"
@@ -325,7 +325,7 @@ Metadata includes:
     (ask-string-input #'on-input-complete :prompt (_ "Search key: "))))
 
 (defun give-focus (win info-change-focus-message &rest windows-lose-focus)
-  (setf (main-window:focused-window specials:*main-window*)
+  (setf (main-window:focused-window *main-window*)
         win)
   (setf (windows:in-focus win) t)
   (loop for win in windows-lose-focus when win do
@@ -349,7 +349,7 @@ Metadata includes:
 
 (defun focus-to-thread-window (&key (print-message t))
   "move focus on thread window"
-  (message-window:prepare-for-display-status-mode specials:*message-window*)
+  (message-window:prepare-for-display-status-mode *message-window*)
   (give-focus *thread-window*
               (if print-message
                   (_ "focus passed on threads window")
@@ -367,133 +367,133 @@ Metadata includes:
     (close-chats-list-window)))
 
 (gen-focus-to-window message-window
-                     specials:*message-window*
+                     *message-window*
                      :documentation      "Move focus on message window"
                      :info-change-focus-message (_ "Focus passed on message window")
                      :windows-lose-focus (*chats-list-window*
-                                          specials:*gemini-streams-window*
-                                          specials:*open-message-link-window*
-                                          specials:*open-attach-window*
-                                          specials:*conversations-window*
-                                          specials:*tags-window*
-                                          specials:*thread-window*
-                                          specials:*send-message-window*
-                                          specials:*follow-requests-window*))
+                                          *gemini-streams-window*
+                                          *open-message-link-window*
+                                          *open-attach-window*
+                                          *conversations-window*
+                                          *tags-window*
+                                          *thread-window*
+                                          *send-message-window*
+                                          *follow-requests-window*))
 
 (gen-focus-to-window send-message-window
-                     specials:*send-message-window*
+                     *send-message-window*
                      :documentation      "Move focus on send message window"
                      :info-change-focus-message (_ "Focus passed on send message window")
                      :windows-lose-focus (*chats-list-window*
-                                          specials:*gemini-streams-window*
-                                          specials:*open-message-link-window*
-                                          specials:*open-attach-window*
-                                          specials:*conversations-window*
-                                          specials:*tags-window*
-                                          specials:*thread-window*
-                                          specials:*message-window*
-                                          specials:*follow-requests-window*))
+                                          *gemini-streams-window*
+                                          *open-message-link-window*
+                                          *open-attach-window*
+                                          *conversations-window*
+                                          *tags-window*
+                                          *thread-window*
+                                          *message-window*
+                                          *follow-requests-window*))
 
 (gen-focus-to-window follow-requests-window
-                     specials:*follow-requests-window*
+                     *follow-requests-window*
                      :documentation      "Move focus on follow requests window"
                      :info-change-focus-message (_ "Focus passed on follow requests window")
                      :windows-lose-focus (*chats-list-window*
-                                          specials:*gemini-streams-window*
-                                          specials:*open-message-link-window*
-                                          specials:*open-attach-window*
-                                          specials:*conversations-window*
-                                          specials:*tags-window*
-                                          specials:*thread-window*
-                                          specials:*message-window*
-                                          specials:*send-message-window*))
+                                          *gemini-streams-window*
+                                          *open-message-link-window*
+                                          *open-attach-window*
+                                          *conversations-window*
+                                          *tags-window*
+                                          *thread-window*
+                                          *message-window*
+                                          *send-message-window*))
 
 (gen-focus-to-window tags-window
-                     specials:*tags-window*
+                     *tags-window*
                      :documentation      "Move focus on tags window"
                      :info-change-focus-message (_ "Focus passed on tags window")
                      :windows-lose-focus (*chats-list-window*
-                                          specials:*gemini-streams-window*
-                                          specials:*open-message-link-window*
-                                          specials:*open-attach-window*
-                                          specials:*conversations-window*
-                                          specials:*follow-requests-window*
-                                          specials:*thread-window*
-                                          specials:*message-window*
-                                          specials:*send-message-window*))
+                                          *gemini-streams-window*
+                                          *open-message-link-window*
+                                          *open-attach-window*
+                                          *conversations-window*
+                                          *follow-requests-window*
+                                          *thread-window*
+                                          *message-window*
+                                          *send-message-window*))
 (gen-focus-to-window conversations-window
-                     specials:*conversations-window*
+                     *conversations-window*
                      :documentation      "Move focus on conversations window"
                      :info-change-focus-message (_ "Focus passed on conversation window")
                      :windows-lose-focus (*chats-list-window*
-                                          specials:*gemini-streams-window*
-                                          specials:*open-message-link-window*
-                                          specials:*open-attach-window*
-                                          specials:*tags-window*
-                                          specials:*follow-requests-window*
-                                          specials:*thread-window*
-                                          specials:*message-window*
-                                          specials:*send-message-window*))
+                                          *gemini-streams-window*
+                                          *open-message-link-window*
+                                          *open-attach-window*
+                                          *tags-window*
+                                          *follow-requests-window*
+                                          *thread-window*
+                                          *message-window*
+                                          *send-message-window*))
 
 (gen-focus-to-window open-attach-window
-                     specials:*open-attach-window*
+                     *open-attach-window*
                      :documentation      "Move focus on open-attach window"
                      :info-change-focus-message (_ "Focus passed on attach window")
                      :windows-lose-focus (*chats-list-window*
-                                          specials:*gemini-streams-window*
-                                          specials:*open-message-link-window*
-                                          specials:*conversations-window*
-                                          specials:*tags-window*
-                                          specials:*follow-requests-window*
-                                          specials:*thread-window*
-                                          specials:*message-window*
-                                          specials:*send-message-window*))
+                                          *gemini-streams-window*
+                                          *open-message-link-window*
+                                          *conversations-window*
+                                          *tags-window*
+                                          *follow-requests-window*
+                                          *thread-window*
+                                          *message-window*
+                                          *send-message-window*))
 
 (gen-focus-to-window open-message-link-window
-                     specials:*open-message-link-window*
+                     *open-message-link-window*
                      :documentation      "Move focus on open-link window"
                      :info-change-focus-message (_ "Focus passed on link window")
                      :windows-lose-focus (*chats-list-window*
-                                          specials:*gemini-streams-window*
-                                          specials:*conversations-window*
-                                          specials:*open-attach-window*
-                                          specials:*tags-window*
-                                          specials:*follow-requests-window*
-                                          specials:*thread-window*
-                                          specials:*message-window*
-                                          specials:*send-message-window*))
+                                          *gemini-streams-window*
+                                          *conversations-window*
+                                          *open-attach-window*
+                                          *tags-window*
+                                          *follow-requests-window*
+                                          *thread-window*
+                                          *message-window*
+                                          *send-message-window*))
 
 (gen-focus-to-window open-gemini-stream-windows
-                     specials:*gemini-streams-window*
+                     *gemini-streams-window*
                      :documentation      "Move focus on open gemini streams window"
                      :info-change-focus-message (_ "Focus passed on gemini-stream window")
                      :windows-lose-focus (*chats-list-window*
-                                          specials:*open-message-link-window*
-                                          specials:*conversations-window*
-                                          specials:*open-attach-window*
-                                          specials:*tags-window*
-                                          specials:*follow-requests-window*
-                                          specials:*thread-window*
-                                          specials:*message-window*
-                                          specials:*send-message-window*))
+                                          *open-message-link-window*
+                                          *conversations-window*
+                                          *open-attach-window*
+                                          *tags-window*
+                                          *follow-requests-window*
+                                          *thread-window*
+                                          *message-window*
+                                          *send-message-window*))
 
 (gen-focus-to-window chats-list-window
                      *chats-list-window*
                      :documentation      "Move focus on chats list window"
                      :info-change-focus-message (_ "Focus passed on chats list window")
-                     :windows-lose-focus (specials:*gemini-streams-window*
-                                          specials:*open-message-link-window*
-                                          specials:*conversations-window*
-                                          specials:*open-attach-window*
-                                          specials:*tags-window*
-                                          specials:*follow-requests-window*
-                                          specials:*thread-window*
-                                          specials:*message-window*
-                                          specials:*send-message-window*))
+                     :windows-lose-focus (*gemini-streams-window*
+                                          *open-message-link-window*
+                                          *conversations-window*
+                                          *open-attach-window*
+                                          *tags-window*
+                                          *follow-requests-window*
+                                          *thread-window*
+                                          *message-window*
+                                          *send-message-window*))
 
 (defun print-quick-help ()
   "Print a quick help"
-  (keybindings:print-help specials:*main-window*))
+  (keybindings:print-help *main-window*))
 
 (defun move-message-tree ()
   "Move messages tree"
@@ -532,7 +532,7 @@ Metadata includes:
 
 (defun change-timeline ()
   "Change timeline"
-  (let ((folder (thread-window:timeline-folder specials:*thread-window*)))
+  (let ((folder (thread-window:timeline-folder *thread-window*)))
     (flet ((on-input-complete (new-timeline)
              (let* ((refresh-event (make-instance 'refresh-thread-windows-event
                                                   :new-timeline new-timeline)))
@@ -575,8 +575,8 @@ This  command  also checks  notifications  about  mentioning the  user
 and (if  such mentions  exists) download the  mentioning toots  in the
 folder \"mentions\"."
   (flet ((update-payload ()
-           (let* ((timeline (thread-window:timeline-type specials:*thread-window*))
-                  (folder   (thread-window:timeline-folder specials:*thread-window*))
+           (let* ((timeline (thread-window:timeline-type *thread-window*))
+                  (folder   (thread-window:timeline-folder *thread-window*))
                   (max-id   (db:last-pagination-status-id-timeline-folder timeline folder)))
              (multiple-value-bind (kind localp)
                  (timeline->kind timeline)
@@ -601,8 +601,8 @@ folder \"mentions\"."
 
 Starting from the oldest toot and going back."
   (flet ((update-payload ()
-           (let* ((timeline          (thread-window:timeline-type specials:*thread-window*))
-                  (folder            (thread-window:timeline-folder specials:*thread-window*))
+           (let* ((timeline          (thread-window:timeline-type *thread-window*))
+                  (folder            (thread-window:timeline-folder *thread-window*))
                   (min-id            (db:first-pagination-status-id-timeline-folder timeline folder)))
              (multiple-value-bind (kind localp)
                  (timeline->kind timeline)
@@ -624,9 +624,9 @@ Starting from the oldest toot and going back."
 Force the checking for new message in the thread the selected message belong."
   (flet ((update ()
            (when-let* ((selected-message
-                        (line-oriented-window:selected-row-fields specials:*thread-window*))
-                       (timeline         (thread-window:timeline-type specials:*thread-window*))
-                       (folder           (thread-window:timeline-folder specials:*thread-window*))
+                        (line-oriented-window:selected-row-fields *thread-window*))
+                       (timeline         (thread-window:timeline-type *thread-window*))
+                       (folder           (thread-window:timeline-folder *thread-window*))
                        (status-id        (or (db:row-message-reblog-id selected-message)
                                              (db:row-message-status-id selected-message)))
                        (expand-event     (make-instance 'expand-thread-event
@@ -662,7 +662,7 @@ Force the checking for new message in the thread the selected message belong."
                         :life-start     (* (swconf:config-notification-life) 5)))))
 
 (defun confirm-selected-row-action (message)
-  (when-let* ((selected-row  (line-oriented-window:selected-row-fields specials:*thread-window*))
+  (when-let* ((selected-row  (line-oriented-window:selected-row-fields *thread-window*))
               (status-id     (db:row-message-status-id selected-row))
               (confirmedp    (confirm-dialog-immediate message)))
     (values status-id selected-row)))
@@ -730,7 +730,7 @@ Force the checking for new message in the thread the selected message belong."
 (defun ignore-user ()
   "Ignore user"
   (when-let* ((selected-row (line-oriented-window:selected-row-fields
-                             specials:*thread-window*))
+                             *thread-window*))
               (username     (db:row-message-username selected-row))
               (selected-id  (confirm-selected-row-action (format nil
                                                                 (_ "Ignore ~s?")
@@ -754,9 +754,9 @@ Force the checking for new message in the thread the selected message belong."
 
 (defun attach-move (amount)
   (ignore-errors
-    (line-oriented-window:unselect-all specials:*send-message-window*)
-    (line-oriented-window:row-move     specials:*send-message-window* amount)
-    (draw specials:*send-message-window*)))
+    (line-oriented-window:unselect-all *send-message-window*)
+    (line-oriented-window:row-move     *send-message-window* amount)
+    (draw *send-message-window*)))
 
 (defun attach-go-down ()
   (attach-move 1))
@@ -766,9 +766,9 @@ Force the checking for new message in the thread the selected message belong."
 
 (defun attach-delete ()
   "Delete an attach"
-  (line-oriented-window:selected-row-delete specials:*send-message-window*)
-  (win-clear specials:*send-message-window*)
-  (draw specials:*send-message-window*))
+  (line-oriented-window:selected-row-delete *send-message-window*)
+  (win-clear *send-message-window*)
+  (draw *send-message-window*))
 
 (defun attach-add ()
   "Add an attach"
@@ -818,17 +818,17 @@ Force the checking for new message in the thread the selected message belong."
 
 (defun cancel-send-message ()
   "Cancel sending operation"
-  (close-window-and-return-to-threads specials:*send-message-window*))
+  (close-window-and-return-to-threads *send-message-window*))
 
 (defun edit-message-body ()
   "Edit message"
-  (when (and specials:*send-message-window*
-             (sending-message:message-data specials:*send-message-window*))
+  (when (and *send-message-window*
+             (sending-message:message-data *send-message-window*))
     (with-accessors ((body       sending-message:body)
                      (subject    sending-message:subject)
                      (reply-to   sending-message:reply-to)
                      (visibility sending-message:visibility))
-        (sending-message:message-data specials:*send-message-window*)
+        (sending-message:message-data *send-message-window*)
       (let ((temp-file (fs:temporary-file)))
         (with-open-file (stream temp-file
                                 :direction         :output
@@ -938,7 +938,7 @@ Force the checking for new message in the thread the selected message belong."
 
 (defun reply-message ()
   "Reply to message"
-  (when-let* ((win              specials:*thread-window*)
+  (when-let* ((win              *thread-window*)
               (selected-message (line-oriented-window:selected-row-fields win))
               (timeline         (thread-window:timeline-type   win))
               (folder           (thread-window:timeline-folder win))
@@ -950,10 +950,10 @@ Force the checking for new message in the thread the selected message belong."
 
 (defun send-message ()
   "Send message"
-  (when (and specials:*send-message-window*
-             (sending-message:message-data specials:*send-message-window*))
-    (let ((data               (sending-message:message-data specials:*send-message-window*))
-          (attachments        (line-oriented-window:rows specials:*send-message-window*))
+  (when (and *send-message-window*
+             (sending-message:message-data *send-message-window*))
+    (let ((data               (sending-message:message-data *send-message-window*))
+          (attachments        (line-oriented-window:rows *send-message-window*))
           (max-allowed-attach (swconf:max-attachments-allowed)))
         (if (> (length attachments)
                max-allowed-attach)
@@ -969,16 +969,16 @@ Force the checking for new message in the thread the selected message belong."
 
 (defun open-message-attach ()
   "Open message attachments window"
-  (when-let* ((win              specials:*thread-window*)
+  (when-let* ((win              *thread-window*)
               (selected-message (line-oriented-window:selected-row-fields win)))
     (open-attach-window:init (db:row-message-status-id selected-message))
     (focus-to-open-attach-window)))
 
 (defun open-message-attach-move (amount)
   (ignore-errors
-    (line-oriented-window:unselect-all specials:*open-attach-window*)
-    (line-oriented-window:row-move     specials:*open-attach-window* amount)
-    (draw specials:*open-attach-window*)))
+    (line-oriented-window:unselect-all *open-attach-window*)
+    (line-oriented-window:row-move     *open-attach-window* amount)
+    (draw *open-attach-window*)))
 
 (defun open-message-attach-go-down ()
   (open-message-attach-move 1))
@@ -987,15 +987,15 @@ Force the checking for new message in the thread the selected message belong."
   (open-message-attach-move -1))
 
 (defun open-message-attach-perform-opening ()
-  (when-let* ((selected-line (line-oriented-window:selected-row specials:*open-attach-window*))
+  (when-let* ((selected-line (line-oriented-window:selected-row *open-attach-window*))
               (url           (line-oriented-window:normal-text selected-line)))
   (open-attach-window:open-attachment url)))
 
 (defun close-open-attach-window ()
-  (close-window-and-return-to-threads specials:*open-attach-window*))
+  (close-window-and-return-to-threads *open-attach-window*))
 
 (defun open-gemini-message-link-window ()
-  (let* ((window   specials:*message-window*)
+  (let* ((window   *message-window*)
          (metadata (message-window:metadata window))
          (links    (gemini-viewer:gemini-metadata-links metadata)))
     (open-message-link-window:init-gemini-links links)
@@ -1005,18 +1005,18 @@ Force the checking for new message in the thread the selected message belong."
   "Open message links window
 
 Browse and optionally open the links the text of the message window contains."
-  (if (message-window:display-gemini-text-p specials:*message-window*)
+  (if (message-window:display-gemini-text-p *message-window*)
       (open-gemini-message-link-window)
-      (when-let* ((win              specials:*thread-window*)
+      (when-let* ((win              *thread-window*)
                   (selected-message (line-oriented-window:selected-row-fields win)))
         (open-message-link-window:init (db:row-message-status-id selected-message))
         (focus-to-open-message-link-window))))
 
 (defun open-message-link-move (amount)
   (ignore-errors
-    (line-oriented-window:unselect-all specials:*open-message-link-window*)
-    (line-oriented-window:row-move     specials:*open-message-link-window* amount)
-    (draw specials:*open-message-link-window*)))
+    (line-oriented-window:unselect-all *open-message-link-window*)
+    (line-oriented-window:row-move     *open-message-link-window* amount)
+    (draw *open-message-link-window*)))
 
 (defun open-message-link-go-down ()
   (open-message-link-move 1))
@@ -1024,17 +1024,27 @@ Browse and optionally open the links the text of the message window contains."
 (defun open-message-link-go-up ()
   (open-message-link-move -1))
 
-(defun open-message-link-perform-opening ()
-  (when-let* ((selected-line (line-oriented-window:selected-row specials:*open-message-link-window*))
+(defun %open-message-link-perform-opening (enqueue)
+  (when-let* ((selected-line (line-oriented-window:selected-row *open-message-link-window*))
               (url           (line-oriented-window:normal-text selected-line)))
-  (open-message-link-window:open-message-link url)))
+    (open-message-link-window:open-message-link url enqueue)))
+
+(defun open-message-link-perform-opening ()
+  (%open-message-link-perform-opening nil))
+
+(defun open-message-link-open-enqueue ()
+  "Open the url and keep the data stream in background
+
+This makes sense only for gemini file stream, if not this command performs the same as
+'open-message-link-perform-opening'"
+  (%open-message-link-perform-opening t))
 
 (defun close-open-message-link-window ()
-  (when (message-window:display-gemini-text-p specials:*open-message-link-window*)
+  (when (message-window:display-gemini-text-p *open-message-link-window*)
     (open-message-link-window:forget-gemini-link-window))
-  (if (message-window:display-gemini-text-p specials:*message-window*)
-      (close-window-and-return-to-message specials:*open-message-link-window*)
-      (close-window-and-return-to-threads specials:*open-message-link-window*)))
+  (if (message-window:display-gemini-text-p *message-window*)
+      (close-window-and-return-to-message *open-message-link-window*)
+      (close-window-and-return-to-threads *open-message-link-window*)))
 
 (defun prompt-for-username (prompt complete-function event
                             notify-starting-message
@@ -1068,9 +1078,9 @@ Browse and optionally open the links the text of the message window contains."
 
 (defun follow-request-move (amount)
   (ignore-errors
-    (line-oriented-window:unselect-all specials:*follow-requests-window*)
-    (line-oriented-window:row-move     specials:*follow-requests-window* amount)
-    (draw specials:*follow-requests-window*)))
+    (line-oriented-window:unselect-all *follow-requests-window*)
+    (line-oriented-window:row-move     *follow-requests-window* amount)
+    (draw *follow-requests-window*)))
 
 (defun follow-request-go-down ()
   (follow-request-move 1))
@@ -1079,15 +1089,15 @@ Browse and optionally open the links the text of the message window contains."
   (follow-request-move -1))
 
 (defun follow-request-delete ()
-  (line-oriented-window:selected-row-delete specials:*follow-requests-window*)
-  (draw specials:*follow-requests-window*))
+  (line-oriented-window:selected-row-delete *follow-requests-window*)
+  (draw *follow-requests-window*))
 
 (defun start-follow-request-processing ()
   (let ((event (make-instance 'open-follow-requests-window-event)))
     (push-event event)))
 
 (defun close-follow-requests-window ()
-  (close-window-and-return-to-threads specials:*follow-requests-window*))
+  (close-window-and-return-to-threads *follow-requests-window*))
 
 (defun cancel-follow-requests ()
   (close-follow-requests-window))
@@ -1099,9 +1109,9 @@ Browse and optionally open the links the text of the message window contains."
 
 (defun tag-move (amount)
   (ignore-errors
-    (line-oriented-window:unselect-all specials:*tags-window*)
-    (line-oriented-window:row-move     specials:*tags-window* amount)
-    (draw specials:*tags-window*)))
+    (line-oriented-window:unselect-all *tags-window*)
+    (line-oriented-window:row-move     *tags-window* amount)
+    (draw *tags-window*)))
 
 (defun tag-go-down ()
   (tag-move 1))
@@ -1111,7 +1121,7 @@ Browse and optionally open the links the text of the message window contains."
 
 (defun open-tag-folder ()
   "Open tag folder"
-  (when-let* ((selected-line  (line-oriented-window:selected-row specials:*tags-window*))
+  (when-let* ((selected-line  (line-oriented-window:selected-row *tags-window*))
               (tag            (line-oriented-window:normal-text  selected-line))
               (refresh-thread (make-instance 'refresh-thread-windows-event
                                              :new-timeline db:+default-tag-timeline+
@@ -1124,8 +1134,8 @@ Browse and optionally open the links the text of the message window contains."
 (defun update-conversations ()
   "Update conversations"
   (flet ((update ()
-           (let* ((timeline     (thread-window:timeline-type   specials:*thread-window*))
-                  (folder       (thread-window:timeline-folder specials:*thread-window*))
+           (let* ((timeline     (thread-window:timeline-type   *thread-window*))
+                  (folder       (thread-window:timeline-folder *thread-window*))
                   (update-event (make-instance 'update-conversations-event
                                                :new-timeline timeline
                                                :new-folder   folder)))
@@ -1147,9 +1157,9 @@ Browse and optionally open the links the text of the message window contains."
 
 (defun conversation-move (amount)
   (ignore-errors
-    (line-oriented-window:unselect-all specials:*conversations-window*)
-    (line-oriented-window:row-move     specials:*conversations-window* amount)
-    (draw specials:*conversations-window*)))
+    (line-oriented-window:unselect-all *conversations-window*)
+    (line-oriented-window:row-move     *conversations-window* amount)
+    (draw *conversations-window*)))
 
 (defun conversation-go-down ()
   (conversation-move 1))
@@ -1159,7 +1169,7 @@ Browse and optionally open the links the text of the message window contains."
 
 (defun goto-conversation ()
   (when-let* ((selected-row  (line-oriented-window:selected-row
-                              specials:*conversations-window*))
+                              *conversations-window*))
               (folder        (line-oriented-window:normal-text selected-row))
               (refresh-event (make-instance 'refresh-thread-windows-event
                                             :new-timeline db:+default-converation-timeline+
@@ -1209,7 +1219,7 @@ Browse and optionally open the links the text of the message window contains."
                (push-event ignore-event)
                (push-event refresh-event)))))
     (when-let* ((selected-row (line-oriented-window:selected-row
-                                specials:*conversations-window*))
+                                *conversations-window*))
                 (folder       (line-oriented-window:normal-text selected-row)))
       (ask-string-input #'on-input-complete
                         :prompt (format nil
@@ -1225,7 +1235,7 @@ Browse and optionally open the links the text of the message window contains."
                (push-event delete-event)
                (push-event refresh-event)))))
     (when-let* ((selected-row (line-oriented-window:selected-row
-                                specials:*conversations-window*))
+                                *conversations-window*))
                 (folder       (line-oriented-window:normal-text selected-row)))
       (ask-string-input #'on-input-complete
                         :prompt (format nil
@@ -1234,7 +1244,7 @@ Browse and optionally open the links the text of the message window contains."
 
 (defun report-status ()
   "Report status to admins"
-  (let* ((selected-row (line-oriented-window:selected-row-fields specials:*thread-window*))
+  (let* ((selected-row (line-oriented-window:selected-row-fields *thread-window*))
          (status-id    (db:row-message-status-id selected-row))
          (username     (db:row-message-username selected-row))
          (account-id   (db:acct->id username)))
@@ -1337,7 +1347,7 @@ Browse and optionally open the links the text of the message window contains."
   (let ((lines (text-utils:split-lines +help-about-message+))
         (bg    (swconf:win-bg swconf:+key-help-dialog+))
         (fg    (swconf:win-fg swconf:+key-help-dialog+)))
-    (windows:make-blocking-message-dialog specials:*main-window*
+    (windows:make-blocking-message-dialog *main-window*
                                           nil
                                           (_ "About this software")
                                           lines
@@ -1349,8 +1359,8 @@ Browse and optionally open the links the text of the message window contains."
 For each timeline the software keep tracks of the oldest and newes toot fetched from the instance, This way we can expand the messages thread from the point we left after the latest update.
 
 This command will remove those limits so that we can just jump to the last messages posted on the instance and start expanding toots from there."
-  (let* ((timeline (thread-window:timeline-type specials:*thread-window*))
-         (folder   (thread-window:timeline-folder specials:*thread-window*)))
+  (let* ((timeline (thread-window:timeline-type *thread-window*))
+         (folder   (thread-window:timeline-folder *thread-window*)))
     (with-blocking-notify-procedure ((_ "Clearing pagination data"))
       (db:remove-pagination-status folder timeline))))
 
@@ -1373,7 +1383,7 @@ This command will remove those limits so that we can just jump to the last messa
                     (_ "Invalid choices, usa a space separated list of positive integers."))
                    (db-utils:with-ready-database (:connect nil)
                      (when-let* ((fields    (line-oriented-window:selected-row-fields
-                                             specials:*thread-window*))
+                                             *thread-window*))
                                  (status-id (db:row-message-status-id fields))
                                  (poll      (db:find-poll-bound-to-status status-id))
                                  (poll-id   (db:row-id poll))
@@ -1393,7 +1403,7 @@ This command will remove those limits so that we can just jump to the last messa
                                                             (_ "Choice sent."))
                              (push-event event)))))))))
     (when-let* ((fields (line-oriented-window:selected-row-fields
-                         specials:*thread-window*))
+                         *thread-window*))
                 (status-id (db:row-message-status-id fields)))
       (let ((poll (db:find-poll-bound-to-status status-id)))
         (if poll
@@ -1425,7 +1435,7 @@ mot recent updated to least recent"
   (focus-to-chats-list-window))
 
 (defun close-chats-list-window ()
-  (close-window-and-return-to-threads specials:*chats-list-window*))
+  (close-window-and-return-to-threads *chats-list-window*))
 
 (defun update-all-chats-messages ()
   (program-events:push-event (make-instance 'program-events:update-all-chat-messages-event)))
@@ -1475,7 +1485,7 @@ mot recent updated to least recent"
     (%loop)))
 
 (defun open-chat-link-window ()
-  (let* ((window   specials:*message-window*)
+  (let* ((window   *message-window*)
          (chat     (message-window:metadata window))
          (chat-id  (db:row-id chat))
          (links    (db:all-chat-links chat-id)))
@@ -1522,9 +1532,9 @@ mot recent updated to least recent"
 
 (defun chat-list-move (amount)
   (ignore-errors
-    (line-oriented-window:unselect-all specials:*chats-list-window*)
-    (line-oriented-window:row-move     specials:*chats-list-window* amount)
-    (draw specials:*chats-list-window*)))
+    (line-oriented-window:unselect-all *chats-list-window*)
+    (line-oriented-window:row-move     *chats-list-window* amount)
+    (draw *chats-list-window*)))
 
 (defun chat-list-go-up ()
   (chat-list-move -1))
@@ -1553,11 +1563,11 @@ mot recent updated to least recent"
 
 (defun gemini-view-source ()
   "Shows the source of current gemini page"
-  (gemini-viewer:view-source specials:*message-window*))
+  (gemini-viewer:view-source *message-window*))
 
 (defun gemini-abort-download ()
   "Stop a transferring data from a gemini server"
-  (when-let* ((fields (line-oriented-window:selected-row-fields specials:*gemini-streams-window*))
+  (when-let* ((fields (line-oriented-window:selected-row-fields *gemini-streams-window*))
               (uri-to-abort (gemini-viewer:download-uri fields))
               (event        (make-instance 'gemini-abort-downloading-event
                                            :payload  uri-to-abort
@@ -1571,9 +1581,9 @@ mot recent updated to least recent"
 
 (defun gemini-streams-move (amount)
   (ignore-errors
-    (line-oriented-window:unselect-all specials:*gemini-streams-window*)
-    (line-oriented-window:row-move     specials:*gemini-streams-window* amount)
-    (draw specials:*gemini-streams-window*)))
+    (line-oriented-window:unselect-all *gemini-streams-window*)
+    (line-oriented-window:row-move     *gemini-streams-window* amount)
+    (draw *gemini-streams-window*)))
 
 (defun gemini-streams-window-up ()
   "Move to the upper stream in the list."
@@ -1585,10 +1595,10 @@ mot recent updated to least recent"
 
 (defun gemini-streams-window-close ()
   "Close the streams window."
-  (close-window-and-return-to-message specials:*gemini-streams-window*))
+  (close-window-and-return-to-message *gemini-streams-window*))
 
 (defun gemini-streams-window-open-stream ()
   "Open the selected stream."
-  (when-let* ((fields (line-oriented-window:selected-row-fields specials:*gemini-streams-window*))
+  (when-let* ((fields (line-oriented-window:selected-row-fields *gemini-streams-window*))
               (uri-to-open (gemini-viewer:download-uri fields)))
     (gemini-viewer:db-entry-to-foreground uri-to-open)))
