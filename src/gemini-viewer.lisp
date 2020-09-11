@@ -542,6 +542,7 @@
         (when suggested-message-index
           (select-row object suggested-message-index))
         (when redraw
+          (win-clear object)
           (draw object))))))
 
 ;; (defmethod draw :before ((object gemini-streams-window))
