@@ -2002,6 +2002,7 @@
    :remove-db-stream
    :find-db-stream-if
    :find-db-stream-url
+   :ensure-just-one-stream-rendering
    :db-entry-to-foreground
    :gemini-metadata-p
    :make-gemini-metadata

@@ -378,9 +378,12 @@
                     (write-string (linkify link-value link-value) stream)))))))))
 
 (defun parse-gemini-file (data)
-  (let ((was-raw-mode *raw-mode*)
-        (parsed       (parse 'gemini-file (strcat data (string #\Newline))
-                             :junk-allowed t)))
+  (let* ((was-raw-mode *raw-mode*)
+         (actual-data  (if (and (string-not-empty-p data)
+                                (char/= (last-elt data) #\Newline))
+                           (strcat data (string #\Newline))
+                           data))
+         (parsed       (parse 'gemini-file actual-data :junk-allowed t)))
     (if was-raw-mode
         (if *raw-mode*
             (list (html-utils:make-tag-node :as-is nil data))

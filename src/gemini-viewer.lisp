@@ -17,6 +17,8 @@
 
 (in-package :gemini-viewer)
 
+(defparameter *gemini-db-streams-lock* (bt:make-recursive-lock))
+
 (define-constant +read-buffer-size+ 1024
   :documentation "Chunk's size of the buffer when reading non gemini contents from stream")
 
@@ -41,12 +43,21 @@
 (defun find-db-stream-url (url)
   (find-db-stream-if (lambda (a) (string= (download-uri a) url))))
 
+(defun ensure-just-one-stream-rendering ()
+  (with-lock (*gemini-db-streams-lock*)
+    (when-let ((current-rendering (find-db-stream-if (lambda (a)
+                                                       (eq (stream-status a)
+                                                           :rendering)))))
+      (setf (stream-status current-rendering) :streaming))))
+
 (defun db-entry-to-foreground (uri)
   (when-let* ((stream-object (find-db-stream-url uri)))
     (with-accessors ((support-file support-file)
                      (meta         meta)) stream-object
       (if (gemini-client:mime-gemini-p meta)
-          (setf (stream-status stream-object) :rendering)
+          (progn
+            (ensure-just-one-stream-rendering)
+            (setf (stream-status stream-object) :rendering))
           (os-utils:xdg-open support-file)))))
 
 (defclass gemini-stream ()
@@ -338,7 +349,7 @@
                            (%fill-buffer)))))))
           (%fill-buffer))))))
 
-(defun request (url &key (enqueue nil))
+(defun request (url &key (enqueue nil) (do-nothing-if-exists-in-db t))
   (let ((parsed-uri (quri:uri url)))
     (maybe-initialize-metadata specials:*message-window*)
     (if (null parsed-uri)
@@ -350,135 +361,142 @@
               (query (quri:uri-query parsed-uri))
               (port  (or (quri:uri-port  parsed-uri)
                          gemini-client:+gemini-default-port+)))
-          (handler-case
-              (labels ((gemini-file-stream-p (meta)
-                         (gemini-client:mime-gemini-p meta))
-                       (starting-status (meta)
-                         (if (gemini-file-stream-p meta)
-                             (if enqueue
-                                 nil
-                                 :rendering)
-                             (if enqueue
-                                 nil
-                                 :running)))
-                       (get-user-input (hide-input host prompt)
-                         (flet ((on-input-complete (input)
-                                  (when (string-not-empty-p input)
+          (when (not (and do-nothing-if-exists-in-db
+                          (find-db-stream-url (gemini-parser:make-gemini-uri host
+                                                                             path
+                                                                             query
+                                                                             port))))
+            (when (null enqueue)
+              (ensure-just-one-stream-rendering))
+            (handler-case
+                (labels ((gemini-file-stream-p (meta)
+                           (gemini-client:mime-gemini-p meta))
+                         (starting-status (meta)
+                           (if (gemini-file-stream-p meta)
+                               (if enqueue
+                                   :streaming
+                                   :rendering)
+                               (if enqueue
+                                   :streaming
+                                   :running)))
+                         (get-user-input (hide-input host prompt)
+                           (flet ((on-input-complete (input)
+                                    (when (string-not-empty-p input)
+                                      (db-utils:with-ready-database (:connect nil)
+                                        (request (gemini-parser:make-gemini-uri host
+                                                                                path
+                                                                                input
+                                                                                port))))))
+                             (ui:ask-string-input #'on-input-complete
+                                                  :hide-input hide-input
+                                                  :prompt (format nil
+                                                                  (_ "Server ~s asks: ~s ")
+                                                                  host
+                                                                  prompt)))))
+                  (multiple-value-bind (status code-description meta response socket)
+                      (gemini-client:request host
+                                             path
+                                             :query query
+                                             :port  port)
+                    (add-url-to-history specials:*message-window* url)
+                    (cond
+                      ((gemini-client:response-redirect-p status)
+                       (flet ((on-input-complete (maybe-accepted)
+                                (when (ui::boolean-input-accepted-p maybe-accepted)
+                                  (let ((new-url (gemini-parser:absolutize-link meta
+                                                                                (quri:uri-host parsed-uri)
+                                                                                (quri:uri-port parsed-uri)
+                                                                                (quri:uri-path parsed-uri))))
                                     (db-utils:with-ready-database (:connect nil)
-                                      (request (gemini-parser:make-gemini-uri host
-                                                                              path
-                                                                              input
-                                                                              port))))))
-                           (ui:ask-string-input #'on-input-complete
-                                                :hide-input hide-input
-                                                :prompt (format nil
-                                                                (_ "Server ~s asks: ~s ")
-                                                                host
-                                                                prompt)))))
-                (multiple-value-bind (status code-description meta response socket)
-                    (gemini-client:request host
-                                           path
-                                           :query query
-                                           :port  port)
-                  (add-url-to-history specials:*message-window* url)
-                  (cond
-                    ((gemini-client:response-redirect-p status)
-                     (flet ((on-input-complete (maybe-accepted)
-                              (when (ui::boolean-input-accepted-p maybe-accepted)
-                                (let ((new-url (gemini-parser:absolutize-link meta
-                                                                              (quri:uri-host parsed-uri)
-                                                                              (quri:uri-port parsed-uri)
-                                                                              (quri:uri-path parsed-uri))))
-                                  (db-utils:with-ready-database (:connect nil)
-                                    (request new-url))))))
-                       (ui:ask-string-input #'on-input-complete
-                                            :priority program-events:+minimum-event-priority+
-                                            :prompt
-                                            (format nil
-                                                    (_ "Redirects to ~s, follows redirect? [y/N] ")
-                                                    meta))))
-                    ((gemini-client:response-input-p status)
-                     (get-user-input nil host meta))
-                    ((gemini-client:response-sensitive-input-p status)
-                     (get-user-input t host meta))
-                    ((streamp response)
-                     (if (gemini-file-stream-p meta)
-                         (let* ((starting-status (starting-status meta))
-                                (gemini-stream   (make-instance 'gemini-file-stream
-                                                                :host            host
-                                                                :port            port
-                                                                :path            path
-                                                                :meta            meta
-                                                                :status-code     status
-                                                                :status-code-description
-                                                                code-description
-                                                                :stream-status   starting-status
-                                                                :download-stream response
-                                                                :download-socket socket))
-                                (thread-fn
-                                 (request-stream-gemini-document-thread gemini-stream
-                                                                        host
-                                                                        port
-                                                                        path
-                                                                        query))
-                                (enqueue-event (make-instance 'program-events:gemini-enqueue-download-event
-                                                              :payload gemini-stream)))
-                           (program-events:push-event enqueue-event)
-                           (downloading-start-thread gemini-stream
-                                                     thread-fn
-                                                     host
-                                                     port
-                                                     path
-                                                     query))
-                         (let* ((starting-status (starting-status meta))
-                                (gemini-stream   (make-instance 'gemini-others-data-stream
-                                                                :stream-status   starting-status
-                                                                :download-stream response
-                                                                :download-socket socket))
-                                (thread-fn
-                                 (request-stream-other-document-thread gemini-stream
-                                                                       socket
-                                                                       host
-                                                                       port
-                                                                       path
-                                                                       query
-                                                                       status
-                                                                       code-description
-                                                                       meta))
-                                (enqueue-event (make-instance 'program-events:gemini-enqueue-download-event
-                                                              :payload gemini-stream)))
-                           (program-events:push-event enqueue-event)
-                           (downloading-start-thread gemini-stream
-                                                     thread-fn
-                                                     host
-                                                     port
-                                                     path
-                                                     query)))))))
-            (gemini-client:gemini-tofu-error (e)
-              (let ((host (gemini-client:host e)))
-                (flet ((on-input-complete (maybe-accepted)
-                         (when (ui::boolean-input-accepted-p maybe-accepted)
-                           (db-utils:with-ready-database (:connect nil)
-                             (db:tofu-delete host)
-                             (request url)))))
-                  (ui:ask-string-input #'on-input-complete
-                                       :prompt
-                                       (format nil
-                                               (_ "Host ~s signature changed! This is a potential security risk! Ignore this warning? [y/N] ")
-                                               host)))))
-            (conditions:not-implemented-error (e)
-              (ui:notify (format nil (_ "Error: ~a") e)
-                         :as-error t))
-            (gemini-client:gemini-protocol-error (e)
-              (ui:notify (format nil "~a" e)
-                         :as-error t))
-            #-debug-mode
-            (error (e)
-              (ui:notify (format nil
-                                 (_ "Error getting ~s: ~a")
-                                 url
-                                 e)
-                         :as-error t)))))))
+                                      (request new-url))))))
+                         (ui:ask-string-input #'on-input-complete
+                                              :priority program-events:+minimum-event-priority+
+                                              :prompt
+                                              (format nil
+                                                      (_ "Redirects to ~s, follows redirect? [y/N] ")
+                                                      meta))))
+                      ((gemini-client:response-input-p status)
+                       (get-user-input nil host meta))
+                      ((gemini-client:response-sensitive-input-p status)
+                       (get-user-input t host meta))
+                      ((streamp response)
+                       (if (gemini-file-stream-p meta)
+                           (let* ((starting-status (starting-status meta))
+                                  (gemini-stream   (make-instance 'gemini-file-stream
+                                                                  :host            host
+                                                                  :port            port
+                                                                  :path            path
+                                                                  :meta            meta
+                                                                  :status-code     status
+                                                                  :status-code-description
+                                                                  code-description
+                                                                  :stream-status   starting-status
+                                                                  :download-stream response
+                                                                  :download-socket socket))
+                                  (thread-fn
+                                   (request-stream-gemini-document-thread gemini-stream
+                                                                          host
+                                                                          port
+                                                                          path
+                                                                          query))
+                                  (enqueue-event (make-instance 'program-events:gemini-enqueue-download-event
+                                                                :payload gemini-stream)))
+                             (program-events:push-event enqueue-event)
+                             (downloading-start-thread gemini-stream
+                                                       thread-fn
+                                                       host
+                                                       port
+                                                       path
+                                                       query))
+                           (let* ((starting-status (starting-status meta))
+                                  (gemini-stream   (make-instance 'gemini-others-data-stream
+                                                                  :stream-status   starting-status
+                                                                  :download-stream response
+                                                                  :download-socket socket))
+                                  (thread-fn
+                                   (request-stream-other-document-thread gemini-stream
+                                                                         socket
+                                                                         host
+                                                                         port
+                                                                         path
+                                                                         query
+                                                                         status
+                                                                         code-description
+                                                                         meta))
+                                  (enqueue-event (make-instance 'program-events:gemini-enqueue-download-event
+                                                                :payload gemini-stream)))
+                             (program-events:push-event enqueue-event)
+                             (downloading-start-thread gemini-stream
+                                                       thread-fn
+                                                       host
+                                                       port
+                                                       path
+                                                       query)))))))
+              (gemini-client:gemini-tofu-error (e)
+                (let ((host (gemini-client:host e)))
+                  (flet ((on-input-complete (maybe-accepted)
+                           (when (ui::boolean-input-accepted-p maybe-accepted)
+                             (db-utils:with-ready-database (:connect nil)
+                               (db:tofu-delete host)
+                               (request url)))))
+                    (ui:ask-string-input #'on-input-complete
+                                         :prompt
+                                         (format nil
+                                                 (_ "Host ~s signature changed! This is a potential security risk! Ignore this warning? [y/N] ")
+                                                 host)))))
+              (conditions:not-implemented-error (e)
+                (ui:notify (format nil (_ "Error: ~a") e)
+                           :as-error t))
+              (gemini-client:gemini-protocol-error (e)
+                (ui:notify (format nil "~a" e)
+                           :as-error t))
+              #-debug-mode
+              (error (e)
+                (ui:notify (format nil
+                                   (_ "Error getting ~s: ~a")
+                                   url
+                                   e)
+                           :as-error t))))))))
 
 (defun history-back (window)
   (when-let* ((metadata (message-window:metadata window))
