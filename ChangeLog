@@ -1,3 +1,226 @@
+2020-09-12  cage
+
+	* po/it.po, po/tinmop.pot:
+
+	- updated italian translation.
+
+2020-09-12  cage
+
+	* src/filesystem-utils.lisp, src/package.lisp, src/ui-goodies.lisp:
+
+	- added exit handler to clean temporary files.
+
+2020-09-12  cage
+
+	* etc/shared.conf:
+
+	- improved regular expressions for message coloring.
+
+2020-09-12  cage
+
+	* etc/shared.conf, src/gemini-viewer.lisp,
+	src/gemini/gemini-parser.lisp, src/package.lisp,
+	src/ui-goodies.lisp:
+
+	- [gemini] ensure just  a single gemini file is in  rendering state
+	at the same time;
+	- [gemini] add  a newline to  data before  parsing a gemini  file
+	only when needed (there is no one at the end);
+	- commented and improved some regular expressions for coloring.
+
+2020-09-11  cage
+
+	* src/gemini-viewer.lisp:
+
+	- [gemini] clear the streams window before redrawing when refreshing
+	the window's contents.
+
+2020-09-11  cage
+
+	* etc/init.lisp, src/open-message-link-window.lisp,
+	src/package.lisp, src/ui-goodies.lisp:
+
+	- [gemini] feature  added:  start  downloading  a  gemini  file  in
+	background (i.e. without rendering on the window);
+	- removed explicit package name 'specials' in ui-goodies.lisp.
+
+2020-09-10  cage
+
+	* po/it.po, po/tinmop.pot:
+
+	- updated italian translation.
+
+2020-09-10  cage
+
+	* etc/default-theme.conf, src/chats-list-window.lisp:
+
+	- fixed chat list windows items.
+
+2020-09-10  cage
+
+	* etc/init.lisp, src/api-pleroma.lisp,
+	src/line-oriented-window.lisp, src/message-window.lisp,
+	src/package.lisp, src/program-events.lisp, src/ui-goodies.lisp:
+
+	- added feature create new chat;
+	- fixed crash when selecting a chat with no messages.
+
+2020-09-09  cage
+
+	* etc/default-theme.conf, etc/init.lisp,
+	src/chats-list-window.lisp, src/conversations-window.lisp,
+	src/db.lisp, src/package.lisp, src/program-events.lisp,
+	src/scheduled-events.lisp, src/software-configuration.lisp,
+	src/ui-goodies.lisp, src/windows.lisp:
+
+	- changed position and (configurable) colors for chat window;
+	- added feature: change chat labels.
+
+2020-09-07  cage
+
+	* src/chats-list-window.lisp:
+
+	- prevent printing of chat messages from ignored users.
+
+2020-09-06  cage
+
+	* po/it.po, po/tinmop.pot:
+
+	- updated italian translation.
+
+2020-09-06  cage
+
+	* etc/init.lisp, src/db.lisp, src/open-message-link-window.lisp,
+	src/package.lisp, src/ui-goodies.lisp:
+
+	- added chat attachments browsing window.
+
+2020-09-06  cage
+
+	* etc/init.lisp, src/chats-list-window.lisp, src/keybindings.lisp,
+	src/main.lisp, src/message-window.lisp, src/package.lisp,
+	src/program-events.lisp, src/scheduled-events.lisp,
+	src/ui-goodies.lisp:
+
+	- basics chats works.
+
+2020-09-06  cage
+
+	* src/program-events.lisp, src/ui-goodies.lisp:
+
+	- given focus to message window when a chat is opened;
+
+	- scroll to end of chat when new message arrived.
+
+2020-09-06  cage
+
+	* po/it.po, po/tinmop.pot, src/api-pleroma.lisp,
+	src/chats-list-window.lisp, src/complete.lisp, src/db.lisp,
+	src/main.lisp, src/message-window.lisp, src/package.lisp,
+	src/program-events.lisp, src/scheduled-events.lisp,
+	src/ui-goodies.lisp, tinmop.asd:
+
+	- posting on chats works;
+	- fixed ordering  in db:all-chat-messages (message-id was  not a
+	valid column name);
+	- added scheduled events;
+	- minor changes in labels.
+
+2020-09-06  cage
+
+	* src/api-client.lisp, src/api-pleroma-entities.lisp,
+	src/api-pleroma.lisp, src/box.lisp, src/bs-tree.lisp,
+	src/chats-list-window.lisp, src/command-line.lisp,
+	src/command-window.lisp, src/complete-window.lisp,
+	src/conditions.lisp, src/config.lisp.in, src/constants.lisp,
+	src/conversations-window.lisp, src/crypto-utils.lisp,
+	src/date-formatter.lisp, src/db-utils.lisp, src/db.lisp,
+	src/emoji-shortcodes.lisp, src/filesystem-utils.lisp,
+	src/follow-requests.lisp, src/gemini-viewer-metadata.lisp,
+	src/gemini-viewer.lisp, src/gemini/client.lisp,
+	src/gemini/gemini-constants.lisp, src/gemini/gemini-parser.lisp,
+	src/gemini/package.lisp, src/hooks.lisp, src/html-utils.lisp,
+	src/interfaces.lisp, src/keybindings-window.lisp,
+	src/keybindings.lisp, src/line-oriented-window.lisp,
+	src/main-window.lisp, src/main.lisp,
+	src/message-rendering-utils.lisp, src/message-window.lisp,
+	src/misc-utils.lisp, src/modeline-window.lisp, src/modules.lisp,
+	src/mtree-utils.lisp, src/notify-window.lisp, src/num-utils.lisp,
+	src/open-attach-window.lisp, src/open-message-link-window.lisp,
+	src/os-utils.lisp, src/package.lisp, src/point-tracker.lisp,
+	src/priority-queue.lisp, src/program-events.lisp, src/queue.lisp,
+	src/rb-tree.lisp, src/resources-utils.lisp,
+	src/sending-message.lisp, src/software-configuration.lisp,
+	src/specials.lisp, src/stack.lisp, src/suggestions-window.lisp,
+	src/tags-window.lisp, src/tests/all-tests.lisp,
+	src/tests/box-tests.lisp, src/tests/gemini-parser-tests.lisp,
+	src/tests/misc-tests.lisp, src/tests/mtree-tests.lisp,
+	src/tests/numeric-tests.lisp, src/tests/package.lisp,
+	src/tests/program-events-tests.lisp,
+	src/tests/text-utils-tests.lisp,
+	src/tests/thread-window-tests.lisp, src/text-utils.lisp,
+	src/thread-window.lisp, src/tui-utils.lisp, src/ui-goodies.lisp,
+	src/windows.lisp, src/x509-ffi.lisp, src/x509.lisp:
+
+	- changed GPL comment headers.
+
+2020-09-06  cage
+
+	* src/message-window.lisp:
+
+	- fixed vertical position of line mark in message window.
+
+2020-09-06  cage
+
+	* src/line-oriented-window.lisp, src/message-window.lisp:
+
+	- fixed  'line-oriented-window:row-move' must  return always  a
+	number (0), not nil, when no movement occurs;
+	- fixed vertical scrolling boundaries of messages window.
+
+2020-09-05  cage
+
+	* po/it.po, src/api-pleroma.lisp, src/program-events.lisp,
+	src/ui-goodies.lisp:
+
+	- minor cleaning.
+
+2020-09-05  cage
+
+	* po/POTFILES.in, po/it.po, po/tinmop.pot:
+
+	- updated italian translation.
+
+2020-09-05  cage
+
+	* etc/default-theme.conf, etc/init.lisp, etc/shared.conf,
+	src/api-pleroma-entities.lisp, src/api-pleroma.lisp,
+	src/chats-list-window.lisp, src/db.lisp, src/gemini-viewer.lisp,
+	src/keybindings.lisp, src/main.lisp, src/package.lisp,
+	src/program-events.lisp, src/software-configuration.lisp,
+	src/specials.lisp, src/ui-goodies.lisp, tinmop.asd:
+
+	- chats can be fetched, via UI, and printed on window.
+
+2020-09-02  cage
+
+	* src/api-pleroma.lisp, src/package.lisp:
+
+	- [pleroma-API] added 'fetch-chat-message.
+
+2020-09-02  cage
+
+	* src/api-pleroma.lisp, src/db.lisp:
+
+	- added tables for chats;
+	- fixed some slot names for chat entities.
+
+2020-09-02  cage
+
+	* ChangeLog:
+
+	- tracking changes.
+
 2020-09-02  cage
 
         * src/api-pleroma.lisp, src/package.lisp:
