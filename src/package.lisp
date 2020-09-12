@@ -283,7 +283,9 @@
    :delete-file-if-exists
    :file-hash
    :home-dir
+   :*temporary-files-created*
    :temporary-file
+   :clean-temporary-files
    :with-anaphoric-temp-file
    :temp-file
    :file-can-write-p

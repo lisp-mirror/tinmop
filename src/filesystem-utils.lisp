@@ -248,6 +248,8 @@
         (text-utils:strcat home *directory-sep*)
         home)))
 
+(defparameter *temporary-files-created* ())
+
 (defun temporary-file (&optional (temp-directory nil))
   (let ((tmpdir (or temp-directory
                     (os-utils:default-temp-dir))))
@@ -258,7 +260,12 @@
             (nix:mkstemp (format nil "~atmp~a~a" *directory-sep* *directory-sep*
                                 config:+program-name+)))
       (declare (ignore x))
+      (push filename *temporary-files-created*)
       filename)))
+
+(defun clean-temporary-files ()
+  (dolist (temporary-file *temporary-files-created*)
+    (delete-file-if-exists temporary-file)))
 
 (defmacro with-anaphoric-temp-file ((stream &key (prefix nil) (unlink nil)) &body body)
   `(let ((temp-file (temporary-file ,prefix))) ; anaphora

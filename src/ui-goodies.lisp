@@ -27,15 +27,38 @@
   (db-utils:close-db)
   (os-utils:exit-program))
 
+(defun clean-temporary-files ()
+  "Use this to close the program"
+  (flet ((on-input-complete (maybe-accepted)
+           (when (boolean-input-accepted-p maybe-accepted)
+             (fs:clean-temporary-files))
+           (push-event (make-instance 'quit-program-event))))
+    (let ((temporary-text        (strcat (format nil
+                                                 (_ "~a Temporary files~2%")
+                                                 (swconf:gemini-h1-prefix))
+                                         (format nil
+                                                 "~{- ~a~%~}"
+                                                 fs:*temporary-files-created*)))
+          (temporary-files-count (length fs:*temporary-files-created*)))
+      (if (> temporary-files-count 0)
+          (progn
+            (setf (message-window:source-text *message-window*) temporary-text)
+            (windows:draw *message-window*)
+            (ask-string-input #'on-input-complete
+                              :prompt (format nil
+                                              (n_ "Delete ~a temporary file? [y/N] "
+                                                  "Delete ~a temporary files? [y/N] "
+                                                  temporary-files-count)
+                                              temporary-files-count)))
+          (push-event (make-instance 'quit-program-event))))))
+
 (defun clean-close-program ()
   "Use this to close the program"
   (flet ((on-input-complete (maybe-accepted)
-           (if (boolean-input-accepted-p maybe-accepted)
-               (let ((delete-event (make-instance 'delete-all-status-event))
-                     (quit-event   (make-instance 'quit-program-event)))
-                 (push-event delete-event)
-                 (push-event quit-event))
-               (quit-program))))
+           (when (boolean-input-accepted-p maybe-accepted)
+             (let ((delete-event (make-instance 'delete-all-status-event)))
+               (push-event delete-event)
+               (clean-temporary-files)))))
     (let ((delete-count (db:count-status-marked-to-delete)))
       (if (> delete-count 0)
           (ask-string-input #'on-input-complete
@@ -44,7 +67,7 @@
                                                 "Delete ~a messages? [y/N] "
                                                 delete-count)
                                             delete-count))
-          (quit-program)))))
+          (clean-temporary-files)))))
 
 (defun notify (message &key (life nil) (as-error nil) (priority +standard-event-priority+))
   (let ((event (make-instance 'notify-user-event
