@@ -356,16 +356,17 @@
         (ui:error-message (format nil
                                   (_ "Could not understand the address ~s")
                                   url))
-        (let ((host  (quri:uri-host  parsed-uri))
-              (path  (quri:uri-path  parsed-uri))
-              (query (quri:uri-query parsed-uri))
-              (port  (or (quri:uri-port  parsed-uri)
-                         gemini-client:+gemini-default-port+)))
+        (let* ((host       (quri:uri-host  parsed-uri))
+               (path       (quri:uri-path  parsed-uri))
+               (query      (quri:uri-query parsed-uri))
+               (port       (or (quri:uri-port  parsed-uri)
+                               gemini-client:+gemini-default-port+))
+               (actual-uri (gemini-parser:make-gemini-uri host
+                                                          path
+                                                          query
+                                                          port)))
           (when (not (and do-nothing-if-exists-in-db
-                          (find-db-stream-url (gemini-parser:make-gemini-uri host
-                                                                             path
-                                                                             query
-                                                                             port))))
+                          (find-db-stream-url actual-uri)))
             (when (null enqueue)
               (ensure-just-one-stream-rendering))
             (handler-case
@@ -398,7 +399,7 @@
                                              path
                                              :query query
                                              :port  port)
-                    (add-url-to-history specials:*message-window* url)
+                    (add-url-to-history specials:*message-window* actual-uri)
                     (cond
                       ((gemini-client:response-redirect-p status)
                        (flet ((on-input-complete (maybe-accepted)
@@ -505,7 +506,10 @@
     (setf (gemini-metadata-history metadata)
           history)
     (ui:info-message (format nil (_ "Going back to: ~a") last))
-    (request last)))
+    (let ((found (find-db-stream-url last)))
+      (if found
+          (gemini-viewer:db-entry-to-foreground last)
+          (request last))))) ; this should never happens
 
 (defun view-source (window)
   (when-let* ((metadata (message-window:metadata window))
