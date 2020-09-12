@@ -1,8 +1,13 @@
+* 2020-09-12  cage
+
+  Added support for pleroma chat.
+  Added managing of gemini streams. A Steam window allow to abort,
+  rendering/opening of gemini connection while streaming.
+
 * 2020-08-30  cage
 
   Added a  window to manage all  the gemini streams opened.   The user
   can ispect the status o all the streams as well abort or open them.
-
 
 * 2020-08-19
 
