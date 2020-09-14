@@ -565,7 +565,13 @@
 
 (defmethod process-event ((object reblog-status-event))
   (tui:with-notify-errors
-    (change-status-values object #'api-client:reblog-status)))
+    (flet ((boost (status-id)
+             (let* ((status             (db:find-status-id status-id))
+                    (status-id-to-boost (db:row-message-reblog-id status)))
+               (if status-id-to-boost
+                   (api-client:reblog-status status-id-to-boost)
+                   (api-client:reblog-status status-id)))))
+      (change-status-values object #'boost))))
 
 (defclass unreblog-status-event (program-event event-with-message-index) ())
 
