@@ -67,14 +67,17 @@
 (defun open-with-editor (file)
   (multiple-value-bind (exe args)
       (external-editor)
-    (sb-ext:run-program exe
-                        (append (list args)
-                                (list file))
-                        :search t
-                        :wait   t
-                        :input  t
-                        :output t
-                        :error  t)))
+    (let ((actual-args (if args
+                           (list args)
+                           nil)))
+      (sb-ext:run-program exe
+                          (append actual-args
+                                  (list file))
+                          :search t
+                          :wait   t
+                          :input  t
+                          :output t
+                          :error  t))))
 
 (defun exit-program (&optional (exit-code 0))
   (uiop:quit exit-code))

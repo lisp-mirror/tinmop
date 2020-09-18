@@ -585,11 +585,11 @@ and if fetch local (again, to server) statuses only."
   (let ((event (make-instance 'function-event :payload event-payload-function)))
     (notify (_ "Downloading messages.")
             :priority +maximum-event-priority+
-            :life     (* (swconf:config-notification-life) 5))
+            :life     (swconf:config-notification-life))
     (push-event event)
     (notify (_ "Messages downloaded.")
             :priority +minimum-event-priority+
-            :life     (* (swconf:config-notification-life) 5))))
+            :life     (swconf:config-notification-life))))
 
 (defun update-current-timeline (&optional (recover-count 0))
   "Update current timeline
