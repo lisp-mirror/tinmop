@@ -609,6 +609,14 @@
     (ui:focus-to-send-message-window :print-message nil)
     (windows:draw specials:*send-message-window*)))
 
+(defclass send-message-change-mentions-event (program-event) ())
+
+(defmethod process-event ((object send-message-change-mentions-event))
+  (let ((new-mentions   (payload object))
+        (message-data   (sending-message:message-data specials:*send-message-window*)))
+    (setf (sending-message:mentions message-data) new-mentions)
+    (windows:draw specials:*send-message-window*)))
+
 (defclass send-message-add-attachment-event (program-event) ())
 
 (defmethod process-event ((object send-message-add-attachment-event))
@@ -643,6 +651,7 @@
     (with-accessors ((body       sending-message:body)
                      (subject    sending-message:subject)
                      (reply-to   sending-message:reply-to)
+                     (mentions   sending-message:mentions)
                      (visibility sending-message:visibility)) message-data
       (let* ((attachments (mapcar #'line-oriented-window:normal-text rows)))
         (hooks:run-hook 'hooks:*before-sending-message* object)
@@ -652,7 +661,7 @@
           (if exceeding-characters
               (ui:exceeding-characters-notify exceeding-characters)
               (progn
-                (client:send-status body
+                (client:send-status (format nil "~a~%~a" mentions body)
                                     reply-to
                                     attachments
                                     subject

@@ -169,6 +169,8 @@
 
 (define-key "s"         #'change-subject                              *send-message-keymap*)
 
+(define-key "m"         #'change-mentions                             *send-message-keymap*)
+
 (define-key "q"         #'cancel-send-message                         *send-message-keymap*)
 
 (define-key "v"         #'change-visibility                           *send-message-keymap*)

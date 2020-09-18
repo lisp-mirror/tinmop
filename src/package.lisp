@@ -1213,6 +1213,7 @@
    :unreblog-status-event
    :unignore-user-event
    :send-message-change-subject-event
+   :send-message-change-mentions-event
    :send-message-change-visibility-event
    :open-send-message-window-event
    :send-message-add-attachment-event
@@ -1890,6 +1891,7 @@
    :attachments
    :reply-to
    :visibility
+   :mentions
    :body
    :confirm-sending-window
    :message-data
@@ -2165,6 +2167,7 @@
    :process-follow-requests
    :change-subject
    :change-visibility
+   :change-mentions
    :edit-message-body
    :cancel-send-message
    :close-send-message-window

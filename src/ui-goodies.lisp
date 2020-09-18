@@ -827,6 +827,16 @@ Force the checking for new message in the thread the selected message belong."
                       :prompt      (_ "New visibility: ")
                       :complete-fn #'complete:visibility-complete)))
 
+(defun change-mentions ()
+  "Change mentions"
+  (flet ((on-add-mentions (new-mentions)
+           (let* ((event (make-instance 'send-message-change-mentions-event
+                                        :payload new-mentions)))
+             (push-event event))))
+    (ask-string-input #'on-add-mentions
+                      :prompt      (_ "Add mentions: ")
+                      :complete-fn #'complete:username-complete)))
+
 (defmacro close-window-and-return-to-threads (window-to-close)
   `(progn
      (win-close ,window-to-close)

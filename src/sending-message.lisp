@@ -32,6 +32,10 @@
     :initarg  :reply-to
     :accessor reply-to
     :documentation "The id  of table 'status' you are replying to.")
+   (mentions
+    :initform ""
+    :initarg  :mentions
+    :accessor mentions)
    (visibility
     :initform +status-public-visibility+
     :initarg  :visibility
@@ -103,6 +107,7 @@
                      (attachments attachments)
                      (body        body)
                      (subject     subject)
+                     (mentions    mentions)
                      (visibility  visibility)) message-data
       (with-croatoan-window (croatoan-window object)
         (let* ((bgcolor                     (bgcolor croatoan-window))
@@ -113,17 +118,22 @@
                                                 (db:status-id->username reply-to)
                                                 (_ "none")))
                (label-reply-raw             (_ "Reply to: "))
-               (label-subject-raw           (_ "Subject:"))
-               (label-visibility-raw        (_ "Visibility:"))
+               (label-mentions-raw          (_ "Mentions: "))
+               (label-subject-raw           (_ "Subject: "))
+               (label-visibility-raw        (_ "Visibility: "))
                (label-reply-length-raw      (length label-reply-raw))
+               (label-mentions-length-raw    (length label-mentions-raw))
                (label-subject-raw-length    (length label-subject-raw))
                (label-visibility-raw-length (length label-visibility-raw))
                (max-field-length            (max label-reply-length-raw
+                                                 label-mentions-length-raw
                                                  label-subject-raw-length
                                                  label-visibility-raw-length))
                (label-subject               (text-utils:right-padding label-subject-raw
                                                                       max-field-length))
                (label-reply                 (text-utils:right-padding label-reply-raw
+                                                                      max-field-length))
+               (label-mentions              (text-utils:right-padding label-mentions-raw
                                                                       max-field-length))
                (label-visibility            (text-utils:right-padding label-visibility-raw
                                                                       max-field-length))
@@ -144,23 +154,29 @@
                          max-field-length
                          1
                          input-bg input-fg)
-            (print-field label-subject 1 2 bgcolor fgcolor)
-            (print-field (right-padding subject
+            (print-field label-mentions 1 2 bgcolor fgcolor)
+            (print-field (right-padding mentions
                                         value-max-length)
                          max-field-length
                          2
                          input-bg input-fg)
-            (print-field label-visibility 1 3 bgcolor fgcolor)
-            (print-field (right-padding visibility
+            (print-field label-subject 1 3 bgcolor fgcolor)
+            (print-field (right-padding subject
                                         value-max-length)
                          max-field-length
                          3
+                         input-bg input-fg)
+            (print-field label-visibility 1 4 bgcolor fgcolor)
+            (print-field (right-padding visibility
+                                        value-max-length)
+                         max-field-length
+                         4
                          input-bg input-fg)
             (print-field (right-padding (text-ellipsis label-attachments
                                                        (win-width-no-border object))
                                         (win-width-no-border object))
                          1
-                         4
+                         5
                          bgcolor fgcolor
                          :inverse t)))))))
 
