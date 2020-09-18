@@ -193,8 +193,8 @@
 (defmethod initialize-instance :after ((object ask-user-input-string-event)
                                        &key (forced-priority nil) &allow-other-keys)
   (if forced-priority
-        (setf (priority object) forced-priority)
-        (setf (priority object) (truncate (/ +standard-event-priority+ 2)))))
+      (setf (priority object) forced-priority)
+      (setf (priority object) (truncate (/ +standard-event-priority+ 2)))))
 
 (defmethod process-event ((object ask-user-input-string-event))
   (with-accessors ((prompt         prompt)
