@@ -79,11 +79,8 @@
 
 (defmethod stack-raise-to-top ((object stack) val)
   (with-accessors ((container container)) object
-    (when-let ((val-position  (stack-position object val))
-               (last-position (1- (length container))))
-      (misc:swap (elt container val-position)
-                 (elt container 0)))
-    object))
+    (stack-remove object val)
+    (stack-push object val)))
 
 (defmethod stack-remove ((object stack) val)
   (with-accessors ((container container)) object
