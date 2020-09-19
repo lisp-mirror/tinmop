@@ -1,3 +1,26 @@
+2020-09-19  cage
+
+        * src/stack.lisp:
+
+	- fixed 'stack-raise-to-top'
+	Swapping the  position of the window  to be raised with  the head
+        of the  was a  bad  idea.   Sometimes a  windows  could  go behind
+        the omnipresent  windows (messages,  thread  etc.) and  never shown
+        (as covered by the others).
+
+2020-09-18  cage
+
+        * src/program-events.lisp:
+
+	- fixed indentation.
+
+2020-09-18  cage
+
+        * src/os-utils.lisp, src/ui-goodies.lisp:
+
+	- lowered permancence of notification when updating timelines;
+	- fixed managing of editor arguments.
+
 2020-09-12  cage
 
 	* po/it.po, po/tinmop.pot:
