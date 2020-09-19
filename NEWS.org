@@ -1,3 +1,9 @@
+* 2020-09-19 cage
+
+  Added adding an optional mention when composing a message.
+  Fixed a bug that made the message composition window to disappear
+  before actually sending the message.
+
 * 2020-09-12  cage
 
   Added support for pleroma chat.
