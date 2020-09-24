@@ -660,8 +660,14 @@
         (let ((exceeding-characters (ui:message-exceeds-server-limit-p body)))
           (if exceeding-characters
               (ui:exceeding-characters-notify exceeding-characters)
-              (progn
-                (client:send-status (format nil "~a~%~a" mentions body)
+              (let ((actual-message-body (if mentions
+                                             (format nil
+                                                     "~a~a~%~a"
+                                                     +mention-prefix+
+                                                     mentions
+                                                     body)
+                                             body)))
+                (client:send-status actual-message-body
                                     reply-to
                                     attachments
                                     subject
