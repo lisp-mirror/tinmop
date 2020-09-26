@@ -692,7 +692,10 @@ the latest 15 mentions)."
 
 (defun update-mentions-folder (&key (delete-mentions-on-server t))
   (when-let* ((all-mentions (all-mentions))
-              (trees        (flatten (loop for mention in all-mentions collect
+              (trees        (flatten (loop
+                                        for mention in all-mentions
+                                        when (tooter:status mention)
+                                        collect
                                           (expand-status-tree (tooter:status mention)))))
               (event             (make-instance 'program-events:save-timeline-in-db-event
                                                 :payload       trees
