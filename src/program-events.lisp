@@ -660,7 +660,7 @@
         (let ((exceeding-characters (ui:message-exceeds-server-limit-p body)))
           (if exceeding-characters
               (ui:exceeding-characters-notify exceeding-characters)
-              (let ((actual-message-body (if mentions
+              (let ((actual-message-body (if (text-utils:string-not-empty-p mentions)
                                              (format nil
                                                      "~a~a~%~a"
                                                      +mention-prefix+
