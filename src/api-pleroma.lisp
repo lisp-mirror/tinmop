@@ -16,16 +16,6 @@
 
 (in-package :api-pleroma)
 
-(defgeneric delete-notification (object id))
-
-(defmethod delete-notification ((object tooter:client) (id string))
-  (tooter:submit object
-                 "/api/v1/notifications/dismiss"
-                 :id id))
-
-(defmethod delete-notification ((object tooter:client) (notification tooter:notification))
-  (delete-notification object (tooter:id notification)))
-
 (defgeneric create-chat (object user-id))
 
 (defmethod create-chat ((object tooter:client) (account-id string))

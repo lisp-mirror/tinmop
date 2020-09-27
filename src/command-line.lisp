@@ -122,4 +122,4 @@
       (when (getf options :check-follows-requests)
         (setf *check-follow-requests* (getf options :check-follows-requests)))
       (when (getf options :notify-mentions)
-        (setf *notify-mentions* (getf options :check-follows-requests))))))
+        (setf *notify-mentions* (getf options :notify-mentions))))))

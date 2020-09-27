@@ -658,18 +658,16 @@ numerical indices identifying the option voting for"
                         :exclude-types exclude-types
                         :account-id    account-id))
 
-(defun mentions (max-id)
+(defun mentions (max-id &optional (excluded-types '(:follow :favourite :reblog)))
   "Get the  latest mentions, starting from `min-id` (pass nil to get
 the latest 15 mentions)."
   (get-notifications :max-id max-id
-                     :exclude-types '(:follow
-                                      :favourite
-                                      :reblog)))
+                     :exclude-types excluded-types))
 
 (defun-w-lock delete-notification (notification-id)
     *client-lock*
   "Delete a notification identified by `notification-id'"
-  (api-pleroma:delete-notification *client* notification-id))
+  (tooter:delete-notification *client* notification-id))
 
 (defun sort-id< (list)
   "Sort entities by id in descending order"

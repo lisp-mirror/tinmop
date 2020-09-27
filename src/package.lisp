@@ -1267,7 +1267,6 @@
    :misc)
   (:shadowing-import-from :misc :random-elt :shuffle)
   (:export
-   :delete-notification
    :chat-message
    :message-id
    :nreadp
