@@ -54,6 +54,8 @@
 
 (defgeneric remove-element (object element))
 
+(defgeneric remove-element-if (object predicate))
+
 (defgeneric count-elements-if (object predicate &key key-fn))
 
 (defun get-parent-pos (pos)
@@ -157,6 +159,46 @@
             :key   key-fn
             :start 1))
 
+(defun remove-at-pos (queue pos)
+  (with-accessors ((heap heap)
+                   (key-function key-function)
+                   (equal-function equal-function)
+                   (compare-function compare-function)) queue
+    (let ((old-length (length heap)))
+      (cond
+        ((null pos)
+         nil)
+      ((= pos 1)
+       (pop-element queue)
+       pos)
+      (t
+       (misc:swap (elt heap pos)
+                  (elt heap  (1- (length heap))))
+       (setf (fill-pointer heap) (1- (fill-pointer heap)))
+       (when (not (= pos (1- old-length)))
+         (let ((parent-pos (get-parent-pos pos)))
+           (if (funcall compare-function (elt heap pos) (elt heap parent-pos))
+               (rearrange-bottom-up  queue pos)
+               (rearrange-top-bottom queue pos))))
+       pos)))))
+
+(defmethod remove-element-if ((object priority-queue) predicate)
+  (with-accessors ((heap heap)
+                   (key-function key-function)
+                   (equal-function equal-function)
+                   (compare-function compare-function)) object
+    (labels ((%remove ()
+               (let* ((actual-predicate (or predicate compare-function))
+                      (pos              (position-if actual-predicate
+                                                     heap
+                                                     :start 1
+                                                     :key   (key-function object))))
+                 (when pos
+                   (progn
+                     (remove-at-pos object pos)
+                     (%remove))))))
+      (%remove))))
+
 (defmethod remove-element ((object priority-queue) element)
   (with-accessors ((heap heap)
                    (key-function key-function)
@@ -166,17 +208,5 @@
                                   heap
                                   :start 1
                                   :key   (key-function object)
-                                  :test  (equal-function object)))
-            (old-length (length heap)))
-        (if (and pos
-                 (= pos 1))
-            (pop-element object)
-            (when pos
-              (misc:swap (elt heap pos)
-                         (elt heap  (1- (length heap))))
-              (setf (fill-pointer heap) (1- (fill-pointer heap)))
-              (when (not (= pos (1- old-length)))
-                (let ((parent-pos (get-parent-pos pos)))
-                  (if (funcall compare-function (elt heap pos) (elt heap parent-pos))
-                      (rearrange-bottom-up  object pos)
-                      (rearrange-top-bottom object pos)))))))))
+                                  :test  (equal-function object))))
+        (remove-at-pos object pos))))

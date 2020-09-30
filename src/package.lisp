@@ -561,6 +561,7 @@
    :find-element
    :remove-element
    :count-elements-if
+   :remove-element-if
    :emptyp
    :with-min-queue))
 
@@ -1183,6 +1184,7 @@
    :event-available-p
    :pop-event
    :remove-event
+   :remove-event-if
    :find-event
    :ask-user-input-string-event
    :user-input-string-event

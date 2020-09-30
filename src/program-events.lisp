@@ -154,6 +154,10 @@
   (wrapped-in-lock (*events-queue*)
     (count-elements-if *events-queue* predicate :key-fn #'identity)))
 
+(defun remove-event-if (predicate)
+  (wrapped-in-lock (*events-queue*)
+    (remove-element-if *events-queue* predicate)))
+
 (defclass event-on-own-thread (program-event)
   ((lock
     :initform (bt:make-recursive-lock)
@@ -998,6 +1002,9 @@
     (when-let ((stream-object (gemini-viewer:find-db-stream-url uri)))
       (gemini-viewer:abort-downloading stream-object)
       (gemini-viewer:remove-db-stream stream-object)
+      (remove-event-if (lambda (a)
+                         (and (typep a 'gemini-got-line-event)
+                              (string= uri (gemini-viewer:download-uri stream-object)))))
       (line-oriented-window:resync-rows-db specials:*gemini-streams-window*))))
 
 (defclass gemini-enqueue-download-event (program-event) ())
