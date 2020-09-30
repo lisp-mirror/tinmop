@@ -69,7 +69,10 @@
 
 (defun open-message-link (url enqueue)
   (if (string-starts-with-p gemini-constants:+gemini-scheme+ url)
-      (gemini-viewer:request url :enqueue enqueue)
+      (let ((event (make-instance 'program-events:gemini-push-behind-downloading-event
+                                  :priority program-events:+maximum-event-priority+)))
+        (program-events:push-event event)
+        (gemini-viewer:request url :enqueue enqueue))
       (os-utils:xdg-open url)))
 
 (defclass open-gemini-document-link-window (focus-marked-window

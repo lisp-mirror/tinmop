@@ -560,8 +560,10 @@
    :pop-element
    :find-element
    :remove-element
+   :map-elements
    :count-elements-if
    :remove-element-if
+   :map-events
    :emptyp
    :with-min-queue))
 
@@ -1245,6 +1247,8 @@
    :gemini-request-event
    :gemini-back-event
    :gemini-got-line-event
+   :gemini-abort-downloading-event
+   :gemini-push-behind-downloading-event
    :gemini-abort-downloading-event
    :gemini-enqueue-download-event
    :get-chat-messages-event
@@ -2005,6 +2009,7 @@
   (:export
    :push-db-stream
    :remove-db-stream
+   :remove-all-db-stream
    :find-db-stream-if
    :find-db-stream-url
    :ensure-just-one-stream-rendering

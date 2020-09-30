@@ -158,6 +158,10 @@
   (wrapped-in-lock (*events-queue*)
     (remove-element-if *events-queue* predicate)))
 
+(defun map-events (fn)
+  (wrapped-in-lock (*events-queue*)
+    (map-elements *events-queue* fn)))
+
 (defclass event-on-own-thread (program-event)
   ((lock
     :initform (bt:make-recursive-lock)
@@ -998,14 +1002,22 @@
 (defclass gemini-abort-downloading-event (program-event) ())
 
 (defmethod process-event ((object gemini-abort-downloading-event))
-  (with-accessors ((uri payload)) object
-    (when-let ((stream-object (gemini-viewer:find-db-stream-url uri)))
-      (gemini-viewer:abort-downloading stream-object)
-      (gemini-viewer:remove-db-stream stream-object)
-      (remove-event-if (lambda (a)
-                         (and (typep a 'gemini-got-line-event)
-                              (string= uri (gemini-viewer:download-uri stream-object)))))
-      (line-oriented-window:resync-rows-db specials:*gemini-streams-window*))))
+  (gemini-viewer:remove-all-db-stream)
+  (remove-event-if (lambda (a) (typep a 'gemini-got-line-event))))
+
+(defclass gemini-push-behind-downloading-event (program-event) ())
+
+(defmethod process-event ((object gemini-push-behind-downloading-event))
+  (map-events (lambda (a)
+                (setf (priority a) +minimum-event-priority+)
+                a)))
+
+(defclass gemini-abort-all-downloading-event (program-event) ())
+
+(defmethod process-event ((object gemini-abort-all-downloading-event))
+  (map-events (lambda (a)
+                (setf (priority a) +minimum-event-priority+)
+                a)))
 
 (defclass gemini-enqueue-download-event (program-event) ())
 

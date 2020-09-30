@@ -54,6 +54,8 @@
 
 (defgeneric remove-element (object element))
 
+(defgeneric map-elements (object function))
+
 (defgeneric remove-element-if (object predicate))
 
 (defgeneric count-elements-if (object predicate &key key-fn))
@@ -210,3 +212,10 @@
                                   :key   (key-function object)
                                   :test  (equal-function object))))
         (remove-at-pos object pos))))
+
+(defmethod map-elements ((object priority-queue) (function function))
+  (with-accessors ((heap heap)) object
+    (loop for index from 1 below (length heap) do
+         (let ((element (elt heap index)))
+           (setf (elt heap index)
+                 (funcall function element))))))
