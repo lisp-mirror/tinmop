@@ -1,3 +1,78 @@
+2020-10-01  cage
+
+        * src/program-events.lisp:
+	- [gemini] removed waiting for rendering of a page before going back
+        in browsing history.
+
+2020-10-01  cage
+
+        * src/open-message-link-window.lisp, src/package.lisp,
+        src/program-events.lisp, src/ui-goodies.lisp:
+
+	- [gemini] fixed the stopping of rendering the old page when a new
+	link is opened;
+
+	- [gemini]  added 'gemini-abort-all-downloading-event',  used when
+	quitting.
+
+2020-09-30  cage
+
+        * src/gemini-viewer.lisp, src/open-message-link-window.lisp,
+        src/package.lisp, src/priority-queue.lisp, src/program-events.lisp,
+        src/ui-goodies.lisp:
+
+	- [gemini] remove all pending rendering events when quitting.
+
+2020-09-30  cage
+
+        * src/package.lisp, src/priority-queue.lisp,
+        src/program-events.lisp:
+
+	- [gemini]  remove from the event  queue all the lines  got from a
+	gemtext download when aborting a download.
+
+2020-09-27  cage
+
+        * src/api-client.lisp, src/api-pleroma.lisp, src/command-line.lisp,
+        src/package.lisp:
+
+	- removed method to delete notifications using old API new version
+	of pleroma implements the same API as mastodon 3.x;
+	- fixed command line switch to get notification for mentions.
+
+2020-09-26  cage
+
+        * src/api-client.lisp:
+
+	- prevented  crash when updating  mentions The 'status' slot  in a
+	'mention' object can be nil, in this case expand the tree does not
+	makes sense and should be avoided.
+
+2020-09-26  cage
+
+        * src/program-events.lisp:
+
+	-  add mentions  only is  not empty  or nil,  previous check  just
+	tested for null.
+
+2020-09-24  cage
+
+        * src/program-events.lisp:
+
+	- added mention only if non-nil (when sending a status).
+
+2020-09-19  cage
+
+        * NEWS.org, configure, configure.ac, tinmop.asd:
+
+	- increased version.
+
+2020-09-19  cage
+
+        * ChangeLog:
+
+	- tracking changes.
+
 2020-09-19  cage
 
         * src/stack.lisp:

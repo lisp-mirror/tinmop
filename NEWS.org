@@ -1,3 +1,13 @@
+* 2020-10-01
+
+  Several improvements to the gemini browser added.
+
+  Also a  bug that made the  program crash when getting  mentions from
+  the server has been fixed.
+
+  The command line switch "-m"  to get notification when mentioned did
+  not works at all and has been fixed.
+
 * 2020-09-19 cage
 
   Added adding an optional mention when composing a message.
