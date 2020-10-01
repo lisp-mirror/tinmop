@@ -956,6 +956,7 @@
 (defclass gemini-back-event (program-event) ())
 
 (defmethod process-event ((object gemini-back-event))
+  (push-downloading-behind)
   (gemini-viewer:history-back specials:*message-window*))
 
 (defclass gemini-got-line-event (program-event)
@@ -1024,12 +1025,15 @@
 
 (defclass gemini-push-behind-downloading-event (program-event) ())
 
-(defmethod process-event ((object gemini-push-behind-downloading-event))
+(defun push-downloading-behind ()
   (map-events (lambda (a)
                 (when (typep a 'gemini-got-line-event)
                   (setf (skip-rendering a) t)
                   (setf (priority a) +minimum-event-priority+))
                 a)))
+
+(defmethod process-event ((object gemini-push-behind-downloading-event))
+  (push-downloading-behind))
 
 (defclass gemini-enqueue-download-event (program-event) ())
 
