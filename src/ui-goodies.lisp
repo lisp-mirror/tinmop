@@ -60,7 +60,7 @@
                (push-event delete-event)
                (clean-temporary-files)))))
     (let ((delete-count        (db:count-status-marked-to-delete))
-          (stop-download-event (make-instance 'gemini-abort-downloading-event
+          (stop-download-event (make-instance 'gemini-abort-all-downloading-event
                                               :priority +maximum-event-priority+)))
       (push-event stop-download-event)
       (if (> delete-count 0)

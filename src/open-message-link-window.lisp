@@ -71,6 +71,7 @@
   (if (string-starts-with-p gemini-constants:+gemini-scheme+ url)
       (let ((event (make-instance 'program-events:gemini-push-behind-downloading-event
                                   :priority program-events:+maximum-event-priority+)))
+        (gemini-viewer:ensure-just-one-stream-rendering)
         (program-events:push-event event)
         (gemini-viewer:request url :enqueue enqueue))
       (os-utils:xdg-open url)))

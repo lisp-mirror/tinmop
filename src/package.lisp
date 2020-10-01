@@ -1247,7 +1247,7 @@
    :gemini-request-event
    :gemini-back-event
    :gemini-got-line-event
-   :gemini-abort-downloading-event
+   :gemini-abort-all-downloading-event
    :gemini-push-behind-downloading-event
    :gemini-abort-downloading-event
    :gemini-enqueue-download-event

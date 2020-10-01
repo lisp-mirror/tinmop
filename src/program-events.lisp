@@ -966,7 +966,12 @@
    (append-text
     :initform t
     :initarg  :append-text
-    :accessor append-text)))
+    :accessor append-text)
+   (skip-rendering
+    :initform nil
+    :initarg  :skip-rendering
+    :reader   skip-rendering-p
+    :writer   (setf skip-rendering))))
 
 (defmethod process-event ((object gemini-got-line-event))
   (with-accessors ((response       payload)
@@ -976,12 +981,12 @@
                      (status-code-message  gemini-client:status-code-message)
                      (meta                 gemini-client:meta)
                      (parsed-file          gemini-client:parsed-file)
-                     (url-header           gemini-client:url-header)
                      (source-url           gemini-client:source-url)
                      (source               gemini-client:source)
                      (links                gemini-client:links)
                      (text-rendering-theme gemini-client:text-rendering-theme)) response
-      (when (gemini-viewer:downloading-allowed-p wrapper-object)
+      (when (and (gemini-viewer:downloading-allowed-p wrapper-object)
+                 (not (skip-rendering-p object)))
         (let* ((win specials:*message-window*)
                (rendered-line   (gemini-parser:sexp->text parsed-file
                                                           text-rendering-theme))
@@ -1002,6 +1007,18 @@
 (defclass gemini-abort-downloading-event (program-event) ())
 
 (defmethod process-event ((object gemini-abort-downloading-event))
+  (with-accessors ((uri payload)) object
+    (when-let ((stream-object (gemini-viewer:find-db-stream-url uri)))
+      (gemini-viewer:abort-downloading stream-object)
+      (gemini-viewer:remove-db-stream stream-object)
+      (remove-event-if (lambda (a)
+                         (and (typep a 'gemini-got-line-event)
+                              (string= uri (gemini-viewer:download-uri stream-object)))))
+      (line-oriented-window:resync-rows-db specials:*gemini-streams-window*))))
+
+(defclass gemini-abort-all-downloading-event (program-event) ())
+
+(defmethod process-event ((object gemini-abort-all-downloading-event))
   (gemini-viewer:remove-all-db-stream)
   (remove-event-if (lambda (a) (typep a 'gemini-got-line-event))))
 
@@ -1009,14 +1026,9 @@
 
 (defmethod process-event ((object gemini-push-behind-downloading-event))
   (map-events (lambda (a)
-                (setf (priority a) +minimum-event-priority+)
-                a)))
-
-(defclass gemini-abort-all-downloading-event (program-event) ())
-
-(defmethod process-event ((object gemini-abort-all-downloading-event))
-  (map-events (lambda (a)
-                (setf (priority a) +minimum-event-priority+)
+                (when (typep a 'gemini-got-line-event)
+                  (setf (skip-rendering a) t)
+                  (setf (priority a) +minimum-event-priority+))
                 a)))
 
 (defclass gemini-enqueue-download-event (program-event) ())
