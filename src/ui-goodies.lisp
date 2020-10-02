@@ -280,6 +280,8 @@ Metadata includes:
 
 (defun thread-open-selected-message ()
   "Open selected message"
+  (setf (windows:keybindings specials:*message-window*)
+        keybindings:*message-keymap*)
   (thread-window:open-message *thread-window*))
 
 (defun thread-mark-delete-selected-message ()

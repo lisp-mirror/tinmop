@@ -42,8 +42,10 @@
       keybindings:*chat-message-keymap*))
 
 (defun prepare-for-display-status-mode (window)
-  (setf (keybindings window)
-        keybindings:*message-keymap*))
+  (when (not (or (display-gemini-text-p window)
+                 (display-chat-p        window)))
+    (setf (keybindings window)
+          keybindings:*message-keymap*)))
 
 (defmethod (setf source-text) (new-text (object message-window))
   (setf (slot-value object 'source-text) new-text)
