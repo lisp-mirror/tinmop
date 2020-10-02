@@ -8,19 +8,19 @@
   The command line switch "-m"  to get notification when mentioned did
   not works at all and has been fixed.
 
-* 2020-09-19 cage
+* 2020-09-19
 
   Added adding an optional mention when composing a message.
   Fixed a bug that made the message composition window to disappear
   before actually sending the message.
 
-* 2020-09-12  cage
+* 2020-09-12
 
   Added support for pleroma chat.
   Added managing of gemini streams. A gemini window allow to abort,
   rendering/opening of gemini connection while streaming.
 
-* 2020-08-30  cage
+* 2020-08-30
 
   Added a  window to manage all  the gemini streams opened.   The user
   can ispect the status o all the streams as well abort or open them.

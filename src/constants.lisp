@@ -56,7 +56,7 @@ For bug report please point your browser to:
 
 (define-constant +json-false+                   "false"       :test #'string=)
 
-(define-constant +fps+                         20             :test #'=
+(define-constant +fps+                         60             :test #'=
                  :documentation "The redraw frequency in frame per second")
 
 (define-constant +command-window-height+        1             :test #'=)

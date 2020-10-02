@@ -401,9 +401,8 @@
   (let ((regexp (payload object)))
     (when (text-utils:string-not-empty-p regexp)
       (handler-case
-          (progn
-            (cl-ppcre:create-scanner regexp)
-            (message-window:search-regex specials:*message-window* regexp))
+          (let ((scanner (cl-ppcre:create-scanner regexp :case-insensitive-mode t)))
+            (message-window:search-regex specials:*message-window* scanner))
         (error ()
           (ui:error-message (_ "Invalid regular expression")))))))
 
