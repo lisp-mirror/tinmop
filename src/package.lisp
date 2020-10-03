@@ -1260,6 +1260,7 @@
    :chat-change-label-event
    :chat-create-event
    :search-link-event
+   :help-apropos-event
    :function-event
    :dispatch-program-events
    :add-pagination-status-event
@@ -2135,6 +2136,7 @@
    :focus-to-tags-window
    :focus-to-conversations-window
    :print-quick-help
+   :apropos-help
    :move-message-tree
    :change-folder
    :change-timeline

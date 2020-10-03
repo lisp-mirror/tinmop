@@ -477,7 +477,7 @@ and `make-blocking-list-dialog-window') showing the full docstring for a command
                                           bg
                                           fg)))
 
-(defun print-help (main-window)
+(defun print-help (main-window &key (regex ".*"))
   "Generate an help text for the focused window and main window"
   (multiple-value-bind (header-bg header-fg attribute-header)
       (swconf:quick-help-header-colors)
@@ -502,7 +502,13 @@ and `make-blocking-list-dialog-window') showing the full docstring for a command
                            (alpha-b-p
                             nil)
                            (t
-                            (string< text-a text-b))))))))
+                            (string< text-a text-b)))))))
+             (make-filter-help-text (scanner)
+               (lambda (a)
+                 (scan scanner
+                       (if (stringp a)
+                           a
+                           (tui:tui-string->chars-string a))))))
       (when-let* ((focused-keybindings   (main-window:focused-keybindings main-window))
                   (global-help           (sort-help (key-paths *global-keymap*)))
                   (header-focused        (colorize-header (_ "Focused window keys")))
@@ -516,10 +522,15 @@ and `make-blocking-list-dialog-window') showing the full docstring for a command
                       focused-help
                       (list global-header-fields)
                       global-help))
-        (let ((all-lines (mapcar #'help-fields-get-text
-                                 fields)))
-          (line-oriented-window:make-blocking-list-dialog-window specials:*main-window*
-                                                                 fields
-                                                                 all-lines
-                                                                 #'help-expand
-                                                                 (_ "Quick help")))))))
+        (handler-case
+          (let* ((scanner   (create-scanner regex :case-insensitive-mode t))
+                 (all-lines (remove-if-not (make-filter-help-text scanner)
+                                           (mapcar #'help-fields-get-text
+                                                   fields))))
+            (line-oriented-window:make-blocking-list-dialog-window specials:*main-window*
+                                                                   fields
+                                                                   all-lines
+                                                                   #'help-expand
+                                                                   (_ "Quick help")))
+          (error ()
+            (ui:error-message (_ "Invalid regular expression"))))))))

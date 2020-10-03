@@ -523,6 +523,16 @@ Metadata includes:
   "Print a quick help"
   (keybindings:print-help *main-window*))
 
+(defun apropos-help ()
+  "Print a command's documentation matching a regular expression."
+  (flet ((on-input-complete (regex)
+           (let ((event (make-instance 'help-apropos-event
+                                       :regex  regex)))
+             (push-event event))))
+    (ask-string-input #'on-input-complete
+                      :prompt      (_ "Search for commands (regexp): ")
+                      :complete-fn #'complete:complete-always-empty)))
+
 (defun move-message-tree ()
   "Move messages tree"
   (flet ((on-input-complete (new-folder)

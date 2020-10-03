@@ -328,7 +328,8 @@ this exact quantity wold go beyond the length or rows or zero."
   "Draw a  window with a scrollable list of entries, pressing enter
 will fire the `callback' function (with the selected field from `all-fields'
  and text from `text-line'. This window is fitten into `screen' sizes."
-  (assert (length= all-fields text-lines))
+  (assert (>= (length all-fields)
+              (length text-lines)))
   (let* ((low-level-window  (make-blocking-croatoan-window :enable-function-keys t))
          (window-width      (max (+ 4
                                     (length title))

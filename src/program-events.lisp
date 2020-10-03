@@ -1166,6 +1166,16 @@
                    (regex  regex)) object
     (line-oriented-window:search-row window regex)))
 
+(defclass help-apropos-event (program-event)
+  ((regex
+    :initform nil
+    :initarg :regex
+    :accessor regex)))
+
+(defmethod process-event ((object help-apropos-event))
+  (with-accessors ((regex regex)) object
+    (keybindings:print-help specials:*main-window* :regex regex)))
+
 ;;;; general usage
 
 (defclass function-event (program-event) ())

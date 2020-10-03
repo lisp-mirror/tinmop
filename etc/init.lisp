@@ -131,6 +131,10 @@
 
 (define-key "?"         #'print-quick-help)
 
+(define-key "C-h h"     #'print-quick-help)
+
+(define-key "C-h a"     #'apropos-help)
+
 (define-key "!"         #'gemini-search)
 
 (define-key ">"         #'open-gemini-address)
