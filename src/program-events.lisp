@@ -1151,6 +1151,21 @@
                                     :chat-id (api-pleroma:chat-id chat)
                                     :label   chat-label)))))
 
+(defclass search-link-event (program-event)
+  ((window
+    :initform nil
+    :initarg :window
+    :accessor window)
+   (regex
+    :initform nil
+    :initarg :regex
+    :accessor regex)))
+
+(defmethod process-event ((object search-link-event))
+  (with-accessors ((window window)
+                   (regex  regex)) object
+    (line-oriented-window:search-row window regex)))
+
 ;;;; general usage
 
 (defclass function-event (program-event) ())

@@ -76,14 +76,35 @@
         (gemini-viewer:request url :enqueue enqueue))
       (os-utils:xdg-open url)))
 
-(defclass open-gemini-document-link-window (focus-marked-window
-                                            simple-line-navigation-window
-                                            title-window
-                                            border-window)
+(defclass open-links-window ()
   ((links
     :initform ()
     :initarg  :links
     :accessor links)))
+
+(defmethod search-row ((object open-links-window) regex &key (redraw t))
+  (handler-case
+      (with-accessors ((row-selected-index row-selected-index)) object
+        (when-let* ((scanner        (create-scanner regex :case-insensitive-mode t))
+                    (position-found (position-if (lambda (a)
+                                                   (if (selectedp a)
+                                                       (scan scanner (selected-text a))
+                                                       (scan scanner (normal-text   a))))
+                                                 (safe-subseq (rows object)
+                                                              row-selected-index))))
+          (unselect-all object)
+          (select-row object position-found)
+          (when redraw
+            (draw object))))
+    (error ()
+      (ui:error-message (_ "Invalid regular expression")))))
+
+(defclass open-gemini-document-link-window (focus-marked-window
+                                            simple-line-navigation-window
+                                            title-window
+                                            border-window
+                                            open-links-window)
+  ())
 
 (defmethod refresh-config :after ((object open-gemini-document-link-window))
   (open-attach-window:refresh-view-links-window-config object
@@ -139,6 +160,25 @@
                          :bgcolor (bgcolor croatoan-window)
                          :fgcolor (fgcolor croatoan-window)))))))
 
+(defmethod search-row ((object open-gemini-document-link-window) regex &key (redraw t))
+  (handler-case
+      (with-accessors ((row-selected-index row-selected-index)) object
+        (let* ((saved-selected-index row-selected-index)
+               (scanner              (create-scanner regex :case-insensitive-mode t))
+               (position-header      (position-if (lambda (a)
+                                                    (scan scanner
+                                                          (gemini-parser:name a)))
+                                                  (safe-subseq (links object)
+                                                               row-selected-index))))
+          (call-next-method) ; seatch in urls
+          (when position-header ;; but if han header has been found, it wins
+            (unselect-all object)
+            (select-row object (+ saved-selected-index position-header))
+            (when redraw
+              (draw object)))))
+    (error ()
+      (ui:error-message (_ "Invalid regular expression")))))
+
 (defun init-gemini-links (links)
   (let* ((low-level-window (make-croatoan-window :enable-function-keys t)))
     (setf *open-message-link-window*
@@ -163,13 +203,11 @@
         keybindings:*message-keymap*))
 
 (defclass open-chat-document-link-window (focus-marked-window
-                                            simple-line-navigation-window
-                                            title-window
-                                            border-window)
-  ((links
-    :initform ()
-    :initarg  :links
-    :accessor links)))
+                                          simple-line-navigation-window
+                                          title-window
+                                          border-window
+                                          open-links-window)
+  ())
 
 (defmethod refresh-config :after ((object open-chat-document-link-window))
   (open-attach-window:refresh-view-links-window-config object

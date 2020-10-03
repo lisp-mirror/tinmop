@@ -1155,7 +1155,8 @@
    :tags-complete
    :conversation-folder
    :make-complete-gemini-uri-fn
-   :complete-chat-message))
+   :complete-chat-message
+   :complete-always-empty))
 
 (defpackage :program-events
   (:use
@@ -1258,6 +1259,7 @@
    :chat-post-message-event
    :chat-change-label-event
    :chat-create-event
+   :search-link-event
    :function-event
    :dispatch-program-events
    :add-pagination-status-event
@@ -1675,6 +1677,7 @@
    :ignore-selecting-action
    :selected-row-fields
    :selected-row-delete
+   :search-row
    :row-move
    :simple-line-navigation-window
    :selected-line-bg
@@ -2155,6 +2158,7 @@
    :open-message-attach-go-down
    :open-message-attach-perform-opening
    :close-open-attach-window
+   :search-link-window
    :open-message-link
    :open-message-link-go-up
    :open-message-link-go-down

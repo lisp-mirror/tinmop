@@ -161,3 +161,7 @@ list af all possible candidtae for completion."
 (defun complete-chat-message (hint)
   (append (username-complete hint)
           (directory-complete hint)))
+
+(defun complete-always-empty (hint)
+  (declare (ignore hint))
+  nil)

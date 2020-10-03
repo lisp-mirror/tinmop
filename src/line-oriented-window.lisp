@@ -136,6 +136,8 @@
 
 (defgeneric selected-row-delete (object))
 
+(defgeneric search-row (object regex &key redraw))
+
 (defgeneric row-move (object amount)
   (:documentation "Move selected line of 'amount'. 'Amount' can be
   an integer number, if positive increase the position of the selected
@@ -237,6 +239,24 @@ this exact quantity wold go beyond the length or rows or zero."
           actual-amount)
         0)))
 
+(defmethod search-row ((object row-oriented-widget) regex &key (redraw t))
+  (handler-case
+      (with-accessors ((row-selected-index row-selected-index)) object
+        (when-let* ((scanner        (create-scanner regex :case-insensitive-mode t))
+                    (position-found (position-if (lambda (a)
+                                                   (if (selectedp a)
+                                                       (scan scanner (selected-text a))
+                                                       (scan scanner (normal-text   a))))
+                                                 (safe-subseq (rows object)
+                                                              row-selected-index))))
+          (unselect-all object)
+          (select-row object (+ row-selected-index position-found))
+          (when redraw
+            (draw object))
+          position-found))
+    (error ()
+      (ui:error-message (_ "Invalid regular expression")))))
+
 (defclass simple-line-navigation-window (wrapper-window row-oriented-widget border-window)
   ((selected-line-bg
     :initform :blue
@@ -248,11 +268,11 @@ this exact quantity wold go beyond the length or rows or zero."
     :initarg  :selected-line-fg
     :accessor selected-line-fg
     :documentation "The foreground color for a selected line")
-   (line
-    :initform :red
-    :initarg  :selected-line-fg
-    :accessor selected-line-fg
-    :documentation "The foreground color for a selected line")
+   ;; (line
+   ;;  :initform :red
+   ;;  :initarg  :selected-line-fg
+   ;;  :accessor selected-line-fg
+   ;;  :documentation "The foreground color for a selected line")
    (top-horizontal-padding
     :initform 0
     :initarg  :top-horizontal-padding

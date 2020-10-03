@@ -369,6 +369,8 @@
 
 (define-key "e"         #'open-message-link-open-enqueue                *open-message-link-keymap*)
 
+(define-key "/"         #'search-link-window                            *open-message-link-keymap*)
+
 ;; chats list window
 
 (define-key "r"         #'refresh-chat-messages                         *chats-list-keymap*)

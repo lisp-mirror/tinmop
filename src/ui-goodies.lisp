@@ -1032,6 +1032,18 @@ Force the checking for new message in the thread the selected message belong."
 (defun close-open-attach-window ()
   (close-window-and-return-to-threads *open-attach-window*))
 
+(defun search-link-window ()
+  "Search a link window with a text matching a regular expression"
+  (flet ((on-input-complete (regex)
+           (when-let* ((window (main-window:focused-window *main-window*)))
+             (let ((event (make-instance 'search-link-event
+                                         :window window
+                                         :regex  regex)))
+               (push-event event)))))
+    (ask-string-input #'on-input-complete
+                      :prompt      (_ "Search key: ")
+                      :complete-fn #'complete:complete-always-empty)))
+
 (defun open-gemini-message-link-window ()
   (let* ((window   *message-window*)
          (metadata (message-window:metadata window))
