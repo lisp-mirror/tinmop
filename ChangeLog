@@ -1,3 +1,12 @@
+2020-10-03  cage
+
+        * etc/init.lisp, src/complete.lisp, src/line-oriented-window.lisp,
+        src/open-message-link-window.lisp, src/package.lisp,
+        src/program-events.lisp, src/ui-goodies.lisp:
+
+	- added the possibility to search inside a widows that contains a
+        collection of links.
+
 2020-10-02  cage
 
         * NEWS.org, src/constants.lisp, src/program-events.lisp:
