@@ -1,3 +1,15 @@
+2020-10-06  cage
+
+        * src/gemini-viewer.lisp, src/package.lisp,
+        src/priority-queue.lisp, src/program-events.lisp:
+
+	- [gemini] remove a bottleneck when download of a gemini page is
+        completed;
+
+	Instead of process multiple events, each one with a single line to
+	render, compact all the lines in a single event and, then, process
+	all the lines at once.
+
 2020-10-03  cage
 
         * etc/init.lisp, src/complete.lisp, src/line-oriented-window.lisp,
