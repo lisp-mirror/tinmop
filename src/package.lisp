@@ -1251,6 +1251,7 @@
    :gemini-abort-all-downloading-event
    :gemini-push-behind-downloading-event
    :gemini-abort-downloading-event
+   :gemini-compact-lines-event
    :gemini-enqueue-download-event
    :get-chat-messages-event
    :get-chats-event

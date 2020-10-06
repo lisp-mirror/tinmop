@@ -315,7 +315,11 @@
                        (return-from download-loop nil))))
             (if (not (downloading-allowed-p wrapper-object))
                 (ui:notify (_ "Gemini document downloading aborted"))
-                (progn
+                (let ((compact-event (make-instance 'program-events:gemini-compact-lines-event
+                                                    :download-uri (download-uri wrapper-object)
+                                                    :priority
+                                                    program-events:+maximum-event-priority+)))
+                  (program-events:push-event compact-event)
                   (ui:notify (_ "Gemini document downloading completed"))
                   (setf (stream-status wrapper-object) :completed)))
             ;; (allow-downloading wrapper-object)

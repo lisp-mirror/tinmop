@@ -1004,6 +1004,53 @@
                 (setf (gemini-viewer:gemini-metadata-links window-metadata) links)))
           (windows:draw win))))))
 
+(defclass gemini-compact-lines-event (program-event)
+  ((download-uri
+    :initform nil
+    :initarg  :download-uri
+    :accessor download-uri)))
+
+(defmethod process-event ((object gemini-compact-lines-event))
+  (with-accessors ((download-uri download-uri)) object
+    (let ((all-lines  "")
+          (all-links  ())
+          (all-source ""))
+      (map-events (lambda (a)
+                    (with-accessors ((response       payload)
+                                     (wrapper-object wrapper-object)) a
+                      (with-accessors ((parsed-file          gemini-client:parsed-file)
+                                       (source               gemini-client:source)
+                                       (links                gemini-client:links)
+                                       (text-rendering-theme gemini-client:text-rendering-theme))
+                          response
+                        (when (and (typep a 'gemini-got-line-event)
+                                   (string= download-uri
+                                            (gemini-viewer:download-uri wrapper-object))
+                                   (gemini-viewer:downloading-allowed-p wrapper-object)
+                                   (not (skip-rendering-p a)))
+                          (let ((rendered-text (gemini-parser:sexp->text parsed-file
+                                                                         text-rendering-theme)))
+                            (appendf all-links links)
+                            (setf all-source
+                                  (text-utils:strcat all-source source))
+                            (setf all-lines
+                                  (text-utils:strcat all-lines rendered-text))))))
+                    a))
+      (when (text-utils:string-not-empty-p all-lines)
+        (remove-event-if (lambda (a)
+                           (with-accessors ((wrapper-object wrapper-object)) a
+                             (and (typep a 'gemini-got-line-event)
+                                  (string= download-uri
+                                           (gemini-viewer:download-uri wrapper-object))))))
+        (let* ((win specials:*message-window*)
+               (window-metadata (message-window:metadata win)))
+          (message-window:append-source-text win all-lines :prepare-for-rendering t)
+          (gemini-viewer:append-metadata-link window-metadata all-links)
+          (gemini-viewer:append-metadata-source window-metadata all-source)
+          (setf (windows:keybindings win)
+                keybindings:*gemini-message-keymap*)
+          (windows:draw win))))))
+
 (defclass gemini-abort-downloading-event (program-event) ())
 
 (defmethod process-event ((object gemini-abort-downloading-event))

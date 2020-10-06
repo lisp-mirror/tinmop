@@ -30,7 +30,7 @@
     :initarg :compare-function
     :accessor compare-function)
    (equal-function
-    :initform (misc:make-array-frame 1 nil)
+    :initform #'=
     :initarg :equal-function
     :accessor equal-function)))
 
@@ -213,9 +213,22 @@
                                   :test  (equal-function object))))
         (remove-at-pos object pos))))
 
+(defun queue->list (queue)
+  (let ((res ()))
+    (loop for element = (pop-element queue) while element do
+         (push element res))
+    (reverse res)))
+
 (defmethod map-elements ((object priority-queue) (function function))
-  (with-accessors ((heap heap)) object
-    (loop for index from 1 below (length heap) do
-         (let ((element (elt heap index)))
-           (setf (elt heap index)
-                 (funcall function element))))))
+  (let* ((ordered (queue->list object))
+         (mapped  (mapcar function ordered)))
+    (loop for element in mapped do
+         (push-element object element))
+    object))
+
+(defun tt ()
+  (let ((queue (make-instance 'priority-queue)))
+    (loop for i from 10 downto 1 do
+         (push-element queue i))
+    (format t "~a~%" (queue->list queue))
+    (map-elements queue (lambda (a)  (format t "->~a<-~%" a) a))))
