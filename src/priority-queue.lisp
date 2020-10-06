@@ -225,10 +225,3 @@
     (loop for element in mapped do
          (push-element object element))
     object))
-
-(defun tt ()
-  (let ((queue (make-instance 'priority-queue)))
-    (loop for i from 10 downto 1 do
-         (push-element queue i))
-    (format t "~a~%" (queue->list queue))
-    (map-elements queue (lambda (a)  (format t "->~a<-~%" a) a))))
