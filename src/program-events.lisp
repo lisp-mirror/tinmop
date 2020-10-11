@@ -973,6 +973,19 @@
     :reader   skip-rendering-p
     :writer   (setf skip-rendering))))
 
+(defun refresh-gemini-message-window (links source rendered-text append-text)
+  (let* ((win specials:*message-window*)
+         (window-metadata (message-window:metadata win)))
+    (if append-text
+        (progn
+          (message-window:append-source-text win rendered-text :prepare-for-rendering t)
+          (gemini-viewer:append-metadata-link window-metadata links)
+          (gemini-viewer:append-metadata-source window-metadata source))
+        (progn
+          (setf (message-window:source-text win) rendered-text)
+          (setf (gemini-viewer:gemini-metadata-source-file window-metadata) rendered-text)
+          (setf (gemini-viewer:gemini-metadata-links window-metadata) links)))))
+
 (defmethod process-event ((object gemini-got-line-event))
   (with-accessors ((response       payload)
                    (append-text    append-text)
@@ -989,19 +1002,10 @@
                  (not (skip-rendering-p object)))
         (let* ((win specials:*message-window*)
                (rendered-line   (gemini-parser:sexp->text parsed-file
-                                                          text-rendering-theme))
-               (window-metadata (message-window:metadata win)))
-          (if append-text
-              (progn
-                (message-window:append-source-text win rendered-line :prepare-for-rendering t)
-                (gemini-viewer:append-metadata-link window-metadata links)
-                (gemini-viewer:append-metadata-source window-metadata source)
-                (setf (windows:keybindings win)
-                      keybindings:*gemini-message-keymap*))
-              (progn
-                (setf (message-window:source-text win) rendered-line)
-                (setf (gemini-viewer:gemini-metadata-source-file window-metadata) rendered-line)
-                (setf (gemini-viewer:gemini-metadata-links window-metadata) links)))
+                                                          text-rendering-theme)))
+          (setf (windows:keybindings win)
+                keybindings:*gemini-message-keymap*)
+          (refresh-gemini-message-window links source rendered-line append-text)
           (windows:draw win))))))
 
 (defclass gemini-compact-lines-event (program-event)
@@ -1012,9 +1016,10 @@
 
 (defmethod process-event ((object gemini-compact-lines-event))
   (with-accessors ((download-uri download-uri)) object
-    (let ((all-lines  "")
-          (all-links  ())
-          (all-source ""))
+    (let ((all-lines   "")
+          (all-links   ())
+          (all-source  "")
+          (append-text t))
       (map-events (lambda (a)
                     (with-accessors ((response       payload)
                                      (wrapper-object wrapper-object)) a
@@ -1030,6 +1035,8 @@
                                    (not (skip-rendering-p a)))
                           (let ((rendered-text (gemini-parser:sexp->text parsed-file
                                                                          text-rendering-theme)))
+                            (when (null (append-text a))
+                              (setf append-text nil))
                             (appendf all-links links)
                             (setf all-source
                                   (text-utils:strcat all-source source))
@@ -1042,13 +1049,10 @@
                              (and (typep a 'gemini-got-line-event)
                                   (string= download-uri
                                            (gemini-viewer:download-uri wrapper-object))))))
-        (let* ((win specials:*message-window*)
-               (window-metadata (message-window:metadata win)))
-          (message-window:append-source-text win all-lines :prepare-for-rendering t)
-          (gemini-viewer:append-metadata-link window-metadata all-links)
-          (gemini-viewer:append-metadata-source window-metadata all-source)
+        (let* ((win specials:*message-window*))
           (setf (windows:keybindings win)
                 keybindings:*gemini-message-keymap*)
+          (refresh-gemini-message-window all-links all-source all-lines append-text)
           (windows:draw win))))))
 
 (defclass gemini-abort-downloading-event (program-event) ())
