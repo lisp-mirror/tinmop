@@ -62,6 +62,13 @@ if test "$XDG_OPEN" = "no" ; then
    exit 1;
 fi
 
+AC_PATH_PROGS([OPENSSL],[openssl],[no])
+
+if test "$OPENSSL" = "no" ; then
+   AC_MSG_ERROR([Can not find openssl binary.])
+   exit 1;
+fi
+
 AC_PROG_MKDIR_P
 
 dnl check sbcl version
@@ -74,6 +81,6 @@ if test "$SBCL_VERSION_OK" = "1" ; then
    exit 1;
 fi
 
-AC_CONFIG_FILES([Makefile quick_quicklisp.sh po/Makefile.in])
+AC_CONFIG_FILES([Makefile quick_quicklisp.sh po/Makefile.in src/config.lisp.in])
 
 AC_OUTPUT

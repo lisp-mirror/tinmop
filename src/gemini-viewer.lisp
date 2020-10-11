@@ -360,7 +360,10 @@
                            (%fill-buffer)))))))
           (%fill-buffer))))))
 
-(defun request (url &key (enqueue nil) (do-nothing-if-exists-in-db t))
+(defun request (url &key
+                      (enqueue                    nil)
+                      (certificate                nil)
+                      (do-nothing-if-exists-in-db t))
   (let ((parsed-uri (quri:uri url)))
     (maybe-initialize-metadata specials:*message-window*)
     (if (null parsed-uri)
@@ -408,8 +411,9 @@
                   (multiple-value-bind (status code-description meta response socket)
                       (gemini-client:request host
                                              path
-                                             :query query
-                                             :port  port)
+                                             :client-certificate certificate
+                                             :query              query
+                                             :port               port)
                     (add-url-to-history specials:*message-window* actual-uri)
                     (cond
                       ((gemini-client:response-redirect-p status)
@@ -427,6 +431,14 @@
                                               (format nil
                                                       (_ "Redirects to ~s, follows redirect? [y/N] ")
                                                       meta))))
+                      ((gemini-client:response-certificate-requested-p status)
+                       (let ((certificate (or (db:ssl-cert-find actual-uri)
+                                              (gemini-client:make-client-certificate actual-uri))))
+                         (assert certificate)
+                         (request actual-uri
+                                  :enqueue                    enqueue
+                                  :do-nothing-if-exists-in-db do-nothing-if-exists-in-db
+                                  :certificate                certificate)))
                       ((gemini-client:response-input-p status)
                        (get-user-input nil host meta))
                       ((gemini-client:response-sensitive-input-p status)

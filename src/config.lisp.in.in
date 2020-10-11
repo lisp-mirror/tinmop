@@ -13,9 +13,9 @@
 ;; along with this program.
 ;; If not, see [[http://www.gnu.org/licenses/][http://www.gnu.org/licenses/]].
 
-(alexandria:define-constant +openssl-bin+   "/usr/bin/openssl"  :test #'string=)
+(alexandria:define-constant +openssl-bin+   "@OPENSSL@"  :test #'string=)
 
-(alexandria:define-constant +xdg-open-bin+  "/usr/bin/xdg-open"  :test #'string=)
+(alexandria:define-constant +xdg-open-bin+  "@XDG_OPEN@"  :test #'string=)
 
 (defmacro with-return-untranslated ((untranslated) &body body)
   `(handler-bind ((i18n-conditions:no-translation-table-error

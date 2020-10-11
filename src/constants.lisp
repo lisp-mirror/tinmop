@@ -83,3 +83,6 @@ For bug report please point your browser to:
 
 (define-constant +mention-prefix+               "@"           :test #'string=
                  :documentation "The prefix for a mention in a message")
+
+(define-constant +cache-tls-certificate-type+   "certificate" :test #'string=
+                 :documentation "The cache type for TLS certificate")

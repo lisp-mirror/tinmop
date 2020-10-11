@@ -125,13 +125,22 @@
       (header-code= header +53+)
       (header-code= header +59+)))
 
-(defun header-not-implemented-p (header)
-  (or (header-code= header +60+)
-      (header-code= header +61+)
+(defun header-certificate-failure-p (header)
+  (or (header-code= header +61+)
       (header-code= header +62+)))
+
+(defun header-not-implemented-p (header)
+  (declare (ignore header))
+  nil)
+
+(defun header-certificate-requested-p (header)
+  (header-code= header +60+))
 
 (defun response-input-p (code)
   (code= code +10+))
+
+(defun response-certificate-requested-p (code)
+  (code= code +60+))
 
 (defun response-sensitive-input-p (code)
   (code= code +11+))
@@ -245,17 +254,19 @@
                    meta
                    stream))
           ((or (header-input-request-p parsed-header)
-               (header-redirect-p parsed-header))
+               (header-redirect-p parsed-header)
+               (header-certificate-requested-p parsed-header))
            (results (find-code-class status-code) nil))
-          ((or (header-permanent-failure-p parsed-header)
-               (header-temporary-failure-p parsed-header))
+          ((or (header-permanent-failure-p   parsed-header)
+               (header-temporary-failure-p   parsed-header)
+               (header-certificate-failure-p parsed-header))
            (let ((response-code (find-code-class status-code)))
              (error 'gemini-protocol-error
                     :error-code        (code        response-code)
                     :error-description (description response-code))))
-          ((header-not-implemented-p parsed-header)
-           (error 'conditions:not-implemented-error
-                  :text (_ "The server requested a certificate but client validation is not implemented by this program")))
+          ;; ((header-not-implemented-p parsed-header)
+          ;;  (error 'conditions:not-implemented-error
+          ;;         :text (_ "The server requested a certificate but client validation is not implemented by this program")))
           (t
            parsed-header))))))
 
@@ -265,7 +276,16 @@
 (defun close-ssl-socket (socket)
   (usocket:socket-close socket))
 
-(defun request (host path &key (query nil) (port  +gemini-default-port+))
+(defun make-client-certificate (uri)
+  (let* ((cache-id (db:cache-put uri +cache-tls-certificate-type+))
+         (cert-dir (os-utils:cached-file-path (text-utils:to-s cache-id))))
+    (fs:make-directory cert-dir)
+    (os-utils:generate-ssl-certificate cert-dir)))
+
+(defun request (host path &key
+                            (query nil)
+                            (port  +gemini-default-port+)
+                            (client-certificate nil))
   (let* ((uri (make-gemini-uri host path query port))
          (ctx (cl+ssl:make-context :verify-mode cl+ssl:+ssl-verify-none+)))
     (when query
@@ -274,14 +294,15 @@
       (let ((socket (usocket:socket-connect host port :element-type '(unsigned-byte 8))))
         (unwind-protect
             (when socket
-              (let ((stream (usocket:socket-stream socket)))
-                (let* ((ssl-stream (cl+ssl:make-ssl-client-stream stream
-                                                                  :external-format nil
-                                                                  :unwrap-stream-p t
-                                                                  :verify          nil
-                                                                  :hostname        host))
-                       (request    (format nil "~a~a~a" uri #\return #\newline))
-                       (cert-hash  (crypto-shortcuts:sha512 (x509:dump-certificate ssl-stream))))
+              (let* ((stream     (usocket:socket-stream socket))
+                     (ssl-stream (cl+ssl:make-ssl-client-stream stream
+                                                                :certificate client-certificate
+                                                                :external-format nil
+                                                                :unwrap-stream-p t
+                                                                :verify          nil
+                                                                :hostname        host))
+                     (request    (format nil "~a~a~a" uri #\return #\newline))
+                     (cert-hash  (crypto-shortcuts:sha512 (x509:dump-certificate ssl-stream))))
                   (if (not (db:tofu-passes-p host cert-hash))
                       (error 'gemini-tofu-error :host host)
                       (progn
@@ -289,4 +310,4 @@
                         (force-output ssl-stream)
                         (multiple-value-bind (status description meta response)
                             (parse-response ssl-stream)
-                          (values status description meta response socket))))))))))))
+                          (values status description meta response socket)))))))))))

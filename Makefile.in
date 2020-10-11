@@ -121,7 +121,7 @@ DIST_COMMON = $(srcdir)/Makefile.am $(top_srcdir)/configure \
 am__CONFIG_DISTCLEAN_FILES = config.status config.cache config.log \
  configure.lineno config.status.lineno
 mkinstalldirs = $(install_sh) -d
-CONFIG_CLEAN_FILES = quick_quicklisp.sh
+CONFIG_CLEAN_FILES = quick_quicklisp.sh src/config.lisp.in
 CONFIG_CLEAN_VPATH_FILES =
 am__vpath_adj_setup = srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`;
 am__vpath_adj = case $$p in \
@@ -214,7 +214,8 @@ CTAGS = ctags
 CSCOPE = cscope
 DIST_SUBDIRS = $(SUBDIRS)
 am__DIST_COMMON = $(dist_man1_MANS) $(srcdir)/Makefile.in \
-	$(srcdir)/quick_quicklisp.sh.in COPYING ChangeLog compile \
+	$(srcdir)/quick_quicklisp.sh.in \
+	$(top_srcdir)/src/config.lisp.in.in COPYING ChangeLog compile \
 	config.guess config.rpath config.sub install-sh missing
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 distdir = $(PACKAGE)-$(VERSION)
@@ -308,6 +309,7 @@ MSGFMT = @MSGFMT@
 MSGFMT_015 = @MSGFMT_015@
 MSGMERGE = @MSGMERGE@
 OBJEXT = @OBJEXT@
+OPENSSL = @OPENSSL@
 PACKAGE = @PACKAGE@
 PACKAGE_BUGREPORT = @PACKAGE_BUGREPORT@
 PACKAGE_NAME = @PACKAGE_NAME@
@@ -383,6 +385,7 @@ bin_SCRIPTS = tinmop
 CLEANFILES = $(bin_SCRIPTS) $(CONF_PATH_FILE);
 CONF_PATH_FILE = src/config.lisp
 CONF_PATH_FILE_IN = src/config.lisp.in
+CONF_PATH_FILE_IN_IN = src/config.lisp.in.in
 BUILT_SOURCES = $(CONF_PATH_FILE)
 EXTRA_DIST = config.rpath m4/ChangeLog  tinmop.asd README.org src \
                     LICENSES.org COPYING etc/shared.conf etc/default-theme.conf \
@@ -435,6 +438,8 @@ $(ACLOCAL_M4):  $(am__aclocal_m4_deps)
 	$(am__cd) $(srcdir) && $(ACLOCAL) $(ACLOCAL_AMFLAGS)
 $(am__aclocal_m4_deps):
 quick_quicklisp.sh: $(top_builddir)/config.status $(srcdir)/quick_quicklisp.sh.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
+src/config.lisp.in: $(top_builddir)/config.status $(top_srcdir)/src/config.lisp.in.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 install-binSCRIPTS: $(bin_SCRIPTS)
 	@$(NORMAL_INSTALL)
@@ -1034,6 +1039,7 @@ $(CONF_PATH_FILE):
 
 dist-hook:
 	rm -fv $(top_distdir)/$(CONF_PATH_FILE)
+	rm -fv $(top_distdir)/$(CONF_PATH_FILE_IN)
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

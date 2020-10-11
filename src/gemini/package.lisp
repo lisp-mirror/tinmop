@@ -87,6 +87,7 @@
    :gemini-tofu-error
    :make-gemini-file-response
    :host
+   :response-certificate-requested-p
    :response-input-p
    :response-sensitive-input-p
    :response-redirect-p
@@ -104,4 +105,5 @@
    :text-rendering-theme
    :gemini-file-response-p
    :close-ssl-socket
+   :make-client-certificate
    :request))

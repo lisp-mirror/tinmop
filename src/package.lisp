@@ -24,7 +24,8 @@
    :+program-name+
    :+program-version+
    :+issue-tracker+
-   :+home-data-dir+
+   :+openssl-bin+
+   :+xdg-open-bin+
    :_
    :n_))
 
@@ -49,7 +50,8 @@
    :+status-direct-visibility+
    :+folder-direct-message-prefix+
    :+folder-tag-prefix+
-   :+mention-prefix+))
+   :+mention-prefix+
+   :+cache-tls-certificate-type+))
 
 (defpackage :conditions
   (:use :cl
@@ -308,6 +310,8 @@
    :config
    :constants)
   (:export
+   :+ssl-cert-name+
+   :+ssl-key-name+
    :cpu-number
    :xdg-open
    :getenv
@@ -315,7 +319,8 @@
    :open-with-editor
    :exit-program
    :user-cache-dir
-   :cached-file-path))
+   :cached-file-path
+   :generate-ssl-certificate))
 
 (defpackage :text-utils
   (:use
@@ -882,7 +887,8 @@
    :cache-get-value
    :cache-expired-p
    :tofu-passes-p
-   :tofu-delete))
+   :tofu-delete
+   :ssl-cert-find))
 
 (defpackage :date-formatter
   (:use

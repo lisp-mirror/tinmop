@@ -26,6 +26,10 @@
                  "cpuinfo")
   :test #'string=)
 
+(alexandria:define-constant +ssl-cert-name+ "cert.pem" :test #'string=)
+
+(alexandria:define-constant +ssl-key-name+  "key" :test #'string=)
+
 (declaim (ftype (function () fixnum) cpu-number))
 
 (defun cpu-number ()
@@ -40,7 +44,7 @@
         (incf cpu-count)))))
 
 (defun xdg-open (file)
-  (uiop:launch-program (format nil "xdg-open '~a'" file)
+  (uiop:launch-program (format nil "~a '~a'" +xdg-open-bin+ file)
                        :output nil))
 
 (defun getenv (name)
@@ -68,7 +72,7 @@
   (multiple-value-bind (exe args)
       (external-editor)
     (let ((actual-args (if args
-                           (list args)
+                           (list (text-utils:split-words args))
                            nil)))
       (sb-ext:run-program exe
                           (append actual-args
@@ -88,3 +92,17 @@
 
 (defun cached-file-path (filename)
   (text-utils:strcat (user-cache-dir) fs:*directory-sep* filename))
+
+(defun generate-ssl-certificate (outdir)
+  (let* ((cert-file (text-utils:strcat outdir fs:*directory-sep* +ssl-cert-name+))
+         (key-file  (text-utils:strcat outdir fs:*directory-sep* +ssl-key-name+))
+         (cmd-args  (format nil
+                            (text-utils:strcat "req -new -nodes -x509 -days 365 -batch "
+                                               "-keyout ~a -outform PEM -out ~a")
+                            key-file
+                            cert-file)))
+    (sb-ext:run-program +openssl-bin+
+                        (text-utils:split-words cmd-args)
+                        :output nil
+                        :error  :output)
+    (values cert-file key-file)))
