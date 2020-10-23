@@ -363,6 +363,7 @@
 (defun request (url &key
                       (enqueue                    nil)
                       (certificate                nil)
+                      (certificate-key            nil)
                       (do-nothing-if-exists-in-db t))
   (let ((parsed-uri (quri:uri url)))
     (maybe-initialize-metadata specials:*message-window*)
@@ -394,6 +395,17 @@
                                (if enqueue
                                    :streaming
                                    :running)))
+                         (fetch-cached-certificate (actual-uri)
+                           (let* ((certificate-and-key
+                                   (or (multiple-value-list
+                                        (db:ssl-cert-find actual-uri))
+                                       (multiple-value-list
+                                        (gemini-client:make-client-certificate actual-uri))))
+                                  (certificate (first  certificate-and-key))
+                                  (key         (second certificate-and-key)))
+                             (assert certificate)
+                             (assert key)
+                             (values certificate key)))
                          (get-user-input (hide-input host prompt)
                            (flet ((on-input-complete (input)
                                     (when (string-not-empty-p input)
@@ -411,6 +423,7 @@
                   (multiple-value-bind (status code-description meta response socket)
                       (gemini-client:request host
                                              path
+                                             :certificate-key    certificate-key
                                              :client-certificate certificate
                                              :query              query
                                              :port               port)
@@ -432,13 +445,13 @@
                                                       (_ "Redirects to ~s, follows redirect? [y/N] ")
                                                       meta))))
                       ((gemini-client:response-certificate-requested-p status)
-                       (let ((certificate (or (db:ssl-cert-find actual-uri)
-                                              (gemini-client:make-client-certificate actual-uri))))
-                         (assert certificate)
+                       (multiple-value-bind (cached-certificate cached-key)
+                           (fetch-cached-certificate actual-uri)
                          (request actual-uri
                                   :enqueue                    enqueue
                                   :do-nothing-if-exists-in-db do-nothing-if-exists-in-db
-                                  :certificate                certificate)))
+                                  :certificate-key            cached-key
+                                  :certificate                cached-certificate)))
                       ((gemini-client:response-input-p status)
                        (get-user-input nil host meta))
                       ((gemini-client:response-sensitive-input-p status)

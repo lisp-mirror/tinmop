@@ -280,12 +280,15 @@
   (let* ((cache-id (db:cache-put uri +cache-tls-certificate-type+))
          (cert-dir (os-utils:cached-file-path (text-utils:to-s cache-id))))
     (fs:make-directory cert-dir)
-    (os-utils:generate-ssl-certificate cert-dir)))
+    (multiple-value-bind (certificate key)
+        (os-utils:generate-ssl-certificate cert-dir)
+      (values certificate key))))
 
 (defun request (host path &key
                             (query nil)
                             (port  +gemini-default-port+)
-                            (client-certificate nil))
+                            (client-certificate nil)
+                            (certificate-key    nil))
   (let* ((uri (make-gemini-uri host path query port))
          (ctx (cl+ssl:make-context :verify-mode cl+ssl:+ssl-verify-none+)))
     (when query
@@ -293,21 +296,22 @@
     (cl+ssl:with-global-context (ctx :auto-free-p t)
       (let ((socket (usocket:socket-connect host port :element-type '(unsigned-byte 8))))
         (unwind-protect
-            (when socket
-              (let* ((stream     (usocket:socket-stream socket))
-                     (ssl-stream (cl+ssl:make-ssl-client-stream stream
-                                                                :certificate client-certificate
-                                                                :external-format nil
-                                                                :unwrap-stream-p t
-                                                                :verify          nil
-                                                                :hostname        host))
-                     (request    (format nil "~a~a~a" uri #\return #\newline))
-                     (cert-hash  (crypto-shortcuts:sha512 (x509:dump-certificate ssl-stream))))
-                  (if (not (db:tofu-passes-p host cert-hash))
-                      (error 'gemini-tofu-error :host host)
-                      (progn
-                        (write-sequence (babel:string-to-octets request) ssl-stream)
-                        (force-output ssl-stream)
-                        (multiple-value-bind (status description meta response)
-                            (parse-response ssl-stream)
-                          (values status description meta response socket)))))))))))
+             (when socket
+               (let* ((stream     (usocket:socket-stream socket))
+                      (ssl-stream (cl+ssl:make-ssl-client-stream stream
+                                                                 :certificate     client-certificate
+                                                                 :key             certificate-key
+                                                                 :external-format nil
+                                                                 :unwrap-stream-p t
+                                                                 :verify          nil
+                                                                 :hostname        host))
+                      (request    (format nil "~a~a~a" uri #\return #\newline))
+                      (cert-hash  (crypto-shortcuts:sha512 (x509:dump-certificate ssl-stream))))
+                 (if (not (db:tofu-passes-p host cert-hash))
+                     (error 'gemini-tofu-error :host host)
+                     (progn
+                       (write-sequence (babel:string-to-octets request) ssl-stream)
+                       (force-output ssl-stream)
+                       (multiple-value-bind (status description meta response)
+                           (parse-response ssl-stream)
+                         (values status description meta response socket)))))))))))

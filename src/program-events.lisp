@@ -1227,6 +1227,12 @@
   (with-accessors ((regex regex)) object
     (keybindings:print-help specials:*main-window* :regex regex)))
 
+(defclass redraw-window-event (program-event) ())
+
+(defmethod process-event ((object redraw-window-event))
+  (with-accessors ((window payload)) object
+    (windows:draw window)))
+
 ;;;; general usage
 
 (defclass function-event (program-event) ())

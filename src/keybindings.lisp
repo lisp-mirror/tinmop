@@ -255,6 +255,9 @@ produces a tree and graft the latter on `existing-tree'"
 (defparameter *gemini-downloads-keymap* (make-starting-comand-tree)
   "The keymap for window that shows all gemini streams.")
 
+(defparameter *gemini-certificates-keymap* (make-starting-comand-tree)
+  "The keymap for window that shows all gemini certificates.")
+
 (defparameter *chats-list-keymap* (make-starting-comand-tree)
   "The keymap for window that shows all the chats.")
 

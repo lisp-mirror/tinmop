@@ -108,6 +108,7 @@
                (:file "message-window")
                (:file "open-attach-window")
                (:file "open-message-link-window")
+               (:file "gemini-client-certificates-window")
                (:file "command-window")
                (:file "sending-message")
                (:file "follow-requests")

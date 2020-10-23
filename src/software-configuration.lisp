@@ -334,6 +334,8 @@
                    value
                    scheme
                    link
+                   creation-time
+                   access-time
                    quote
                    h1
                    h2
@@ -381,6 +383,7 @@
                    open-attach-window
                    open-message-link-window
                    open-gemini-stream-window
+                   gemini-certificates-window
                    command-window
                    command-separator
                    gemini
@@ -489,6 +492,21 @@
                    +key-gemini+
                    +key-bullet+
                    +key-prefix+))
+
+(defun gemini-certificates-window-colors ()
+  "return three color values"
+  (values (access:accesses *software-configuration*
+                           +key-gemini-certificates-window+
+                           +key-link+
+                           +key-foreground+)
+          (access:accesses *software-configuration*
+                           +key-gemini-certificates-window+
+                           +key-creation-time+
+                           +key-foreground+)
+          (access:accesses *software-configuration*
+                           +key-gemini-certificates-window+
+                           +key-access-time+
+                           +key-foreground+)))
 
 (defun signature-file-path ()
   "Returns the filepath of the signature file, the $HOME is prepended."

@@ -72,7 +72,7 @@
   (multiple-value-bind (exe args)
       (external-editor)
     (let ((actual-args (if args
-                           (list (text-utils:split-words args))
+                           (text-utils:split-words args)
                            nil)))
       (sb-ext:run-program exe
                           (append actual-args

@@ -159,6 +159,14 @@ as argument `complex-string'."
   attributes and color of a."
   (croatoan:concat-complex-string a b :color-attributes-contagion color-attributes-contagion))
 
+(defmethod cat-complex-string ((a sequence) (b complex-string)
+                                  &key (color-attributes-contagion t))
+  "Return a  complex string  that is the  results of  concatenating of
+  `a'    (a    string)    and     `b'    (a    `complex-string')    If
+  `color-attributes-contagion'  is non  nil `b'  will inherit  all the
+  attributes and color of a."
+  (croatoan:concat-complex-string a b :color-attributes-contagion color-attributes-contagion))
+
 (defmethod cat-complex-string ((a complex-string) (b complex-string)
                                   &key (color-attributes-contagion nil))
   "Return a complex string that is the results of concatenating of `a'

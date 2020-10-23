@@ -398,7 +398,8 @@ Metadata includes:
                      *message-window*
                      :documentation      "Move focus on message window"
                      :info-change-focus-message (_ "Focus passed on message window")
-                     :windows-lose-focus (*chats-list-window*
+                     :windows-lose-focus (*gemini-certificates-window*
+                                          *chats-list-window*
                                           *gemini-streams-window*
                                           *open-message-link-window*
                                           *open-attach-window*
@@ -412,7 +413,8 @@ Metadata includes:
                      *send-message-window*
                      :documentation      "Move focus on send message window"
                      :info-change-focus-message (_ "Focus passed on send message window")
-                     :windows-lose-focus (*chats-list-window*
+                     :windows-lose-focus (*gemini-certificates-window*
+                                          *chats-list-window*
                                           *gemini-streams-window*
                                           *open-message-link-window*
                                           *open-attach-window*
@@ -426,7 +428,8 @@ Metadata includes:
                      *follow-requests-window*
                      :documentation      "Move focus on follow requests window"
                      :info-change-focus-message (_ "Focus passed on follow requests window")
-                     :windows-lose-focus (*chats-list-window*
+                     :windows-lose-focus (*gemini-certificates-window*
+                                          *chats-list-window*
                                           *gemini-streams-window*
                                           *open-message-link-window*
                                           *open-attach-window*
@@ -440,7 +443,8 @@ Metadata includes:
                      *tags-window*
                      :documentation      "Move focus on tags window"
                      :info-change-focus-message (_ "Focus passed on tags window")
-                     :windows-lose-focus (*chats-list-window*
+                     :windows-lose-focus (*gemini-certificates-window*
+                                          *chats-list-window*
                                           *gemini-streams-window*
                                           *open-message-link-window*
                                           *open-attach-window*
@@ -453,7 +457,8 @@ Metadata includes:
                      *conversations-window*
                      :documentation      "Move focus on conversations window"
                      :info-change-focus-message (_ "Focus passed on conversation window")
-                     :windows-lose-focus (*chats-list-window*
+                     :windows-lose-focus (*gemini-certificates-window*
+                                          *chats-list-window*
                                           *gemini-streams-window*
                                           *open-message-link-window*
                                           *open-attach-window*
@@ -467,7 +472,8 @@ Metadata includes:
                      *open-attach-window*
                      :documentation      "Move focus on open-attach window"
                      :info-change-focus-message (_ "Focus passed on attach window")
-                     :windows-lose-focus (*chats-list-window*
+                     :windows-lose-focus (*gemini-certificates-window*
+                                          *chats-list-window*
                                           *gemini-streams-window*
                                           *open-message-link-window*
                                           *conversations-window*
@@ -481,7 +487,8 @@ Metadata includes:
                      *open-message-link-window*
                      :documentation      "Move focus on open-link window"
                      :info-change-focus-message (_ "Focus passed on link window")
-                     :windows-lose-focus (*chats-list-window*
+                     :windows-lose-focus (*gemini-certificates-window*
+                                          *chats-list-window*
                                           *gemini-streams-window*
                                           *conversations-window*
                                           *open-attach-window*
@@ -495,7 +502,8 @@ Metadata includes:
                      *gemini-streams-window*
                      :documentation      "Move focus on open gemini streams window"
                      :info-change-focus-message (_ "Focus passed on gemini-stream window")
-                     :windows-lose-focus (*chats-list-window*
+                     :windows-lose-focus (*gemini-certificates-window*
+                                          *chats-list-window*
                                           *open-message-link-window*
                                           *conversations-window*
                                           *open-attach-window*
@@ -509,8 +517,23 @@ Metadata includes:
                      *chats-list-window*
                      :documentation      "Move focus on chats list window"
                      :info-change-focus-message (_ "Focus passed on chats list window")
-                     :windows-lose-focus (*gemini-streams-window*
+                     :windows-lose-focus (*gemini-certificates-window*
+                                          *gemini-streams-window*
                                           *open-message-link-window*
+                                          *conversations-window*
+                                          *open-attach-window*
+                                          *tags-window*
+                                          *follow-requests-window*
+                                          *thread-window*
+                                          *message-window*
+                                          *send-message-window*))
+
+(gen-focus-to-window open-gemini-certificates-window
+                     *gemini-certificates-window*
+                     :documentation      "Move focus on open-gemini certificates window"
+                     :info-change-focus-message (_ "Focus passed on TLS certificates window.")
+                     :windows-lose-focus (*chats-list-window*
+                                          *gemini-streams-window*
                                           *conversations-window*
                                           *open-attach-window*
                                           *tags-window*
@@ -1072,6 +1095,18 @@ Browse and optionally open the links the text of the message window contains."
         (open-message-link-window:init (db:row-message-status-id selected-message))
         (focus-to-open-message-link-window))))
 
+(defun line-window-move (win amount)
+  (ignore-errors
+    (line-oriented-window:unselect-all win)
+    (line-oriented-window:row-move     win amount)
+    (draw win)))
+
+(defun line-window-go-up (win)
+  (line-window-move win -1))
+
+(defun line-window-go-down (win)
+  (line-window-move win 1))
+
 (defun open-message-link-move (amount)
   (ignore-errors
     (line-oriented-window:unselect-all *open-message-link-window*)
@@ -1105,6 +1140,49 @@ This makes sense only for gemini file stream, if not this command performs the s
   (if (message-window:display-gemini-text-p *message-window*)
       (close-window-and-return-to-message *open-message-link-window*)
       (close-window-and-return-to-threads *open-message-link-window*)))
+
+(defun gemini-open-certificates-window ()
+  "Open a window with all the  client certificated generated so far to
+authenticate this client on a gemini server."
+  (gemini-certificates-window:open-gemini-certificates-window)
+  (focus-to-open-gemini-certificates-window))
+
+(defun gemini-certificate-window-move (amount)
+  (line-window-move *gemini-certificates-window* amount))
+
+(defun gemini-certificate-window-go-down ()
+  (line-window-go-down *gemini-certificates-window*))
+
+(defun gemini-certificate-window-go-up ()
+  (line-window-go-up *gemini-certificates-window*))
+
+(defun gemini-close-certificate-window ()
+  (close-window-and-return-to-message *gemini-certificates-window*))
+
+(defun gemini-delete-certificate ()
+  "Delete a gemini  certificate, this could makes all user data on the
+server unreachable as the server will not be able to identify the client.
+
+Of course  could be possible to generate a new identit (i.e. a new
+certificate).
+"
+  (flet ((on-input-complete (answer)
+           (when (boolean-input-accepted-p answer)
+             (db-utils:with-ready-database (:connect nil)
+               (let* ((selected-row (line-oriented-window:selected-row-fields
+                                     *gemini-certificates-window*))
+                      (cache-key    (db:row-cache-key selected-row))
+                      (event        (make-instance 'function-event
+                                                   :payload
+                                                   (lambda ()
+                                                     (line-oriented-window:resync-rows-db
+                                                      *gemini-certificates-window*
+                                                      :suggested-message-index 0)))))
+                 (db:cache-invalidate cache-key)
+                 (push-event event))))))
+    (ask-string-input #'on-input-complete
+                      :prompt      (_ "Delete this certificate? [Y/n] ")
+                      :complete-fn #'complete:complete-always-empty)))
 
 (defun prompt-for-username (prompt complete-function event
                             notify-starting-message

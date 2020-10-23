@@ -313,6 +313,8 @@
 
 (define-key "d"         #'gemini-open-streams-window                 *gemini-message-keymap*)
 
+(define-key "c"         #'gemini-open-certificates-window            *gemini-message-keymap*)
+
 ;; gemini stream window keymap
 
 (define-key "a"         #'gemini-abort-download                      *gemini-downloads-keymap*)
@@ -324,6 +326,18 @@
 (define-key "q"         #'gemini-streams-window-close                *gemini-downloads-keymap*)
 
 (define-key "C-J"       #'gemini-streams-window-open-stream          *gemini-downloads-keymap*)
+
+;; gemini certificates window keymap
+
+(define-key "a"         #'gemini-abort-download                      *gemini-certificates-keymap*)
+
+(define-key "up"        #'gemini-certificate-window-go-up            *gemini-certificates-keymap*)
+
+(define-key "down"      #'gemini-certificate-window-go-down          *gemini-certificates-keymap*)
+
+(define-key "q"         #'gemini-close-certificate-window            *gemini-certificates-keymap*)
+
+(define-key "C-J"       #'gemini-delete-certificate                  *gemini-certificates-keymap*)
 
 ;; tags keymap
 

@@ -785,6 +785,10 @@
    :row-votes-count
    :row-message-reply-to-id
    :row-text-url
+   :row-cache-key
+   :row-cache-type
+   :row-cache-accessed-at
+   :row-cache-created-at
    :next-status-tree
    :previous-status-tree
    :message-tree-root-equal
@@ -888,7 +892,8 @@
    :cache-expired-p
    :tofu-passes-p
    :tofu-delete
-   :ssl-cert-find))
+   :ssl-cert-find
+   :find-tls-certificates-rows))
 
 (defpackage :date-formatter
   (:use
@@ -957,6 +962,7 @@
    :+key-open-attach-window+
    :+key-open-message-link-window+
    :+key-open-gemini-stream-window+
+   :+key-gemini-certificates-window+
    :+key-conversations-window+
    :+key-keybindings-window+
    :+key-suggestions-window+
@@ -995,6 +1001,7 @@
    :gemini-h2-prefix
    :gemini-h3-prefix
    :gemini-bullet-prefix
+   :gemini-certificates-window-colors
    :signature-file-path
    :vote-vertical-bar
    :crypted-mark-value
@@ -1140,6 +1147,7 @@
    :*open-attach-window*
    :*open-message-link-window*
    :*gemini-streams-window*
+   :*gemini-certificates-window*
    :*chats-list-window*))
 
 (defpackage :complete
@@ -1268,6 +1276,7 @@
    :chat-create-event
    :search-link-event
    :help-apropos-event
+   :redraw-window-event
    :function-event
    :dispatch-program-events
    :add-pagination-status-event
@@ -1411,6 +1420,7 @@
    :*open-message-link-keymap*
    :*open-gemini-link-keymap*
    :*gemini-downloads-keymap*
+   :*gemini-certificates-keymap*
    :*chats-list-keymap*
    :*chat-message-keymap*
    :define-key
@@ -1849,6 +1859,26 @@
    :init-chat-links
    :forget-chat-link-window))
 
+(defpackage :gemini-certificates-window
+  (:use
+   :cl
+   :alexandria
+   :cl-ppcre
+   :access
+   :croatoan
+   :config
+   :constants
+   :text-utils
+   :misc
+   :mtree
+   :specials
+   :windows
+   :line-oriented-window
+   :tui-utils)
+  (:shadowing-import-from :misc :random-elt :shuffle)
+  (:export
+   :open-gemini-certificates-window))
+
 (defpackage :command-window
   (:use
    :cl
@@ -2229,6 +2259,12 @@
    :gemini-view-source
    :gemini-abort-download
    :gemini-open-streams-window
+   :gemini-open-certificates-window
+   :gemini-certificate-window-move
+   :gemini-certificate-window-go-down
+   :gemini-certificate-window-go-up
+   :gemini-close-certificate-window
+   :gemini-delete-certificate
    :gemini-streams-window-up
    :gemini-streams-window-down
    :gemini-streams-window-close
