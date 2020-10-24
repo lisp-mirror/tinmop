@@ -983,7 +983,7 @@
           (gemini-viewer:append-metadata-source window-metadata source))
         (progn
           (setf (message-window:source-text win) rendered-text)
-          (setf (gemini-viewer:gemini-metadata-source-file window-metadata) rendered-text)
+          (setf (gemini-viewer:gemini-metadata-source-file window-metadata) source)
           (setf (gemini-viewer:gemini-metadata-links window-metadata) links)))))
 
 (defmethod process-event ((object gemini-got-line-event))
