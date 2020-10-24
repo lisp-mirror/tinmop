@@ -413,7 +413,9 @@
                                         (request (gemini-parser:make-gemini-uri host
                                                                                 path
                                                                                 input
-                                                                                port))))))
+                                                                                port)
+                                                 :certificate-key    certificate-key
+                                                 :certificate        certificate)))))
                              (ui:ask-string-input #'on-input-complete
                                                   :hide-input hide-input
                                                   :prompt (format nil
@@ -437,7 +439,9 @@
                                                                                 (quri:uri-port parsed-uri)
                                                                                 (quri:uri-path parsed-uri))))
                                     (db-utils:with-ready-database (:connect nil)
-                                      (request new-url))))))
+                                      (request new-url
+                                               :certificate-key certificate-key
+                                               :certificate     certificate))))))
                          (ui:ask-string-input #'on-input-complete
                                               :priority program-events:+minimum-event-priority+
                                               :prompt
@@ -515,7 +519,12 @@
                            (when (ui::boolean-input-accepted-p maybe-accepted)
                              (db-utils:with-ready-database (:connect nil)
                                (db:tofu-delete host)
-                               (request url)))))
+                               (request url
+                                        :enqueue         enqueue
+                                        :certificate     certificate
+                                        :certificate-key certificate-key
+                                        :do-nothing-if-exists-in-db
+                                        do-nothing-if-exists-in-db)))))
                     (ui:ask-string-input #'on-input-complete
                                          :prompt
                                          (format nil
