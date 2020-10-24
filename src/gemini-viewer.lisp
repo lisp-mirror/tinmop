@@ -560,7 +560,6 @@
   (when-let* ((metadata (message-window:metadata window))
               (source   (gemini-metadata-source-file metadata))
               (last     (misc:safe-last-elt (gemini-metadata-history metadata))))
-    (misc:dbg "source ~a" source)
     (setf (message-window:source-text window) source)
     (draw window)
     (ui:info-message (format nil (_ "Viewing source of: ~a") last))))
