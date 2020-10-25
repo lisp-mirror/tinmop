@@ -39,6 +39,14 @@
         :all-tests)
   (:export))
 
+(defpackage :uri-tests
+  (:use :cl
+        :alexandria
+        :clunit
+        :uri
+        :all-tests)
+  (:export))
+
 (defpackage :numeric-tests
   (:use :cl
         :clunit

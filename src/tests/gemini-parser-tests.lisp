@@ -18,13 +18,3 @@
 (in-package :gemini-parser-tests)
 
 (defsuite gemini-parser-suite (all-suite))
-
-(defun normalize (path expected)
-  (string= (gemini-parser::normalize-path path)
-           expected))
-
-(deftest test-normalize-path (gemini-parser-suite)
-  (assert-true (normalize "/a/x" "/a/x"))
-  (assert-true (normalize "/a/../b/x" "/b/x"))
-  (assert-true (normalize "/a/../b/x/.." "/b/x/"))
-  (assert-true (normalize "/a/../b/x/." "/b/x/")))

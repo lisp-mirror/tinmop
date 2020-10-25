@@ -610,6 +610,30 @@
    :stack-empty-p
    :do-stack-element))
 
+(defpackage :uri-parser
+  (:use
+   :cl
+   :alexandria
+   :esrap
+   :cl-ppcre
+   :text-utils)
+  (:nicknames :uri)
+  (:export
+   :uri
+   :copy-uri
+   :render-uri
+   :uri-p
+   :uri-parse
+   :uri-scheme
+   :uri-user-info
+   :uri-host
+   :uri-port
+   :uri-path
+   :uri-query
+   :uri-fragment
+   :normalize-path
+   :make-uri))
+
 (defpackage :x509
   (:use
    :cl

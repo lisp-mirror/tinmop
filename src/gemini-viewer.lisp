@@ -365,16 +365,16 @@
                       (certificate                nil)
                       (certificate-key            nil)
                       (do-nothing-if-exists-in-db t))
-  (let ((parsed-uri (quri:uri url)))
+  (let ((parsed-uri (ignore-errors (uri:uri-parse url))))
     (maybe-initialize-metadata specials:*message-window*)
     (if (null parsed-uri)
         (ui:error-message (format nil
                                   (_ "Could not understand the address ~s")
                                   url))
-        (let* ((host       (quri:uri-host  parsed-uri))
-               (path       (quri:uri-path  parsed-uri))
-               (query      (quri:uri-query parsed-uri))
-               (port       (or (quri:uri-port  parsed-uri)
+        (let* ((host       (uri:uri-host  parsed-uri))
+               (path       (uri:uri-path  parsed-uri))
+               (query      (uri:uri-query parsed-uri))
+               (port       (or (uri:uri-port  parsed-uri)
                                gemini-client:+gemini-default-port+))
                (actual-uri (gemini-parser:make-gemini-uri host
                                                           path
@@ -435,9 +435,9 @@
                        (flet ((on-input-complete (maybe-accepted)
                                 (when (ui::boolean-input-accepted-p maybe-accepted)
                                   (let ((new-url (gemini-parser:absolutize-link meta
-                                                                                (quri:uri-host parsed-uri)
-                                                                                (quri:uri-port parsed-uri)
-                                                                                (quri:uri-path parsed-uri))))
+                                                                                (uri:uri-host parsed-uri)
+                                                                                (uri:uri-port parsed-uri)
+                                                                                (uri:uri-path parsed-uri))))
                                     (db-utils:with-ready-database (:connect nil)
                                       (request new-url
                                                :certificate-key certificate-key

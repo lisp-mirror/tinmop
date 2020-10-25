@@ -49,7 +49,7 @@
                :drakma
                :usocket
                :babel
-               :quri
+;               :quri
                :percent-encoding
                :uiop)
   :components ((:file "package")
@@ -72,6 +72,7 @@
                (:file "priority-queue")
                (:file "queue")
                (:file "stack")
+               (:file "uri-parser")
                (:file "x509-ffi")
                (:file "x509")
                (:file "api-pleroma-entities")
@@ -126,6 +127,7 @@
                                      (:file "all-tests")
                                      (:file "misc-tests")
                                      (:file "box-tests")
+                                     (:file "uri-tests")
                                      (:file "numeric-tests")
                                      (:file "text-utils-tests")
                                      (:file "mtree-tests")

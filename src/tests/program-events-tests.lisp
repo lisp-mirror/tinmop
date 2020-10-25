@@ -64,6 +64,12 @@
     (bt:join-thread main-thread)
     payload))
 
+(defclass dummy-window () ())
+
+(defmethod (setf command-window:echo-character) (val (object dummy-window))
+  t)
+
 (deftest test-ask-input (program-events-suite)
+  (setf specials:*command-window* (make-instance 'dummy-window))
   (assert-true
       (string= "foo" (dunbox (simulated-string-input)))))
