@@ -1,3 +1,7 @@
+* 2020-10-25
+
+  Gemini browser got client authentication support.
+
 * 2020-10-01
 
   Several improvements to the gemini browser added.
