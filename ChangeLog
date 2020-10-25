@@ -1,3 +1,56 @@
+020-10-25  cage
+
+        * LICENSES.org, src/gemini-viewer.lisp,
+        src/gemini/gemini-parser.lisp, src/package.lisp,
+        src/tests/gemini-parser-tests.lisp, src/tests/package.lisp,
+        src/tests/program-events-tests.lisp, src/tests/uri-tests.lisp,
+        src/uri-parser.lisp, tinmop.asd:
+
+	- replaced quri with an internal parser;
+	- [gemini] the client passes the torture test again;
+	- fixed event test.
+
+2020-10-24  cage
+
+        * src/gemini-viewer.lisp:
+
+	- removed debug code.
+
+2020-10-24  cage
+
+        * src/gemini-viewer.lisp, src/program-events.lisp:
+
+	- [gemini] fixed a regression, display again source of a gemini
+        file.
+
+2020-10-24  cage
+
+        * src/gemini-viewer.lisp:
+
+	- [gemini] use named parameter in recursive requests.
+
+2020-10-23  cage
+
+        * etc/default-theme.conf, etc/init.lisp, src/db.lisp,
+        src/gemini-client-certificates-window.lisp, src/gemini-viewer.lisp,
+        src/gemini/client.lisp, src/keybindings.lisp, src/os-utils.lisp,
+        src/package.lisp, src/program-events.lisp,
+        src/software-configuration.lisp, src/specials.lisp,
+        src/tui-utils.lisp, src/ui-goodies.lisp, tinmop.asd:
+
+	- [gemini] implemented a draft of a client authentication (via TLS
+        certificates).
+
+2020-10-11  cage
+
+        * Makefile.am, Makefile.in, configure, configure.ac,
+        src/config.lisp.in, src/config.lisp.in.in, src/constants.lisp,
+        src/db.lisp, src/gemini-viewer.lisp, src/gemini/client.lisp,
+        src/gemini/package.lisp, src/os-utils.lisp, src/package.lisp:
+
+	- [gemini] starting using certificates;
+	- removed hardcoded 'xdg-open' binary name.
+
 2020-10-06  cage
 
         * src/gemini-viewer.lisp, src/package.lisp,
@@ -22,6 +75,7 @@
 2020-10-02  cage
 
         * NEWS.org, src/constants.lisp, src/program-events.lisp:
+
 	- actually use the compiled regex-scanner when seraching text in the
         message window;
 	- increased refresh frequency;
@@ -30,6 +84,7 @@
 2020-10-01  cage
 
         * src/program-events.lisp:
+
 	- [gemini] removed waiting for rendering of a page before going back
         in browsing history.
 
