@@ -529,7 +529,8 @@
                                          :prompt
                                          (format nil
                                                  (_ "Host ~s signature changed! This is a potential security risk! Ignore this warning? [y/N] ")
-                                                 host)))))
+                                                 host)
+                                         :priority program-events:+standard-event-priority+))))
               (conditions:not-implemented-error (e)
                 (ui:notify (format nil (_ "Error: ~a") e)
                            :as-error t))

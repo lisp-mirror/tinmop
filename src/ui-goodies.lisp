@@ -141,14 +141,16 @@
 (defun input-dialog-immediate (message)
   (windows:make-input-dialog *main-window* *main-window* message))
 
-(defun error-message (message)
+(defun error-message (message &optional (priority +standard-event-priority+))
   (let ((event (make-instance 'error-message-event
+                              :priority priority
                               :payload message)))
     (push-event event)))
 
-(defun info-message (message)
+(defun info-message (message &optional (priority +standard-event-priority+))
   (let ((event (make-instance 'info-message-event
-                              :payload message)))
+                              :priority priority
+                              :payload  message)))
     (push-event event)))
 
 (defun confirm-file-overwrite-dialog-immediate (filepath)
@@ -360,7 +362,7 @@ Metadata includes:
        (setf (windows:in-focus win) nil))
   (windows:draw-all)
   (when info-change-focus-message
-    (info-message info-change-focus-message)))
+    (info-message info-change-focus-message +maximum-event-priority+)))
 
 (defmacro gen-focus-to-window (function-suffix window-get-focus
                                &key
