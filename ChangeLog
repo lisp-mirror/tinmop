@@ -1,4 +1,10 @@
-020-10-25  cage
+2020-11-01  cage
+
+        * src/gemini-viewer.lisp, src/ui-goodies.lisp:
+
+	- [gemini] prevent overwriting of TOFU warning by other messages.
+
+2020-10-25  cage
 
         * LICENSES.org, src/gemini-viewer.lisp,
         src/gemini/gemini-parser.lisp, src/package.lisp,
