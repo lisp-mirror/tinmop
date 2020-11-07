@@ -690,14 +690,13 @@ Force the checking for new message in the thread the selected message belong."
                         (line-oriented-window:selected-row-fields *thread-window*))
                        (timeline         (thread-window:timeline-type *thread-window*))
                        (folder           (thread-window:timeline-folder *thread-window*))
-                       (status-id        (or (db:row-message-reblog-id selected-message)
-                                             (db:row-message-status-id selected-message)))
+                       (status-id        (actual-author-message-id selected-message))
                        (expand-event     (make-instance 'expand-thread-event
                                                         :new-folder   folder
                                                         :new-timeline timeline
                                                         :status-id    status-id))
-                       (refresh-event  (make-instance 'refresh-thread-windows-event
-                                                      :priority +minimum-event-priority+)))
+                       (refresh-event    (make-instance 'refresh-thread-windows-event
+                                                        :priority +minimum-event-priority+)))
              (push-event expand-event)
              (push-event refresh-event))))
     (notify-procedure #'update (_ "Expanding thread"))))
@@ -1009,16 +1008,23 @@ Force the checking for new message in the thread the selected message belong."
                      (add-subject)))))))
     (add-body)))
 
+(defun actual-author-message-id (message-row)
+  (or (db:row-message-reblog-id message-row)
+      (db:row-message-status-id message-row)))
+
 (defun reply-message ()
   "Reply to message"
   (when-let* ((win              *thread-window*)
               (selected-message (line-oriented-window:selected-row-fields win))
-              (timeline         (thread-window:timeline-type   win))
+              (actual-message   (if (db:row-message-reblog-id selected-message)
+                                    (db:find-message-id (db:row-message-reblog-id selected-message))
+                                    selected-message))
+              (timeline         (db:row-message-timeline actual-message))
               (folder           (thread-window:timeline-folder win))
-              (username         (db:row-message-username   selected-message))
-              (visibility       (db:row-message-visibility selected-message))
-              (reply-id         (db:row-message-status-id  selected-message)))
-    (let ((subject (db:row-message-subject selected-message)))
+              (username         (db:row-message-username   actual-message))
+              (visibility       (db:row-message-visibility actual-message))
+              (reply-id         (actual-author-message-id  actual-message)))
+    (let* ((subject (db:row-message-subject actual-message)))
       (compose-message timeline folder reply-id subject visibility))))
 
 (defun send-message ()
