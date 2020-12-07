@@ -19,9 +19,9 @@
 (defclass follow-requests-window (focus-marked-window simple-line-navigation-window)
   ((requests
     :initarg  :requests
-    :initform ()
+    :initform nil
     :accessor requests
-    :type tooter:account
+    :type     (or null tooter:account)
     :documentation "All the accounts that request to follow you")
    (header-message-lines
     :initarg  :header-message-lines

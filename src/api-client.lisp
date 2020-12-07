@@ -486,7 +486,7 @@ database."
     :initform nil
     :initarg  :id
     :accessor id
-    :type string
+    :type (or null string)
     :documentation "The conversation ID")
    (status-tree
     :initform nil
@@ -498,13 +498,13 @@ database."
     :initform nil
     :initarg  :last-status
     :accessor last-status
-    :type tooter:status
+    :type     (or null tooter:status)
     :documentation "The lastest status that forms this conversation")
    (root
     :initform nil
     :initarg  :root
     :accessor root
-    :type tooter:status
+    :type     (or null tooter:status)
     :documentation "The first status that forms this conversation"))
   (:documentation "Represents a tree of message belonging to a conversation"))
 
