@@ -1561,7 +1561,7 @@ This command will remove those limits so that we can just jump to the last messa
 ;;;; chats
 
 (defun refresh-chats ()
-  "Refresh the chats, but not the chat's messages"
+  "Refresh the chats lists, but not the chat's messages"
   (program-events:push-event (make-instance 'program-events:get-chats-event)))
 
 (defun refresh-chat-messages ()

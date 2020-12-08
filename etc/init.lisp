@@ -393,6 +393,8 @@
 
 (define-key "r"         #'refresh-chat-messages                         *chats-list-keymap*)
 
+(define-key "R"         #'refresh-chats                                 *chats-list-keymap*)
+
 (define-key "q"         #'close-chats-list-window                       *chats-list-keymap*)
 
 (define-key "C-J"       #'show-chat-to-screen                           *chats-list-keymap*)
