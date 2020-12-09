@@ -94,3 +94,11 @@
         :all-tests
         :gemini-parser)
   (:export))
+
+(defpackage :x509-tests
+  (:use :cl
+        :clunit
+        :misc
+        :text-utils
+        :all-tests)
+  (:export))

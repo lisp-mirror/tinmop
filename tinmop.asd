@@ -133,6 +133,7 @@
                                      (:file "mtree-tests")
                                      (:file "thread-window-tests")
                                      (:file "gemini-parser-tests")
-                                     (:file "program-events-tests")))))
+                                     (:file "program-events-tests")
+                                     (:file "x509-tests")))))
 
 ;; (push :debug-mode *features*)
