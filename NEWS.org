@@ -1,3 +1,11 @@
+* 2020-12-11
+
+  This is  a bugfix release  that allows  tinmop to compile  and works
+  with newer SBCL compiler.
+
+  Also fixed  a problem  that made  the user stuck  if trying  to quit
+  keeping messages marked for deletion.
+
 * 2020-10-25
 
   Gemini browser got client authentication support.
