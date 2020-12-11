@@ -1,3 +1,31 @@
+2020-12-09  cage
+
+        * src/tests/package.lisp, src/tests/x509-tests.lisp, src/x509.lisp,
+        tinmop.asd:
+
+	- fixed segmentation fault whit FFI code (x509 certificate dump).
+
+2020-12-08  cage
+
+        * src/ui-goodies.lisp:
+
+	- quit the program if user choose to keeps statuses marked for
+        deletion.
+
+2020-12-08  cage
+
+        * etc/init.lisp, src/follow-requests.lisp, src/ui-goodies.lisp:
+
+	- exposed to the UI 'refresh-chats';
+	- fixed type in 'follow-request-window' slot;
+	- fixed docstring.
+
+2020-12-07  cage
+
+        * src/api-client.lisp, src/follow-requests.lisp:
+
+	- fixed slot types declaration to allow compilation with newer SBCL.
+
 2020-11-01  cage
 
         * src/gemini-viewer.lisp, src/ui-goodies.lisp:
