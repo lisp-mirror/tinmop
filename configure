@@ -6127,6 +6127,95 @@ $as_echo "#define HAVE_DCGETTEXT 1" >>confdefs.h
 
 
 
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for idn2_to_ascii_8z in -lidn2" >&5
+$as_echo_n "checking for idn2_to_ascii_8z in -lidn2... " >&6; }
+if ${ac_cv_lib_idn2_idn2_to_ascii_8z+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lidn2  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char idn2_to_ascii_8z ();
+int
+main ()
+{
+return idn2_to_ascii_8z ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_lib_idn2_idn2_to_ascii_8z=yes
+else
+  ac_cv_lib_idn2_idn2_to_ascii_8z=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_idn2_idn2_to_ascii_8z" >&5
+$as_echo "$ac_cv_lib_idn2_idn2_to_ascii_8z" >&6; }
+if test "x$ac_cv_lib_idn2_idn2_to_ascii_8z" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBIDN2 1
+_ACEOF
+
+  LIBS="-lidn2 $LIBS"
+
+else
+  as_fn_error $? "Can not this function find libidn2." "$LINENO" 5
+fi
+
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for SSL_get_version in -lssl" >&5
+$as_echo_n "checking for SSL_get_version in -lssl... " >&6; }
+if ${ac_cv_lib_ssl_SSL_get_version+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lssl  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char SSL_get_version ();
+int
+main ()
+{
+return SSL_get_version ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_lib_ssl_SSL_get_version=yes
+else
+  ac_cv_lib_ssl_SSL_get_version=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_ssl_SSL_get_version" >&5
+$as_echo "$ac_cv_lib_ssl_SSL_get_version" >&6; }
+if test "x$ac_cv_lib_ssl_SSL_get_version" = xyes; then :
+  as_fn_error $? "Can not find libssl." "$LINENO" 5
+fi
+
+
 # Extract the first word of "sbcl", so it can be a program name with args.
 set dummy sbcl; ac_word=$2
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5

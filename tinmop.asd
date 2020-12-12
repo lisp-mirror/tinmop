@@ -21,6 +21,7 @@
   :version     "0.3.2"
   :pathname    "src"
   :serial      t
+  :defsystem-depends-on ("cffi-grovel")
   :depends-on (:alexandria
                :cl-ppcre
                :tooter
@@ -49,10 +50,11 @@
                :drakma
                :usocket
                :babel
-;               :quri
                :percent-encoding
                :uiop)
   :components ((:file "package")
+               (:cffi-grovel-file "grovel-idn")
+               (:file "idn")
                (:file "config")
                (:file "constants")
                (:file "conditions")

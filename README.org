@@ -75,7 +75,8 @@
 
 ** Foreign (C language) library
 
-   - libssl
+   - libssl  (TLS socket)
+   - linidn2 (i18n domain name aka idna)
 
 * Install
 

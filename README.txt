@@ -119,7 +119,8 @@ Table of Contents
 3.3 Foreign (C language) library
 ────────────────────────────────
 
-  • libssl
+  • libssl (TLS socket)
+  • linidn2 (i18n domain name aka idna)
 
 
 4 Install
@@ -266,7 +267,7 @@ Table of Contents
   Any help is appreciated. If you intend to contribute please point your
   browser to the [issue tracker] or file a [pull request].
 
-  But, please take a minute to read the file <file:./CONTRIBUTING.org>
+  But, please take a minute to read the file <./CONTRIBUTING.org>
 
 
 [issue tracker] <https://notabug.org/cage/tinmop/issues>
