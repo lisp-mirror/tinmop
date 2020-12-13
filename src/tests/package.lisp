@@ -47,6 +47,14 @@
         :all-tests)
   (:export))
 
+(defpackage :iri-tests
+  (:use :cl
+        :alexandria
+        :clunit
+        :iri
+        :all-tests)
+  (:export))
+
 (defpackage :numeric-tests
   (:use :cl
         :clunit

@@ -640,6 +640,21 @@
    :normalize-path
    :make-uri))
 
+(defpackage :iri-parser
+  (:use
+   :cl
+   :alexandria
+   :esrap
+   :cl-ppcre
+   :text-utils)
+  (:nicknames :iri)
+  (:export
+   :iri
+   :copy-iri
+   :render-iri
+   :make-iri
+   :iri-parse))
+
 (defpackage :x509
   (:use
    :cl
