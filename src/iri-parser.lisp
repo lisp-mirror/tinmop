@@ -213,9 +213,9 @@
 
 (defrule iri-reference (or iri irelative-ref))
 
-(defclass iri (uri-parser:uri) ())
+(defclass iri (uri:uri) ())
 
-(defmethod uri-parser:host ((object iri))
+(defmethod uri:host ((object iri))
   (let ((host (slot-value object 'host)))
     (if (text-utils:string-starts-with-p "[" host)
         (subseq host 1 (1- (length host)))
@@ -264,6 +264,13 @@
               path
               query
               fragment)))
+
+(defmethod uri:normalize-path ((object iri))
+  (let ((clean-path (uri:normalize-path (uri:path object)))
+        (copy       (copy-iri  object)))
+    (when clean-path
+      (setf (uri:path copy) clean-path))
+    copy))
 
 (defun render-iri (iri &optional (stream *standard-output*))
   (flet ((render ()
