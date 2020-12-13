@@ -76,15 +76,17 @@ Table of Contents
 3.1 Programs
 ────────────
 
-  ⁃ for running the program:
-    • SBCL compiler;
-    • xdg-open;
-    • your favourite editor (default: nano).
+  ⁃ to build the package: xgettext; a C compiler.
 
   ⁃ to install the package, including running the script to install lisp
     libraries (`quick_quicklisp.sh'):
     • GNU AWK (Gawk);
     • BASH shell.
+
+  ⁃ to run the program:
+    • SBCL compiler;
+    • xdg-open;
+    • your favourite editor (default: nano).
 
 
 3.2 Lisp Libraries
