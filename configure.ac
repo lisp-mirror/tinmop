@@ -23,7 +23,7 @@ AM_GNU_GETTEXT([external])
 
 AC_CHECK_LIB([idn2], [idn2_to_ascii_8z], [], AC_MSG_ERROR([Can not this function find libidn2.]))
 
-AC_CHECK_LIB([ssl], [SSL_get_version], AC_MSG_ERROR([Can not find libssl.]))
+AC_CHECK_LIB([ssl], [SSL_get_version], [], AC_MSG_ERROR([Can not find libssl.]))
 
 AC_PATH_PROG([LISP_COMPILER],[sbcl],[no])
 

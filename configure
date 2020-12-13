@@ -6212,6 +6212,13 @@ fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_ssl_SSL_get_version" >&5
 $as_echo "$ac_cv_lib_ssl_SSL_get_version" >&6; }
 if test "x$ac_cv_lib_ssl_SSL_get_version" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBSSL 1
+_ACEOF
+
+  LIBS="-lssl $LIBS"
+
+else
   as_fn_error $? "Can not find libssl." "$LINENO" 5
 fi
 
