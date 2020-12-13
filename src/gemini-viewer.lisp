@@ -371,10 +371,10 @@
         (ui:error-message (format nil
                                   (_ "Could not understand the address ~s")
                                   url))
-        (let* ((host       (uri:uri-host  parsed-uri))
-               (path       (uri:uri-path  parsed-uri))
-               (query      (uri:uri-query parsed-uri))
-               (port       (or (uri:uri-port  parsed-uri)
+        (let* ((host       (uri:host  parsed-uri))
+               (path       (uri:path  parsed-uri))
+               (query      (uri:query parsed-uri))
+               (port       (or (uri:port  parsed-uri)
                                gemini-client:+gemini-default-port+))
                (actual-uri (gemini-parser:make-gemini-uri host
                                                           path
@@ -435,9 +435,9 @@
                        (flet ((on-input-complete (maybe-accepted)
                                 (when (ui::boolean-input-accepted-p maybe-accepted)
                                   (let ((new-url (gemini-parser:absolutize-link meta
-                                                                                (uri:uri-host parsed-uri)
-                                                                                (uri:uri-port parsed-uri)
-                                                                                (uri:uri-path parsed-uri))))
+                                                                                (uri:host parsed-uri)
+                                                                                (uri:port parsed-uri)
+                                                                                (uri:path parsed-uri))))
                                     (db-utils:with-ready-database (:connect nil)
                                       (request new-url
                                                :certificate-key certificate-key

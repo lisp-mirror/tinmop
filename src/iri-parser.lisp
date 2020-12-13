@@ -215,8 +215,8 @@
 
 (defclass iri (uri-parser:uri) ())
 
-(defmethod uri-parser:uri-host ((object iri))
-  (let ((host (slot-value object 'uri-host)))
+(defmethod uri-parser:host ((object iri))
+  (let ((host (slot-value object 'host)))
     (if (text-utils:string-starts-with-p "[" host)
         (subseq host 1 (1- (length host)))
         host)))
@@ -250,13 +250,13 @@
             res)))
 
 (defun copy-iri (from)
-  (let ((scheme    (uri:uri-scheme    from))
-        (user-info (uri:uri-user-info from))
-        (host      (slot-value from 'uri:uri-host))
-        (port      (uri:uri-port      from))
-        (path      (uri:uri-path      from))
-        (query     (uri:uri-query     from))
-        (fragment  (uri:uri-fragment  from)))
+  (let ((scheme    (uri:scheme    from))
+        (user-info (uri:user-info from))
+        (host      (slot-value from 'uri:host))
+        (port      (uri:port      from))
+        (path      (uri:path      from))
+        (query     (uri:query     from))
+        (fragment  (uri:fragment  from)))
     (make-iri scheme
               user-info
               host
@@ -268,13 +268,13 @@
 (defun render-iri (iri &optional (stream *standard-output*))
   (flet ((render ()
            (with-output-to-string (string-stream)
-             (let ((scheme    (uri:uri-scheme    iri))
-                   (user-info (uri:uri-user-info iri))
-                   (host      (slot-value    iri 'uri-host))
-                   (port      (uri:uri-port      iri))
-                   (path      (uri:uri-path      iri))
-                   (query     (uri:uri-query     iri))
-                   (fragment  (uri:uri-fragment  iri)))
+             (let ((scheme    (uri:scheme    iri))
+                   (user-info (uri:user-info iri))
+                   (host      (slot-value    iri 'host))
+                   (port      (uri:port      iri))
+                   (path      (uri:path      iri))
+                   (query     (uri:query     iri))
+                   (fragment  (uri:fragment  iri)))
                (when scheme
                  (format string-stream "~a:" scheme))
                (write-string "//" string-stream)

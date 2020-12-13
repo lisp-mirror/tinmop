@@ -171,7 +171,7 @@
   (let ((parsed (or (ignore-errors (uri:uri-parse link-value))
                     (uri:make-uri nil nil nil nil link-value nil nil))))
     (cond
-      ((null (uri:uri-host parsed))
+      ((null (uri:host parsed))
        (let* ((absolute-path-p (string-starts-with-p "/" link-value))
               (path            (if absolute-path-p
                                    link-value
@@ -183,7 +183,7 @@
                           (uri:normalize-path path)
                           nil
                           original-port)))
-      ((null (uri:uri-scheme parsed))
+      ((null (uri:scheme parsed))
        (strcat +gemini-scheme+ ":"
                (to-s (uri:normalize-path parsed))))
       (t
@@ -217,7 +217,7 @@
 (defun gemini-link-uri-p (uri)
   (conditions:with-default-on-error (nil)
     (or (text-utils:string-starts-with-p +gemini-scheme+ uri)
-        (null (uri:uri-scheme (uri:uri-parse uri))))))
+        (null (uri:scheme (uri:uri-parse uri))))))
 
 (defclass gemini-page-theme ()
   ((link-prefix-gemini
@@ -383,5 +383,5 @@
     (let ((parsed (uri:uri-parse maybe-uri)))
       (and parsed
            (string-equal +gemini-scheme+
-                         (uri:uri-scheme parsed))
-           (uri:uri-host parsed)))))
+                         (uri:scheme parsed))
+           (uri:host parsed)))))

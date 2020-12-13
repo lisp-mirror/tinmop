@@ -189,39 +189,39 @@
 (defrule uri-reference (or uri relative-ref))
 
 (defclass uri ()
-  ((uri-scheme
+  ((scheme
     :initform nil
     :initarg  :scheme
-    :accessor uri-scheme)
-   (uri-user-info
+    :accessor scheme)
+   (user-info
     :initform nil
     :initarg  :user-info
-    :accessor uri-user-info)
-   (uri-host
+    :accessor user-info)
+   (host
     :initform nil
     :initarg  :host
-    :writer   (setf uri-scheme))
-   (uri-port
+    :writer   (setf host))
+   (port
     :initform nil
     :initarg  :port
-    :accessor uri-port)
-   (uri-path
+    :accessor port)
+   (path
     :initform nil
     :initarg  :path
-    :accessor uri-path)
-   (uri-query
+    :accessor path)
+   (query
     :initform nil
     :initarg  :query
-    :accessor uri-query)
-   (uri-fragment
+    :accessor query)
+   (fragment
     :initform nil
     :initarg  :fragment
-    :accessor uri-fragment)))
+    :accessor fragment)))
 
-(defgeneric uri-host (object))
+(defgeneric host (object))
 
-(defmethod uri-host ((object uri))
-  (let ((host (slot-value object 'uri-host)))
+(defmethod host ((object uri))
+  (let ((host (slot-value object 'host)))
     (if (text-utils:string-starts-with-p "[" host)
         (subseq host 1 (1- (length host)))
         host)))
@@ -255,13 +255,13 @@
             res)))
 
 (defun copy-uri (from)
-  (let ((scheme    (uri-scheme    from))
-        (user-info (uri-user-info from))
-        (host      (slot-value    from 'uri-host))
-        (port      (uri-port      from))
-        (path      (uri-path      from))
-        (query     (uri-query     from))
-        (fragment  (uri-fragment  from)))
+  (let ((scheme    (scheme    from))
+        (user-info (user-info from))
+        (host      (slot-value    from 'host))
+        (port      (port      from))
+        (path      (path      from))
+        (query     (query     from))
+        (fragment  (fragment  from)))
     (make-uri scheme
               user-info
               host
@@ -273,13 +273,13 @@
 (defun render-uri (uri &optional (stream *standard-output*))
   (flet ((render ()
            (with-output-to-string (string-stream)
-             (let ((scheme    (uri-scheme    uri))
-                   (user-info (uri-user-info uri))
-                   (host      (slot-value    uri 'uri-host))
-                   (port      (uri-port      uri))
-                   (path      (uri-path      uri))
-                   (query     (uri-query     uri))
-                   (fragment  (uri-fragment  uri)))
+             (let ((scheme    (scheme    uri))
+                   (user-info (user-info uri))
+                   (host      (slot-value    uri 'host))
+                   (port      (port      uri))
+                   (path      (path      uri))
+                   (query     (query     uri))
+                   (fragment  (fragment  uri)))
                (when scheme
                  (format string-stream "~a:" scheme))
                (write-string "//" string-stream)
@@ -299,10 +299,10 @@
 
 
 (defmethod normalize-path ((object uri:uri))
-  (let ((clean-path (normalize-path (uri:uri-path object)))
+  (let ((clean-path (normalize-path (uri:path object)))
         (copy       (uri:copy-uri  object)))
     (when clean-path
-      (setf (uri:uri-path copy) clean-path))
+      (setf (uri:path copy) clean-path))
     copy))
 
 (defgeneric normalize-path (object))

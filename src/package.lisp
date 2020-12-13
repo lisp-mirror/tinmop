@@ -628,15 +628,14 @@
    :uri
    :copy-uri
    :render-uri
-   :uri-p
    :uri-parse
-   :uri-scheme
-   :uri-user-info
-   :uri-host
-   :uri-port
-   :uri-path
-   :uri-query
-   :uri-fragment
+   :scheme
+   :user-info
+   :host
+   :port
+   :path
+   :query
+   :fragment
    :normalize-path
    :make-uri))
 
