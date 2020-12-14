@@ -1,3 +1,53 @@
+2020-12-14  cage
+
+        * src/gemini-viewer.lisp, src/gemini/client.lisp,
+        src/gemini/gemini-parser.lisp, src/iri-parser.lisp:
+
+	- [gemini] switched from URI to IRI;
+	- fixed wrong slot symbol.
+
+2020-12-13  cage
+
+	README.org
+	README.txt
+	configure
+	configure.ac
+	src/gemini-viewer.lisp
+	src/gemini/client.lisp
+	src/gemini/gemini-parser.lisp
+	src/iri-parser.lisp
+	src/iri-parser.lisp
+	src/iri-parser.lisp
+	src/package.lisp
+	src/package.lisp
+	src/tests/iri-tests.lisp
+	src/tests/package.lisp
+	src/uri-parser.lisp
+	tinmop.asd
+
+	- fixed ssl checking in configure script (was given error when the
+        library was actually found).
+	- added mention of gcc and xgettext in README.
+	- specialize 'normalize-path' on iri;
+	- changed package name: uri-parser -> uri.
+	- removed 'uri-' prefix from 'uri' slots names.
+	- added IRI parser.
+
+2020-12-12  cage
+
+        README.org,
+	README.txt,
+	configure,
+	configure.ac,
+        src/grovel-idn.lisp,
+	src/idn.lisp,
+	src/package.lisp,
+	tinmop.asd:
+
+	- added minimal wrapping of libidn2;
+	- added library checks (libidn2  and libssl) to configure scripts;
+	- removed commented reference to quri.
+
 2020-12-09  cage
 
         * src/tests/package.lisp, src/tests/x509-tests.lisp, src/x509.lisp,
