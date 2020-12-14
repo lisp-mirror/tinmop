@@ -215,12 +215,6 @@
 
 (defclass iri (uri:uri) ())
 
-(defmethod uri:host ((object iri))
-  (let ((host (slot-value object 'host)))
-    (if (text-utils:string-starts-with-p "[" host)
-        (subseq host 1 (1- (length host)))
-        host)))
-
 (defun make-iri (&optional scheme user-info host port path query fragment)
   (make-instance 'iri
                  :scheme    scheme
@@ -277,7 +271,7 @@
            (with-output-to-string (string-stream)
              (let ((scheme    (uri:scheme    iri))
                    (user-info (uri:user-info iri))
-                   (host      (slot-value    iri 'host))
+                   (host      (slot-value    iri 'uri:host))
                    (port      (uri:port      iri))
                    (path      (uri:path      iri))
                    (query     (uri:query     iri))

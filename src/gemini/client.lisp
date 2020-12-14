@@ -294,7 +294,7 @@
     (when query
       (setf uri (strcat uri "?" (percent-encode query))))
     (cl+ssl:with-global-context (ctx :auto-free-p t)
-      (let ((socket (usocket:socket-connect host
+      (let ((socket (usocket:socket-connect (idn:unicode->ascii host)
                                             port
                                             :element-type '(unsigned-byte 8))))
         (unwind-protect

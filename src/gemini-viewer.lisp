@@ -365,7 +365,7 @@
                       (certificate                nil)
                       (certificate-key            nil)
                       (do-nothing-if-exists-in-db t))
-  (let ((parsed-uri (ignore-errors (uri:uri-parse url))))
+  (let ((parsed-uri (ignore-errors (iri:iri-parse url))))
     (maybe-initialize-metadata specials:*message-window*)
     (if (null parsed-uri)
         (ui:error-message (format nil

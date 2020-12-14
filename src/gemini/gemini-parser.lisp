@@ -168,8 +168,8 @@
       (fs:parent-dir-path path)))
 
 (defun absolutize-link (link-value original-host original-port original-path)
-  (let ((parsed (or (ignore-errors (uri:uri-parse link-value))
-                    (uri:make-uri nil nil nil nil link-value nil nil))))
+  (let ((parsed (or (ignore-errors (iri:iri-parse link-value))
+                    (iri:make-iri nil nil nil nil link-value nil nil))))
     (cond
       ((null (uri:host parsed))
        (let* ((absolute-path-p (string-starts-with-p "/" link-value))
@@ -217,7 +217,7 @@
 (defun gemini-link-uri-p (uri)
   (conditions:with-default-on-error (nil)
     (or (text-utils:string-starts-with-p +gemini-scheme+ uri)
-        (null (uri:scheme (uri:uri-parse uri))))))
+        (null (uri:scheme (iri:iri-parse uri))))))
 
 (defclass gemini-page-theme ()
   ((link-prefix-gemini
@@ -380,7 +380,7 @@
 
 (defun gemini-uri-p (maybe-uri)
   (conditions:with-default-on-error (nil)
-    (let ((parsed (uri:uri-parse maybe-uri)))
+    (let ((parsed (iri:iri-parse maybe-uri)))
       (and parsed
            (string-equal +gemini-scheme+
                          (uri:scheme parsed))
