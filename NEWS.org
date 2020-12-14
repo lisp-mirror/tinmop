@@ -1,8 +1,8 @@
 * 2020-12-14
 
-  This version swithed from URI to IRI to resolve DNS names.
+  This version switched from URI to IRI to resolve DNS names.
 
-  This  means that  you  can use  UTF8 characters  in  host name  when
+  This means  that users can uses  UTF-8 characters in host  name when
   resolving a gemini address.
 
 * 2020-12-11
