@@ -1695,8 +1695,10 @@ mot recent updated to least recent"
   (flet ((on-input-complete (url)
            (if (gemini-parser:gemini-uri-p url)
                (let* ((event (make-instance 'gemini-request-event
-                                            :priority program-events:+maximum-event-priority+
-                                            :url      url)))
+                                            :priority
+                                            program-events:+maximum-event-priority+
+                                            :use-cached-file-if-exists t
+                                            :url                       url)))
                  (program-events:push-event event))
                (error-message (_ "This is not a valid gemini address")))))
     (let ((prompt (_ "Open Gemini url: ")))

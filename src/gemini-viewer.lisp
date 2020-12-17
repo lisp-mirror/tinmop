@@ -57,6 +57,12 @@
                                                            :rendering)))))
       (setf (stream-status current-rendering) :streaming))))
 
+(defun force-rendering-of-cached-file (stream-object)
+  ;; this is more than a mere setter
+  ;; and is 'eql' specialized on rendering
+  ;; it will force displaying of gemini cached file on the screen
+  (setf (stream-status stream-object) :rendering))
+
 (defun db-entry-to-foreground (uri)
   (when-let* ((stream-object (find-db-stream-url uri)))
     (with-accessors ((support-file support-file)
@@ -64,7 +70,8 @@
       (if (gemini-client:mime-gemini-p meta)
           (progn
             (ensure-just-one-stream-rendering)
-            (setf (stream-status stream-object) :rendering))
+            (force-rendering-of-cached-file stream-object)
+            (setf (stream-status stream-object) :completed))
           (os-utils:xdg-open support-file)))))
 
 (defclass gemini-stream ()
@@ -360,26 +367,52 @@
                            (%fill-buffer)))))))
           (%fill-buffer))))))
 
+(defun displace-iri (iri)
+  (let* ((host       (uri:host  iri))
+         (path       (uri:path  iri))
+         (query      (uri:query iri))
+         (port       (or (uri:port  iri)
+                         gemini-client:+gemini-default-port+))
+         (actual-iri (gemini-parser:make-gemini-uri host
+                                                    path
+                                                    query
+                                                    port)))
+    (values actual-iri
+            host
+            path
+            query
+            port)))
+
 (defun request (url &key
                       (enqueue                    nil)
                       (certificate                nil)
                       (certificate-key            nil)
+                      (use-cached-file-if-exists  nil)
                       (do-nothing-if-exists-in-db t))
   (let ((parsed-uri (ignore-errors (iri:iri-parse url))))
     (maybe-initialize-metadata specials:*message-window*)
-    (if (null parsed-uri)
+    (cond
+      ((null parsed-uri)
         (ui:error-message (format nil
                                   (_ "Could not understand the address ~s")
-                                  url))
-        (let* ((host       (uri:host  parsed-uri))
-               (path       (uri:path  parsed-uri))
-               (query      (uri:query parsed-uri))
-               (port       (or (uri:port  parsed-uri)
-                               gemini-client:+gemini-default-port+))
-               (actual-uri (gemini-parser:make-gemini-uri host
-                                                          path
-                                                          query
-                                                          port)))
+                                  url)))
+      (use-cached-file-if-exists
+       (multiple-value-bind (actual-iri host path query port)
+           (displace-iri parsed-uri)
+         (if (find-db-stream-url actual-iri)
+             (gemini-viewer:db-entry-to-foreground actual-iri)
+             (request (gemini-parser:make-gemini-uri host
+                                                     path
+                                                     query
+                                                     port)
+                      :certificate-key    certificate-key
+                      :certificate        certificate
+                      :use-cached-file-if-exists nil
+                      :do-nothing-if-exists-in-db
+                      do-nothing-if-exists-in-db))))
+       (t
+        (multiple-value-bind (actual-uri host path query port)
+            (displace-iri parsed-uri)
           (when (not (and do-nothing-if-exists-in-db
                           (find-db-stream-url actual-uri)))
             (when (null enqueue)
@@ -543,7 +576,7 @@
                                    (_ "Error getting ~s: ~a")
                                    url
                                    e)
-                           :as-error t))))))))
+                           :as-error t)))))))))
 
 (defun history-back (window)
   (when-let* ((metadata (message-window:metadata window))

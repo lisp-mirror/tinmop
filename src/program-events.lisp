@@ -945,12 +945,17 @@
   ((url
     :initform nil
     :initarg  :url
-    :accessor url)))
+    :accessor url)
+   (use-cached-file-if-exists
+    :initform nil
+    :initarg :use-cached-file-if-exists
+    :accessor use-cached-file-if-exists)))
 
 (defmethod process-event ((object gemini-request-event))
-  (with-accessors ((url url)) object
+  (with-accessors ((url                       url)
+                   (use-cached-file-if-exists use-cached-file-if-exists)) object
     (ui:focus-to-message-window)
-    (gemini-viewer:request url)))
+    (gemini-viewer:request url :use-cached-file-if-exists use-cached-file-if-exists)))
 
 (defclass gemini-back-event (program-event) ())
 
