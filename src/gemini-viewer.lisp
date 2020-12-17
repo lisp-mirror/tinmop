@@ -28,8 +28,8 @@
   (pushnew stream-object
            *gemini-streams-db*
            :test (lambda (a b)
-                   (string= (download-uri a)
-                            (download-uri b))))
+                   (string= (download-iri a)
+                            (download-iri b))))
   *gemini-streams-db*)
 
 (defun remove-db-stream (stream-object)
@@ -48,7 +48,7 @@
   (find-if predicate *gemini-streams-db*))
 
 (defun find-db-stream-url (url)
-  (find-db-stream-if (lambda (a) (string= (download-uri a) url))))
+  (find-db-stream-if (lambda (a) (string= (download-iri a) url))))
 
 (defun ensure-just-one-stream-rendering ()
   (with-lock (*gemini-db-streams-lock*)
@@ -63,8 +63,8 @@
   ;; it will force displaying of gemini cached file on the screen
   (setf (stream-status stream-object) :rendering))
 
-(defun db-entry-to-foreground (uri)
-  (when-let* ((stream-object (find-db-stream-url uri)))
+(defun db-entry-to-foreground (iri)
+  (when-let* ((stream-object (find-db-stream-url iri)))
     (with-accessors ((support-file support-file)
                      (meta         meta)) stream-object
       (if (gemini-client:mime-gemini-p meta)
@@ -87,10 +87,10 @@
    (stream-status
     :initform nil
     :initarg  :stream-status)
-   (download-uri
+   (download-iri
     :initform nil
-    :initarg  :download-uri
-    :accessor download-uri)
+    :initarg  :download-iri
+    :accessor download-iri)
    (start-time
     :initform (db-utils:local-time-obj-now)
     :initarg  :start-time
@@ -144,7 +144,7 @@
   (print-unreadable-object (object stream :type t :identity t)
     (format stream
             "~a ~d ~a ~a"
-            (download-uri  object)
+            (download-iri  object)
             (octect-count  object)
             (meta           object)
             (stream-status  object))))
@@ -160,7 +160,7 @@
            (color-re       (swconf:color-regexps))
            (fitted-line    (format nil
                                    "~a ~d ~a ~a"
-                                   (pad (download-uri object) url-w)
+                                   (pad (download-iri object) url-w)
                                    (pad (to-s (octect-count object))
                                         octect-count-w)
                                    (pad (meta object) meta-w)
@@ -213,11 +213,11 @@
   (with-accessors ((start-time    start-time)
                    (thread        thread)
                    (stream-status stream-status)
-                   (download-uri  download-uri)) object
+                   (download-iri  download-iri)) object
     (setf thread
           (bt:make-thread function))
     (setf start-time (db-utils:local-time-obj-now))
-    (setf download-uri (gemini-parser:make-gemini-uri host path query port))
+    (setf download-iri (gemini-parser:make-gemini-iri host path query port))
     object))
 
 (defclass gemini-file-stream (gemini-stream) ())
@@ -259,7 +259,7 @@
     (incf octect-count data)))
 
 (defun make-gemini-download-event (src-data stream-object append-text)
-  (with-accessors ((download-uri            download-uri)
+  (with-accessors ((download-iri            download-iri)
                    (host                    host)
                    (port                    port)
                    (path                    path)
@@ -272,7 +272,7 @@
                                                               status-code-description
                                                               meta
                                                               parsed
-                                                              download-uri
+                                                              download-iri
                                                               src-data
                                                               links)))
       (make-instance 'program-events:gemini-got-line-event
@@ -291,7 +291,7 @@
                (program-events:push-event line-event))))
       (lambda ()
         (with-open-support-file (file-stream support-file character)
-          (let* ((url          (gemini-parser:make-gemini-uri host path query port))
+          (let* ((url          (gemini-parser:make-gemini-iri host path query port))
                  (url-header   (format nil "-> ~a~%" url))
                  (parsed-url   (gemini-parser:parse-gemini-file url-header))
                  (url-response (gemini-client:make-gemini-file-response nil
@@ -323,7 +323,7 @@
             (if (not (downloading-allowed-p wrapper-object))
                 (ui:notify (_ "Gemini document downloading aborted"))
                 (let ((compact-event (make-instance 'program-events:gemini-compact-lines-event
-                                                    :download-uri (download-uri wrapper-object)
+                                                    :download-iri (download-iri wrapper-object)
                                                     :priority
                                                     program-events:+maximum-event-priority+)))
                   (program-events:push-event compact-event)
@@ -373,7 +373,7 @@
          (query      (uri:query iri))
          (port       (or (uri:port  iri)
                          gemini-client:+gemini-default-port+))
-         (actual-iri (gemini-parser:make-gemini-uri host
+         (actual-iri (gemini-parser:make-gemini-iri host
                                                     path
                                                     query
                                                     port)))
@@ -389,19 +389,19 @@
                       (certificate-key            nil)
                       (use-cached-file-if-exists  nil)
                       (do-nothing-if-exists-in-db t))
-  (let ((parsed-uri (ignore-errors (iri:iri-parse url))))
+  (let ((parsed-iri (ignore-errors (iri:iri-parse url))))
     (maybe-initialize-metadata specials:*message-window*)
     (cond
-      ((null parsed-uri)
+      ((null parsed-iri)
         (ui:error-message (format nil
                                   (_ "Could not understand the address ~s")
                                   url)))
       (use-cached-file-if-exists
        (multiple-value-bind (actual-iri host path query port)
-           (displace-iri parsed-uri)
+           (displace-iri parsed-iri)
          (if (find-db-stream-url actual-iri)
              (gemini-viewer:db-entry-to-foreground actual-iri)
-             (request (gemini-parser:make-gemini-uri host
+             (request (gemini-parser:make-gemini-iri host
                                                      path
                                                      query
                                                      port)
@@ -411,10 +411,10 @@
                       :do-nothing-if-exists-in-db
                       do-nothing-if-exists-in-db))))
        (t
-        (multiple-value-bind (actual-uri host path query port)
-            (displace-iri parsed-uri)
+        (multiple-value-bind (actual-iri host path query port)
+            (displace-iri parsed-iri)
           (when (not (and do-nothing-if-exists-in-db
-                          (find-db-stream-url actual-uri)))
+                          (find-db-stream-url actual-iri)))
             (when (null enqueue)
               (ensure-just-one-stream-rendering))
             (handler-case
@@ -428,12 +428,12 @@
                                (if enqueue
                                    :streaming
                                    :running)))
-                         (fetch-cached-certificate (actual-uri)
+                         (fetch-cached-certificate (actual-iri)
                            (let* ((certificate-and-key
                                    (or (multiple-value-list
-                                        (db:ssl-cert-find actual-uri))
+                                        (db:ssl-cert-find actual-iri))
                                        (multiple-value-list
-                                        (gemini-client:make-client-certificate actual-uri))))
+                                        (gemini-client:make-client-certificate actual-iri))))
                                   (certificate (first  certificate-and-key))
                                   (key         (second certificate-and-key)))
                              (assert certificate)
@@ -443,7 +443,7 @@
                            (flet ((on-input-complete (input)
                                     (when (string-not-empty-p input)
                                       (db-utils:with-ready-database (:connect nil)
-                                        (request (gemini-parser:make-gemini-uri host
+                                        (request (gemini-parser:make-gemini-iri host
                                                                                 path
                                                                                 input
                                                                                 port)
@@ -462,15 +462,15 @@
                                              :client-certificate certificate
                                              :query              query
                                              :port               port)
-                    (add-url-to-history specials:*message-window* actual-uri)
+                    (add-url-to-history specials:*message-window* actual-iri)
                     (cond
                       ((gemini-client:response-redirect-p status)
                        (flet ((on-input-complete (maybe-accepted)
                                 (when (ui::boolean-input-accepted-p maybe-accepted)
                                   (let ((new-url (gemini-parser:absolutize-link meta
-                                                                                (uri:host parsed-uri)
-                                                                                (uri:port parsed-uri)
-                                                                                (uri:path parsed-uri))))
+                                                                                (uri:host parsed-iri)
+                                                                                (uri:port parsed-iri)
+                                                                                (uri:path parsed-iri))))
                                     (db-utils:with-ready-database (:connect nil)
                                       (request new-url
                                                :certificate-key certificate-key
@@ -483,8 +483,8 @@
                                                       meta))))
                       ((gemini-client:response-certificate-requested-p status)
                        (multiple-value-bind (cached-certificate cached-key)
-                           (fetch-cached-certificate actual-uri)
-                         (request actual-uri
+                           (fetch-cached-certificate actual-iri)
+                         (request actual-iri
                                   :enqueue                    enqueue
                                   :do-nothing-if-exists-in-db do-nothing-if-exists-in-db
                                   :certificate-key            cached-key

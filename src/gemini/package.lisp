@@ -45,7 +45,7 @@
    :meta
    :parse-gemini-file
    :absolutize-link
-   :make-gemini-uri
+   :make-gemini-iri
    :sexp->links
    :gemini-page-theme
    :link-prefix-gemini
@@ -57,7 +57,7 @@
    :bullet-prefix
    :sexp->text
    :parse-gemini-response-header
-   :gemini-uri-p))
+   :gemini-iri-p))
 
 (defpackage :gemini-client
   (:use

@@ -1014,13 +1014,13 @@
           (windows:draw win))))))
 
 (defclass gemini-compact-lines-event (program-event)
-  ((download-uri
+  ((download-iri
     :initform nil
-    :initarg  :download-uri
-    :accessor download-uri)))
+    :initarg  :download-iri
+    :accessor download-iri)))
 
 (defmethod process-event ((object gemini-compact-lines-event))
-  (with-accessors ((download-uri download-uri)) object
+  (with-accessors ((download-iri download-iri)) object
     (let ((all-lines   "")
           (all-links   ())
           (all-source  "")
@@ -1034,8 +1034,8 @@
                                        (text-rendering-theme gemini-client:text-rendering-theme))
                           response
                         (when (and (typep a 'gemini-got-line-event)
-                                   (string= download-uri
-                                            (gemini-viewer:download-uri wrapper-object))
+                                   (string= download-iri
+                                            (gemini-viewer:download-iri wrapper-object))
                                    (gemini-viewer:downloading-allowed-p wrapper-object)
                                    (not (skip-rendering-p a)))
                           (let ((rendered-text (gemini-parser:sexp->text parsed-file
@@ -1052,8 +1052,8 @@
         (remove-event-if (lambda (a)
                            (with-accessors ((wrapper-object wrapper-object)) a
                              (and (typep a 'gemini-got-line-event)
-                                  (string= download-uri
-                                           (gemini-viewer:download-uri wrapper-object))))))
+                                  (string= download-iri
+                                           (gemini-viewer:download-iri wrapper-object))))))
         (let* ((win specials:*message-window*))
           (setf (windows:keybindings win)
                 keybindings:*gemini-message-keymap*)
@@ -1063,13 +1063,13 @@
 (defclass gemini-abort-downloading-event (program-event) ())
 
 (defmethod process-event ((object gemini-abort-downloading-event))
-  (with-accessors ((uri payload)) object
-    (when-let ((stream-object (gemini-viewer:find-db-stream-url uri)))
+  (with-accessors ((iri payload)) object
+    (when-let ((stream-object (gemini-viewer:find-db-stream-url iri)))
       (gemini-viewer:abort-downloading stream-object)
       (gemini-viewer:remove-db-stream stream-object)
       (remove-event-if (lambda (a)
                          (and (typep a 'gemini-got-line-event)
-                              (string= uri (gemini-viewer:download-uri stream-object)))))
+                              (string= iri (gemini-viewer:download-iri stream-object)))))
       (line-oriented-window:resync-rows-db specials:*gemini-streams-window*))))
 
 (defclass gemini-abort-all-downloading-event (program-event) ())

@@ -1212,7 +1212,7 @@
    :followed-user-complete
    :tags-complete
    :conversation-folder
-   :make-complete-gemini-uri-fn
+   :make-complete-gemini-iri-fn
    :complete-chat-message
    :complete-always-empty))
 
@@ -2111,7 +2111,7 @@
    :history-back
    :view-source
    :gemini-stream
-   :download-uri
+   :download-iri
    :start-time
    :download-stream
    :download-socket

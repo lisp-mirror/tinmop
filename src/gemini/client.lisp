@@ -276,8 +276,8 @@
 (defun close-ssl-socket (socket)
   (usocket:socket-close socket))
 
-(defun make-client-certificate (uri)
-  (let* ((cache-id (db:cache-put uri +cache-tls-certificate-type+))
+(defun make-client-certificate (iri)
+  (let* ((cache-id (db:cache-put iri +cache-tls-certificate-type+))
          (cert-dir (os-utils:cached-file-path (text-utils:to-s cache-id))))
     (fs:make-directory cert-dir)
     (multiple-value-bind (certificate key)
@@ -289,10 +289,10 @@
                             (port  +gemini-default-port+)
                             (client-certificate nil)
                             (certificate-key    nil))
-  (let* ((uri (make-gemini-uri host path query port))
+  (let* ((iri (make-gemini-iri host path query port))
          (ctx (cl+ssl:make-context :verify-mode cl+ssl:+ssl-verify-none+)))
     (when query
-      (setf uri (strcat uri "?" (percent-encode query))))
+      (setf iri (strcat iri "?" (percent-encode query))))
     (cl+ssl:with-global-context (ctx :auto-free-p t)
       (let ((socket (usocket:socket-connect (idn:unicode->ascii host)
                                             port
@@ -307,7 +307,7 @@
                                                                  :unwrap-stream-p t
                                                                  :verify          nil
                                                                  :hostname        host))
-                      (request    (format nil "~a~a~a" uri #\return #\newline))
+                      (request    (format nil "~a~a~a" iri #\return #\newline))
                       (cert-hash  (crypto-shortcuts:sha512 (x509:dump-certificate ssl-stream))))
                  (if (not (db:tofu-passes-p host cert-hash))
                      (error 'gemini-tofu-error :host host)

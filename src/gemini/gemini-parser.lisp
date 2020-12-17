@@ -179,7 +179,7 @@
                                                (path-last-dir original-path)
                                                "/")
                                            link-value))))
-         (make-gemini-uri original-host
+         (make-gemini-iri original-host
                           (uri:normalize-path path)
                           nil
                           original-port)))
@@ -189,20 +189,20 @@
       (t
        (to-s (uri:normalize-path parsed))))))
 
-(defun make-gemini-uri (host path &optional (query nil) (port +gemini-default-port+))
+(defun make-gemini-iri (host path &optional (query nil) (port +gemini-default-port+))
   (let* ((actual-path (if (string-starts-with-p "/" path)
                           (subseq path 1)
                           path))
          (actual-port (if port
                           (to-s port)
                           (to-s +gemini-default-port+)))
-         (uri (strcat +gemini-scheme+ "://"
+         (iri (strcat +gemini-scheme+ "://"
                       host            ":"
                       actual-port     "/"
                       actual-path)))
     (when query
-      (setf uri (strcat uri "?" query)))
-    uri))
+      (setf iri (strcat iri "?" query)))
+    iri))
 
 (defun sexp->links (parsed-gemini original-host original-port original-path)
   (loop for node in parsed-gemini when (html-utils:tag= :a node) collect
@@ -214,10 +214,10 @@
                                                  original-path)
                         :name   (tag-value node)))))
 
-(defun gemini-link-uri-p (uri)
+(defun gemini-link-iri-p (iri)
   (conditions:with-default-on-error (nil)
-    (or (text-utils:string-starts-with-p +gemini-scheme+ uri)
-        (null (uri:scheme (iri:iri-parse uri))))))
+    (or (text-utils:string-starts-with-p +gemini-scheme+ iri)
+        (null (uri:scheme (iri:iri-parse iri))))))
 
 (defclass gemini-page-theme ()
   ((link-prefix-gemini
@@ -270,7 +270,7 @@
                    (trim text)
                    text)))
            (linkify (link-name link-value)
-             (if (gemini-link-uri-p link-value)
+             (if (gemini-link-iri-p link-value)
                  (format nil "~a~a~%" (link-prefix-gemini theme) link-name)
                  (format nil "~a~a~%" (link-prefix-other  theme) link-name))))
     (with-output-to-string (stream)
@@ -378,9 +378,9 @@
                              +max-meta-length+))
         parsed)))
 
-(defun gemini-uri-p (maybe-uri)
+(defun gemini-iri-p (maybe-iri)
   (conditions:with-default-on-error (nil)
-    (let ((parsed (iri:iri-parse maybe-uri)))
+    (let ((parsed (iri:iri-parse maybe-iri)))
       (and parsed
            (string-equal +gemini-scheme+
                          (uri:scheme parsed))

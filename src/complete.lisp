@@ -152,7 +152,7 @@ list af all possible candidtae for completion."
 
 (with-simple-complete conversation-folder db:all-conversation-folders)
 
-(defun make-complete-gemini-uri-fn (prompt)
+(defun make-complete-gemini-iri-fn (prompt)
   (lambda (hint)
     (when-let ((matched (remove-if-not (starts-with-clsr hint)
                                        (funcall #'db:history-prompt->values prompt))))

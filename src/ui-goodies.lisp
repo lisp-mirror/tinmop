@@ -1693,7 +1693,7 @@ mot recent updated to least recent"
 (defun open-gemini-address ()
   "Ask for a gemini address and try to load it"
   (flet ((on-input-complete (url)
-           (if (gemini-parser:gemini-uri-p url)
+           (if (gemini-parser:gemini-iri-p url)
                (let* ((event (make-instance 'gemini-request-event
                                             :priority
                                             program-events:+maximum-event-priority+
@@ -1704,7 +1704,7 @@ mot recent updated to least recent"
     (let ((prompt (_ "Open Gemini url: ")))
       (ask-string-input #'on-input-complete
                         :prompt      prompt
-                        :complete-fn (complete:make-complete-gemini-uri-fn prompt)))))
+                        :complete-fn (complete:make-complete-gemini-iri-fn prompt)))))
 
 (defun gemini-history-back ()
   "Reopen a previous visited gemini address"
@@ -1717,9 +1717,9 @@ mot recent updated to least recent"
 (defun gemini-abort-download ()
   "Stop a transferring data from a gemini server"
   (when-let* ((fields (line-oriented-window:selected-row-fields *gemini-streams-window*))
-              (uri-to-abort (gemini-viewer:download-uri fields))
+              (iri-to-abort (gemini-viewer:download-iri fields))
               (event        (make-instance 'gemini-abort-downloading-event
-                                           :payload  uri-to-abort
+                                           :payload  iri-to-abort
                                            :priority program-events:+maximum-event-priority+)))
     (push-event event)))
 
@@ -1749,5 +1749,5 @@ mot recent updated to least recent"
 (defun gemini-streams-window-open-stream ()
   "Open the selected stream."
   (when-let* ((fields (line-oriented-window:selected-row-fields *gemini-streams-window*))
-              (uri-to-open (gemini-viewer:download-uri fields)))
-    (gemini-viewer:db-entry-to-foreground uri-to-open)))
+              (iri-to-open (gemini-viewer:download-iri fields)))
+    (gemini-viewer:db-entry-to-foreground iri-to-open)))
