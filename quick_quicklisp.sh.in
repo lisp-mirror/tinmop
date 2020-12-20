@@ -121,7 +121,6 @@ install_dependency () {
      --eval "(ql:quickload \"usocket\")"          \
      --eval "(ql:quickload \"cffi\")"             \
      --eval "(ql:quickload \"babel\")"            \
-#     --eval "(ql:quickload \"quri\")"             \
      --eval "(ql:quickload \"percent-encoding\")" \
      --eval "(sb-ext:quit)";
 }
