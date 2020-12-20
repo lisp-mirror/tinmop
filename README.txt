@@ -153,16 +153,6 @@ Table of Contents
      on your computer.
 
   4. clone in `$HOME/quicklisp/local-projects/' the latest version of
-     tooter, a library to access mastodon API.
-
-     This step is temporary as this version will get into quicklisp
-     eventually.
-     ┌────
-     │ $ cd $HOME/quicklisp/local-projects/
-     │ $ git clone https://github.com/Shinmera/tooter.git
-     └────
-
-  5. clone in `$HOME/quicklisp/local-projects/' the latest version of
      croatoan, a library to wrap the ncurses TUI library.
 
      This step is temporary as this version will get into quicklisp
@@ -172,19 +162,19 @@ Table of Contents
      │ $ git clone https://github.com/McParen/croatoan.git
      └────
 
-  6. build the executable:
+  5. build the executable:
 
      ┌────
      │ $ make
      └────
 
-  7. install on your system:
+  6. install on your system:
 
      ┌────
      │ $ make install
      └────
 
-  8. run the software!
+  7. run the software!
 
      ┌────
      │ $ tinmop
