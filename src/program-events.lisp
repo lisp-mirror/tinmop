@@ -702,8 +702,8 @@
 
 (defmethod process-event ((object follow-user-event))
   (with-process-follower ((payload object) user-id db:all-followed-usernames)
-    (client:unfollow-user  user-id)
-    (db:remove-from-followers user-id)))
+    (client:follow-user  user-id)
+    (db:add-to-followers user-id)))
 
 (defclass unfollow-user-event (program-event) ())
 
