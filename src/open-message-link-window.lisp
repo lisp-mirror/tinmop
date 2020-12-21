@@ -69,11 +69,14 @@
 
 (defun open-message-link (url enqueue)
   (if (string-starts-with-p gemini-constants:+gemini-scheme+ url)
-      (let ((event (make-instance 'program-events:gemini-push-behind-downloading-event
-                                  :priority program-events:+maximum-event-priority+)))
-        (gemini-viewer:ensure-just-one-stream-rendering)
-        (program-events:push-event event)
-        (gemini-viewer:request url :enqueue enqueue))
+      (progn
+        (let ((program-events:*process-events-immediately* t)
+              (event (make-instance 'program-events:gemini-push-behind-downloading-event
+                                    :priority program-events:+maximum-event-priority+)))
+          (gemini-viewer:ensure-just-one-stream-rendering)
+          (program-events:push-event event))
+        (gemini-viewer:request url :enqueue enqueue
+                                   :use-cached-file-if-exists t))
       (os-utils:xdg-open url)))
 
 (defclass open-links-window ()
@@ -170,8 +173,8 @@
                                                           (gemini-parser:name a)))
                                                   (safe-subseq (links object)
                                                                row-selected-index))))
-          (call-next-method) ; seatch in urls
-          (when position-header ;; but if han header has been found, it wins
+          (call-next-method)    ; search in urls
+          (when position-header ; but if an header has been found, it wins
             (unselect-all object)
             (select-row object (+ saved-selected-index position-header))
             (when redraw
