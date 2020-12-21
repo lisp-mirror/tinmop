@@ -1390,6 +1390,7 @@
    :get-remote-status
    :send-status
    :get-status-context
+   :search-user
    :follow-user
    :unfollow-user
    :follow-requests

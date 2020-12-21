@@ -682,23 +682,35 @@
                 (ui:notify (_ "Message sent."))
                 (ui:close-send-message-window))))))))
 
+(defun find-user-id-from-exact-acct (username)
+  (when-let ((remote-account-matching (api-client:search-user username :limit 1)))
+    (tooter:id (first-elt remote-account-matching))))
+
+(defmacro with-process-follower ((username user-id
+                                  &optional (local-complete-username-fn #'db:all-unfollowed-usernames))
+                                 &body body)
+  `(tui:with-notify-errors
+     (let ((,user-id nil))
+       (if (find ,username (,local-complete-username-fn) :test #'string=)
+           (setf ,user-id (db:acct->id ,username))
+           (setf ,user-id (find-user-id-from-exact-acct ,username)))
+       (if ,user-id
+           (progn ,@body)
+           (error (format nil (_ "Unable to find user ~a") ,username))))))
+
 (defclass follow-user-event (program-event) ())
 
 (defmethod process-event ((object follow-user-event))
-  (when-let ((username (payload object)))
-    (when (find username (db:all-unfollowed-usernames) :test #'string=)
-      (let ((user-id  (db:acct->id username)))
-        (client:follow-user  user-id)
-        (db:add-to-followers user-id)))))
+  (with-process-follower ((payload object) user-id db:all-followed-usernames)
+    (client:unfollow-user  user-id)
+    (db:remove-from-followers user-id)))
 
 (defclass unfollow-user-event (program-event) ())
 
 (defmethod process-event ((object unfollow-user-event))
-  (when-let ((username (payload object)))
-    (when (find username (db:all-followed-usernames) :test #'string=)
-      (let ((user-id  (db:acct->id username)))
-        (client:unfollow-user  user-id)
-        (db:remove-from-followers user-id)))))
+  (with-process-follower ((payload object) user-id db:all-followed-usernames)
+    (client:unfollow-user  user-id)
+    (db:remove-from-followers user-id)))
 
 (defclass open-follow-requests-window-event (program-event) ())
 

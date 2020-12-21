@@ -452,6 +452,11 @@ database."
                       :spoiler-text subject
                       :visibility   visibility))
 
+(defun-w-lock search-user (username &key (limit 1))
+    *client-lock*
+  "Find user identified by username"
+  (tooter:search-accounts *client* username :limit limit))
+
 (defun-w-lock follow-user (user-id)
     *client-lock*
   "Follow user identified by user-id"
