@@ -2,7 +2,7 @@
 
 (include "idn2.h")
 
-(cenum (idn2-rc :define-constants t)
+(cenum (idn2-rc)
        ((:ok                       "IDN2_OK"))
        ((:malloc                   "IDN2_MALLOC"))
        ((:no-codeset               "IDN2_NO_CODESET"))
@@ -33,7 +33,7 @@
        ((:invalid-nontransitional  "IDN2_INVALID_NONTRANSITIONAL"))
        ((:alabel-roundtrip-failed  "IDN2_ALABEL_ROUNDTRIP_FAILED")))
 
-(cenum (flags :define-constants t)
+(cenum (flags)
        ((:nfc-input             "IDN2_NFC_INPUT"))
        ((:alabel-roundtrip      "IDN2_ALABEL_ROUNDTRIP"))
        ((:transitional          "IDN2_TRANSITIONAL"))
