@@ -284,16 +284,35 @@
         (os-utils:generate-ssl-certificate cert-dir)
       (values certificate key))))
 
+(defun percent-encode-path (path)
+  (let ((splitted (split "/" path)))
+    (if splitted
+        (reduce (lambda (a b) (strcat a "/" (percent-encode b)))
+                splitted)
+        path)))
+
+(defun percent-encode-allow-null (data)
+  (when data
+    (percent-encode data)))
+
+(defun percent-encode-query (query)
+  (percent-encode-allow-null query))
+
+(defun percent-encode-fragment (fragment)
+  (percent-encode-allow-null fragment))
+
 (defun request (host path &key
                             (query nil)
                             (port  +gemini-default-port+)
                             (fragment nil)
                             (client-certificate nil)
                             (certificate-key    nil))
-  (let* ((iri (make-gemini-iri host path :query query :port port :fragment fragment))
+  (let* ((iri (make-gemini-iri host
+                               (percent-encode-path path)
+                               :query    (percent-encode-query query)
+                               :port     port
+                               :fragment (percent-encode-fragment fragment)))
          (ctx (cl+ssl:make-context :verify-mode cl+ssl:+ssl-verify-none+)))
-    (when query
-      (setf iri (strcat iri "?" (percent-encode query))))
     (cl+ssl:with-global-context (ctx :auto-free-p t)
       (let ((socket (usocket:socket-connect (idn:unicode->ascii host)
                                             port
