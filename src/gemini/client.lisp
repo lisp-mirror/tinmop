@@ -287,9 +287,10 @@
 (defun request (host path &key
                             (query nil)
                             (port  +gemini-default-port+)
+                            (fragment nil)
                             (client-certificate nil)
                             (certificate-key    nil))
-  (let* ((iri (make-gemini-iri host path query port))
+  (let* ((iri (make-gemini-iri host path :query query :port port :fragment fragment))
          (ctx (cl+ssl:make-context :verify-mode cl+ssl:+ssl-verify-none+)))
     (when query
       (setf iri (strcat iri "?" (percent-encode query))))

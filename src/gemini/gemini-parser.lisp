@@ -174,22 +174,26 @@
       ((null (uri:host parsed))
        (let* ((absolute-path-p (string-starts-with-p "/" link-value))
               (path            (if absolute-path-p
-                                   link-value
+                                   (uri:path parsed)
                                    (strcat (if original-path
                                                (path-last-dir original-path)
                                                "/")
-                                           link-value))))
+                                           (uri:path parsed)))))
          (make-gemini-iri original-host
                           (uri:normalize-path path)
-                          nil
-                          original-port)))
+                          :query    (uri:query parsed)
+                          :port     original-port
+                          :fragment (uri:fragment parsed))))
       ((null (uri:scheme parsed))
        (strcat +gemini-scheme+ ":"
                (to-s (uri:normalize-path parsed))))
       (t
        (to-s (uri:normalize-path parsed))))))
 
-(defun make-gemini-iri (host path &optional (query nil) (port +gemini-default-port+))
+(defun make-gemini-iri (host path &key
+                                    (query    nil)
+                                    (port     +gemini-default-port+)
+                                    (fragment nil))
   (let* ((actual-path (if (string-starts-with-p "/" path)
                           (subseq path 1)
                           path))
@@ -202,6 +206,8 @@
                       actual-path)))
     (when query
       (setf iri (strcat iri "?" query)))
+    (when fragment
+      (setf iri (strcat iri "#" fragment)))
     iri))
 
 (defun sexp->links (parsed-gemini original-host original-port original-path)

@@ -53,7 +53,15 @@
     ("http://[dead:beef::]:111/foo/" .
      ("http" nil "[dead:beef::]" "111" "/foo/" nil nil))
     ("//foo.bar:198/".
-     (NIL NIL "foo.bar" "198" "/" NIL NIL))))
+     (nil nil "foo.bar" "198" "/" nil nil))
+    ("//fo°o.bar:198/baz.gmi?a=b&b=c#a-fragment".
+     (nil nil "fo°o.bar" "198" "/baz.gmi" "a=b&b=c" "a-fragment"))
+    ("/bar/baz/baz.gmi?a=b&b=c#a-fràgment".
+     (nil nil nil nil "/bar/baz/baz.gmi" "a=b&b=c" "a-fràgment"))
+    ("http://" .
+     ("http" nil nil nil nil nil nil))
+    ("http" .
+     (nil nil nil nil "http" nil nil))))
 
 (deftest test-parsing (iri-suite)
   (loop for (a . b) in *test-cases* do

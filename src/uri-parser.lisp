@@ -111,10 +111,14 @@
 (defrule path-abempty (* (and "/" segment))
   (:text t))
 
-(defrule path  (or path-abempty)
+(defrule path  (or path-abempty
+                   path-absolute
+                   path-noscheme
+                   path-rootless
+                   path-empty)
   (:text t))
 
-(defrule path-absolute (and "/" (or segment-nz (* (and "/" segment ))))
+(defrule path-absolute (and "/" (? (and segment-nz (* (and "/" segment )))))
   (:text t))
 
 (defrule path-rootless (and segment-non-zero (* (and "/" segment )))
@@ -155,25 +159,38 @@
                   (? fragment))
   (:function extract-fields-from-absolute-uri))
 
-(defrule relative-part (and authority-start
-                            authority
-                            (or path-abempty
-                                path-absolute
-                                path-noscheme
-                                path-empty))
-  (:function (lambda (a) (list (second a)
-                               (third a)))))
+(defrule relative-part (or (and authority-start
+                                authority
+                                path-abempty)
+                           path-absolute
+                           path-noscheme
+                           path-empty))
 
-(defun extract-fields-from-relative-uri (parsed)
-  (let ((authority (first  (first parsed)))
-        (path      (second (first parsed))))
+(defun extract-fields-from-relative-uri-w-authority (parsed)
+  ;; ((:IAUTHORITY-START (NIL "bar.baz" NIL) "/foo.gmi") "a=b" "afrag")
+  (let ((authority (second (first parsed)))
+        (path      (third  (first parsed))))
     (list nil                ; scheme
           (first  authority) ; user-credentials
           (second authority) ; host
           (third  authority) ; port
           path
-          (second  parsed)    ; query
-          (third  parsed)))) ;fragment))))
+          (second parsed)    ; iquery
+          (third  parsed)))) ; fragment
+
+(defun extract-fields-from-relative-uri-w/o-authority (parsed)
+  (list nil                ; scheme
+        nil                ; user-credentials
+        nil                ; host
+        nil                ; port
+        (first parsed)     ; path
+        (second parsed)    ; iquery
+        (third  parsed)))  ; fragment
+
+(defun extract-fields-from-relative-uri (parsed)
+  (if (consp (first parsed))
+      (extract-fields-from-relative-uri-w-authority   parsed)
+      (extract-fields-from-relative-uri-w/o-authority parsed)))
 
 (defrule relative-ref (and relative-part (? query) (? fragment))
   (:function extract-fields-from-relative-uri))

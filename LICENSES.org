@@ -355,8 +355,8 @@
   WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
   - src/tests/uri-tests.lisp
-
-    uses code from:
+  - src/tests/iri-tests.lisp
+    use code from:
 
     quri https://github.com/fukamachi/quri
 

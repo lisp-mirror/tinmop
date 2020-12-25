@@ -48,14 +48,14 @@
      ("http" nil "common-lisp.net" nil "/" nil "abc"))
     ("http://a/b/c/d;p?q#f" .
      ("http" nil "a" nil "/b/c/d;p" "q" "f"))
-    ;; are these vaild URI for rfc3986?
-    ;; ("http" .
-    ;;  (nil nil nil "http" nil nil))
-    ;; ("http:" .
-    ;;  ("http" nil nil nil nil nil))
+    ("http" .
+     (nil nil nil nil "http" nil nil))
+    ("http://" .
+     ("http" nil nil nil nil nil nil))
+    ;; are these valid URI?
     ;; ("tel:+31-641044153" .
     ;;  ("tel" nil nil "+31-641044153" nil nil))
-    ;; ("http://" .
+    ;; ("http:" .
     ;;  ("http" nil nil nil nil nil))
     ("ldap://[2001:db8::7]/c=GB?objectClass?one" .
      ("ldap" nil "[2001:db8::7]" nil "/c=GB" "objectClass?one" nil))

@@ -131,6 +131,14 @@
     :initform nil
     :initarg  :path
     :accessor path)
+   (query
+    :initform nil
+    :initarg  :query
+    :accessor query)
+   (fragment
+    :initform nil
+    :initarg  :fragment
+    :accessor fragment)
    (host
     :initform nil
     :initarg  :host
@@ -178,7 +186,7 @@
 
 (defgeneric downloading-allowed-p (object))
 
-(defgeneric downloading-start-thread (object function host port path query))
+(defgeneric downloading-start-thread (object function host port path query fragment))
 
 (defmethod abort-downloading ((object gemini-stream))
   (with-accessors ((download-thread-lock download-thread-lock)) object
@@ -209,7 +217,11 @@
 
 (defmethod downloading-start-thread ((object gemini-stream)
                                      function
-                                     host port path query)
+                                     host
+                                     port
+                                     path
+                                     query
+                                     fragment)
   (with-accessors ((start-time    start-time)
                    (thread        thread)
                    (stream-status stream-status)
@@ -217,7 +229,11 @@
     (setf thread
           (bt:make-thread function))
     (setf start-time (db-utils:local-time-obj-now))
-    (setf download-iri (gemini-parser:make-gemini-iri host path query port))
+    (setf download-iri (gemini-parser:make-gemini-iri host
+                                                      path
+                                                      :query    query
+                                                      :port     port
+                                                      :fragment fragment))
     object))
 
 (defclass gemini-file-stream (gemini-stream) ())
@@ -281,7 +297,7 @@
                      :append-text     append-text))))
 
 (defun request-stream-gemini-document-thread (wrapper-object host
-                                              port path query)
+                                              port path query fragment)
   (with-accessors ((download-socket download-socket)
                    (download-stream download-stream)
                    (octect-count    octect-count)
@@ -291,7 +307,11 @@
                (program-events:push-event line-event))))
       (lambda ()
         (with-open-support-file (file-stream support-file character)
-          (let* ((url          (gemini-parser:make-gemini-iri host path query port))
+          (let* ((url          (gemini-parser:make-gemini-iri host
+                                                              path
+                                                              :query    query
+                                                              :port     port
+                                                              :fragment fragment))
                  (url-header   (format nil "-> ~a~%" url))
                  (parsed-url   (gemini-parser:parse-gemini-file url-header))
                  (url-response (gemini-client:make-gemini-file-response nil
@@ -339,9 +359,12 @@
                                              port
                                              path
                                              query
-                                             status-code status-code-description meta)
+                                             fragment
+                                             status-code
+                                             status-code-description
+                                             meta)
   (declare (ignorable host
-                      port path query
+                      port path query fragment
                       status-code status-code-description meta))
   (with-accessors ((download-socket download-socket)
                    (download-stream download-stream)
@@ -368,20 +391,23 @@
           (%fill-buffer))))))
 
 (defun displace-iri (iri)
-  (let* ((host       (uri:host  iri))
-         (path       (uri:path  iri))
-         (query      (uri:query iri))
+  (let* ((host       (uri:host     iri))
+         (path       (uri:path     iri))
+         (query      (uri:query    iri))
+         (fragment   (uri:fragment iri))
          (port       (or (uri:port  iri)
                          gemini-client:+gemini-default-port+))
          (actual-iri (gemini-parser:make-gemini-iri host
                                                     path
-                                                    query
-                                                    port)))
+                                                    :query    query
+                                                    :port     port
+                                                    :fragment fragment)))
     (values actual-iri
             host
             path
             query
-            port)))
+            port
+            fragment)))
 
 (defun request (url &key
                       (enqueue                    nil)
@@ -397,21 +423,22 @@
                                   (_ "Could not understand the address ~s")
                                   url)))
       (use-cached-file-if-exists
-       (multiple-value-bind (actual-iri host path query port)
+       (multiple-value-bind (actual-iri host path query port fragment)
            (displace-iri parsed-iri)
          (if (find-db-stream-url actual-iri)
              (gemini-viewer:db-entry-to-foreground actual-iri)
              (request (gemini-parser:make-gemini-iri host
                                                      path
-                                                     query
-                                                     port)
+                                                     :query    query
+                                                     :port     port
+                                                     :fragment fragment)
                       :certificate-key    certificate-key
                       :certificate        certificate
                       :use-cached-file-if-exists nil
                       :do-nothing-if-exists-in-db
                       do-nothing-if-exists-in-db))))
        (t
-        (multiple-value-bind (actual-iri host path query port)
+        (multiple-value-bind (actual-iri host path query port fragment)
             (displace-iri parsed-iri)
           (when (not (and do-nothing-if-exists-in-db
                           (find-db-stream-url actual-iri)))
@@ -445,8 +472,9 @@
                                       (db-utils:with-ready-database (:connect nil)
                                         (request (gemini-parser:make-gemini-iri host
                                                                                 path
-                                                                                input
-                                                                                port)
+                                                                                :query    input
+                                                                                :port     port
+                                                                                :fragment fragment)
                                                  :certificate-key    certificate-key
                                                  :certificate        certificate)))))
                              (ui:ask-string-input #'on-input-complete
@@ -461,7 +489,8 @@
                                              :certificate-key    certificate-key
                                              :client-certificate certificate
                                              :query              query
-                                             :port               port)
+                                             :port               port
+                                             :fragment           fragment)
                     (add-url-to-history specials:*message-window* actual-iri)
                     (cond
                       ((gemini-client:response-redirect-p status)
@@ -500,6 +529,8 @@
                                                                   :host            host
                                                                   :port            port
                                                                   :path            path
+                                                                  :query           query
+                                                                  :fragment        fragment
                                                                   :meta            meta
                                                                   :status-code     status
                                                                   :status-code-description
@@ -512,7 +543,8 @@
                                                                           host
                                                                           port
                                                                           path
-                                                                          query))
+                                                                          query
+                                                                          fragment))
                                   (enqueue-event (make-instance 'program-events:gemini-enqueue-download-event
                                                                 :payload gemini-stream)))
                              (program-events:push-event enqueue-event)
@@ -521,7 +553,8 @@
                                                        host
                                                        port
                                                        path
-                                                       query))
+                                                       query
+                                                       fragment))
                            (let* ((starting-status (starting-status meta))
                                   (gemini-stream   (make-instance 'gemini-others-data-stream
                                                                   :stream-status   starting-status
@@ -534,6 +567,7 @@
                                                                          port
                                                                          path
                                                                          query
+                                                                         fragment
                                                                          status
                                                                          code-description
                                                                          meta))
@@ -545,7 +579,8 @@
                                                        host
                                                        port
                                                        path
-                                                       query)))))))
+                                                       query
+                                                       fragment)))))))
               (gemini-client:gemini-tofu-error (e)
                 (let ((host (gemini-client:host e)))
                   (flet ((on-input-complete (maybe-accepted)
