@@ -1,3 +1,105 @@
+2020-12-25  cage
+
+        * src/grovel-idn.lisp:
+
+	- removed warning for missing constants in grovel file.
+
+2020-12-25  cage
+
+        * src/gemini/client.lisp:
+
+	- [gemini] percent encoding path query and fragment before perfoming
+        the request.
+
+2020-12-25  cage
+
+        * LICENSES.org, src/gemini-viewer.lisp, src/gemini/client.lisp,
+        src/gemini/gemini-parser.lisp, src/iri-parser.lisp,
+        src/tests/iri-tests.lisp, src/tests/uri-tests.lisp,
+        src/uri-parser.lisp:
+
+	- fixed IRI and URI parser;
+	- taken into account fragment of IRI;
+	- added more IRI and URI test;
+	- passes all the client tests.
+
+2020-12-21  cage
+
+        * src/program-events.lisp:
+
+	- fixed swappend functions (unfollow -> follow).
+
+2020-12-21  cage
+
+        * src/open-message-link-window.lisp:
+
+	- [gemini] fixed bug that prevented visit the same link more than
+        once.
+
+2020-12-21  cage
+
+        * po/it.po, po/tinmop.pot:
+
+	- updated italian translation.
+
+2020-12-21  cage
+
+        * src/api-client.lisp, src/package.lisp, src/program-events.lisp:
+
+	- improved  following/unfollowing users previously only  user that
+	had an  entry in the program  local database could be  followed or
+	unfollowed.  With this changes the  software perform a name lookup
+	in the client and follow the  first user found that match searched
+	username.
+
+2020-12-20  cage
+
+        * quick_quicklisp.sh.in:
+
+	- removed installation of 'quri'.
+
+2020-12-20  cage
+
+        * README.org, README.txt:
+
+	- removed mentioning of manual installation of tooter from README.
+
+2020-12-17  cage
+
+        * src/complete.lisp, src/gemini-viewer.lisp,
+        src/gemini/client.lisp, src/gemini/gemini-parser.lisp,
+        src/gemini/package.lisp, src/package.lisp, src/program-events.lisp,
+        src/ui-goodies.lisp:
+
+	- changed 'uri' to 'iri' where does makes sense to me.
+
+2020-12-17  cage
+
+        * src/gemini-viewer.lisp, src/program-events.lisp,
+        src/ui-goodies.lisp:
+
+	- [gemini] fixed bugs that prevented the same IRI to be opened
+        multiple-time.
+
+2020-12-14  cage
+
+        * NEWS.org, configure, configure.ac, tinmop.asd:
+
+	- increased version;
+	- fixed typo.
+
+2020-12-14  cage
+
+        * NEWS.org:
+
+	- updated documentation.
+
+2020-12-14  cage
+
+        * ChangeLog:
+
+	- tracking changes.
+
 2020-12-14  cage
 
         * src/gemini-viewer.lisp, src/gemini/client.lisp,
