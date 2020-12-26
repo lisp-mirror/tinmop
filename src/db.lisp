@@ -2494,11 +2494,18 @@ name"
   (cl-ppcre:regex-replace +folder-tag-prefix+ folder ""))
 
 (defun max-status-id-subscribed-tag (tag)
-  (when-let* ((max-status-id-row (fetch-single (select (fields (:max :status-id))
-                                                 (from +table-status+)
-                                                 (where (:= :folder (tag->folder-name tag))))))
-              (max-status-id     (second max-status-id-row)))
-    max-status-id))
+  (let* ((max-status-id-row         (fetch-single (select (fields (:max :status-id))
+                                                    (from +table-status+)
+                                                    (where (:= :folder
+                                                               (tag->folder-name tag))))))
+         (max-status-id             (second max-status-id-row))
+         (max-ignored-status-id-row (fetch-single (select (fields (:max :status-id))
+                                                    (from +table-ignored-status+)
+                                                    (where (:= :folder
+                                                               (tag->folder-name tag))))))
+         (max-ignored-status-id     (second max-ignored-status-id-row)))
+    (or max-status-id
+        max-ignored-status-id)))
 
 (defun more-recent-tag-fetched-p (tag)
   "Returns the most recent message fetched that contains tag `tag', or
