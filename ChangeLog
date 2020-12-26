@@ -1,23 +1,27 @@
+2020-12-26  cage
+
+        * doc/welcome-bot.lisp
+        * src/db.lisp:
+
+	- added a script for a welcome bot;
+	- fixed false positive for new message on subscribed tags.
+
 2020-12-25  cage
 
-        * src/grovel-idn.lisp:
-
-	- removed warning for missing constants in grovel file.
-
-2020-12-25  cage
-
-        * src/gemini/client.lisp:
+	* src/gemini-viewer.lisp,
+	* src/gemini/client.lisp,
+	* src/gemini/client.lisp:
+	* src/grovel-idn.lisp,
+	* src/iri-parser.lisp,
+	* src/tests/uri-tests.lisp,
+        * LICENSES.org,
+        * src/gemini/gemini-parser.lisp,
+        * src/tests/iri-tests.lisp,
+        * src/uri-parser.lisp:
 
 	- [gemini] percent encoding path query and fragment before perfoming
         the request.
-
-2020-12-25  cage
-
-        * LICENSES.org, src/gemini-viewer.lisp, src/gemini/client.lisp,
-        src/gemini/gemini-parser.lisp, src/iri-parser.lisp,
-        src/tests/iri-tests.lisp, src/tests/uri-tests.lisp,
-        src/uri-parser.lisp:
-
+	- removed warning for missing constants in grovel file.
 	- fixed IRI and URI parser;
 	- taken into account fragment of IRI;
 	- added more IRI and URI test;
