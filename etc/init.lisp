@@ -37,6 +37,10 @@
 
 (load-module "next-previous-open.lisp")
 
+;; share a gemini page
+
+(load-module "share-gemini-link.lisp")
+
 ;; keybindings syntax:
 
 ;; a command is executed after a sequence  of one or more keys.  a key

@@ -2104,6 +2104,7 @@
    :make-gemini-metadata
    :gemini-metadata-links
    :gemini-metadata-source-file
+   :gemini-metadata-history
    :gemini-metadata-p
    :copy-gemini-metadata
    :append-metadata-link
@@ -2342,6 +2343,7 @@
    :text-utils
    :resources-utils
    :specials
+   :db-utils
    :windows
    :sending-message
    :keybindings

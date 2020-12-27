@@ -931,7 +931,7 @@ Force the checking for new message in the thread the selected message belong."
                              exceeding)
                          exceeding)))
 
-(defun compose-message (&optional timeline folder reply-id subject (visibility +status-public-visibility+))
+(defun compose-message (&key timeline folder reply-id subject (visibility +status-public-visibility+) (message-header-text nil))
   "Compose a new message"
   (setf *message-to-send* (make-instance 'sending-message:message-ready-to-send
                                          :visibility visibility
@@ -992,8 +992,16 @@ Force the checking for new message in the thread the selected message belong."
                                 :element-type 'character
                                 :if-exists    :append)
                  (write-sequence signature stream))))
+           (insert-header-text (file)
+             (when (string-not-empty-p file)
+               (with-open-file (stream file
+                                       :if-exists    :append
+                                       :direction    :output
+                                       :element-type 'character)
+                 (format stream "~a~%" message-header-text))))
            (add-body ()
              (let ((temp-file (fs:temporary-file)))
+               (insert-header-text temp-file)
                (prepare-reply-body temp-file)
                (add-signature temp-file)
                (let ((reference-open-file (get-universal-time)))
@@ -1025,7 +1033,11 @@ Force the checking for new message in the thread the selected message belong."
               (visibility       (db:row-message-visibility actual-message))
               (reply-id         (actual-author-message-id  actual-message)))
     (let* ((subject (db:row-message-subject actual-message)))
-      (compose-message timeline folder reply-id subject visibility))))
+      (compose-message :timeline   timeline
+                       :folder     folder
+                       :reply-id   reply-id
+                       :subject    subject
+                       :visibility visibility))))
 
 (defun send-message ()
   "Send message"
