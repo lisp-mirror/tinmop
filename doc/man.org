@@ -1,7 +1,7 @@
 #+TITLE: tinmop
 
 * Name
-  tinmop - a client for mastodon or pleroma social network
+  tinmop - a client for gemini or pleroma social network
 
 * Synopsis
   tinmop [OPTION]...
@@ -13,7 +13,9 @@
   official website ([[https://docs.joinmastodon.org/]]).
 
   Tinmop proposes a terminal interface to connect with Pleroma
-  social network
+  social network and as client for the gemini protocol
+
+  gemini://gemini.circumlunar.space/
 
 * Options
 
@@ -120,10 +122,11 @@
 
    #+END_SRC
 
-   Not incidentally the information in the example above are the
-   absolute minimum the user has to provide before starts the program:
-   the name you chose when you made the account on the server and the
-   address of the server.
+   Not  incidentally the  information  in the  example  above are  the
+   absolute minimum the user has  to provide before starts the program
+   and connect to  pleroma (to use tinmop as a  gemini browser only an
+   empty file  will suffice):  the name  you chose  when you  made the
+   account on the server and the address of the server.
 
    As you can see a line starting with a *#* is considered comment and
    skipped by the program
@@ -176,9 +179,17 @@
 
 * How to get more help
 
-  For help with mastodon visit the mastodon website.
+  For help with pleroma visit the pleroma website:
+
+  https://pleroma.social/
+
+  For information about gemini:
+
+  $ tinmop -o gemini://gemini.circumlunar.space
 
   The program has an inline help (default binding for help is "?")
+
+  You can search the help strings with a command (default: "C-h a").
 
   Moreover you can have some useful hint at the program web page:
 

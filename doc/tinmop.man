@@ -2,7 +2,7 @@
 
 .SH "Name"
 .PP
-tinmop - a client for mastodon or pleroma social network
+tinmop - a client for gemini or pleroma social network
 
 .SH "Synopsis"
 .PP
@@ -16,7 +16,10 @@ official website (\fIhttps://docs.joinmastodon.org/\fP).
 
 .PP
 Tinmop proposes a terminal interface to connect with Pleroma
-social network
+social network and as client for the gemini protocol
+
+.PP
+gemini://gemini.circumlunar.space/
 
 .SH "Options"
 .PP
@@ -166,10 +169,11 @@ username = username
 .RE
 
 .PP
-Not incidentally the information in the example above are the
-absolute minimum the user has to provide before starts the program:
-the name you chose when you made the account on the server and the
-address of the server.
+Not  incidentally the  information  in the  example  above are  the
+absolute minimum the user has  to provide before starts the program
+and connect to  pleroma (to use tinmop as a  gemini browser only an
+empty file  will suffice):  the name  you chose  when you  made the
+account on the server and the address of the server.
 
 .PP
 As you can see a line starting with a \fB#\fP is considered comment and
@@ -229,10 +233,22 @@ that there must be a file with valid credentials available).
 
 .SH "How to get more help"
 .PP
-For help with mastodon visit the mastodon website.
+For help with pleroma visit the pleroma website:
+
+.PP
+\fIhttps://pleroma.social/\fP
+
+.PP
+For information about gemini:
+
+.PP
+$ tinmop -o gemini://gemini.circumlunar.space
 
 .PP
 The program has an inline help (default binding for help is "?")
+
+.PP
+You can search the help strings with a command (default: "C-h a").
 
 .PP
 Moreover you can have some useful hint at the program web page:
