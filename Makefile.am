@@ -43,6 +43,8 @@ confdir              = $(sysconfdir)/$(PACKAGE)
 dist_conf_DATA       = etc/init.lisp etc/next-previous-open.lisp \
                     etc/default-theme.conf etc/shared.conf
 
+dist_pkgdata_DATA    = modules/welcome-bot.lisp
+
 dist_man1_MANS       = doc/tinmop.man
 
 $(PACKAGE): $(CONF_PATH_FILE)
