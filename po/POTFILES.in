@@ -1,3 +1,4 @@
+modules/share-gemini-link.lisp
 src/api-client.lisp
 src/api-pleroma-entities.lisp
 src/api-pleroma.lisp
