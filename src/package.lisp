@@ -371,7 +371,10 @@
    :annotated-text-value
    :box-fit-multiple-column-annotated
    :collect-links
-   :percent-encode))
+   :percent-encode
+   :percent-decode
+   :percent-encoded-p
+   :maybe-percent-encode))
 
 (defpackage :html-utils
   (:use

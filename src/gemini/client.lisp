@@ -287,19 +287,15 @@
 (defun percent-encode-path (path)
   (let ((splitted (split "/" path)))
     (if splitted
-        (reduce (lambda (a b) (strcat a "/" (percent-encode b)))
+        (reduce (lambda (a b) (strcat a "/" (maybe-percent-encode b)))
                 splitted)
         path)))
 
-(defun percent-encode-allow-null (data)
-  (when data
-    (percent-encode data)))
-
 (defun percent-encode-query (query)
-  (percent-encode-allow-null query))
+  (maybe-percent-encode query))
 
 (defun percent-encode-fragment (fragment)
-  (percent-encode-allow-null fragment))
+  (maybe-percent-encode fragment))
 
 (defun request (host path &key
                             (query nil)

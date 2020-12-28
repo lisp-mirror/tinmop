@@ -673,3 +673,21 @@ printed in the box column by column; in the example above the results are:
 
 (defun percent-encode (string)
   (percent-encoding:encode string :encoding :utf-8))
+
+(defun percent-decode (string)
+  (percent-encoding:decode string :encoding :utf-8))
+
+(defun percent-encoded-p (string)
+  (conditions:with-default-on-error (t)
+    (string/= string
+              (percent-decode string))))
+
+(defun percent-encode-allow-null (data)
+  (when data
+    (percent-encode data)))
+
+(defun maybe-percent-encode (data)
+  "Note that when data is null this function returns nil"
+  (if (percent-encoded-p data)
+      data
+      (percent-encode-allow-null data)))
