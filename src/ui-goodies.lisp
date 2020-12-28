@@ -993,7 +993,7 @@ Force the checking for new message in the thread the selected message belong."
                                 :if-exists    :append)
                  (write-sequence signature stream))))
            (insert-header-text (file)
-             (when (string-not-empty-p file)
+             (when (string-not-empty-p message-header-text)
                (with-open-file (stream file
                                        :if-exists    :append
                                        :direction    :output
