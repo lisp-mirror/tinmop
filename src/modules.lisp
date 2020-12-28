@@ -34,8 +34,10 @@
         (data-file
          (%load data-file))
         (t
-         (error (_ "Unrecoverable error: file ~a not found in any of the directory ~a ~a ~a ~a")
-                +sys-data-dir+
-                +sys-conf-dir+
-                (home-datadir)
-                (home-confdir)))))))
+         (error (format nil
+                        (_ "Unrecoverable error: file ~a not found in any of the directory ~a ~a ~a ~a")
+                        path
+                        +sys-data-dir+
+                        +sys-conf-dir+
+                        (home-datadir)
+                        (home-confdir))))))))
