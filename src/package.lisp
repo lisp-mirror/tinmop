@@ -743,6 +743,8 @@
    :+default-converation-timeline+
    :+message-index-start+
    :+tag-separator+
+   :+make-close+
+   :prepare-table
    :hidden-recipient-p
    :default-timelines
    :message-index->sequence-index
@@ -1415,6 +1417,7 @@
    :poll-vote
    :get-notifications
    :delete-notification
+   :sort-id<
    :all-mentions
    :update-mentions-folder
    :expand-status-thread
