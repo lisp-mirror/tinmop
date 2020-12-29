@@ -177,7 +177,7 @@
                            (priority        nil)
                            (initial-value   nil)
                            (prompt          +default-command-prompt+)
-                           (complete-fn     #'complete:directory-complete))
+                           (complete-fn     #'complete:complete-always-empty))
   (flet ((thread-fn ()
            (let* ((password-echo (and hide-input
                                       (swconf:config-password-echo-character)))
