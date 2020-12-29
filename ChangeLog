@@ -1,3 +1,24 @@
+2020-12-29  cage
+
+        * etc/init.lisp,
+	* etc/init.lisp,
+	* src/package.lisp,
+	* src/program-events.lisp,
+	* src/ui-goodies.lisp,
+	* etc/init.lisp,
+	* modules/share-gemini-link.lisp,
+        * src/gemini-viewer-metadata.lisp,
+	* src/gemini-viewer.lisp,
+        * src/message-window.lisp,
+	* src/package.lisp,
+	* src/program-events.lisp,
+        * src/ui-goodies.lisp:
+
+	- added command to scroll main window using 'newline' key;
+	- added command to repeat the last text search;
+	- [gemini] added a command to refresh a page;
+	- refactoring some code to add the above command.
+
 2020-12-28  cage
 
 	* Makefile.in,

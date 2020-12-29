@@ -1,4 +1,23 @@
-* 2020-12-14
+* 2020-12-29 version 0.4.0
+
+  - New features
+    - added a command to repeat the last performed search;
+    - "new-line" (aka 'enter') keycan be used to scroll main window;
+    - [gemini] added a command to refresh a page;
+  - Modules
+    - added a module to share a gemini link on pleroma.
+  - Scripts
+    - added a simple script for a welcome bot.
+  - Bugfix
+    - fixed IRI parsing and encoding/normalizing;
+    - fixed false positive for new message on subscribed tags;
+    - [gemini] fixed bug that prevented visit the same link more than
+      once;
+    - fixed bugs that prevented following of users whit no messages in
+      local database;
+    - updated manpage.
+
+* 2020-12-14 version 0.3.3
 
   This version switched from URI to IRI to resolve DNS names.
 
