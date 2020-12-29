@@ -1,3 +1,47 @@
+2020-12-28  cage
+
+	* Makefile.in,
+	* modules/next-previous-open.lisp,
+	* src/gemini/client.lisp,
+	* src/modules.lisp:
+	* src/package.lisp,
+	* src/package.lisp,
+	* src/text-utils.lisp,
+	* src/text-utils.lisp,
+	* src/ui-goodies.lisp,
+        * Makefile.am,
+        * scripts/welcome-bot.lisp,
+
+	- fixed welcomebot and moved to a new directory "scripts";
+	  Also export some symbols that this script uses, from others packages;
+	- improved 'percent-decoded-p';
+	- [gemini] allow percent encoding of query, path and fragment only
+          if not already encoded;
+	- added missing call to format;
+	- reorganized modules and scripts directories;
+	- removed spurious NIL when writing a message.
+
+2020-12-27  cage
+
+	* Makefile.am,
+	* Makefile.in,
+	* doc/tinmop.man,
+	* modules/share-gemini-link.lisp,
+	* modules/welcome-bot.lisp,
+	* po/it.po,
+	* po/tinmop.pot,
+	* src/package.lisp,
+	* src/ui-goodies.lisp:
+        * doc/man.org,
+        * etc/init.lisp,
+        * po/POTFILES.in,
+
+	- used a parameter for the welcome message;
+	- udated manpage;
+	- updated italian translation;
+	- moved welcomebot script in the right directory when installed;
+	- added a module to share a gemini page on pleroma.
+
 2020-12-26  cage
 
         * doc/welcome-bot.lisp
