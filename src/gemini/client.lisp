@@ -285,7 +285,7 @@
       (values certificate key))))
 
 (defun percent-encode-path (path)
-  (let ((splitted (split "/" path)))
+  (let ((splitted (split "/" path :limit (1+ (length path)))))
     (if splitted
         (reduce (lambda (a b) (strcat a "/" (maybe-percent-encode b)))
                 splitted)
