@@ -15,7 +15,7 @@
       once;
     - fixed bugs that prevented following of users whit no messages in
       local database;
-    - fixed quick_quicklisp.sh (building script).
+    - fixed quick_quicklisp.sh building script (thanks to Ben!).
   - Documentation
     - updated manpage.
 
