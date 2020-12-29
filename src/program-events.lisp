@@ -395,7 +395,19 @@
       (dbg "fetch single status ~a" dump))
     (db:update-db status)))
 
-(defclass search-regex-message-content-event (program-event) ())
+(defparameter *search-next-saved-event* nil)
+
+(defclass search-event (program-event) ())
+
+(defmethod process-event :before ((object search-event))
+  (setf *search-next-saved-event* object))
+
+(defclass search-next-event (program-event) ())
+
+(defmethod process-event ((object search-next-event))
+  (push-event *search-next-saved-event*))
+
+(defclass search-regex-message-content-event (search-event) ())
 
 (defmethod process-event ((object search-regex-message-content-event))
   (let ((regexp (payload object)))
@@ -406,13 +418,7 @@
         (error ()
           (ui:error-message (_ "Invalid regular expression")))))))
 
-(defclass thread-goto-message (program-event) ())
-
-(defmethod process-event ((object thread-goto-message))
-  (let ((message-index (payload object)))
-    (thread-window:goto-message specials:*thread-window* message-index)))
-
-(defclass thread-search-event (program-event)
+(defclass thread-search-event (search-event)
   ((search-direction
     :initform nil
     :initarg  :search-direction
@@ -435,6 +441,12 @@
     (if (eq :next search-direction)
         (thread-window:search-next-message-meta     specials:*thread-window* text-looking-for)
         (thread-window:search-previous-message-meta specials:*thread-window* text-looking-for))))
+
+(defclass thread-goto-message (program-event) ())
+
+(defmethod process-event ((object thread-goto-message))
+  (let ((message-index (payload object)))
+    (thread-window:goto-message specials:*thread-window* message-index)))
 
 (defclass delete-all-status-event (program-event) ())
 

@@ -280,6 +280,10 @@ Metadata includes:
   "Jump to next unread message"
   (thread-window:search-next-unread *thread-window*))
 
+(defun repeat-search ()
+  "Repeat the last search performed"
+  (push-event (make-instance 'search-next-event)))
+
 (defun thread-open-selected-message ()
   "Open selected message"
   (setf (windows:keybindings specials:*message-window*)

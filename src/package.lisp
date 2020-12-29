@@ -1262,11 +1262,12 @@
    :min-id
    :fetch-remote-status-event
    :process-event
+   :search-next-event
    :search-regex-message-content-event
-   :thread-goto-message
    :thread-search-message-body-event
    :search-direction
    :thread-search-message-meta-event
+   :thread-goto-message
    :delete-all-status-event
    :quit-program-event
    :error-message-event
@@ -2208,6 +2209,7 @@
    :thread-search-previous-message-body
    :thread-search-next-message-meta
    :thread-search-previous-message-meta
+   :repeat-search
    :thread-search-next-unread-message
    :thread-open-selected-message
    :thread-mark-delete-selected-message

@@ -209,6 +209,8 @@
 
 (define-key "\\\\ m"    #'thread-search-previous-message-meta         *thread-keymap*)
 
+(define-key "N"         #'repeat-search                               *thread-keymap*)
+
 (define-key "n"         #'thread-search-next-unread-message           *thread-keymap*)
 
 (define-key "home"      #'thread-goto-first-message                   *thread-keymap*)
@@ -289,6 +291,8 @@
 
 (define-key "/"         #'message-search-regex                        *message-keymap*)
 
+(define-key "N"         #'repeat-search                               *message-keymap*)
+
 (define-key "npage"     #'message-scroll-next-page                    *message-keymap*)
 
 (define-key "ppage"     #'message-scroll-previous-page                *message-keymap*)
@@ -304,6 +308,8 @@
 (define-key "end"       #'message-scroll-end                         *gemini-message-keymap*)
 
 (define-key "/"         #'message-search-regex                       *gemini-message-keymap*)
+
+(define-key "N"         #'repeat-search                              *gemini-message-keymap*)
 
 (define-key "npage"     #'message-scroll-next-page                   *gemini-message-keymap*)
 
