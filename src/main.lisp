@@ -110,6 +110,7 @@ etc.) happened"
   (init-db)
   (gemini-client:init-default-gemini-theme)
   (db-utils:with-ready-database (:connect nil)
+    (complete:initialize-complete-username-cache)
     (modules:load-module +starting-init-file+)
     ;; init main window for first...
     (main-window:init)

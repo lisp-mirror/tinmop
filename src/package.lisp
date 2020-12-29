@@ -1211,6 +1211,7 @@
    :folder-complete
    :timeline-complete-fn
    :ignored-username-complete
+   :initialize-complete-username-cache
    :username-complete
    :visibility-complete
    :unfollowed-user-complete

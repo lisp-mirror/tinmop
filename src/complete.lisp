@@ -137,7 +137,26 @@ list af all possible candidtae for completion."
 
 (with-simple-complete ignored-username-complete db:all-ignored-usernames)
 
-(with-simple-complete username-complete db:all-usernames)
+(let ((memoized (make-hash-table :test #'equalp)))
+
+  (defun set-username-cache-value (hint)
+    (setf (gethash hint memoized)
+          (remove-if-not (starts-with-clsr hint)
+                         (db:all-usernames))))
+
+  (defun initialize-complete-username-cache ()
+    (set-username-cache-value "")
+    (loop for i in (coerce "abcdefghijklmnopqrstuvwuxyz" 'list) do
+      (set-username-cache-value (string i))))
+
+  (defun username-complete (hint)
+    (multiple-value-bind (matched found)
+        (gethash hint memoized)
+      (if (null found)
+          (progn
+            (set-username-cache-value hint)
+            (username-complete hint))
+          (values matched (reduce-to-common-prefix matched))))))
 
 (with-simple-complete visibility-complete (lambda () swconf:*allowed-status-visibility*))
 

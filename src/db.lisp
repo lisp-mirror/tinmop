@@ -1031,6 +1031,7 @@ than (swconf:config-purge-history-days-offset) days in the past"
           (actual-moved-id     (if moved
                                    (prepare-for-db (tooter:id moved))
                                    (prepare-for-db nil))))
+      (complete:initialize-complete-username-cache)
       (insert-or-update +table-account+
                         (:id
                          :username
