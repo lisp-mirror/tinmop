@@ -319,6 +319,8 @@
 
 (define-key "c"         #'gemini-open-certificates-window            *gemini-message-keymap*)
 
+(define-key "r"         #'gemini-refresh-page                        *gemini-message-keymap*)
+
 ;; gemini stream window keymap
 
 (define-key "a"         #'gemini-abort-download                      *gemini-downloads-keymap*)
@@ -332,8 +334,6 @@
 (define-key "C-J"       #'gemini-streams-window-open-stream          *gemini-downloads-keymap*)
 
 ;; gemini certificates window keymap
-
-(define-key "a"         #'gemini-abort-download                      *gemini-certificates-keymap*)
 
 (define-key "up"        #'gemini-certificate-window-go-up            *gemini-certificates-keymap*)
 

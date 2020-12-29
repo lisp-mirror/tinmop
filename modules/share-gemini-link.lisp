@@ -17,14 +17,11 @@
 
 (in-package :modules)
 
-(defun gemini-window-p ()
-  (gemini-viewer:gemini-metadata-p (message-window:metadata specials:*message-window*)))
-
 (defun share-gemini-link ()
   "Share the link pointing to the current gemini page on pleroma."
-  (if (gemini-window-p)
+  (if (message-window:gemini-window-p)
       (let* ((metadata    (message-window:metadata specials:*message-window*))
-             (link        (last-elt (gemini-viewer:gemini-metadata-history metadata)))
+             (link        (gemini-viewer:current-gemini-url))
              (source      (gemini-viewer:gemini-metadata-source-file metadata))
              (source-head (with-input-from-string (stream source)
                             (read-line stream nil "...")))

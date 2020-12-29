@@ -33,6 +33,9 @@
     :initarg  :metadata
     :accessor metadata)))
 
+(defun gemini-window-p ()
+  (gemini-viewer:gemini-metadata-p (message-window:metadata specials:*message-window*)))
+
 (defun display-gemini-text-p (window)
   (eq (keybindings window)
       keybindings:*gemini-message-keymap*))

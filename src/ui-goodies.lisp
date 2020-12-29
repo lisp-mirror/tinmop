@@ -1728,7 +1728,7 @@ mot recent updated to least recent"
 
 (defun gemini-abort-download ()
   "Stop a transferring data from a gemini server"
-  (when-let* ((fields (line-oriented-window:selected-row-fields *gemini-streams-window*))
+  (when-let* ((fields       (line-oriented-window:selected-row-fields *gemini-streams-window*))
               (iri-to-abort (gemini-viewer:download-iri fields))
               (event        (make-instance 'gemini-abort-downloading-event
                                            :payload  iri-to-abort
@@ -1763,3 +1763,17 @@ mot recent updated to least recent"
   (when-let* ((fields (line-oriented-window:selected-row-fields *gemini-streams-window*))
               (iri-to-open (gemini-viewer:download-iri fields)))
     (gemini-viewer:db-entry-to-foreground iri-to-open)))
+
+(defun gemini-refresh-page ()
+  "Refresh current gemini page"
+  (when-let* ((url         (gemini-viewer:current-gemini-url))
+              (event-abort (make-instance 'gemini-abort-downloading-event
+                                          :payload  url
+                                          :priority program-events:+maximum-event-priority+))
+              (event-open  (make-instance 'gemini-request-event
+                                          ;; :priority
+                                          ;; program-events:+maximum-event-priority+
+                                          :use-cached-file-if-exists nil
+                                          :url                       url)))
+    (push-event event-abort)
+    (push-event event-open)))

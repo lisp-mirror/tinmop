@@ -1076,13 +1076,9 @@
 
 (defmethod process-event ((object gemini-abort-downloading-event))
   (with-accessors ((iri payload)) object
-    (when-let ((stream-object (gemini-viewer:find-db-stream-url iri)))
-      (gemini-viewer:abort-downloading stream-object)
-      (gemini-viewer:remove-db-stream stream-object)
-      (remove-event-if (lambda (a)
-                         (and (typep a 'gemini-got-line-event)
-                              (string= iri (gemini-viewer:download-iri stream-object)))))
-      (line-oriented-window:resync-rows-db specials:*gemini-streams-window*))))
+    (gemini-viewer:abort-download-stream iri
+                                         :remove-wainting-stream-event t
+                                         :redraw-stream-window         t)))
 
 (defclass gemini-abort-all-downloading-event (program-event) ())
 

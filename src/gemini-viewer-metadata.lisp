@@ -50,3 +50,9 @@
     (setf (message-window:metadata window)
           (make-gemini-metadata)))
   (message-window:metadata window))
+
+(defun current-gemini-url ()
+  (when (message-window:gemini-window-p)
+    (let* ((metadata (message-window:metadata specials:*message-window*))
+           (link     (last-elt (gemini-viewer:gemini-metadata-history metadata))))
+      link)))

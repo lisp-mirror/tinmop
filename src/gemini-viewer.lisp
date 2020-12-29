@@ -57,6 +57,22 @@
                                                            :rendering)))))
       (setf (stream-status current-rendering) :streaming))))
 
+(defun abort-download-stream (url &key
+                                    (remove-wainting-stream-event t)
+                                    (redraw-stream-window         t))
+  (when-let ((stream-object (find-db-stream-url url)))
+    (abort-downloading stream-object)
+    (remove-db-stream stream-object)
+    (when remove-wainting-stream-event
+      (program-events:remove-event-if (lambda (a)
+                                        (and (typep a
+                                                    'program-events:gemini-got-line-event)
+                                             (string= url
+                                                      (download-iri stream-object))))))
+    (when (and redraw-stream-window
+               specials:*gemini-streams-window*)
+      (line-oriented-window:resync-rows-db specials:*gemini-streams-window*))))
+
 (defun force-rendering-of-cached-file (stream-object)
   ;; this is more than a mere setter
   ;; and is 'eql' specialized on rendering
@@ -426,7 +442,7 @@
        (multiple-value-bind (actual-iri host path query port fragment)
            (displace-iri parsed-iri)
          (if (find-db-stream-url actual-iri)
-             (gemini-viewer:db-entry-to-foreground actual-iri)
+             (db-entry-to-foreground actual-iri)
              (request (gemini-parser:make-gemini-iri host
                                                      path
                                                      :query    query
@@ -622,7 +638,7 @@
     (ui:info-message (format nil (_ "Going back to: ~a") last))
     (let ((found (find-db-stream-url last)))
       (if found
-          (gemini-viewer:db-entry-to-foreground last)
+          (db-entry-to-foreground last)
           (request last))))) ; this should never happens
 
 (defun view-source (window)
@@ -680,29 +696,6 @@
         (when redraw
           (win-clear object)
           (draw object))))))
-
-;; (defmethod draw :before ((object gemini-streams-window))
-;;   (with-accessors ((rows              rows)
-;;                    (uses-border-p     uses-border-p)
-;;                    (single-row-height single-row-height)
-;;                    (top-row-padding   top-row-padding)
-;;                    (new-messages-mark new-messages-mark)
-;;                    (top-rows-slice    top-rows-slice)
-;;                    (bottom-rows-slice bottom-rows-slice)) object
-;;     (let ((y-start (if uses-border-p
-;;                        1
-;;                        0)))
-;;       (renderizable-rows-data object) ; set top and bottom slice
-;;       (win-clear object)
-;;       (with-croatoan-window (croatoan-window object)
-;;         (loop
-;;            for gemini-stream in (safe-subseq rows top-rows-slice bottom-rows-slice)
-;;            for y from (+ y-start top-row-padding) by single-row-height do
-;;              (print-text object
-;;                          gemini-stream
-;;                          1 y
-;;                          :bgcolor (bgcolor croatoan-window)
-;;                          :fgcolor (fgcolor croatoan-window)))))))
 
 (defun open-gemini-stream-window ()
   (let* ((low-level-window (make-croatoan-window :enable-function-keys t)))

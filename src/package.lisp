@@ -1847,6 +1847,7 @@
    :message-window
    :source-text
    :metadata
+   :gemini-window-p
    :display-gemini-text-p
    :display-chat-p
    :prepare-for-display-status-mode
@@ -2105,6 +2106,7 @@
    :find-db-stream-if
    :find-db-stream-url
    :ensure-just-one-stream-rendering
+   :abort-download-stream
    :db-entry-to-foreground
    :gemini-metadata-p
    :make-gemini-metadata
@@ -2116,6 +2118,7 @@
    :append-metadata-link
    :append-metadata-source
    :add-url-to-history
+   :current-gemini-url
    :history-back
    :view-source
    :gemini-stream
@@ -2320,7 +2323,8 @@
    :gemini-streams-window-up
    :gemini-streams-window-down
    :gemini-streams-window-close
-   :gemini-streams-window-open-stream))
+   :gemini-streams-window-open-stream
+   :gemini-refresh-page))
 
 (defpackage :scheduled-events
   (:use
