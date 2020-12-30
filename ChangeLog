@@ -1,19 +1,46 @@
-2020-12-29  cage
+2020-12-30  cage
 
         * etc/init.lisp,
+	* src/line-oriented-window.lisp,
+        * src/open-message-link-window.lisp,
+	* src/program-events.lisp,
+	* po/it.po,
+	* po/tinmop.pot,
+        * etc/init.lisp,
+	* src/os-utils.lisp,
+	* src/package.lisp,
+        * src/program-events.lisp,
+	* src/ui-goodies.lisp:
+
+	- allow repeat search on links window's items;
+	- updated italian translation;
+	- added a command to send data to an external program.
+
+2020-12-29  cage
+
+	* NEWS.org:
 	* etc/init.lisp,
+	* modules/share-gemini-link.lisp,
+	* src/complete.lisp,
+	* src/db.lisp,
+	* src/gemini-viewer.lisp,
+	* src/main.lisp,
 	* src/package.lisp,
 	* src/program-events.lisp,
 	* src/ui-goodies.lisp,
-	* etc/init.lisp,
-	* modules/share-gemini-link.lisp,
+        * LICENSES.org,
+        * etc/init.lisp,
         * src/gemini-viewer-metadata.lisp,
-	* src/gemini-viewer.lisp,
+        * src/gemini/client.lisp,
         * src/message-window.lisp,
-	* src/package.lisp,
-	* src/program-events.lisp,
-        * src/ui-goodies.lisp:
+        * src/ui-goodies.lisp,
 
+	- added reference to cl-str;
+	- [gemini] fix split when separator is at the end of a path;
+	- using a cache for username completion;
+	- changed default completion function to "no completion";
+	- added mention to the person that helped to spot a bug;
+	- fixed NEWS.org;
 	- added command to scroll main window using 'newline' key;
 	- added command to repeat the last text search;
 	- [gemini] added a command to refresh a page;
