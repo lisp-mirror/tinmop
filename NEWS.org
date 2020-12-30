@@ -7,7 +7,7 @@
  - Bugfix
    - fixed a  bug that  caused a redirect  loop when  accessing gemini
      pages with a  path components of URL that terminate  with a slash
-     (e.g. .../foo/bar/").
+     (e.g. ~.../foo/bar/~).
 
 * 2020-12-29 version 0.4.0
 
@@ -26,7 +26,7 @@
       once;
     - fixed bugs that prevented following of users whit no messages in
       local database;
-    - fixed quick_quicklisp.sh building script (thanks to Ben!).
+    - fixed ~quick_quicklisp.sh~ building script (thanks to Ben!).
   - Documentation
     - updated manpage.
 
