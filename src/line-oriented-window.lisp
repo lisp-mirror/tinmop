@@ -248,9 +248,9 @@ this exact quantity wold go beyond the length or rows or zero."
                                                        (scan scanner (selected-text a))
                                                        (scan scanner (normal-text   a))))
                                                  (safe-subseq (rows object)
-                                                              row-selected-index))))
+                                                              (1+ row-selected-index)))))
           (unselect-all object)
-          (select-row object (+ row-selected-index position-found))
+          (select-row object (+ 1 row-selected-index position-found))
           (when redraw
             (draw object))
           position-found))

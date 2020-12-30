@@ -407,6 +407,8 @@
 
 (define-key "/"         #'search-link-window                            *open-message-link-keymap*)
 
+(define-key "N"         #'repeat-search                                 *open-message-link-keymap*)
+
 ;; chats list window
 
 (define-key "r"         #'refresh-chat-messages                         *chats-list-keymap*)

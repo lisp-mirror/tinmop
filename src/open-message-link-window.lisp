@@ -172,11 +172,11 @@
                                                     (scan scanner
                                                           (gemini-parser:name a)))
                                                   (safe-subseq (links object)
-                                                               row-selected-index))))
+                                                               (1+ row-selected-index)))))
           (call-next-method)    ; search in urls
           (when position-header ; but if an header has been found, it wins
             (unselect-all object)
-            (select-row object (+ saved-selected-index position-header))
+            (select-row object (+ 1 saved-selected-index position-header))
             (when redraw
               (draw object)))))
     (error ()

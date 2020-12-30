@@ -1227,7 +1227,7 @@
                                     :chat-id (api-pleroma:chat-id chat)
                                     :label   chat-label)))))
 
-(defclass search-link-event (program-event)
+(defclass search-link-event (search-event)
   ((window
     :initform nil
     :initarg :window
