@@ -326,7 +326,8 @@
    :exit-program
    :user-cache-dir
    :cached-file-path
-   :generate-ssl-certificate))
+   :generate-ssl-certificate
+   :send-to-pipe))
 
 (defpackage :text-utils
   (:use
@@ -1329,6 +1330,7 @@
    :help-apropos-event
    :redraw-window-event
    :function-event
+   :send-to-pipe-event
    :dispatch-program-events
    :add-pagination-status-event
    :status-id
@@ -2327,7 +2329,9 @@
    :gemini-streams-window-down
    :gemini-streams-window-close
    :gemini-streams-window-open-stream
-   :gemini-refresh-page))
+   :gemini-refresh-page
+   :send-to-pipe
+   :send-message-to-pipe))
 
 (defpackage :scheduled-events
   (:use

@@ -1258,6 +1258,21 @@
   (with-accessors ((window payload)) object
     (windows:draw window)))
 
+(defclass send-to-pipe-event (program-event)
+  ((data
+    :initform nil
+    :initarg :data
+    :accessor data)
+   (command
+    :initform nil
+    :initarg :command
+    :accessor command)))
+
+(defmethod process-event ((object send-to-pipe-event))
+  (with-accessors ((data    data)
+                   (command command)) object
+    (os-utils:send-to-pipe data command)))
+
 ;;;; general usage
 
 (defclass function-event (program-event) ())

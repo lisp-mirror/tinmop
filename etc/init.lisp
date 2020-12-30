@@ -279,6 +279,8 @@
 
 (define-key "C-X m u"   #'unsubscribe-to-hash                         *thread-keymap*)
 
+(define-key "|"         #'send-message-to-pipe                        *thread-keymap*)
+
 ;; message window keymap
 
 (define-key "up"        #'message-scroll-up                           *message-keymap*)
@@ -298,6 +300,8 @@
 (define-key "npage"     #'message-scroll-next-page                    *message-keymap*)
 
 (define-key "ppage"     #'message-scroll-previous-page                *message-keymap*)
+
+(define-key "|"         #'send-to-pipe                                *message-keymap*)
 
 ;; gemini viewer keymap
 

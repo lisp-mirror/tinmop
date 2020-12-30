@@ -1781,3 +1781,28 @@ mot recent updated to least recent"
                                           :url                       url)))
     (push-event event-abort)
     (push-event event-open)))
+
+(defun send-to-pipe ()
+  "Send contents of window to a command"
+  (flet ((on-input-complete (command)
+           (when (string-not-empty-p command)
+             (when-let ((data (message-window:source-text *message-window*)))
+               (push-event (make-instance 'send-to-pipe-event
+                                          :data    data
+                                          :command command))
+               (info-message (format nil (_ "Command ~s completed")))))))
+    (ask-string-input #'on-input-complete
+                      :prompt (format nil (_ "Send to command: ")))))
+
+(defun send-message-to-pipe ()
+  "Send contents of a message to a command"
+  (when-let* ((selected-message (line-oriented-window:selected-row-fields *thread-window*))
+              (message          (db:row-message-rendered-text selected-message)))
+    (flet ((on-input-complete (command)
+             (when (string-not-empty-p command)
+               (push-event (make-instance 'send-to-pipe-event
+                                          :data    message
+                                          :command command))
+               (notify (format nil (_ "Command ~s completed"))))))
+      (ask-string-input #'on-input-complete
+                        :prompt (format nil (_ "Send message to command: "))))))

@@ -106,3 +106,15 @@
                         :output nil
                         :error  :output)
     (values cert-file key-file)))
+
+(defun send-to-pipe (data program-and-args)
+  (croatoan:end-screen)
+  (with-input-from-string (stream data)
+    (let ((command-line-splitted (text-utils:split-words program-and-args)))
+      (sb-ext:run-program (first command-line-splitted)
+                          (rest command-line-splitted)
+                          :search t
+                          :wait   t
+                          :input  stream
+                          :output t
+                          :error  t))))
