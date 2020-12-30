@@ -18,7 +18,7 @@
 (defsystem :tinmop
   :author      "cage"
   :license     "GPLv3"
-  :version     "0.4.0"
+  :version     "0.4.1"
   :pathname    "src"
   :serial      t
   :defsystem-depends-on ("cffi-grovel")

@@ -1,8 +1,19 @@
+* 2020-12-30 version 0.4.1
+
+ - New features
+  - allow repeat search on links window's items;
+  - updated Italian translation;
+  - added a command to send data to an external program.
+ - Bugfix
+   - fixed a  bug that  caused a redirect  loop when  accessing gemini
+     pages with a  path components of URL that terminate  with a slash
+     (e.g. .../foo/bar/").
+
 * 2020-12-29 version 0.4.0
 
   - New features
     - added a command to repeat the last performed search;
-    - "new-line" (aka 'enter') keycan be used to scroll main window;
+    - "new-line" (aka 'enter') key can be used to scroll main window;
     - [gemini] added a command to refresh a page;
   - Modules
     - added a module to share a gemini link on pleroma.
