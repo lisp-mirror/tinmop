@@ -1,3 +1,33 @@
+2020-12-31  cage
+
+	* modules/next-previous-open.lisp,
+	* modules/rewrite-message-urls.lisp,
+	* src/hooks.lisp,
+	* src/hooks.lisp,
+	* src/main.lisp,
+	* src/misc-utils.lisp,
+	* src/open-message-link-window.lisp:
+	* src/package.lisp,
+	* src/scheduled-events.lisp,
+	* src/ui-goodies.lisp:
+        * etc/init.lisp,
+        * modules/rewrite-message-urls.lisp,
+        * src/command-line.lisp,
+        * src/main.lisp,
+        * src/open-message-link-window.lisp,
+        * src/program-events.lisp,
+
+	- added a profiling macro;
+	- added function to stop event dispatching;
+	- Added a command line switch to load a module;
+	- fixed 'run-hook-compose';
+	- reverse link order in window;
+        - added 'run-hook-compose';
+	- added a module to rewrite URLs;
+        - made scheduled updating of chat  messages happening only when a
+	  chat window is shown; this  changes should make the program more
+	  responsive when scrolling the text of the main window.
+
 2020-12-30  cage
 
         * etc/init.lisp,

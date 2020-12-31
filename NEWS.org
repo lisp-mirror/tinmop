@@ -1,3 +1,10 @@
+* 2020-12-31 version 0.4.2
+
+ - Bugfix
+   - Removed lag when scrolling the main window
+ - New modules
+   - Added a module to rewrite URLs in main and link windows.
+
 * 2020-12-30 version 0.4.1
 
  - New features
