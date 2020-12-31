@@ -40,7 +40,7 @@
                                       :selected-fg   bg))
                      links)))
       (let* ((message (db:find-status-id status-id))
-             (links   (text-utils:collect-links (db:row-message-rendered-text message))))
+             (links   (reverse (text-utils:collect-links (db:row-message-rendered-text message)))))
         (with-croatoan-window (croatoan-window object)
           (when hooks:*before-displaying-links-hook*
             (setf links

@@ -71,7 +71,6 @@ So the whole list is like: '((\"foo\" \"bar\") (\"old\" \"new\") ...)")
                                                       link
                                                       (cdr mapping))
                           link)))
-
         (push mapped results)))
     (reverse results)))
 
