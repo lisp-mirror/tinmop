@@ -227,7 +227,8 @@
    :binary-search
    :defun-w-lock
    :with-lock
-   :get-url-content))
+   :get-url-content
+   :with-profile-time))
 
 (defpackage :box
   (:use
@@ -1240,6 +1241,8 @@
    :+minimum-event-priority+
    :+maximum-event-priority+
    :*process-events-immediately*
+   :with-stop-event-dispatching
+   :stop-event-dispatching-p
    :program-event
    :event-id
    :payload

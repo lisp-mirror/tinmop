@@ -56,8 +56,9 @@ etc.) happened"
             (declare (ignore w e))
             (incf-dt)
             (incf-ticks)
-            (scheduled-events:run-scheduled-events *ticks*)
-            (program-events:dispatch-program-events)
+            (when (not (program-events:stop-event-dispatching-p))
+              (scheduled-events:run-scheduled-events *ticks*)
+              (program-events:dispatch-program-events))
             (windows:calculate-all +dt+)))))
 
 (defun init-i18n ()

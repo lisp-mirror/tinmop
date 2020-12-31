@@ -1600,7 +1600,8 @@ mot recent updated to least recent"
   (close-window-and-return-to-threads *chats-list-window*))
 
 (defun update-all-chats-messages ()
-  (program-events:push-event (make-instance 'program-events:update-all-chat-messages-event)))
+  (program-events:push-event (make-instance 'program-events:update-all-chat-messages-event
+                                            :priority +minimum-event-priority+)))
 
 (defun update-all-chats-data ()
   (refresh-chats)

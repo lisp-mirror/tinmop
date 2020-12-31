@@ -17,6 +17,12 @@
 
 (in-package :program-events)
 
+(define-constant +standard-event-priority+  10 :test #'=)
+
+(define-constant +minimum-event-priority+   -1 :test #'=)
+
+(define-constant +maximum-event-priority+   -2 :test #'=)
+
 (defparameter *id-lock* (bt:make-recursive-lock))
 
 (defparameter *event-id* 0)
@@ -27,11 +33,23 @@
   the  event on  a priority  queue  that will  be picked  by a  thread
   process the event immediately")
 
-(define-constant +standard-event-priority+  10 :test #'=)
+(defparameter *stop-event-dispatching* nil)
 
-(define-constant +minimum-event-priority+   -1 :test #'=)
+(defun stop-event-dispatching ()
+  (setf *stop-event-dispatching* t))
 
-(define-constant +maximum-event-priority+   -2 :test #'=)
+(defun start-event-dispatching ()
+  (setf *stop-event-dispatching* nil))
+
+(defun stop-event-dispatching-p ()
+  *stop-event-dispatching*)
+
+(defmacro with-stop-event-dispatching (&body body)
+  `(unwind-protect
+        (progn
+          (stop-event-dispatching)
+          ,@body)
+     (start-event-dispatching)))
 
 ;; keep  this  function  stricly  monotonic  otherwise  the  order  of
 ;; elements in priority queue is going to be messed up

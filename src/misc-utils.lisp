@@ -943,3 +943,10 @@ to the array"
                        :want-stream         t
                        :verify              :required
                        :external-format-out :utf8))
+
+;; profiling
+
+(defmacro with-profile-time (&body body)
+  `(with-output-to-string (stream)
+     (let ((*trace-output* stream))
+       (time ,@body))))
