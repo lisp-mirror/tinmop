@@ -452,6 +452,11 @@
 
 ;;;; hooks
 
+;; this module  will install an  hook to  rewrite urls; By  default it
+;; does nothing, see the source for configuration
+
+(load-module "rewrite-message-urls.lisp")
+
 ;;; this hooks will skips toots with contain less than 20 words
 ;;; (note: it is commented out)
 

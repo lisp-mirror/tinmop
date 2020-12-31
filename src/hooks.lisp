@@ -51,6 +51,17 @@ run."
       (with-hook-restart
         (apply fn args)))))
 
+(defgeneric run-hook-compose (hook &rest args)
+  (:documentation "Apply first function in HOOK to ARGS, second hook
+to the results of first function applied and so on,
+returns the results of af the last hook.")
+  (:method ((*hook* symbol) &rest args)
+    (let ((results args))
+      (dolist (fn (symbol-value *hook*))
+        (with-hook-restart
+          (setf results (apply fn results))))
+      results)))
+
 (defgeneric run-hook-until-failure (hook &rest args)
   (:documentation "Like `run-hook-with-args', but quit once a function returns nil.")
   (:method ((*hook* symbol) &rest args)
@@ -88,3 +99,7 @@ all hooks must returns nil for this message to be not skipped
 
 Each function takes 4 parameters: status, timeline, folder, kind (:home :public)
 localp")
+
+(defparameter *before-displaying-links-hook* '()
+  "Run this hooks before sending the list of URLs to the window that allow the user to
+open the links")

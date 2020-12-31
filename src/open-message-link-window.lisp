@@ -42,6 +42,9 @@
       (let* ((message (db:find-status-id status-id))
              (links   (text-utils:collect-links (db:row-message-rendered-text message))))
         (with-croatoan-window (croatoan-window object)
+          (when hooks:*before-displaying-links-hook*
+            (setf links
+                  (hooks:run-hook-compose 'hooks:*before-displaying-links-hook* links)))
           (setf rows (make-rows links
                                 selected-line-bg
                                 selected-line-fg))

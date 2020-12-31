@@ -1444,14 +1444,15 @@
    :remove-hook
    :run-hooks
    :run-hook
-   :run-hook
+   :run-hook-compose
    :run-hook-until-failure
    :run-hook-until-success
    :*before-main-loop*
    :*before-quit*
    :*before-prepare-for-rendering-message*
    :*before-sending-message*
-   :*skip-message-hook*))
+   :*skip-message-hook*
+   :*before-displaying-links-hook*))
 
 (defpackage :keybindings
   (:use
