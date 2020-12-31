@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: tinmop 0.4.0\n"
+"Project-Id-Version: tinmop 0.4.1\n"
 "Report-Msgid-Bugs-To: https://notabug.org/cage/tinmop/\n"
-"POT-Creation-Date: 2020-12-30 12:24+0100\n"
+"POT-Creation-Date: 2020-12-31 19:20+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -144,11 +144,19 @@ msgstr ""
 msgid "Open gemini url"
 msgstr ""
 
-#: src/command-line.lisp:104
+#: src/command-line.lisp:73
+msgid "Load a module"
+msgstr ""
+
+#: src/command-line.lisp:75
+msgid "MODULE-FILE"
+msgstr ""
+
+#: src/command-line.lisp:112
 msgid "Usage"
 msgstr ""
 
-#: src/command-line.lisp:105
+#: src/command-line.lisp:113
 msgid "Available options"
 msgstr ""
 
@@ -290,8 +298,8 @@ msgid "Quick help"
 msgstr ""
 
 #: src/keybindings.lisp:539 src/line-oriented-window.lisp:258
-#: src/open-message-link-window.lisp:103 src/open-message-link-window.lisp:183
-#: src/program-events.lisp:419
+#: src/open-message-link-window.lisp:106 src/open-message-link-window.lisp:189
+#: src/program-events.lisp:437
 msgid "Invalid regular expression"
 msgstr ""
 
@@ -300,7 +308,7 @@ msgstr ""
 msgid "Information"
 msgstr ""
 
-#: src/main.lisp:85
+#: src/main.lisp:86
 #, lisp-format
 msgid "Folder ~s does not exists"
 msgstr ""
@@ -409,11 +417,11 @@ msgid_plural "~a pending"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/open-message-link-window.lisp:57 src/open-message-link-window.lisp:191
+#: src/open-message-link-window.lisp:60 src/open-message-link-window.lisp:197
 msgid "Links"
 msgstr ""
 
-#: src/open-message-link-window.lisp:251
+#: src/open-message-link-window.lisp:260
 msgid "Chat attachments"
 msgstr ""
 
@@ -423,32 +431,32 @@ msgid ""
 "configuration file"
 msgstr ""
 
-#: src/program-events.lisp:523
+#: src/program-events.lisp:541
 msgid "No message selected!"
 msgstr ""
 
-#: src/program-events.lisp:694
+#: src/program-events.lisp:712
 msgid "Message sent."
 msgstr ""
 
-#: src/program-events.lisp:711
+#: src/program-events.lisp:729
 #, lisp-format
 msgid "Unable to find user ~a"
 msgstr ""
 
-#: src/program-events.lisp:761
+#: src/program-events.lisp:779
 #, lisp-format
 msgid "Downloaded new messages for tag ~a"
 msgstr ""
 
-#: src/program-events.lisp:873
+#: src/program-events.lisp:891
 #, lisp-format
 msgid "Got ~a notification"
 msgid_plural "Got ~a notifications"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/program-events.lisp:1217
+#: src/program-events.lisp:1235
 msgid "no label"
 msgstr ""
 
@@ -983,41 +991,41 @@ msgstr ""
 msgid "This in not a poll"
 msgstr ""
 
-#: src/ui-goodies.lisp:1642
+#: src/ui-goodies.lisp:1643
 msgid "Add message (enter to quit): "
 msgstr ""
 
-#: src/ui-goodies.lisp:1667 src/ui-goodies.lisp:1680
+#: src/ui-goodies.lisp:1668 src/ui-goodies.lisp:1681
 msgid "Type the new label of the chat: "
 msgstr ""
 
-#: src/ui-goodies.lisp:1688
+#: src/ui-goodies.lisp:1689
 #, lisp-format
 msgid "Chat ~a with ~a created"
 msgstr ""
 
-#: src/ui-goodies.lisp:1692
+#: src/ui-goodies.lisp:1693
 msgid "Type the user to chat with: "
 msgstr ""
 
-#: src/ui-goodies.lisp:1719
+#: src/ui-goodies.lisp:1720
 msgid "This is not a valid gemini address"
 msgstr ""
 
-#: src/ui-goodies.lisp:1720
+#: src/ui-goodies.lisp:1721
 msgid "Open Gemini url: "
 msgstr ""
 
-#: src/ui-goodies.lisp:1793 src/ui-goodies.lisp:1806
+#: src/ui-goodies.lisp:1794 src/ui-goodies.lisp:1807
 #, lisp-format
 msgid "Command ~s completed"
 msgstr ""
 
-#: src/ui-goodies.lisp:1795
+#: src/ui-goodies.lisp:1796
 msgid "Send to command: "
 msgstr ""
 
-#: src/ui-goodies.lisp:1808
+#: src/ui-goodies.lisp:1809
 msgid "Send message to command: "
 msgstr ""
 

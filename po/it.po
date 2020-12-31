@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tinmop 0.0.1\n"
 "Report-Msgid-Bugs-To: https://notabug.org/cage/tinmop/\n"
-"POT-Creation-Date: 2020-12-30 12:24+0100\n"
-"PO-Revision-Date: 2020-12-30 12:26+0100\n"
+"POT-Creation-Date: 2020-12-31 19:20+0100\n"
+"PO-Revision-Date: 2020-12-31 19:21+0100\n"
 "Last-Translator: cage <cage@invalid.org>\n"
 "Language-Team: Italian\n"
 "Language: it\n"
@@ -138,7 +138,7 @@ msgstr "Esegui script"
 
 #: src/command-line.lisp:61
 msgid "SCRIPT-FILE"
-msgstr "SCRIPT-FILE"
+msgstr "FILE-DELLO-SCRIPT"
 
 #: src/command-line.lisp:64
 msgid "Notify messages that mentions the user"
@@ -148,11 +148,19 @@ msgstr "Notifica i messaggi che menzionano l'utente."
 msgid "Open gemini url"
 msgstr "Apri un indirizzo gemini"
 
-#: src/command-line.lisp:104
+#: src/command-line.lisp:73
+msgid "Load a module"
+msgstr "Carica un modulo"
+
+#: src/command-line.lisp:75
+msgid "MODULE-FILE"
+msgstr "FILE-DEL-MODULO"
+
+#: src/command-line.lisp:112
 msgid "Usage"
 msgstr "Uso"
 
-#: src/command-line.lisp:105
+#: src/command-line.lisp:113
 msgid "Available options"
 msgstr "Opzioni diponibili"
 
@@ -299,8 +307,8 @@ msgid "Quick help"
 msgstr "Aiuto rapido"
 
 #: src/keybindings.lisp:539 src/line-oriented-window.lisp:258
-#: src/open-message-link-window.lisp:103 src/open-message-link-window.lisp:183
-#: src/program-events.lisp:419
+#: src/open-message-link-window.lisp:106 src/open-message-link-window.lisp:189
+#: src/program-events.lisp:437
 msgid "Invalid regular expression"
 msgstr "Espressione regolare non valida"
 
@@ -309,7 +317,7 @@ msgstr "Espressione regolare non valida"
 msgid "Information"
 msgstr "Informazione"
 
-#: src/main.lisp:85
+#: src/main.lisp:86
 #, lisp-format
 msgid "Folder ~s does not exists"
 msgstr "La cartella ~s non esiste."
@@ -420,11 +428,11 @@ msgid_plural "~a pending"
 msgstr[0] "~a in attesa"
 msgstr[1] "Altre ~a in attesa"
 
-#: src/open-message-link-window.lisp:57 src/open-message-link-window.lisp:191
+#: src/open-message-link-window.lisp:60 src/open-message-link-window.lisp:197
 msgid "Links"
 msgstr "Links"
 
-#: src/open-message-link-window.lisp:251
+#: src/open-message-link-window.lisp:260
 msgid "Chat attachments"
 msgstr "Allegati alla chat"
 
@@ -436,32 +444,32 @@ msgstr ""
 "Nessun editor trovato, per favore configura la direttiva 'editor' nel tuo "
 "file di configurazione."
 
-#: src/program-events.lisp:523
+#: src/program-events.lisp:541
 msgid "No message selected!"
 msgstr "Nessun messaggio selezionato!"
 
-#: src/program-events.lisp:694
+#: src/program-events.lisp:712
 msgid "Message sent."
 msgstr "Messaggio spedito"
 
-#: src/program-events.lisp:711
+#: src/program-events.lisp:729
 #, lisp-format
 msgid "Unable to find user ~a"
 msgstr "Non trovo l'utente ~a"
 
-#: src/program-events.lisp:761
+#: src/program-events.lisp:779
 #, lisp-format
 msgid "Downloaded new messages for tag ~a"
 msgstr "Scaricati nuovi messaggi per l'etichetta ~a."
 
-#: src/program-events.lisp:873
+#: src/program-events.lisp:891
 #, lisp-format
 msgid "Got ~a notification"
 msgid_plural "Got ~a notifications"
 msgstr[0] "Hai ~a notifica"
 msgstr[1] "Hai ~a notifiche"
 
-#: src/program-events.lisp:1217
+#: src/program-events.lisp:1235
 msgid "no label"
 msgstr "nessuna etichetta"
 
@@ -1000,41 +1008,41 @@ msgstr "Inserisci gli indici associati alle opzioni separati da spazi: "
 msgid "This in not a poll"
 msgstr "Questo messaggio non è un sondaggio."
 
-#: src/ui-goodies.lisp:1642
+#: src/ui-goodies.lisp:1643
 msgid "Add message (enter to quit): "
 msgstr "Aggiungi un messaggio (invio per abbandonare): "
 
-#: src/ui-goodies.lisp:1667 src/ui-goodies.lisp:1680
+#: src/ui-goodies.lisp:1668 src/ui-goodies.lisp:1681
 msgid "Type the new label of the chat: "
 msgstr "Digita la nuova etichetta della chat: "
 
-#: src/ui-goodies.lisp:1688
+#: src/ui-goodies.lisp:1689
 #, lisp-format
 msgid "Chat ~a with ~a created"
 msgstr "Chat ~a con ~a creata"
 
-#: src/ui-goodies.lisp:1692
+#: src/ui-goodies.lisp:1693
 msgid "Type the user to chat with: "
 msgstr "Digita l'utente con cui vuoi iniziare una chat: "
 
-#: src/ui-goodies.lisp:1719
+#: src/ui-goodies.lisp:1720
 msgid "This is not a valid gemini address"
 msgstr "Questo non è un indirizzo gemini valido"
 
-#: src/ui-goodies.lisp:1720
+#: src/ui-goodies.lisp:1721
 msgid "Open Gemini url: "
 msgstr "Apri un indirizzo gemini: "
 
-#: src/ui-goodies.lisp:1793 src/ui-goodies.lisp:1806
+#: src/ui-goodies.lisp:1794 src/ui-goodies.lisp:1807
 #, lisp-format
 msgid "Command ~s completed"
 msgstr "Comando ~s completato"
 
-#: src/ui-goodies.lisp:1795
+#: src/ui-goodies.lisp:1796
 msgid "Send to command: "
 msgstr "Manda al comando: "
 
-#: src/ui-goodies.lisp:1808
+#: src/ui-goodies.lisp:1809
 msgid "Send message to command: "
 msgstr "Manda il messaggio al comando: "
 
