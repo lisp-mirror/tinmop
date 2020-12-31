@@ -124,6 +124,9 @@
                    (links            links)
                    (selected-line-bg selected-line-bg)
                    (selected-line-fg selected-line-fg)) object
+    (when hooks:*before-displaying-links-hook*
+      (setf links
+            (hooks:run-hook-compose 'hooks:*before-displaying-links-hook* links)))
     (flet ((make-rows (links bg fg)
              (mapcar (lambda (link)
                        (make-instance 'line
@@ -227,6 +230,9 @@
                    (links            links)
                    (selected-line-bg selected-line-bg)
                    (selected-line-fg selected-line-fg)) object
+    (when hooks:*before-displaying-links-hook*
+      (setf links
+            (hooks:run-hook-compose 'hooks:*before-displaying-links-hook* links)))
     (flet ((make-rows (links bg fg)
              (mapcar (lambda (link)
                        (make-instance 'line
