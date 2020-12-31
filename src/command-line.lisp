@@ -22,53 +22,59 @@
 
 (defmacro gen-opts ()
   `(opts:define-opts
-     (:name                  :help
-                             :description               (_ "Print help and exit")
-                             :short                     #\h
-                             :long                      "help")
-     (:name                  :version
-                             :description               (_ "Print program information and exit")
-                             :short                     #\v
-                             :long                      "version")
-     (:name                  :folder
-                             :description               (_ "Starting folder")
-                             :short                     #\f
-                             :arg-parser                #'identity
-                             :meta-var                  (_ "FOLDER-NAME")
-                             :long                      "folder")
-     (:name                  :timeline
-                             :description               (_ "Starting timeline")
-                             :short                     #\t
-                             :meta-var                  (_ "TIMELINE-NAME")
-                             :arg-parser                #'identity
-                             :long                      "timeline")
-     (:name                  :update-timeline
-                             :description               (_ "Update timeline")
-                             :short                     #\u
-                             :long                      "update-timeline")
-     (:name                  :reset-timeline-pagination
-                             :description               (_ "Reset the timeline pagination")
-                             :short                     #\R
-                             :long                      "reset-timeline-pagination")
-     (:name                  :check-follows-requests
-                             :description               (_ "Check follows requests")
-                             :short                     #\c
-                             :long                      "check-follows-requests")
-     (:name                  :execute
-                             :description               (_ "Execute script")
-                             :short                     #\e
-                             :arg-parser                #'identity
-                             :meta-var                  (_ "SCRIPT-FILE")
-                             :long                      "execute-script")
-     (:name                  :notify-mentions
-                             :description               (_ "Notify messages that mentions the user")
-                             :short                     #\m
-                             :long                      "notify-mentions")
-     (:name                  :open-gemini-url
-                             :description               (_ "Open gemini url")
-                             :short                     #\o
-                             :arg-parser                #'identity
-                             :long                      "open-gemini-url")))
+     (:name :help
+            :description               (_ "Print help and exit")
+            :short                     #\h
+            :long                      "help")
+     (:name :version
+            :description               (_ "Print program information and exit")
+            :short                     #\v
+            :long                      "version")
+     (:name :folder
+            :description               (_ "Starting folder")
+            :short                     #\f
+            :arg-parser                #'identity
+            :meta-var                  (_ "FOLDER-NAME")
+            :long                      "folder")
+     (:name :timeline
+            :description               (_ "Starting timeline")
+            :short                     #\t
+            :meta-var                  (_ "TIMELINE-NAME")
+            :arg-parser                #'identity
+            :long                      "timeline")
+     (:name :update-timeline
+            :description               (_ "Update timeline")
+            :short                     #\u
+            :long                      "update-timeline")
+     (:name :reset-timeline-pagination
+            :description               (_ "Reset the timeline pagination")
+            :short                     #\R
+            :long                      "reset-timeline-pagination")
+     (:name :check-follows-requests
+            :description               (_ "Check follows requests")
+            :short                     #\c
+            :long                      "check-follows-requests")
+     (:name :execute
+            :description               (_ "Execute script")
+            :short                     #\e
+            :arg-parser                #'identity
+            :meta-var                  (_ "SCRIPT-FILE")
+            :long                      "execute-script")
+     (:name :notify-mentions
+            :description               (_ "Notify messages that mentions the user")
+            :short                     #\m
+            :long                      "notify-mentions")
+     (:name :open-gemini-url
+            :description               (_ "Open gemini url")
+            :short                     #\o
+            :arg-parser                #'identity
+            :long                      "open-gemini-url")
+     (:name :load-module
+            :description               (_ "Load a module")
+            :short                     #\M
+            :meta-var                  (_ "MODULE-FILE")
+            :arg-parser                #'identity
+            :long                      "load-module")))
 
 (defparameter *start-folder*                       nil)
 
@@ -77,6 +83,8 @@
 (defparameter *update-timeline*                    nil)
 
 (defparameter *script-file*                        nil)
+
+(defparameter *module-file*                        nil)
 
 (defparameter *check-follow-requests*              nil)
 
@@ -119,6 +127,8 @@
         (setf *update-timeline* t))
       (when (getf options :execute)
         (setf *script-file* (getf options :execute)))
+      (when (getf options :load-module)
+        (setf *module-file* (getf options :load-module)))
       (when (getf options :check-follows-requests)
         (setf *check-follow-requests* (getf options :check-follows-requests)))
       (when (getf options :notify-mentions)

@@ -134,6 +134,8 @@ etc.) happened"
     (if command-line:*gemini-url*
         (load-gemini-url command-line:*gemini-url*)
         (progn
+          (when command-line:*module-file*
+            (modules:load-module command-line:*module-file*))
           (let ((program-events:*process-events-immediately* t))
             (when command-line:*start-timeline*
               (change-timeline))

@@ -1172,6 +1172,7 @@
    :*start-timeline*
    :*update-timeline*
    :*script-file*
+   :*module-file*
    :*check-follow-requests*
    :*reset-timeline-pagination*
    :*notify-mentions*

@@ -51,15 +51,15 @@ run."
       (with-hook-restart
         (apply fn args)))))
 
-(defgeneric run-hook-compose (hook &rest args)
+(defgeneric run-hook-compose (hook args)
   (:documentation "Apply first function in HOOK to ARGS, second hook
 to the results of first function applied and so on,
 returns the results of af the last hook.")
-  (:method ((*hook* symbol) &rest args)
+  (:method ((*hook* symbol) args)
     (let ((results args))
       (dolist (fn (symbol-value *hook*))
         (with-hook-restart
-          (setf results (apply fn results))))
+          (setf results (funcall fn results))))
       results)))
 
 (defgeneric run-hook-until-failure (hook &rest args)
