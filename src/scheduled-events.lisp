@@ -37,8 +37,8 @@
 
 (gen-scheduler-function (refresh-refresh-all-chats-messages
                          +refresh-all-chats-messages-frequency+)
-  (ui:update-all-chats-messages)
   (when (message-window:display-chat-p *message-window*)
+    (ui:update-all-chats-messages)
     (let ((show-event (make-instance 'program-events:chat-show-event
                                      :chat (message-window:metadata *message-window*))))
       (program-events:push-event show-event))))
