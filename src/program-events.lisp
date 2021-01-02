@@ -417,13 +417,17 @@
 
 (defclass search-event (program-event) ())
 
+(defun search-event-p (a)
+  (typep a 'search-event))
+
 (defmethod process-event :before ((object search-event))
   (setf *search-next-saved-event* object))
 
 (defclass search-next-event (program-event) ())
 
 (defmethod process-event ((object search-next-event))
-  (push-event *search-next-saved-event*))
+  (when (search-event-p *search-next-saved-event*)
+    (push-event *search-next-saved-event*)))
 
 (defclass search-regex-message-content-event (search-event) ())
 
