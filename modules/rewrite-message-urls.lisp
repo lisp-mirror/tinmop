@@ -51,15 +51,18 @@ So the whole list is like: '((\"foo\" \"bar\") (\"old\" \"new\") ...)")
                    (return-from inner t)))))
     results))
 
+(defun replace-mapping (mapping text)
+  (cl-ppcre:regex-replace-all (cl-ppcre:quote-meta-chars (car mapping))
+                              text
+                              (cdr mapping)))
+
 (defun rewriting-link-message-hook-fn (message-window)
   (with-accessors ((source-text message-window:source-text)) message-window
     (let* ((all-links      (text-utils:collect-links source-text))
            (links-mapping  (rewriting-link-messages-links-rules all-links)))
       (loop for mapping in links-mapping do
         (setf source-text
-              (cl-ppcre:regex-replace-all (car mapping)
-                                          source-text
-                                          (cdr mapping)))))))
+              (replace-mapping mapping source-text))))))
 
 (defun rewriting-link-links-window-hook-fn (all-links)
   (let ((links-mapping  (rewriting-link-messages-links-rules all-links))
@@ -67,9 +70,7 @@ So the whole list is like: '((\"foo\" \"bar\") (\"old\" \"new\") ...)")
     (loop for link in all-links do
       (let* ((mapping (find-if (lambda (a) (string= link (car a))) links-mapping))
              (mapped  (if mapping
-                          (cl-ppcre:regex-replace-all (car mapping)
-                                                      link
-                                                      (cdr mapping))
+                          (replace-mapping mapping link)
                           link)))
         (push mapped results)))
     (reverse results)))
