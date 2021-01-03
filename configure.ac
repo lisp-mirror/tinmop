@@ -78,11 +78,22 @@ AC_PROG_MKDIR_P
 dnl check sbcl version
 SBCL_MIN_VERSION="1.5.9";
 SBCL_VERSION=`${LISP_COMPILER} --version | ${GAWK} -- '// {print $2}'`
-SBCL_VERSION_OK=`echo "$SBCL_VERSION $SBCL_MIN_VERSION" | awk -f compare_version.awk`
 
-if test "$SBCL_VERSION_OK" = "1" ; then
-   AC_MSG_ERROR([Lisp compiler too old, $SBCL_MIN_VERSION is the oldest supported.])
-   exit 1;
+CHECK_COMPILER_VERSION_P="yes"
+
+AC_ARG_ENABLE([check-sbcl-version], [AS_HELP_STRING([--disable-check-sbcl-version], [Disable checks for minimum supported SBCL version])], [], [])
+
+if test "$enable_check_sbcl_version" = "yes" || test "$enable_check_sbcl_version" = "" ; then
+   SBCL_VERSION_OK=`echo "$SBCL_VERSION $SBCL_MIN_VERSION" | awk -f compare_version.awk`
+
+   AC_MSG_CHECKING([if the compiler is too old])
+
+   if test "$SBCL_VERSION_OK" = "1" ; then
+      AC_MSG_ERROR([Lisp compiler too old, $SBCL_MIN_VERSION is the oldest supported.])
+      exit 1;
+   else
+    AC_MSG_RESULT([version is not too old])
+   fi
 fi
 
 AC_CONFIG_FILES([Makefile quick_quicklisp.sh po/Makefile.in src/config.lisp.in])

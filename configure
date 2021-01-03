@@ -719,6 +719,7 @@ with_gnu_ld
 enable_rpath
 with_libiconv_prefix
 with_libintl_prefix
+enable_check_sbcl_version
 '
       ac_precious_vars='build_alias
 host_alias
@@ -1366,6 +1367,8 @@ Optional Features:
   --disable-dependency-tracking
                           speeds up one-time build
   --disable-rpath         do not hardcode runtime library paths
+  --disable-check-sbcl-version
+                          Disable checks for minimum supported SBCL version
 
 Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
@@ -6566,11 +6569,28 @@ fi
 
 SBCL_MIN_VERSION="1.5.9";
 SBCL_VERSION=`${LISP_COMPILER} --version | ${GAWK} -- '// {print $2}'`
-SBCL_VERSION_OK=`echo "$SBCL_VERSION $SBCL_MIN_VERSION" | awk -f compare_version.awk`
 
-if test "$SBCL_VERSION_OK" = "1" ; then
-   as_fn_error $? "Lisp compiler too old, $SBCL_MIN_VERSION is the oldest supported." "$LINENO" 5
-   exit 1;
+CHECK_COMPILER_VERSION_P="yes"
+
+# Check whether --enable-check-sbcl-version was given.
+if test "${enable_check_sbcl_version+set}" = set; then :
+  enableval=$enable_check_sbcl_version;
+fi
+
+
+if test "$enable_check_sbcl_version" = "yes" || test "$enable_check_sbcl_version" = "" ; then
+   SBCL_VERSION_OK=`echo "$SBCL_VERSION $SBCL_MIN_VERSION" | awk -f compare_version.awk`
+
+   { $as_echo "$as_me:${as_lineno-$LINENO}: checking if the compiler is too old" >&5
+$as_echo_n "checking if the compiler is too old... " >&6; }
+
+   if test "$SBCL_VERSION_OK" = "1" ; then
+      as_fn_error $? "Lisp compiler too old, $SBCL_MIN_VERSION is the oldest supported." "$LINENO" 5
+      exit 1;
+   else
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: version is not too old" >&5
+$as_echo "version is not too old" >&6; }
+   fi
 fi
 
 ac_config_files="$ac_config_files Makefile quick_quicklisp.sh po/Makefile.in src/config.lisp.in"
