@@ -30,8 +30,11 @@
        ((:bidi                     "IDN2_BIDI"))
        ((:dot-in-label             "IDN2_DOT_IN_LABEL"))
        ((:invalid-transitional     "IDN2_INVALID_TRANSITIONAL"))
-       ((:invalid-nontransitional  "IDN2_INVALID_NONTRANSITIONAL"))
-       ((:alabel-roundtrip-failed  "IDN2_ALABEL_ROUNDTRIP_FAILED")))
+       ((:invalid-nontransitional  "IDN2_INVALID_NONTRANSITIONAL")))
+
+;;; this value does not exists for old version of the library, removing
+;;; to allow compilation on old system
+;;       ((:alabel-roundtrip-failed  "IDN2_ALABEL_ROUNDTRIP_FAILED")))
 
 (cenum (flags)
        ((:nfc-input             "IDN2_NFC_INPUT"))
