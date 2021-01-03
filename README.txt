@@ -88,6 +88,9 @@ Table of Contents
     • xdg-open;
     • your favourite editor (default: nano).
 
+  All the dependencies above should be available using the package
+  manager of your distribution (`apt', `yum' etc).
+
 
 3.2 Lisp Libraries
 ──────────────────
@@ -116,6 +119,9 @@ Table of Contents
   • unix-opts;
   • crypto-shortcuts;
   • drakma.
+
+  All these libraries will be downloaded, compiled and installed by the
+  script `quick_quicklisp.sh', see below.
 
 
 3.3 Foreign (C language) library
@@ -174,7 +180,13 @@ Table of Contents
      │ $ make install
      └────
 
-  7. run the software!
+  7. take a look the manpage:
+
+     ┌────
+     │ $ man tinmop
+     └────
+
+  8. run the software!
 
      ┌────
      │ $ tinmop
@@ -270,6 +282,15 @@ Table of Contents
 11 FAQ
 ══════
 
+  • The `quick_quicklisp.sh' script failed and refuse to start again,
+    what can I do?
+
+    If tinmop is the first Common lisp program you have ever installed
+    installed, try to rename the directory `$/HOME/quicklisp' and, then,
+    restart the script.
+
+    If problem persists [contact me].
+
   • Is tinmop compatible with mastodon servers?
 
     Unfortunately no, the way some API endpoint provide the toots is not
@@ -321,6 +342,8 @@ Table of Contents
 
     So, please do not consider the encrypted message secure at all.
 
+
+[contact me] See section 6
 
 [here] <https://github.com/tootsuite/mastodon/issues/13817>
 

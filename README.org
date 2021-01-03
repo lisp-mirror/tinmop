@@ -50,6 +50,9 @@
      - xdg-open;
      - your favourite editor (default: nano).
 
+All  the dependencies  above  should be  available  using the  package
+manager of your distribution (~apt~, ~yum~ etc).
+
 ** Lisp Libraries
 
    - alexandria;
@@ -76,6 +79,9 @@
    - unix-opts;
    - crypto-shortcuts;
    - drakma.
+
+   All these libraries  will be downloaded, compiled  and installed by
+   the script ~quick_quicklisp.sh~, see below.
 
 ** Foreign (C language) library
 
@@ -129,7 +135,13 @@
      $ make install
      #+END_SRC
 
-  7. run the software!
+  7. take a look the manpage:
+
+     #+BEGIN_SRC sh
+     $ man tinmop
+     #+END_SRC
+
+  8. run the software!
 
      #+BEGIN_SRC sh
      $ tinmop
@@ -200,6 +212,15 @@
   But, please take a minute to read the file [[./CONTRIBUTING.org]]
 
 * FAQ
+
+  - The ~quick_quicklisp.sh~ script failed  and refuse to start again,
+    what can I do?
+
+    If tinmop is the first Common lisp program you have ever installed
+    installed,  try to  rename the  directory ~$/HOME/quicklisp~  and,
+    then, restart the script.
+
+    If problem persists [[BUGS][contact me]].
 
   - Is tinmop compatible with mastodon servers?
 
