@@ -442,7 +442,9 @@
        (multiple-value-bind (actual-iri host path query port fragment)
            (displace-iri parsed-iri)
          (if (find-db-stream-url actual-iri)
-             (db-entry-to-foreground actual-iri)
+             (progn
+               (add-url-to-history specials:*message-window* actual-iri)
+               (db-entry-to-foreground actual-iri))
              (request (gemini-parser:make-gemini-iri host
                                                      path
                                                      :query    query
