@@ -43,5 +43,8 @@
        ((:nontransitional       "IDN2_NONTRANSITIONAL"))
        ((:allow-unassigned      "IDN2_ALLOW_UNASSIGNED"))
        ((:use-std3-ascii-rules  "IDN2_USE_STD3_ASCII_RULES"))
-       ((:no-tr46               "IDN2_NO_TR46"))
-       ((:no-alabel-roundtrip   "IDN2_NO_ALABEL_ROUNDTRIP")))
+       ((:no-tr46               "IDN2_NO_TR46")))
+
+;;; this value does not exists for old version of the library, removing
+;;; to allow compilation on old system
+;;       ((:no-alabel-roundtrip   "IDN2_NO_ALABEL_ROUNDTRIP")))
