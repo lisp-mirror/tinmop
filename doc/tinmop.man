@@ -74,7 +74,7 @@ sketched below:
 |               |  modeline                 |
 +---------------+---------------------------+
 |               |                           |
-| conversations |      message window       |
+| conversations |      main window          |
 |    window     |                           |
 |               |                           |
 |               |                           |
@@ -106,8 +106,8 @@ for a given timeline and folder (see
 show the \fIprivate\fP conversations the user is having with others;
 
 .TP
-\fBmessage window\fP
-show the body of the message selected in the tag window
+\fBmain window\fP
+show the body of the message selected in the tag window or gemini page
 
 .TP
 \fBcommand window\fP

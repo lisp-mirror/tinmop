@@ -51,7 +51,7 @@
      |               |  modeline                 |
      +---------------+---------------------------+
      |               |                           |
-     | conversations |      message window       |
+     | conversations |      main window          |
      |    window     |                           |
      |               |                           |
      |               |                           |
@@ -71,7 +71,7 @@
 
   - conversations window :: show the /private/ conversations the user is having with others;
 
-  - message window :: show the body of the message selected in the tag window
+  - main window :: show the body of the message selected in the tag window or gemini page
 
   - command window :: the window where the user instruct the software to perform commands
 
