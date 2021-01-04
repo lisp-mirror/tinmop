@@ -192,8 +192,14 @@ Table of Contents
      │ $ tinmop
      └────
 
+  9. An error will be printed about a missing file place a simple
+     configuration file in one of the directory the software indicated.
+     See [the FAQ below].
+
 
 [dependencies] See section 3
+
+[the FAQ below] See section 11
 
 
 5 Usage
@@ -282,6 +288,34 @@ Table of Contents
 11 FAQ
 ══════
 
+  • I just tried to start the program for the first time but it give me
+    a weird error, what's wrong?
+
+    Did you wrote a configuration file before starting?
+
+    Tinmop expects a configuration file in your config directory
+    (usually `$HOME/.config/tinmop/').  This file must contains at least
+    the username and the name of the instance you want to connect.
+
+    Example :
+    ┌────
+    │ # a line starting with a '#' is a comment
+    │
+    │ # a file can be included in another with this directive:
+    │ # use "shared.conf"
+    │
+    │ # The server instance name
+    │ server = server address
+    │
+    │ # your username
+    │ username = username
+    └────
+
+    If this file does not exists or is invalid tinmop will refuse to
+    start.
+
+    Please check the man page (tinmop(1)) for more information.
+
   • The `quick_quicklisp.sh' script failed and refuse to start again,
     what can I do?
 
@@ -298,18 +332,6 @@ Table of Contents
 
     I hope this will change in the future but this depends entirely from
     the people are developing the server.
-
-  • I just tried to start the program for the first time but it give me
-    a weird error, what's wrong?
-
-    Did you wrote a configuration file before starting?
-
-    Tinmop expects a configuration file in your config directory
-    (usually `$HOME/.config/tinmop/').  This file must contains at least
-    the username and the name of the instance you want to connect. If
-    this file does not exists or is invalid tinmop will refuse to start.
-
-    Please check the man page (tinmop(1)) for more information.
 
   • OK the program is running but how can i use it?
 
