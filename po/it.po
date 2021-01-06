@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tinmop 0.0.1\n"
 "Report-Msgid-Bugs-To: https://notabug.org/cage/tinmop/\n"
-"POT-Creation-Date: 2020-12-31 19:20+0100\n"
+"POT-Creation-Date: 2021-01-06 11:46+0100\n"
 "PO-Revision-Date: 2020-12-31 19:21+0100\n"
 "Last-Translator: cage <cage@invalid.org>\n"
 "Language-Team: Italian\n"
@@ -217,17 +217,17 @@ msgstr "Scaricamento del documento in formato gemini completato"
 msgid "Could not understand the address ~s"
 msgstr "Non riesco ad interpretare l'indirizzo: ~s"
 
-#: src/gemini-viewer.lisp:499
+#: src/gemini-viewer.lisp:501
 #, lisp-format
 msgid "Server ~s asks: ~s "
 msgstr "Il server ~s chiede: ~s "
 
-#: src/gemini-viewer.lisp:527
+#: src/gemini-viewer.lisp:529
 #, lisp-format
 msgid "Redirects to ~s, follows redirect? [y/N] "
 msgstr "Seguire la redirezione a ~s? [s/N] "
 
-#: src/gemini-viewer.lisp:615
+#: src/gemini-viewer.lisp:617
 #, lisp-format
 msgid ""
 "Host ~s signature changed! This is a potential security risk! Ignore this "
@@ -236,27 +236,27 @@ msgstr ""
 "La firma dell'host ~s è cambiata! Questo è un potenziale problema di "
 "sicurezza! Proseguire? [s/N]"
 
-#: src/gemini-viewer.lisp:619 src/tui-utils.lisp:397
+#: src/gemini-viewer.lisp:621 src/tui-utils.lisp:397
 #, lisp-format
 msgid "Error: ~a"
 msgstr "Errore: ~a"
 
-#: src/gemini-viewer.lisp:627
+#: src/gemini-viewer.lisp:629
 #, lisp-format
 msgid "Error getting ~s: ~a"
 msgstr "Errore connettendomi a ~s: ~a"
 
-#: src/gemini-viewer.lisp:638
+#: src/gemini-viewer.lisp:640
 #, lisp-format
 msgid "Going back to: ~a"
 msgstr "Ritorno a: ~a"
 
-#: src/gemini-viewer.lisp:650
+#: src/gemini-viewer.lisp:652
 #, lisp-format
 msgid "Viewing source of: ~a"
 msgstr "Visualizzo il sorgente di: ~a"
 
-#: src/gemini-viewer.lisp:705
+#: src/gemini-viewer.lisp:707
 msgid "Current gemini streams"
 msgstr "Flussi di dati gemini attuali"
 
@@ -307,8 +307,8 @@ msgid "Quick help"
 msgstr "Aiuto rapido"
 
 #: src/keybindings.lisp:539 src/line-oriented-window.lisp:258
-#: src/open-message-link-window.lisp:106 src/open-message-link-window.lisp:189
-#: src/program-events.lisp:437
+#: src/open-message-link-window.lisp:106 src/open-message-link-window.lisp:193
+#: src/program-events.lisp:441
 msgid "Invalid regular expression"
 msgstr "Espressione regolare non valida"
 
@@ -381,27 +381,31 @@ msgstr "Allegati"
 msgid "type: ~a~%metadata~%~a~%address: ~a~2%"
 msgstr "tipo: ~a~%metadati~%~a~%indirizzo: ~a~2%"
 
-#: src/message-rendering-utils.lisp:234
+#: src/message-rendering-utils.lisp:235
 msgid "From: "
 msgstr "Scritto da: "
 
-#: src/message-rendering-utils.lisp:235
+#: src/message-rendering-utils.lisp:236
 msgid "Boosted: "
 msgstr "Rilanciato per: "
 
-#: src/message-rendering-utils.lisp:239
+#: src/message-rendering-utils.lisp:237 src/sending-message.lisp:123
+msgid "Visibility: "
+msgstr "Visibilità: "
+
+#: src/message-rendering-utils.lisp:241
 msgid "Date: "
 msgstr "Scritto il: "
 
-#: src/message-rendering-utils.lisp:298
+#: src/message-rendering-utils.lisp:306
 msgid "Multiple choices allowed"
 msgstr "Sono ammesse scelte multiple"
 
-#: src/message-rendering-utils.lisp:299
+#: src/message-rendering-utils.lisp:307
 msgid "A single choice allowed"
 msgstr "È ammessa una sola scelta"
 
-#: src/message-rendering-utils.lisp:301
+#: src/message-rendering-utils.lisp:309
 msgid "The poll has expired"
 msgstr "Il sondaggio è scaduto"
 
@@ -428,11 +432,11 @@ msgid_plural "~a pending"
 msgstr[0] "~a in attesa"
 msgstr[1] "Altre ~a in attesa"
 
-#: src/open-message-link-window.lisp:60 src/open-message-link-window.lisp:197
+#: src/open-message-link-window.lisp:60 src/open-message-link-window.lisp:201
 msgid "Links"
 msgstr "Links"
 
-#: src/open-message-link-window.lisp:260
+#: src/open-message-link-window.lisp:264
 msgid "Chat attachments"
 msgstr "Allegati alla chat"
 
@@ -444,32 +448,32 @@ msgstr ""
 "Nessun editor trovato, per favore configura la direttiva 'editor' nel tuo "
 "file di configurazione."
 
-#: src/program-events.lisp:541
+#: src/program-events.lisp:545
 msgid "No message selected!"
 msgstr "Nessun messaggio selezionato!"
 
-#: src/program-events.lisp:712
+#: src/program-events.lisp:716
 msgid "Message sent."
 msgstr "Messaggio spedito"
 
-#: src/program-events.lisp:729
+#: src/program-events.lisp:733
 #, lisp-format
 msgid "Unable to find user ~a"
 msgstr "Non trovo l'utente ~a"
 
-#: src/program-events.lisp:779
+#: src/program-events.lisp:783
 #, lisp-format
 msgid "Downloaded new messages for tag ~a"
 msgstr "Scaricati nuovi messaggi per l'etichetta ~a."
 
-#: src/program-events.lisp:891
+#: src/program-events.lisp:895
 #, lisp-format
 msgid "Got ~a notification"
 msgid_plural "Got ~a notifications"
 msgstr[0] "Hai ~a notifica"
 msgstr[1] "Hai ~a notifiche"
 
-#: src/program-events.lisp:1235
+#: src/program-events.lisp:1239
 msgid "no label"
 msgstr "nessuna etichetta"
 
@@ -498,10 +502,6 @@ msgstr "Menzioni: "
 #: src/sending-message.lisp:122
 msgid "Subject: "
 msgstr "Oggetto del messaggio: "
-
-#: src/sending-message.lisp:123
-msgid "Visibility: "
-msgstr "Visibilità: "
 
 #: src/software-configuration.lisp:531
 msgid "This message was crypted."
