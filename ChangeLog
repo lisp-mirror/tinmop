@@ -1,3 +1,64 @@
+2021-01-06  cage
+
+	* po/it.po,
+	* po/tinmop.pot,
+        * src/message-rendering-utils.lisp:
+
+	- rendered visibility of a status when printed on the main window;
+	- tested with latest croatoan: no problem so far;
+	- updated PO file.
+
+2021-01-05  cage
+
+        * Makefile.am,
+	* Makefile.in:
+
+	- instructed Makefile to install the module
+        'rewrite-message-urls.lisp'.
+
+2021-01-04  cage
+
+	* README.org,
+	* README.txt,
+	* doc/tinmop.man,
+        * doc/man.org:
+
+	- updated FAQ;
+	- updated manpage.
+
+2021-01-03  cage
+
+	* README.org,
+	* README.txt,
+	* configure,
+	* configure.ac,
+	* src/gemini-viewer.lisp,
+	* src/grovel-idn.lisp:
+        * src/gemini-viewer-metadata.lisp,
+
+	-[gemini] added urls to history  if document is loaded from cached
+	content too;
+	- added switch to disable compiler check at build time;
+        - updated README and FAQ;
+	- removed         IDN2_ALABEL_ROUNDTRIP_FAILED         and
+	IDN2_NO_ALABEL_ROUNDTRIP from  grovel file for libidn2  This value
+	has been added lately to the C library and some system
+	(reportedly: Debian  Buster) ships an  old version of  the library
+	without this enumeration's  value.  I am commenting  out the code,
+	preventing grovel to process it for now.
+
+2021-01-02  cage
+
+        * modules/rewrite-message-urls.lisp,
+        * src/open-message-link-window.lisp,
+        * src/program-events.lisp:
+
+	- fixed hooks for remapping links in gemini window.
+	- [modules] rewrite-message-urls, quoting regexp before replacing.
+	Also refactored some repeated code in a function.
+	- [modules] rewrite-message-urls: changed name function to avoid
+        conflicts with other modules.
+
 2020-12-31  cage
 
 	* modules/next-previous-open.lisp,
