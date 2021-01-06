@@ -228,27 +228,35 @@
          (username         (db:row-message-username          message-row))
          (display-name     (db:row-message-user-display-name message-row))
          (creation-time    (db:row-message-creation-time     message-row))
+         (visibility       (db:row-message-visibility        message-row))
          (lockedp          (db-utils:db-not-nil-p (db:row-lockedp message-row)))
          (locked-mark      (swconf:message-window-account-locking-status-mark lockedp))
          (encoded-date     (db-utils:encode-datetime-string creation-time))
          (from-label       (_ "From: "))
          (boosted-label    (_ "Boosted: "))
+         (visibility-label (_ "Visibility: "))
          (boosted-id       (db:row-message-reblog-id message-row))
          (boosted-username (and boosted-id
                                 (db:status-id->username boosted-id)))
          (date-label     (_ "Date: "))
          (padding-length (max (length from-label)
                               (length date-label)
-                              (length boosted-label)))
+                              (length boosted-label)
+                              (length visibility-label)))
          (text           (misc:make-fresh-array 0 #\Space 'character nil)))
     (with-output-to-string (stream text)
       (format stream
               "~a(~a) ~a~a~%"
               (right-padding from-label padding-length)
               display-name username locked-mark)
-      (format stream "~a~a~2%"
+      (format stream
+              "~a~a~%"
               (right-padding date-label padding-length)
               (format-time encoded-date date-format))
+      (format stream
+              "~a~a~2%"
+              (right-padding visibility-label padding-length)
+              visibility)
       (when boosted-id
         (format stream "~a~a~%"
                 (right-padding boosted-label padding-length)
