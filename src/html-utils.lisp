@@ -65,6 +65,16 @@
                       (attribute-key attribute)))
            (attributes node)))
 
+(defun find-tag (tag node)
+  "find tag on a node list, does not descend into children"
+  (find-if (lambda (a) (tag= tag a))
+           node))
+
+(defun position-tag (tag node)
+  "find position of tag on a node list, does not descend into children"
+  (position-if (lambda (a) (tag= tag a))
+               node))
+
 (defun html->text (html &key (add-link-footnotes t))
   "Transform html to text, note that if `add-link-footnotes` is non nil footnotes that marks html link in the text are added aftere the body of the message
 

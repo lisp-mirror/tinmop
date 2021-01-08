@@ -472,8 +472,8 @@ to the array"
   (let ((first-byte (read-byte stream nil nil)))
     (when first-byte
       (let ((raw (loop
-                    for c = (read-byte stream nil 10)
-                    while (/= c 10)
+                    for c = (read-byte stream nil (char-code #\Newline))
+                    while (/= c (char-code #\Newline))
                     collect c)))
         (push first-byte raw)
         (when add-newline-stopper

@@ -149,6 +149,9 @@
   (or (code= code +30+)
       (code= code +31+)))
 
+(defun response-success-p (code)
+  (code= code +20+))
+
 (define-condition gemini-protocol-error (error)
   ((error-code
     :initarg :error-code

@@ -393,6 +393,8 @@
    :children
    :tag=
    :find-attribute
+   :find-tag
+   :position-tag
    :html->text))
 
 (defpackage :resources-utils
@@ -738,6 +740,7 @@
    :+table-attachment+
    :+table-saved-status+
    :+table-crypto-data+
+   :+table-gemini-subscription+
    :+federated-timeline+
    :+local-timeline+
    :+home-timeline+
@@ -840,6 +843,7 @@
    :row-cache-type
    :row-cache-accessed-at
    :row-cache-created-at
+   :row-seenp
    :next-status-tree
    :previous-status-tree
    :message-tree-root-equal
@@ -944,7 +948,19 @@
    :tofu-passes-p
    :tofu-delete
    :ssl-cert-find
-   :find-tls-certificates-rows))
+   :find-tls-certificates-rows
+   :gemini-subscribe-url
+   :gemini-find-subscription
+   :find-gemlog-entry
+   :add-gemlog-entries
+   :gemlog-mark-as-seen
+   :gemlog-url
+   :gemlog-title
+   :gemlog-subtitle
+   :post-date
+   :post-title
+   :gemlog-entries
+   :delete-gemlog-entry))
 
 (defpackage :date-formatter
   (:use

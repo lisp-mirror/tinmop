@@ -91,6 +91,7 @@
    :response-input-p
    :response-sensitive-input-p
    :response-redirect-p
+   :response-success-p
    :absolute-url-p
    :init-default-gemini-theme
    :gemini-file-response
@@ -107,3 +108,20 @@
    :close-ssl-socket
    :make-client-certificate
    :request))
+
+(defpackage :gemini-subscription
+  (:use
+   :cl
+   :alexandria
+   :cl-ppcre
+   :config
+   :constants
+   :text-utils
+   :misc
+   :alexandria
+   :gemini-constants
+   :gemini-parser
+   :gemini-client)
+  (:shadowing-import-from :misc :random-elt :shuffle)
+  (:export
+   :subscribe))
