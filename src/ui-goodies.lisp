@@ -563,7 +563,7 @@ Metadata includes:
 (gen-focus-to-window open-gemini-subscription-window
                      *gemini-subscription-window*
                      :documentation      "Move focus on open-gemini certificates window"
-                     :info-change-focus-message (_ "Focus passed on TLS certificates window.")
+                     :info-change-focus-message (_ "Focus passed on gemlog subscriptions window.")
                      :windows-lose-focus (*gemini-certificates-window*
                                           *chats-list-window*
                                           *gemini-streams-window*
