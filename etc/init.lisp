@@ -145,6 +145,8 @@
 
 (define-key "M-c"       #'open-chats-list-window)
 
+(define-key "M-g s"     #'gemini-open-gemlog-window)
+
 ;; focus
 
 (define-key "f1"        #'focus-to-tags-window)
@@ -358,6 +360,16 @@
 (define-key "q"         #'gemini-close-certificate-window            *gemini-certificates-keymap*)
 
 (define-key "C-J"       #'gemini-delete-certificate                  *gemini-certificates-keymap*)
+
+;; gemini subscription window
+
+(define-key "C-J"       #'show-gemlog-to-screen                      *gemlog-subscription-keymap*)
+
+(define-key "up"        #'gemlogs-subscription-go-up                 *gemlog-subscription-keymap*)
+
+(define-key "down"      #'gemlogs-subscription-go-down               *gemlog-subscription-keymap*)
+
+(define-key "q"         #'close-gemlog-window                        *gemlog-subscription-keymap*)
 
 ;; tags keymap
 

@@ -58,5 +58,8 @@
 (defparameter *gemini-certificates-window*      nil
   "The window that shows all gemini client certificates.")
 
+(defparameter *gemini-subscription-window*      nil
+  "The window that shows all the subscribed gemlogs.")
+
 (defparameter *chats-list-window*               nil
   "The window that shows all the chats.")

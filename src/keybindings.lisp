@@ -264,6 +264,9 @@ produces a tree and graft the latter on `existing-tree'"
 (defparameter *chat-message-keymap* (make-starting-comand-tree)
   "The keymap for message-window when shows chat.")
 
+(defparameter *gemlog-subscription-keymap*  (make-starting-comand-tree)
+  "The keymap for gemlog subscriptions window.")
+
 (defun define-key (key-sequence function &optional (existing-keymap *global-keymap*))
   "Define a key sequence that trigger a function:
 

@@ -831,6 +831,8 @@
    :row-poll-expired-p
    :row-poll-multiple-vote-p
    :row-title
+   :row-subtitle
+   :row-url
    :row-expire-date
    :row-account-id
    :row-updated-at
@@ -951,14 +953,18 @@
    :find-tls-certificates-rows
    :gemini-subscribe-url
    :gemini-find-subscription
+   :gemini-all-subscriptions
+   :row-seen-count
+   :row-unseen-count
    :find-gemlog-entry
    :add-gemlog-entries
    :gemlog-mark-as-seen
    :gemlog-url
    :gemlog-title
    :gemlog-subtitle
-   :post-date
-   :post-title
+   :row-post-date
+   :row-post-title
+   :row-post-link
    :gemlog-entries
    :delete-gemlog-entry))
 
@@ -1022,6 +1028,7 @@
    :+key-message-window+
    :+key-chat-window+
    :+key-chats-list-window+
+   :+key-gemini-subscription-window+
    :+key-favourite+
    :+key-sensitive+
    :+key-boosted+
@@ -1216,6 +1223,7 @@
    :*open-message-link-window*
    :*gemini-streams-window*
    :*gemini-certificates-window*
+   :*gemini-subscription-window*
    :*chats-list-window*))
 
 (defpackage :complete
@@ -1340,6 +1348,7 @@
    :gemini-compact-lines-event
    :gemini-enqueue-download-event
    :gemini-gemlog-subscribe-event
+   :gemlog-show-event
    :get-chat-messages-event
    :get-chats-event
    :chat-show-event
@@ -1500,6 +1509,7 @@
    :*gemini-certificates-keymap*
    :*chats-list-keymap*
    :*chat-message-keymap*
+   :*gemlog-subscription-keymap*
    :define-key
    :init-keyboard-mapping
    :find-keymap-node
@@ -1957,6 +1967,26 @@
   (:export
    :open-gemini-certificates-window))
 
+(defpackage :gemini-subscription-window
+  (:use
+   :cl
+   :alexandria
+   :cl-ppcre
+   :access
+   :croatoan
+   :config
+   :constants
+   :text-utils
+   :misc
+   :mtree
+   :specials
+   :windows
+   :line-oriented-window
+   :tui-utils)
+  (:shadowing-import-from :misc :random-elt :shuffle)
+  (:export
+   :open-gemini-subscription-window))
+
 (defpackage :command-window
   (:use
    :cl
@@ -2353,6 +2383,11 @@
    :gemini-streams-window-open-stream
    :gemini-refresh-page
    :gemini-subscribe-gemlog
+   :gemini-open-gemlog-window
+   :gemlogs-subscription-go-up
+   :gemlogs-subscription-go-down
+   :close-gemlog-window
+   :show-gemlog-to-screen
    :send-to-pipe
    :send-message-to-pipe))
 

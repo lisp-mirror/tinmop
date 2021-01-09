@@ -388,6 +388,8 @@ Metadata includes:
               (if print-message
                   (_ "focus passed on threads window")
                   nil)
+              *gemini-subscription-window*
+              *gemini-certificates-window*
               *chats-list-window*
               *gemini-streams-window*
               *open-message-link-window*
@@ -404,7 +406,8 @@ Metadata includes:
                      *message-window*
                      :documentation      "Move focus on message window"
                      :info-change-focus-message (_ "Focus passed on message window")
-                     :windows-lose-focus (*gemini-certificates-window*
+                     :windows-lose-focus (*gemini-subscription-window*
+                                          *gemini-certificates-window*
                                           *chats-list-window*
                                           *gemini-streams-window*
                                           *open-message-link-window*
@@ -419,7 +422,8 @@ Metadata includes:
                      *send-message-window*
                      :documentation      "Move focus on send message window"
                      :info-change-focus-message (_ "Focus passed on send message window")
-                     :windows-lose-focus (*gemini-certificates-window*
+                     :windows-lose-focus (*gemini-subscription-window*
+                                          *gemini-certificates-window*
                                           *chats-list-window*
                                           *gemini-streams-window*
                                           *open-message-link-window*
@@ -434,7 +438,8 @@ Metadata includes:
                      *follow-requests-window*
                      :documentation      "Move focus on follow requests window"
                      :info-change-focus-message (_ "Focus passed on follow requests window")
-                     :windows-lose-focus (*gemini-certificates-window*
+                     :windows-lose-focus (*gemini-subscription-window*
+                                          *gemini-certificates-window*
                                           *chats-list-window*
                                           *gemini-streams-window*
                                           *open-message-link-window*
@@ -449,7 +454,8 @@ Metadata includes:
                      *tags-window*
                      :documentation      "Move focus on tags window"
                      :info-change-focus-message (_ "Focus passed on tags window")
-                     :windows-lose-focus (*gemini-certificates-window*
+                     :windows-lose-focus (*gemini-subscription-window*
+                                          *gemini-certificates-window*
                                           *chats-list-window*
                                           *gemini-streams-window*
                                           *open-message-link-window*
@@ -463,7 +469,8 @@ Metadata includes:
                      *conversations-window*
                      :documentation      "Move focus on conversations window"
                      :info-change-focus-message (_ "Focus passed on conversation window")
-                     :windows-lose-focus (*gemini-certificates-window*
+                     :windows-lose-focus (*gemini-subscription-window*
+                                          *gemini-certificates-window*
                                           *chats-list-window*
                                           *gemini-streams-window*
                                           *open-message-link-window*
@@ -478,7 +485,8 @@ Metadata includes:
                      *open-attach-window*
                      :documentation      "Move focus on open-attach window"
                      :info-change-focus-message (_ "Focus passed on attach window")
-                     :windows-lose-focus (*gemini-certificates-window*
+                     :windows-lose-focus (*gemini-subscription-window*
+                                          *gemini-certificates-window*
                                           *chats-list-window*
                                           *gemini-streams-window*
                                           *open-message-link-window*
@@ -493,7 +501,8 @@ Metadata includes:
                      *open-message-link-window*
                      :documentation      "Move focus on open-link window"
                      :info-change-focus-message (_ "Focus passed on link window")
-                     :windows-lose-focus (*gemini-certificates-window*
+                     :windows-lose-focus (*gemini-subscription-window*
+                                          *gemini-certificates-window*
                                           *chats-list-window*
                                           *gemini-streams-window*
                                           *conversations-window*
@@ -508,7 +517,8 @@ Metadata includes:
                      *gemini-streams-window*
                      :documentation      "Move focus on open gemini streams window"
                      :info-change-focus-message (_ "Focus passed on gemini-stream window")
-                     :windows-lose-focus (*gemini-certificates-window*
+                     :windows-lose-focus (*gemini-subscription-window*
+                                          *gemini-certificates-window*
                                           *chats-list-window*
                                           *open-message-link-window*
                                           *conversations-window*
@@ -523,7 +533,8 @@ Metadata includes:
                      *chats-list-window*
                      :documentation      "Move focus on chats list window"
                      :info-change-focus-message (_ "Focus passed on chats list window")
-                     :windows-lose-focus (*gemini-certificates-window*
+                     :windows-lose-focus (*gemini-subscription-window*
+                                          *gemini-certificates-window*
                                           *gemini-streams-window*
                                           *open-message-link-window*
                                           *conversations-window*
@@ -538,7 +549,23 @@ Metadata includes:
                      *gemini-certificates-window*
                      :documentation      "Move focus on open-gemini certificates window"
                      :info-change-focus-message (_ "Focus passed on TLS certificates window.")
-                     :windows-lose-focus (*chats-list-window*
+                     :windows-lose-focus (*gemini-subscription-window*
+                                          *chats-list-window*
+                                          *gemini-streams-window*
+                                          *conversations-window*
+                                          *open-attach-window*
+                                          *tags-window*
+                                          *follow-requests-window*
+                                          *thread-window*
+                                          *message-window*
+                                          *send-message-window*))
+
+(gen-focus-to-window open-gemini-subscription-window
+                     *gemini-subscription-window*
+                     :documentation      "Move focus on open-gemini certificates window"
+                     :info-change-focus-message (_ "Focus passed on TLS certificates window.")
+                     :windows-lose-focus (*gemini-certificates-window*
+                                          *chats-list-window*
                                           *gemini-streams-window*
                                           *conversations-window*
                                           *open-attach-window*
@@ -1208,6 +1235,26 @@ certificate).
                       :prompt      (_ "Delete this certificate? [Y/n] ")
                       :complete-fn #'complete:complete-always-empty)))
 
+(defun gemini-open-gemlog-window ()
+  "Open a window with all the  gemlog subscribed."
+  (gemini-subscription-window:open-gemini-subscription-window)
+  (focus-to-open-gemini-subscription-window))
+
+(defun close-gemlog-window ()
+  (close-window-and-return-to-threads *gemini-subscription-window*))
+
+(defun show-gemlog-to-screen ()
+  (when-let* ((fields    (line-oriented-window:selected-row-fields *gemini-subscription-window*))
+              (gemlog-id (db:row-url fields))
+              (entries   (db:gemlog-entries gemlog-id))
+              (event     (make-instance 'program-events:gemlog-show-event
+                                        :gemlog-url gemlog-id
+                                        :title      (db:row-title fields)
+                                        :subtitle   (db:row-subtitle fields)
+                                        :entries    entries)))
+    (program-events:push-event event)
+    (focus-to-message-window)))
+
 (defun prompt-for-username (prompt complete-function event
                             notify-starting-message
                             notify-ending-message)
@@ -1782,6 +1829,18 @@ mot recent updated to least recent"
                                           :url                       url)))
     (push-event event-abort)
     (push-event event-open)))
+
+(defun gemlogs-subscription-move (amount)
+  (ignore-errors
+    (line-oriented-window:unselect-all *gemini-subscription-window*)
+    (line-oriented-window:row-move     *gemini-subscription-window* amount)
+    (draw  *gemini-subscription-window*)))
+
+(defun gemlogs-subscription-go-down ()
+  (follow-request-move 1))
+
+(defun gemlogs-subscription-go-up ()
+  (follow-request-move -1))
 
 (defun gemini-subscribe-gemlog ()
   "Subscribe to the gemlog shown in the main window.

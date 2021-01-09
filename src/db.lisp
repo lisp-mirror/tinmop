@@ -1751,6 +1751,10 @@ row."
 
 (gen-access-message-row title                       :title)
 
+(gen-access-message-row subtitle                    :subtitle)
+
+(gen-access-message-row url                         :url)
+
 (gen-access-message-row expire-date                 :expire-date)
 
 (gen-access-message-row chat-id                     :chat-id)
@@ -2872,6 +2876,35 @@ than `days-in-the-past' days (default: `(swconf:config-purge-cache-days-offset)'
               (row     (fetch-single query)))
     row))
 
+(defun row-unseen-count (row)
+  (and row
+       (db-getf row :unseen-count 0)))
+
+(defun row-seen-count (row)
+  (and row
+       (db-getf row :seen-count 0)))
+
+(defun gemini-all-subscriptions ()
+  (when-let* ((query (select (:gemini-subscription.*
+                              (:as (select (fields (:count :url))
+                                     (from :gemlog-entries)
+                                     (where (:and (:= :gemlog-entries.seenp
+                                                      (prepare-for-db nil :to-integer t))
+                                                  (:= :gemlog-entries.gemlog-id
+                                                   :gemini-subscription.url))))
+                               :unseen-count)
+                              (:as (select (fields (:count :url))
+                                     (from :gemlog-entries)
+                                     (where (:and (:= :gemlog-entries.seenp
+                                                      (prepare-for-db t :to-integer t))
+                                                  (:= :gemlog-entries.gemlog-id
+                                                   :gemini-subscription.url))))
+                               :seen-count))
+                       (from +table-gemini-subscription+)
+                       (order-by :title)))
+              (rows  (fetch-all-rows query)))
+    rows))
+
 (defun find-gemlog-entry (post-url)
   (when-let* ((query (select :*
                        (from +table-gemlog-entries+)
@@ -2888,7 +2921,7 @@ than `days-in-the-past' days (default: `(swconf:config-purge-cache-days-offset)'
                        :seenp)
                       (post-url
                        gemlog-iri
-                       post-date
+                       (decode-datetime-string post-date)
                        post-title
                        (prepare-for-db seenp :to-integer t)))))
 
@@ -2909,29 +2942,45 @@ than `days-in-the-past' days (default: `(swconf:config-purge-cache-days-offset)'
 
 (gen-access-message-row post-title      :post-title)
 
+(gen-access-message-row post-link       :post-link)
+
 (defun gemlog-entries (gemlog-url &key (unseen-only nil) (seen-only nil))
   (assert (not (and unseen-only
                     seen-only)))
-  (when-let* ((query (select ((:as :gemini-subscription.url      :gemlog-url)
-                              (:as :gemini-subscription.title    :gemlog-title)
-                              (:as :gemini-subscription.subtitle :gemlog-subtitle)
-                              (:as :gemlog-entries.date          :post-date)
-                              (:as :gemlog-entries.title         :post-title)
-                              (:as :gemlog-entries.seenp         :seenp))
-                       (from :gemlog-entries)
-                       (join :gemini-subscription
-                             :on (:= :gemlog-entries.gemlog-id
-                                  :gemini-subscription.url))
-                       (where (:= :gemini-subscription.url gemlog-url))
-                       (order-by (:desc :gemlog-entries.date))))
-              (rows    (fetch-all-rows query)))
-    (cond
-      (unseen-only
-       (remove-if-not (lambda (row) (db-nil-p (row-seenp row))) rows))
-      (seen-only
-       (remove-if (lambda (row) (db-nil-p (row-seenp row))) rows))
-      (t
-       rows))))
+  (when-let* ((query         (select ((:as :gemini-subscription.url      :gemlog-url)
+                                      (:as :gemini-subscription.title    :gemlog-title)
+                                      (:as :gemini-subscription.subtitle :gemlog-subtitle)
+                                      (:as :gemlog-entries.date          :post-date)
+                                      (:as :gemlog-entries.title         :post-title)
+                                      (:as :gemlog-entries.url           :post-link)
+                                      (:as :gemlog-entries.seenp         :seenp))
+                               (from :gemlog-entries)
+                               (join :gemini-subscription
+                                     :on (:= :gemlog-entries.gemlog-id
+                                          :gemini-subscription.url))
+                               (where (:= :gemini-subscription.url gemlog-url))))
+              (unordered-rows (fetch-all-rows query))
+              (actual-rows    (cond
+                                (unseen-only
+                                 (remove-if-not (lambda (row) (db-nil-p (row-seenp row)))
+                                                unordered-rows))
+                                (seen-only
+                                 (remove-if (lambda (row) (db-nil-p (row-seenp row)))
+                                            unordered-rows))
+                                (t
+                                 unordered-rows))))
+    (num:multisort actual-rows (list (num:gen-multisort-test string>
+                                                             string<
+                                                             (lambda (a)
+                                                               (row-post-date a)))
+                                     (num:gen-multisort-test (lambda (a b)
+                                                               (declare (ignore a))
+                                                               (db-nil-p b))
+                                                             (lambda (a b)
+                                                               (declare (ignore b))
+                                                               (db-nil-p a))
+                                                             (lambda (a)
+                                                               (db-getf a :seenp)))))))
 
 (defun delete-gemlog-entry (gemlog-url)
   (query (delete-from +table-gemlog-entries+ (where (:= :url gemlog-url)))))

@@ -1143,13 +1143,71 @@
 (defmethod process-event ((object gemini-gemlog-subscribe-event))
   (with-accessors ((url payload)) object
     (let ((subscribedp (gemini-subscription:subscribe url)))
-      (when (not subscribedp)
-        (gemini-subscription:refresh url)
-        (ui:notify (format nil
-                           (_ "Unable to subscribe to ~s")
-                           url)
-                   :as-error t)))))
+      (if subscribedp
+          (gemini-subscription:refresh url)
+          (ui:notify (format nil
+                             (_ "Unable to subscribe to ~s")
+                             url)
+                     :as-error t)))))
 
+
+(defclass gemlog-show-event (program-event)
+  ((title
+    :initarg :title
+    :accessor title)
+   (subtitle
+    :initarg :subtitle
+    :accessor subtitle)
+   (gemlog-url
+    :initarg  :gemlog-url
+    :accessor gemlog-url)
+   (entries
+    :initarg :entries
+    :accessor entries)))
+
+(defmethod process-event ((object gemlog-show-event))
+  (with-accessors ((title      title)
+                   (subtitle   subtitle)
+                   (entries    entries)
+                   (gemlog-url gemlog-url)) object
+    (let* ((gemini-page (with-output-to-string (stream)
+                          (format stream
+                                  "~a~2%"
+                                  (gemini-parser:geminize-h1 title))
+                          (if subtitle
+                              (format stream
+                                      "~a~2%"
+                                      (gemini-parser:geminize-h2 subtitle))
+                              (format stream
+                                      "~a~2%"
+                                      (gemini-parser:geminize-h2 (_ "No subtitle"))))
+                          (loop for entry in entries do
+                            (let* ((link  (db:row-post-link  entry))
+                                   (date-format  (swconf:date-fmt swconf:+key-message-window+))
+                                   (date  (db:row-post-date entry))
+                                   (encoded-date (db-utils:encode-datetime-string date))
+                                   (title (text-utils:strcat (format-time encoded-date date-format)
+                                                             " "
+                                                             (db:row-post-title entry))))
+                              (format stream
+                                      "~a~%"
+                                      (gemini-parser:make-gemini-link link
+                                                                      title))))))
+           (url      (iri:iri-parse gemlog-url))
+           (parsed   (gemini-parser:parse-gemini-file gemini-page))
+           (links    (gemini-parser:sexp->links parsed
+                                                (uri:host url)
+                                                (uri:port url)
+                                                (uri:path url)))
+           (theme   gemini-client::*gemini-page-theme*))
+      (gemini-viewer::maybe-initialize-metadata specials:*message-window*)
+      (refresh-gemini-message-window links
+                                     gemini-page
+                                     (gemini-parser:sexp->text parsed theme)
+                                     nil)
+      (setf (windows:keybindings specials:*message-window*)
+            keybindings:*gemini-message-keymap*)
+      (windows:draw  specials:*message-window*))))
 
 ;;;; pleroma
 

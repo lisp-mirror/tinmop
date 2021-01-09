@@ -37,6 +37,13 @@
   (:shadowing-import-from :misc :random-elt :shuffle)
   (:export
    :+gemini-scheme+
+   :geminize-h1
+   :geminize-h2
+   :geminize-h3
+   :geminize-list
+   :geminize-quote
+   :geminize-link
+   :make-gemini-link
    :gemini-link
    :target
    :name

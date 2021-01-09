@@ -19,6 +19,41 @@
 
 (defparameter *raw-mode* nil)
 
+(define-constant +h1-prefix+           "#"   :test #'string=)
+
+(define-constant +h2-prefix+           "##"  :test #'string=)
+
+(define-constant +h3-prefix+           "###" :test #'string=)
+
+(define-constant +list-bullet-prefix+  "* "  :test #'string=)
+
+(define-constant +quote-prefix+        ">"   :test #'string=)
+
+(define-constant +preformatted-prefix+ "```" :test #'string=)
+
+(define-constant +link-prefix+         "=>"  :test #'string=)
+
+(defmacro gen-geminize-line (name prefix)
+  `(defun ,(format-fn-symbol t "geminize-~a" name) (text)
+     (strcat ,prefix text)))
+
+(gen-geminize-line h1 +h1-prefix+)
+
+(gen-geminize-line h2 +h2-prefix+)
+
+(gen-geminize-line h3 +h3-prefix+)
+
+(gen-geminize-line list +list-bullet-prefix+)
+
+(gen-geminize-line quote +quote-prefix+)
+
+(gen-geminize-line link +link-prefix+)
+
+(defun make-gemini-link (url title)
+  (format nil "~a ~a"
+          (geminize-link url)
+          title))
+
 (defrule space (or #\Space #\Tab)
   (:constant nil))
 

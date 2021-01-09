@@ -46,7 +46,8 @@ A link text entry is like 'aaaa-mm-dd post title'
 
 This function parses the 'aaaa-mm-dd' part.
 "
-  (local-time:parse-timestring link-text :start 0 :end 10 :fail-on-error nil))
+  (when (>= (length link-text) 10)
+    (local-time:parse-timestring link-text :start 0 :end 10 :fail-on-error nil)))
 
 (defun link-post-title (link-text)
   "Returns the title of gemlog entry from link text

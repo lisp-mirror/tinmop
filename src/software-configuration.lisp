@@ -367,6 +367,7 @@
                    message-window
                    chat-window
                    chats-list-window
+                   gemini-subscription-window
                    attachment-header
                    max-numbers-allowed-attachments
                    max-message-length
