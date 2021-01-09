@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tinmop 0.0.1\n"
 "Report-Msgid-Bugs-To: https://notabug.org/cage/tinmop/\n"
-"POT-Creation-Date: 2021-01-06 11:46+0100\n"
-"PO-Revision-Date: 2020-12-31 19:21+0100\n"
+"POT-Creation-Date: 2021-01-09 11:01+0100\n"
+"PO-Revision-Date: 2021-01-09 11:02+0100\n"
 "Last-Translator: cage <cage@invalid.org>\n"
 "Language-Team: Italian\n"
 "Language: it\n"
@@ -169,7 +169,7 @@ msgstr "Opzioni diponibili"
 msgid "Error: command ~a not found"
 msgstr "Errore: comando ~a non trovato"
 
-#: src/conditions.lisp:70 src/conditions.lisp:74 src/db.lisp:2671
+#: src/conditions.lisp:70 src/conditions.lisp:74 src/db.lisp:2714
 #: src/message-rendering-utils.lisp:156 src/message-rendering-utils.lisp:190
 #: src/message-rendering-utils.lisp:195
 msgid "unknown"
@@ -179,19 +179,19 @@ msgstr "sconosciuto"
 msgid "Conversations"
 msgstr "Conversazioni"
 
-#: src/db.lisp:182
+#: src/db.lisp:188
 msgid "federated"
 msgstr "federata"
 
-#: src/db.lisp:184
+#: src/db.lisp:190
 msgid "local"
 msgstr "locale"
 
-#: src/db.lisp:186
+#: src/db.lisp:192
 msgid "direct"
 msgstr "diretta"
 
-#: src/db.lisp:188
+#: src/db.lisp:194
 msgid "home"
 msgstr "home"
 
@@ -260,17 +260,17 @@ msgstr "Visualizzo il sorgente di: ~a"
 msgid "Current gemini streams"
 msgstr "Flussi di dati gemini attuali"
 
-#: src/gemini/client.lisp:161
+#: src/gemini/client.lisp:164
 #, lisp-format
 msgid "The server responded with the error ~a: ~a"
 msgstr "Il server ha risposto con l'errore ~a: ~a"
 
-#: src/gemini/client.lisp:172
+#: src/gemini/client.lisp:175
 #, lisp-format
 msgid "The certificate of host ~a has changed from your latest visit."
 msgstr "Il certificato dell'host ~a è cambiato dall'ultima visita."
 
-#: src/html-utils.lisp:108
+#: src/html-utils.lisp:118
 msgid "No address found"
 msgstr "nessun indirizzo trovato"
 
@@ -473,7 +473,12 @@ msgid_plural "Got ~a notifications"
 msgstr[0] "Hai ~a notifica"
 msgstr[1] "Hai ~a notifiche"
 
-#: src/program-events.lisp:1239
+#: src/program-events.lisp:1149
+#, lisp-format
+msgid "Unable to subscribe to ~s"
+msgstr "Non posso abbonarmi a ~s: "
+
+#: src/program-events.lisp:1252
 msgid "no label"
 msgstr "nessuna etichetta"
 
@@ -1033,16 +1038,21 @@ msgstr "Questo non è un indirizzo gemini valido"
 msgid "Open Gemini url: "
 msgstr "Apri un indirizzo gemini: "
 
-#: src/ui-goodies.lisp:1794 src/ui-goodies.lisp:1807
+#: src/ui-goodies.lisp:1795
+#, lisp-format
+msgid "Subscribing to ~s"
+msgstr "Abbonati a ~s: "
+
+#: src/ui-goodies.lisp:1808 src/ui-goodies.lisp:1821
 #, lisp-format
 msgid "Command ~s completed"
 msgstr "Comando ~s completato"
 
-#: src/ui-goodies.lisp:1796
+#: src/ui-goodies.lisp:1810
 msgid "Send to command: "
 msgstr "Manda al comando: "
 
-#: src/ui-goodies.lisp:1809
+#: src/ui-goodies.lisp:1823
 msgid "Send message to command: "
 msgstr "Manda il messaggio al comando: "
 

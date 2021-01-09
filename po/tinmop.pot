@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tinmop 0.4.2\n"
 "Report-Msgid-Bugs-To: https://notabug.org/cage/tinmop/\n"
-"POT-Creation-Date: 2021-01-06 11:46+0100\n"
+"POT-Creation-Date: 2021-01-09 11:01+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -165,7 +165,7 @@ msgstr ""
 msgid "Error: command ~a not found"
 msgstr ""
 
-#: src/conditions.lisp:70 src/conditions.lisp:74 src/db.lisp:2671
+#: src/conditions.lisp:70 src/conditions.lisp:74 src/db.lisp:2714
 #: src/message-rendering-utils.lisp:156 src/message-rendering-utils.lisp:190
 #: src/message-rendering-utils.lisp:195
 msgid "unknown"
@@ -175,19 +175,19 @@ msgstr ""
 msgid "Conversations"
 msgstr ""
 
-#: src/db.lisp:182
+#: src/db.lisp:188
 msgid "federated"
 msgstr ""
 
-#: src/db.lisp:184
+#: src/db.lisp:190
 msgid "local"
 msgstr ""
 
-#: src/db.lisp:186
+#: src/db.lisp:192
 msgid "direct"
 msgstr ""
 
-#: src/db.lisp:188
+#: src/db.lisp:194
 msgid "home"
 msgstr ""
 
@@ -251,17 +251,17 @@ msgstr ""
 msgid "Current gemini streams"
 msgstr ""
 
-#: src/gemini/client.lisp:161
+#: src/gemini/client.lisp:164
 #, lisp-format
 msgid "The server responded with the error ~a: ~a"
 msgstr ""
 
-#: src/gemini/client.lisp:172
+#: src/gemini/client.lisp:175
 #, lisp-format
 msgid "The certificate of host ~a has changed from your latest visit."
 msgstr ""
 
-#: src/html-utils.lisp:108
+#: src/html-utils.lisp:118
 msgid "No address found"
 msgstr ""
 
@@ -460,7 +460,12 @@ msgid_plural "Got ~a notifications"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/program-events.lisp:1239
+#: src/program-events.lisp:1149
+#, lisp-format
+msgid "Unable to subscribe to ~s"
+msgstr ""
+
+#: src/program-events.lisp:1252
 msgid "no label"
 msgstr ""
 
@@ -1016,16 +1021,21 @@ msgstr ""
 msgid "Open Gemini url: "
 msgstr ""
 
-#: src/ui-goodies.lisp:1794 src/ui-goodies.lisp:1807
+#: src/ui-goodies.lisp:1795
+#, lisp-format
+msgid "Subscribing to ~s"
+msgstr ""
+
+#: src/ui-goodies.lisp:1808 src/ui-goodies.lisp:1821
 #, lisp-format
 msgid "Command ~s completed"
 msgstr ""
 
-#: src/ui-goodies.lisp:1796
+#: src/ui-goodies.lisp:1810
 msgid "Send to command: "
 msgstr ""
 
-#: src/ui-goodies.lisp:1809
+#: src/ui-goodies.lisp:1823
 msgid "Send message to command: "
 msgstr ""
 
