@@ -1,5 +1,7 @@
 (in-package :idn)
 
+(pkg-config-cflags "libidn2")
+
 (include "idn2.h")
 
 (cenum (idn2-rc)
