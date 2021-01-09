@@ -75,14 +75,16 @@ This function return the 'post-title' substring."
     (when-let* ((data   (slurp-gemini-url url))
                 (page   (babel:octets-to-string data))
                 (parsed (parse-gemini-file page))
-                (iri    (iri:iri-parse url)))
-      (let* ((title                   (first (html-utils:children (html-utils:find-tag :h1
-                                                                                       parsed))))
-             (maybe-subtitle-pos (html-utils:position-tag :h2 parsed))
+                (iri    (iri:iri-parse url))
+                (title  (first (html-utils:children (html-utils:find-tag :h1
+                                                                         parsed)))))
+      (let* ((maybe-subtitle-pos (html-utils:position-tag :h2 parsed))
              (subtitle           (when (subtitle-p parsed maybe-subtitle-pos)
                                    (first (html-utils:children (elt parsed
                                                                     maybe-subtitle-pos))))))
-        (db:gemini-subscribe-url url title subtitle)))))
+        (when (not (db:gemini-find-subscription url))
+          (db:gemini-subscribe-url url title subtitle))
+        t))))
 
 (defun refresh (url)
   "Refresh gemlog entries that can be  found at 'url'. The gemlog must

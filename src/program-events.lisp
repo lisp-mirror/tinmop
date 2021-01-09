@@ -1138,6 +1138,19 @@
   (with-accessors ((stream-object payload)) object
     (gemini-viewer:push-db-stream stream-object)))
 
+(defclass gemini-gemlog-subscribe-event (program-event) ())
+
+(defmethod process-event ((object gemini-gemlog-subscribe-event))
+  (with-accessors ((url payload)) object
+    (let ((subscribedp (gemini-subscription:subscribe url)))
+      (when (not subscribedp)
+        (gemini-subscription:refresh url)
+        (ui:notify (format nil
+                           (_ "Unable to subscribe to ~s")
+                           url)
+                   :as-error t)))))
+
+
 ;;;; pleroma
 
 (defclass get-chat-messages-event (program-event)

@@ -124,4 +124,5 @@
    :gemini-client)
   (:shadowing-import-from :misc :random-elt :shuffle)
   (:export
-   :subscribe))
+   :subscribe
+   :refresh))

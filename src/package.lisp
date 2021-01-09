@@ -1339,6 +1339,7 @@
    :gemini-abort-downloading-event
    :gemini-compact-lines-event
    :gemini-enqueue-download-event
+   :gemini-gemlog-subscribe-event
    :get-chat-messages-event
    :get-chats-event
    :chat-show-event
@@ -2351,6 +2352,7 @@
    :gemini-streams-window-close
    :gemini-streams-window-open-stream
    :gemini-refresh-page
+   :gemini-subscribe-gemlog
    :send-to-pipe
    :send-message-to-pipe))
 

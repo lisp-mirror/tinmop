@@ -1783,6 +1783,20 @@ mot recent updated to least recent"
     (push-event event-abort)
     (push-event event-open)))
 
+(defun gemini-subscribe-gemlog ()
+  "Subscribe to the gemlog shown in the main window.
+
+The page must be formatted according to gemini subscription specifications:
+
+gemini://gemini.circumlunar.space/docs/companion/subscription.gmi
+
+"
+  (when-let ((url (gemini-viewer:current-gemini-url)))
+    (with-blocking-notify-procedure ((format nil (_ "Subscribing to ~s") url))
+      (let ((event (make-instance 'gemini-gemlog-subscribe-event
+                                  :payload url)))
+        (push-event event)))))
+
 (defun send-to-pipe ()
   "Send contents of window to a command"
   (flet ((on-input-complete (command)
