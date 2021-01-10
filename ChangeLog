@@ -1,3 +1,77 @@
+2021-01-10  cage
+
+	* po/tinmop.pot,
+	* src/db.lisp,
+	* src/gemini-subscription-window.lisp,
+	* src/line-oriented-window.lisp,
+	* src/package.lisp,
+	* src/program-events.lisp,
+	* src/scheduled-events.lisp,
+	* src/ui-goodies.lisp:
+        * etc/init.lisp,
+        * po/it.po,
+        * src/gemini/subscription.lisp,
+        * src/package.lisp,
+        * src/program-events.lisp,
+        * src/ui-goodies.lisp,
+
+	- updated italian translation;
+	- [gemini]
+	  - added command to refresh all gemlogs;
+	  - added scheduled refresh of all gemlogs;
+	  - fixed sorting of gemlog posts;
+	  - prevent crash when subscribing to an already subscribed gemlog;
+	  - added cancel of subscriptions.
+
+2021-01-09  cage
+
+	* aclocal.m4,
+	* configure,
+	* configure.ac,
+	* etc/init.lisp,
+	* po/tinmop.pot,
+	* src/db.lisp,
+	* src/gemini/gemini-parser.lisp,
+	* src/gemini/package.lisp,
+	* src/gemini/subscription.lisp,
+	* src/package.lisp,
+	* src/program-events.lisp,
+	* src/specials.lisp,
+	* src/ui-goodies.lisp,
+	* tinmop.asd,
+        * Makefile.in,
+        * etc/default-theme.conf,
+        * etc/init.lisp,
+        * po/it.po,
+        * src/gemini-subscription-window.lisp,
+        * src/gemini/package.lisp,
+        * src/grovel-idn.lisp,
+        * src/keybindings.lisp,
+        * src/program-events.lisp,
+        * src/software-configuration.lisp,
+        * src/ui-goodies.lisp:
+
+	- [gemini]
+	  - added a draft for gemlog subscriptions;
+	  - added subscription command to gemlog.
+	- used pkg-config in the libidn2 grovel file (thanks to yumh!);
+	- updated italian translation;
+	- using pkg-config for checking libidn2 with configure script.
+
+2021-01-08  cage
+
+	* src/gemini/client.lisp,
+	* src/gemini/package.lisp,
+	* src/html-utils.lisp,
+	* src/package.lisp,
+	* tinmop.asd:
+        * src/db.lisp,
+        * src/gemini/subscription.lisp,
+        * src/misc-utils.lisp,
+
+	- [gemini]   Started with gemlog subscription, added database table and
+          interface and subscribing API.
+
 2021-01-06  cage
 
 	* po/it.po,
