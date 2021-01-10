@@ -1150,6 +1150,17 @@
                              url)
                      :as-error t)))))
 
+(defclass gemlog-cancel-subscription-event (program-event) ())
+
+(defmethod process-event ((object gemlog-cancel-subscription-event))
+  (with-accessors ((gemlog-url payload)) object
+    (db:gemini-cancel-subscription gemlog-url)
+    (handler-bind ((conditions:out-of-bounds
+                     (lambda (e)
+                       (invoke-restart 'line-oriented-window:set-default-index e))))
+      (line-oriented-window:resync-rows-db specials:*gemini-subscription-window*
+                                           :suggested-message-index 0
+                                           :redraw                  t))))
 
 (defclass gemlog-show-event (program-event)
   ((title

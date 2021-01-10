@@ -185,8 +185,11 @@
               (setf (selected (elt rows index)) t)))
       (ignore-selecting-action (e)
         (declare (ignore e))
-        nil))
-  object))
+        nil)
+      (set-default-index (e)
+        (declare (ignore e))
+        (setf row-selected-index 0)))
+    object))
 
 (defmethod selected-row ((object row-oriented-widget))
   "Return the current selected row"

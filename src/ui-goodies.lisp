@@ -1243,17 +1243,30 @@ certificate).
 (defun close-gemlog-window ()
   (close-window-and-return-to-threads *gemini-subscription-window*))
 
-(defun show-gemlog-to-screen ()
-  (when-let* ((fields    (line-oriented-window:selected-row-fields *gemini-subscription-window*))
-              (gemlog-id (db:row-url fields))
-              (entries   (db:gemlog-entries gemlog-id))
-              (event     (make-instance 'program-events:gemlog-show-event
-                                        :gemlog-url gemlog-id
-                                        :title      (db:row-title fields)
-                                        :subtitle   (db:row-subtitle fields)
-                                        :entries    entries)))
-    (program-events:push-event event)
-    (focus-to-message-window)))
+(defmacro with-selected-gemlog-id ((fields gemlog-id) &body body)
+  `(when-let* ((,fields    (line-oriented-window:selected-row-fields *gemini-subscription-window*))
+               (,gemlog-id (db:row-url ,fields)))
+     ,@body))
+
+(defun gemlog-cancel-subscription ()
+  (with-selected-gemlog-id (fields gemlog-id)
+    (when-let* ((entries   (db:gemlog-entries gemlog-id))
+                (event     (make-instance 'program-events:gemlog-cancel-subscription-event
+                                          :payload gemlog-id)))
+      (with-blocking-notify-procedure ((format nil (_ "Canceling subscription for ~s") gemlog-id))
+        (program-events:push-event event)))))
+
+(defun  show-gemlog-to-screen ()
+  (with-selected-gemlog-id (fields gemlog-id)
+    (when-let* ((entries   (db:gemlog-entries gemlog-id))
+                (event     (make-instance 'program-events:gemlog-show-event
+                                          :gemlog-url gemlog-id
+                                          :title      (db:row-title fields)
+                                          :subtitle   (db:row-subtitle fields)
+                                          :entries    entries)))
+      (program-events:push-event event)
+      (focus-to-message-window))))
+
 
 (defun prompt-for-username (prompt complete-function event
                             notify-starting-message

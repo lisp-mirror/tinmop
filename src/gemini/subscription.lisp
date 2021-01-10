@@ -100,7 +100,7 @@ be subscribed before (see: 'gemini-subscription:subcribe'"
                                              (uri:port gemlog-iri)
                                              (uri:path gemlog-iri)))))
       (loop for link in links do
-        (when (not (db:find-gemlog-entry (to-s gemlog-iri)))
+        (when (not (db:find-gemlog-entry (to-s (target link))))
           (let ((date (link-post-timestamp (name link))))
             (db:add-gemlog-entries (to-s gemlog-iri)
                                    (target link)

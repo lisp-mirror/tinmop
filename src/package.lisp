@@ -957,6 +957,7 @@
    :row-seen-count
    :row-unseen-count
    :find-gemlog-entry
+   :gemini-cancel-subscription
    :add-gemlog-entries
    :gemlog-mark-as-seen
    :gemlog-url
@@ -1348,6 +1349,7 @@
    :gemini-compact-lines-event
    :gemini-enqueue-download-event
    :gemini-gemlog-subscribe-event
+   :gemlog-cancel-subscription-event
    :gemlog-show-event
    :get-chat-messages-event
    :get-chats-event
@@ -1780,6 +1782,7 @@
    :select-row
    :selected-row
    :ignore-selecting-action
+   :set-default-index
    :selected-row-fields
    :selected-row-delete
    :search-row
@@ -2388,6 +2391,7 @@
    :gemlogs-subscription-go-down
    :close-gemlog-window
    :show-gemlog-to-screen
+   :gemlog-cancel-subscription
    :send-to-pipe
    :send-message-to-pipe))
 
