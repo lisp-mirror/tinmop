@@ -1199,11 +1199,13 @@
                                    (encoded-date (db-utils:encode-datetime-string date))
                                    (title (text-utils:strcat (format-time encoded-date date-format)
                                                              " "
-                                                             (db:row-post-title entry))))
+                                                             (db:row-post-title entry)))
+                                   (seenp (db:row-post-seenp entry)))
                               (format stream
-                                      "~a~%"
+                                      (_ "~a ~:[(not opened)~;(opened)~]~%")
                                       (gemini-parser:make-gemini-link link
-                                                                      title))))))
+                                                                      title)
+                                      seenp)))))
            (url      (iri:iri-parse gemlog-url))
            (parsed   (gemini-parser:parse-gemini-file gemini-page))
            (links    (gemini-parser:sexp->links parsed
@@ -1219,6 +1221,13 @@
       (setf (windows:keybindings specials:*message-window*)
             keybindings:*gemini-message-keymap*)
       (windows:draw  specials:*message-window*))))
+
+(defclass gemlog-refresh-all-event (program-event) ())
+
+(defmethod process-event ((object gemlog-refresh-all-event))
+  (let ((all-subscribed-gemlogs (mapcar #'db:row-url (db:gemini-all-subscriptions))))
+    (loop for subscription in all-subscribed-gemlogs do
+      (gemini-subscription:refresh subscription))))
 
 ;;;; pleroma
 

@@ -2947,6 +2947,8 @@ than `days-in-the-past' days (default: `(swconf:config-purge-cache-days-offset)'
 
 (gen-access-message-row post-link       :post-link)
 
+(gen-access-message-row post-seenp      :seenp)
+
 (defun gemlog-entries (gemlog-url &key (unseen-only nil) (seen-only nil))
   (assert (not (and unseen-only
                     seen-only)))
@@ -2972,18 +2974,22 @@ than `days-in-the-past' days (default: `(swconf:config-purge-cache-days-offset)'
                                             unordered-rows))
                                 (t
                                  unordered-rows))))
-    (num:multisort actual-rows (list (num:gen-multisort-test string>
+    (num:multisort actual-rows (list (num:gen-multisort-test (lambda (a b)
+                                                               (if (and (db-nil-p a)
+                                                                        (db-nil-p b))
+                                                                   a
+                                                                   (db-nil-p a)))
+                                                             (lambda (a b)
+                                                               (if (and (db-nil-p a)
+                                                                        (db-nil-p b))
+                                                                   b
+                                                                   (db-nil-p b)))
+                                                             (lambda (a)
+                                                               (db-getf a :seenp)))
+                                     (num:gen-multisort-test string>
                                                              string<
                                                              (lambda (a)
-                                                               (row-post-date a)))
-                                     (num:gen-multisort-test (lambda (a b)
-                                                               (declare (ignore a))
-                                                               (db-nil-p b))
-                                                             (lambda (a b)
-                                                               (declare (ignore b))
-                                                               (db-nil-p a))
-                                                             (lambda (a)
-                                                               (db-getf a :seenp)))))))
+                                                               (row-post-date a)))))))
 
 (defun delete-gemlog-entry (gemlog-url)
   (query (delete-from +table-gemlog-entries+ (where (:= :url gemlog-url)))))

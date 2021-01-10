@@ -17,9 +17,11 @@
 
 (in-package :scheduled-events)
 
-(define-constant +refresh-all-chats-data-frequency+     10000 :test #'=)
+(define-constant +refresh-all-chats-data-frequency+       10000 :test #'=)
 
-(define-constant +refresh-all-chats-messages-frequency+    50 :test #'=)
+(define-constant +refresh-all-chats-messages-frequency+      50 :test #'=)
+
+(define-constant +refresh-gemlog-subscriptions-frequency+ 50000 :test #'=)
 
 (defun triggedp (ticks frequency)
   (= (rem ticks frequency)
@@ -30,12 +32,16 @@
      (when (triggedp ticks ,frequency)
        ,@body-if-triggered)))
 
-(gen-scheduler-function (refresh-refresh-all-chats-data
+(gen-scheduler-function (refresh-all-chats-data
                          +refresh-all-chats-data-frequency+)
   (ui:notify (_ "Updating all chats."))
   (ui:update-all-chats-data))
 
-(gen-scheduler-function (refresh-refresh-all-chats-messages
+(gen-scheduler-function (refresh-gemlog-subscriptions
+                         +refresh-gemlog-subscriptions-frequency+)
+  (ui:gemlog-refresh-all))
+
+(gen-scheduler-function (refresh-all-chats-messages
                          +refresh-all-chats-messages-frequency+)
   (when (message-window:display-chat-p *message-window*)
     (ui:update-all-chats-messages)
@@ -44,5 +50,6 @@
       (program-events:push-event show-event))))
 
 (defun run-scheduled-events (ticks)
-  (refresh-refresh-all-chats-messages ticks)
-  (refresh-refresh-all-chats-data ticks))
+  (refresh-all-chats-messages ticks)
+  (refresh-all-chats-data ticks)
+  (refresh-gemlog-subscriptions ticks))

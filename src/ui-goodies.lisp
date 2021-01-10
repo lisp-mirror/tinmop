@@ -1256,7 +1256,7 @@ certificate).
       (with-blocking-notify-procedure ((format nil (_ "Canceling subscription for ~s") gemlog-id))
         (program-events:push-event event)))))
 
-(defun  show-gemlog-to-screen ()
+(defun show-gemlog-to-screen ()
   (with-selected-gemlog-id (fields gemlog-id)
     (when-let* ((entries   (db:gemlog-entries gemlog-id))
                 (event     (make-instance 'program-events:gemlog-show-event
@@ -1267,6 +1267,9 @@ certificate).
       (program-events:push-event event)
       (focus-to-message-window))))
 
+(defun gemlog-refresh-all ()
+  (with-blocking-notify-procedure ((_ "updating gemlog's subscriptions"))
+    (program-events:push-event (make-instance 'program-events:gemlog-refresh-all-event))))
 
 (defun prompt-for-username (prompt complete-function event
                             notify-starting-message

@@ -966,6 +966,7 @@
    :row-post-date
    :row-post-title
    :row-post-link
+   :row-post-seenp
    :gemlog-entries
    :delete-gemlog-entry))
 
@@ -1351,6 +1352,7 @@
    :gemini-gemlog-subscribe-event
    :gemlog-cancel-subscription-event
    :gemlog-show-event
+   :gemlog-refresh-all-event
    :get-chat-messages-event
    :get-chats-event
    :chat-show-event
@@ -2391,6 +2393,7 @@
    :gemlogs-subscription-go-down
    :close-gemlog-window
    :show-gemlog-to-screen
+   :gemlog-refresh-all
    :gemlog-cancel-subscription
    :send-to-pipe
    :send-message-to-pipe))

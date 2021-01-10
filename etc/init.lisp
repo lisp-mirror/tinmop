@@ -145,7 +145,9 @@
 
 (define-key "M-c"       #'open-chats-list-window)
 
-(define-key "M-g s"     #'gemini-open-gemlog-window)
+(define-key "M-g s o"   #'gemini-open-gemlog-window)
+
+(define-key "M-g s r"   #'gemlog-refresh-all)
 
 ;; focus
 
