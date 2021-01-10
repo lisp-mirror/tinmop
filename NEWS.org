@@ -1,3 +1,17 @@
+* 2021-01-10 version 0.5.0
+
+  - New features
+    - added subscriptions to gemlog  according to the following gemini
+      specification:
+      gemini://gemini.circumlunar.space/docs/companion/subscription.gmi
+    - Bugfix
+
+      Fixed configure scripts and several problems related to wrapping libidn2.
+
+      Building the  program from sources  should not fails  anymore on
+      debian stable and *BSD.
+
+
 * 2020-12-31 version 0.4.2
 
  - Bugfix
