@@ -130,6 +130,14 @@ Table of Contents
   • libssl (TLS socket)
   • linidn2 (i18n domain name aka idna)
 
+    The C library should be installed with their header (`*.h') files.
+    On Debian or derived system this means installing the library
+    package with the `-dev' suffix as shown below:
+
+    ┌────
+    │ # apt-get install libssl-dev libidn2-dev
+    └────
+
 
 4 Install
 ═════════
@@ -177,7 +185,7 @@ Table of Contents
   6. install on your system:
 
      ┌────
-     │ $ make install
+     │ # make install
      └────
 
   7. take a look the manpage:
