@@ -11,7 +11,6 @@
       Building the  program from sources  should not fails  anymore on
       debian stable and *BSD.
 
-
 * 2020-12-31 version 0.4.2
 
  - Bugfix
