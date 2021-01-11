@@ -968,7 +968,8 @@
    :row-post-link
    :row-post-seenp
    :gemlog-entries
-   :delete-gemlog-entry))
+   :delete-gemlog-entry
+   :purge-seen-gemlog-entries))
 
 (defpackage :date-formatter
   (:use

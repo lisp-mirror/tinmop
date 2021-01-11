@@ -23,6 +23,8 @@
 
 (define-constant +refresh-gemlog-subscriptions-frequency+ 50000 :test #'=)
 
+(define-constant +purge-gemlog-entries+                   30000 :test #'=)
+
 (defun triggedp (ticks frequency)
   (= (rem ticks frequency)
      0))
@@ -41,6 +43,11 @@
                          +refresh-gemlog-subscriptions-frequency+)
   (ui:gemlog-refresh-all))
 
+(gen-scheduler-function (purge-gemlog-entries +purge-gemlog-entries+)
+  (ui:notify (_ "Removing old gemlog posts..."))
+  (db:purge-seen-gemlog-entries)
+  (ui:notify (_ "Removed")))
+
 (gen-scheduler-function (refresh-all-chats-messages
                          +refresh-all-chats-messages-frequency+)
   (when (message-window:display-chat-p *message-window*)
@@ -52,4 +59,5 @@
 (defun run-scheduled-events (ticks)
   (refresh-all-chats-messages ticks)
   (refresh-all-chats-data ticks)
-  (refresh-gemlog-subscriptions ticks))
+  (refresh-gemlog-subscriptions ticks)
+  (purge-gemlog-entries ticks))

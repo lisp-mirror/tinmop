@@ -53,6 +53,7 @@ src/program-events.lisp
 src/queue.lisp
 src/rb-tree.lisp
 src/resources-utils.lisp
+src/scheduled-events.lisp
 src/sending-message.lisp
 src/software-configuration.lisp
 src/specials.lisp

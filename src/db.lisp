@@ -2993,3 +2993,13 @@ than `days-in-the-past' days (default: `(swconf:config-purge-cache-days-offset)'
 
 (defun delete-gemlog-entry (gemlog-url)
   (query (delete-from +table-gemlog-entries+ (where (:= :url gemlog-url)))))
+
+(defun purge-seen-gemlog-entries ()
+  "Remove expired gemlog and (seen) entries.
+
+An         entry          is         expired          if         older
+than (swconf:config-purge-history-days-offset) days in the past"
+  (let ((treshold (threshold-time 255)))
+    (query (make-delete +table-gemlog-entries+
+                        (:and (:= :seenp (prepare-for-db t :to-integer 1))
+                              (:< :date  (prepare-for-db treshold)))))))
