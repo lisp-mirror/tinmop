@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tinmop 0.0.1\n"
 "Report-Msgid-Bugs-To: https://notabug.org/cage/tinmop/\n"
-"POT-Creation-Date: 2021-01-11 18:29+0100\n"
-"PO-Revision-Date: 2021-01-11 18:28+0100\n"
+"POT-Creation-Date: 2021-01-11 19:02+0100\n"
+"PO-Revision-Date: 2021-01-11 19:02+0100\n"
 "Last-Translator: cage <cage@invalid.org>\n"
 "Language-Team: Italian\n"
 "Language: it\n"
@@ -307,7 +307,7 @@ msgid "Quick help"
 msgstr "Aiuto rapido"
 
 #: src/keybindings.lisp:542 src/line-oriented-window.lisp:261
-#: src/open-message-link-window.lisp:107 src/open-message-link-window.lisp:194
+#: src/open-message-link-window.lisp:108 src/open-message-link-window.lisp:195
 #: src/program-events.lisp:441
 msgid "Invalid regular expression"
 msgstr "Espressione regolare non valida"
@@ -432,11 +432,11 @@ msgid_plural "~a pending"
 msgstr[0] "~a in attesa"
 msgstr[1] "Altre ~a in attesa"
 
-#: src/open-message-link-window.lisp:60 src/open-message-link-window.lisp:202
+#: src/open-message-link-window.lisp:60 src/open-message-link-window.lisp:203
 msgid "Links"
 msgstr "Links"
 
-#: src/open-message-link-window.lisp:265
+#: src/open-message-link-window.lisp:266
 msgid "Chat attachments"
 msgstr "Allegati alla chat"
 
@@ -485,7 +485,7 @@ msgstr "Nessun sottotitolo"
 #: src/program-events.lisp:1205
 #, lisp-format
 msgid "~a ~:[(not opened)~;(opened)~]~%"
-msgstr "~a ~:[(aperto)~;(non aperto)~]~%"
+msgstr "~a ~:[(non aperto)~;(aperto)~]~%"
 
 #: src/program-events.lisp:1330
 msgid "no label"
