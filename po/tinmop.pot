@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: tinmop 0.4.2\n"
+"Project-Id-Version: tinmop 0.5.0\n"
 "Report-Msgid-Bugs-To: https://notabug.org/cage/tinmop/\n"
-"POT-Creation-Date: 2021-01-10 13:02+0100\n"
+"POT-Creation-Date: 2021-01-11 18:29+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -298,7 +298,7 @@ msgid "Quick help"
 msgstr ""
 
 #: src/keybindings.lisp:542 src/line-oriented-window.lisp:261
-#: src/open-message-link-window.lisp:106 src/open-message-link-window.lisp:193
+#: src/open-message-link-window.lisp:107 src/open-message-link-window.lisp:194
 #: src/program-events.lisp:441
 msgid "Invalid regular expression"
 msgstr ""
@@ -421,11 +421,11 @@ msgid_plural "~a pending"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/open-message-link-window.lisp:60 src/open-message-link-window.lisp:201
+#: src/open-message-link-window.lisp:60 src/open-message-link-window.lisp:202
 msgid "Links"
 msgstr ""
 
-#: src/open-message-link-window.lisp:264
+#: src/open-message-link-window.lisp:265
 msgid "Chat attachments"
 msgstr ""
 
@@ -1035,29 +1035,29 @@ msgstr ""
 msgid "Type the user to chat with: "
 msgstr ""
 
-#: src/ui-goodies.lisp:1783
-msgid "This is not a valid gemini address"
-msgstr ""
-
-#: src/ui-goodies.lisp:1784
+#: src/ui-goodies.lisp:1776
 msgid "Open Gemini url: "
 msgstr ""
 
-#: src/ui-goodies.lisp:1870
+#: src/ui-goodies.lisp:1788
+msgid "This is not a valid gemini address"
+msgstr ""
+
+#: src/ui-goodies.lisp:1875
 #, lisp-format
 msgid "Subscribing to ~s"
 msgstr ""
 
-#: src/ui-goodies.lisp:1883 src/ui-goodies.lisp:1896
+#: src/ui-goodies.lisp:1888 src/ui-goodies.lisp:1901
 #, lisp-format
 msgid "Command ~s completed"
 msgstr ""
 
-#: src/ui-goodies.lisp:1885
+#: src/ui-goodies.lisp:1890
 msgid "Send to command: "
 msgstr ""
 
-#: src/ui-goodies.lisp:1898
+#: src/ui-goodies.lisp:1903
 msgid "Send message to command: "
 msgstr ""
 

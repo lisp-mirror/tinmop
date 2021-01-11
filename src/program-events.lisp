@@ -1200,7 +1200,7 @@
                                    (title (text-utils:strcat (format-time encoded-date date-format)
                                                              " "
                                                              (db:row-post-title entry)))
-                                   (seenp (db:row-post-seenp entry)))
+                                   (seenp (db-utils:db-not-nil-p (db:row-post-seenp entry))))
                               (format stream
                                       (_ "~a ~:[(not opened)~;(opened)~]~%")
                                       (gemini-parser:make-gemini-link link

@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tinmop 0.0.1\n"
 "Report-Msgid-Bugs-To: https://notabug.org/cage/tinmop/\n"
-"POT-Creation-Date: 2021-01-10 13:02+0100\n"
-"PO-Revision-Date: 2021-01-10 13:04+0100\n"
+"POT-Creation-Date: 2021-01-11 18:29+0100\n"
+"PO-Revision-Date: 2021-01-11 18:28+0100\n"
 "Last-Translator: cage <cage@invalid.org>\n"
 "Language-Team: Italian\n"
 "Language: it\n"
@@ -307,7 +307,7 @@ msgid "Quick help"
 msgstr "Aiuto rapido"
 
 #: src/keybindings.lisp:542 src/line-oriented-window.lisp:261
-#: src/open-message-link-window.lisp:106 src/open-message-link-window.lisp:193
+#: src/open-message-link-window.lisp:107 src/open-message-link-window.lisp:194
 #: src/program-events.lisp:441
 msgid "Invalid regular expression"
 msgstr "Espressione regolare non valida"
@@ -432,11 +432,11 @@ msgid_plural "~a pending"
 msgstr[0] "~a in attesa"
 msgstr[1] "Altre ~a in attesa"
 
-#: src/open-message-link-window.lisp:60 src/open-message-link-window.lisp:201
+#: src/open-message-link-window.lisp:60 src/open-message-link-window.lisp:202
 msgid "Links"
 msgstr "Links"
 
-#: src/open-message-link-window.lisp:264
+#: src/open-message-link-window.lisp:265
 msgid "Chat attachments"
 msgstr "Allegati alla chat"
 
@@ -485,7 +485,7 @@ msgstr "Nessun sottotitolo"
 #: src/program-events.lisp:1205
 #, lisp-format
 msgid "~a ~:[(not opened)~;(opened)~]~%"
-msgstr "~a ~:[(aperto)~;(non aperto)~]~%\""
+msgstr "~a ~:[(aperto)~;(non aperto)~]~%"
 
 #: src/program-events.lisp:1330
 msgid "no label"
@@ -1052,29 +1052,29 @@ msgstr "Chat ~a con ~a creata"
 msgid "Type the user to chat with: "
 msgstr "Digita l'utente con cui vuoi iniziare una chat: "
 
-#: src/ui-goodies.lisp:1783
-msgid "This is not a valid gemini address"
-msgstr "Questo non è un indirizzo gemini valido"
-
-#: src/ui-goodies.lisp:1784
+#: src/ui-goodies.lisp:1776
 msgid "Open Gemini url: "
 msgstr "Apri un indirizzo gemini: "
 
-#: src/ui-goodies.lisp:1870
+#: src/ui-goodies.lisp:1788
+msgid "This is not a valid gemini address"
+msgstr "Questo non è un indirizzo gemini valido"
+
+#: src/ui-goodies.lisp:1875
 #, lisp-format
 msgid "Subscribing to ~s"
 msgstr "Abbonati a ~s: "
 
-#: src/ui-goodies.lisp:1883 src/ui-goodies.lisp:1896
+#: src/ui-goodies.lisp:1888 src/ui-goodies.lisp:1901
 #, lisp-format
 msgid "Command ~s completed"
 msgstr "Comando ~s completato"
 
-#: src/ui-goodies.lisp:1885
+#: src/ui-goodies.lisp:1890
 msgid "Send to command: "
 msgstr "Manda al comando: "
 
-#: src/ui-goodies.lisp:1898
+#: src/ui-goodies.lisp:1903
 msgid "Send message to command: "
 msgstr "Manda il messaggio al comando: "
 
