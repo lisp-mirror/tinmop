@@ -1770,6 +1770,11 @@ mot recent updated to least recent"
 
 ;;;; gemini
 
+(defun gemini-open-url-prompt ()
+  "This is used when oppening gemini link too, see:
+open-message-link-window:open-message-link"
+  (_ "Open Gemini url: "))
+
 (defun open-gemini-address ()
   "Ask for a gemini address and try to load it"
   (flet ((on-input-complete (url)
@@ -1781,7 +1786,7 @@ mot recent updated to least recent"
                                             :url                       url)))
                  (program-events:push-event event))
                (error-message (_ "This is not a valid gemini address")))))
-    (let ((prompt (_ "Open Gemini url: ")))
+    (let ((prompt (gemini-open-url-prompt)))
       (ask-string-input #'on-input-complete
                         :prompt      prompt
                         :complete-fn (complete:make-complete-gemini-iri-fn prompt)))))

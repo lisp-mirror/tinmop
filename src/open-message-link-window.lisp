@@ -76,6 +76,7 @@
         (let ((program-events:*process-events-immediately* t)
               (event (make-instance 'program-events:gemini-push-behind-downloading-event
                                     :priority program-events:+maximum-event-priority+)))
+          (db:insert-in-history (ui:gemini-open-url-prompt) url)
           (gemini-viewer:ensure-just-one-stream-rendering)
           (program-events:push-event event))
         (gemini-viewer:request url :enqueue enqueue

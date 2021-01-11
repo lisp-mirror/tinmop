@@ -2371,6 +2371,7 @@
    :chat-create-new
    :chat-list-go-up
    :chat-list-go-down
+   :gemini-open-url-prompt
    :open-gemini-address
    :gemini-history-back
    :gemini-view-source
