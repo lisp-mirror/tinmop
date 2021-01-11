@@ -400,7 +400,9 @@ Metadata includes:
               *message-window*
               *follow-requests-window*)
   (when-window-shown (*chats-list-window*)
-    (close-chats-list-window)))
+    (close-chats-list-window))
+  (when-window-shown (*gemini-subscription-window*)
+    (close-gemlog-window)))
 
 (gen-focus-to-window message-window
                      *message-window*
@@ -1264,8 +1266,7 @@ certificate).
                                           :title      (db:row-title fields)
                                           :subtitle   (db:row-subtitle fields)
                                           :entries    entries)))
-      (program-events:push-event event)
-      (focus-to-message-window))))
+      (program-events:push-event event))))
 
 (defun gemlog-refresh-all ()
   (with-blocking-notify-procedure ((_ "updating gemlog's subscriptions"))
