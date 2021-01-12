@@ -1421,6 +1421,7 @@
    :*client-lock*
    :forget-credentials
    :authorize
+   :defun-api-call
    :favourite-status
    :unfavourite-status
    :reblog-status

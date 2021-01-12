@@ -79,20 +79,16 @@ media `media'. Returns a `chat-message' instance"
                                               message-id)
                                       :http-method :delete)))
 
-(defun-w-lock get-chat-messages (chat-id min-id)
-    api-client:*client-lock*
+(api-client:defun-api-call get-chat-messages (chat-id min-id)
   (fetch-chat-messages api-client:*client* chat-id :min-id min-id))
 
-(defun-w-lock get-chats ()
-    api-client:*client-lock*
+(api-client:defun-api-call get-chats ()
   (get-all-chats api-client:*client*))
 
-(defun-w-lock post-on-chat (chat-id message)
-    api-client:*client-lock*
+(api-client:defun-api-call post-on-chat (chat-id message)
   (if (cl-ppcre:scan "^/" message)
       (api-pleroma:post-chat-message api-client:*client* chat-id nil message)
       (api-pleroma:post-chat-message api-client:*client* chat-id message nil)))
 
-(defun-w-lock create-new-chat (user-id)
-    api-client:*client-lock*
+(api-client:defun-api-call create-new-chat (user-id)
   (create-chat api-client:*client* user-id))

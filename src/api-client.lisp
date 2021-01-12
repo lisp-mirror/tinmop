@@ -158,106 +158,117 @@ authorizations was performed with success."
   (strcat "http://127.0.0.1:" (to-s port)))
 
 (defun make-default-client ()
-  "Convenience funtion to build a `api-client' instance"
-  (make-instance 'api-client
-                 :base     (make-base-slot)
-                 :name     +program-name+))
+  "Convenience funtion to build a `api-client' instance
+
+Returns nil if the user did not provided a server in the configuration file"
+  (when (text-utils:string-not-empty-p (swconf:config-server-name))
+    (make-instance 'api-client
+                   :base     (make-base-slot)
+                   :name     +program-name+)))
+
+(defun client-valid-p ()
+  *client*)
 
 (defun authorize ()
   "Perform all the steps to authorize this application"
   (setf *client* (make-default-client))
-  (if (credentials-complete-p)
-      (progn
-        (copy-credentials-to-client)
-        (tooter:authorize *client*)
-        (handler-case
-            (application-credentials)
-          (error ()
-            (ui:error-dialog-immediate
-             (format nil
-                     (_ "Credential invalid. Try to remove ~a and restart the software to authenticate again.")
-                     (res:get-data-file +credentials-filename+))))))
-      (multiple-value-bind (server-socket server-port)
-          (open-catch-code-socket)
-        (setf *client* (make-default-client))
-        (setf (tooter:redirect *client*) (make-redirect-url server-port))
-        #+debug-mode (misc:dbg "Client ~a not authorized" *client*)
-        (multiple-value-bind (a url)
-            (tooter:authorize *client*)
-          (declare (ignore a))
-          (let* ((dialog-msg (authorize-dialog-message))
-                 (save-item   (_ "Save address"))
-                 (open-item   (_ "Open address"))
-                 (cancel-item (_ "Cancel"))
-                 (choosen    (ui:info-dialog-immediate (format nil "~a~%~a" dialog-msg url)
-                                                       :buttons (list save-item
-                                                                      open-item
-                                                                      cancel-item)
-                                                       :append-ok-button nil)))
-            (labels ((on-got-authorization-code (value)
-                       (handler-case
-                           (progn
-                             (tooter:authorize *client* value)
-                             (copy-credentials-from-client)
-                             (dump-credentials)
-                             (ui:notify (_ "This client has been authorized")))
-                         (tooter:request-failed (error)
-                           (ui:request-error-window error))
-                         (error ()
-                           (ui:error-dialog-immediate (_ "Got a generic error when registering client")))))
-                     (notify-file-saved (filepath)
-                       (ui:notify (format nil (_ "File ~a saved") filepath)))
-                     (save-credentials ()
-                       (let* ((message  (_ "Please enter below the file where to save the address"))
-                              (filepath (ui:input-dialog-immediate message)))
-                         (cond
-                           ((null filepath)
-                            (save-credentials))
-                           ((fs:file-exists-p filepath)
-                            (if (ui:confirm-file-overwrite-dialog-immediate filepath)
-                                (progn
-                                  (fs:dump-sequence-to-file url filepath)
-                                  (notify-file-saved filepath))
-                                (save-credentials)))
-                           (t
-                            (fs:dump-sequence-to-file url filepath)
-                            (notify-file-saved filepath))))))
-              (cond
-                ((string= choosen open-item)
-                 (os-utils:xdg-open url)
-                 (if server-socket
-                     (let ((authcode (catch-auth-code server-socket)))
-                       (on-got-authorization-code authcode))
-                     (ui:error-dialog-immediate (_ "Error: was not able to create server socket to listen for authorization code"))))
-                ((string= choosen save-item)
-                 (save-credentials)))))))))
+  (when (client-valid-p)
+    (if (credentials-complete-p)
+        (progn
+          (copy-credentials-to-client)
+          (tooter:authorize *client*)
+          (handler-case
+              (application-credentials)
+            (error ()
+              (ui:error-dialog-immediate
+               (format nil
+                       (_ "Credential invalid. Try to remove ~a and restart the software to authenticate again.")
+                       (res:get-data-file +credentials-filename+))))))
+        (multiple-value-bind (server-socket server-port)
+            (open-catch-code-socket)
+          (setf *client* (make-default-client))
+          (setf (tooter:redirect *client*) (make-redirect-url server-port))
+          #+debug-mode (misc:dbg "Client ~a not authorized" *client*)
+          (multiple-value-bind (a url)
+              (tooter:authorize *client*)
+            (declare (ignore a))
+            (let* ((dialog-msg (authorize-dialog-message))
+                   (save-item   (_ "Save address"))
+                   (open-item   (_ "Open address"))
+                   (cancel-item (_ "Cancel"))
+                   (choosen    (ui:info-dialog-immediate (format nil "~a~%~a" dialog-msg url)
+                                                         :buttons (list save-item
+                                                                        open-item
+                                                                        cancel-item)
+                                                         :append-ok-button nil)))
+              (labels ((on-got-authorization-code (value)
+                         (handler-case
+                             (progn
+                               (tooter:authorize *client* value)
+                               (copy-credentials-from-client)
+                               (dump-credentials)
+                               (ui:notify (_ "This client has been authorized")))
+                           (tooter:request-failed (error)
+                             (ui:request-error-window error))
+                           (error ()
+                             (ui:error-dialog-immediate (_ "Got a generic error when registering client")))))
+                       (notify-file-saved (filepath)
+                         (ui:notify (format nil (_ "File ~a saved") filepath)))
+                       (save-credentials ()
+                         (let* ((message  (_ "Please enter below the file where to save the address"))
+                                (filepath (ui:input-dialog-immediate message)))
+                           (cond
+                             ((null filepath)
+                              (save-credentials))
+                             ((fs:file-exists-p filepath)
+                              (if (ui:confirm-file-overwrite-dialog-immediate filepath)
+                                  (progn
+                                    (fs:dump-sequence-to-file url filepath)
+                                    (notify-file-saved filepath))
+                                  (save-credentials)))
+                             (t
+                              (fs:dump-sequence-to-file url filepath)
+                              (notify-file-saved filepath))))))
+                (cond
+                  ((string= choosen open-item)
+                   (os-utils:xdg-open url)
+                   (if server-socket
+                       (let ((authcode (catch-auth-code server-socket)))
+                         (on-got-authorization-code authcode))
+                       (ui:error-dialog-immediate (_ "Error: was not able to create server socket to listen for authorization code"))))
+                  ((string= choosen save-item)
+                   (save-credentials))))))))))
 
-(defun-w-lock favourite-status (status-id)
-    *client-lock*
+(defmacro defun-api-call (name parameters &body body)
+  (multiple-value-bind (remaining-forms declarations doc-string)
+      (alexandria:parse-body body :documentation t)
+    `(defun-w-lock ,name ,parameters *client-lock*
+       ,doc-string
+       ,declarations
+       (when (client-valid-p)
+         ,@remaining-forms))))
+
+(defun-api-call favourite-status (status-id)
     "Favourite a status identified by `status-id'"
   (tooter:favourite *client*
                     status-id))
 
-(defun-w-lock unfavourite-status (status-id)
-    *client-lock*
+(defun-api-call unfavourite-status (status-id)
     "Unfavourite a status identified by `status-id'"
   (tooter:unfavourite *client*
                       status-id))
 
-(defun-w-lock reblog-status (status-id)
-    *client-lock*
+(defun-api-call reblog-status (status-id)
     "Reblog a status identified by `status-id'"
   (tooter:reblog *client*
                  status-id))
 
-(defun-w-lock unreblog-status (status-id)
-    *client-lock*
+(defun-api-call unreblog-status (status-id)
     "Reblog a status identified by `status-id'"
   (tooter:unreblog *client*
                    status-id))
 
-(defun-w-lock get-timeline (kind &key local only-media max-id since-id min-id (limit 20))
-    *client-lock*
+(defun-api-call get-timeline (kind &key local only-media max-id since-id min-id (limit 20))
   "Get messages (status) belonging to a timeline
 
 - kind: one of
@@ -295,7 +306,7 @@ authorizations was performed with success."
                                                :folder    folder)))
          (program-events:push-event add-fetched-event))))
 
-(defun-w-lock update-timeline (timeline
+(defun-api-call update-timeline (timeline
                                kind
                                folder
                                &key
@@ -307,7 +318,6 @@ authorizations was performed with success."
                                  min-id
                                  (recover-count 0)
                                  (limit 20))
-    *client-lock*
   "Update a timeline, this function will fetch new messages and generate and event to
   update the  program reflectings the  changes in the  timeline (saves
   messages in the database etc.)"
@@ -345,8 +355,7 @@ authorizations was performed with success."
                                        program-events:+maximum-event-priority+)
     (program-events:push-event event)))
 
-(defun-w-lock get-timeline-tag (tag &key min-id (limit 20))
-    *client-lock*
+(defun-api-call get-timeline-tag (tag &key min-id (limit 20))
   "Gets messages that contains tags identified by parameter `tag'"
   (tooter:timeline-tag *client*
                        tag
@@ -357,11 +366,10 @@ authorizations was performed with success."
                        :min-id     min-id
                        :limit      limit))
 
-(defun-w-lock update-timeline-tag (tag folder &key
+(defun-api-call update-timeline-tag (tag folder &key
                                                 (recover-count 0)
                                                 min-id
                                                 (limit 20))
-    *client-lock*
   "Update a tag timeline, this  function will fetch new messages (that
   contains tag  `tag') and  generate and event  to update  the program
   reflectings  the changes  in  the timeline  (saves  messages in  the
@@ -402,8 +410,7 @@ become an emty string (\"\")
             ""
             nil))))
 
-(defun-w-lock update-subscribed-tags (all-tags all-paginations &key (limit 20))
-    *client-lock*
+(defun-api-call update-subscribed-tags (all-tags all-paginations &key (limit 20))
   "Update all tage in the list `all-tags'"
   (loop
      for tag    in all-tags
@@ -415,8 +422,7 @@ become an emty string (\"\")
                               :limit  limit
                               :min-id max-id))))
 
-(defun-w-lock fetch-remote-status (status-id)
-  *client-lock*
+(defun-api-call fetch-remote-status (status-id)
   "Fetch a single status identified by status-id and generate an event
 `fetch-remote-status-event' that, in turn will  save the status to the
 database."
@@ -425,18 +431,16 @@ database."
                                      :payload status)))
     (program-events:push-event event)))
 
-(defun-w-lock get-remote-status (status-id)
-    *client-lock*
+(defun-api-call get-remote-status (status-id)
   "Get a single status identifird bu status-id"
   (ignore-errors
     (tooter:find-status *client* status-id)))
 
-(defun-w-lock get-status-context (status-id) *client-lock*
+(defun-api-call get-status-context (status-id)
   "Get a parent and a child of a status (identified by status-id), if exists"
   (tooter:context *client* status-id))
 
-(defun-w-lock send-status (content in-reply-to-id attachments subject visibility)
-    *client-lock*
+(defun-api-call send-status (content in-reply-to-id attachments subject visibility)
   "Send a status
 - content the actual text of the message
 - in-reply-to-id status-id of the message  you are replying to (or nil
@@ -452,36 +456,30 @@ database."
                       :spoiler-text subject
                       :visibility   visibility))
 
-(defun-w-lock search-user (username &key (limit 1))
-    *client-lock*
+(defun-api-call search-user (username &key (limit 1))
   "Find user identified by username"
   (tooter:search-accounts *client* username :limit limit))
 
-(defun-w-lock follow-user (user-id)
-    *client-lock*
+(defun-api-call follow-user (user-id)
   "Follow user identified by user-id"
   (tooter:follow *client* user-id))
 
-(defun-w-lock unfollow-user (user-id)
-    *client-lock*
+(defun-api-call unfollow-user (user-id)
   "Unfollow user identified by user-id"
   (tooter:unfollow *client* user-id))
 
-(defun-w-lock follow-requests ()
-    *client-lock*
+(defun-api-call follow-requests ()
   "Gets the request tio follow the user of this client"
   (let ((requests (tooter:follow-requests *client*)))
     (values requests
             (mapcar #'tooter:account-name requests))))
 
-(defun-w-lock accept-follow-request (user-id)
-    *client-lock*
+(defun-api-call accept-follow-request (user-id)
   "Accept a follow request from user identified by `user-id'"
   (when user-id
     (tooter:accept-request *client* user-id)))
 
-(defun-w-lock reject-follow-request (user-id)
-    *client-lock*
+(defun-api-call reject-follow-request (user-id)
   "Reject a follow request from user identified by `user-id'"
   (when user-id
     (tooter:reject-request *client* user-id)))
@@ -526,13 +524,12 @@ database."
   "Status id of the root of a conversation tree"
   (tooter:id (root object)))
 
-(defun-w-lock conversations (&key
+(defun-api-call conversations (&key
                              (min-id    nil)
                              (since-id  nil)
                              (max-id    nil)
                              (limit     20)
                              (root-only nil))
-    *client-lock*
   "Get trees of conversations
 - max-id get status until this id
 - min-id starts getting messages newer than this id
@@ -567,13 +564,11 @@ database."
 i.e. `message-root-id' is root for said tree."
   (expand-status-tree message-root-id))
 
-(defun-w-lock delete-conversation (conversation-id)
-    *client-lock*
+(defun-api-call delete-conversation (conversation-id)
   "Delete a conversation identified by `conversation-id'"
   (tooter:delete-conversation *client* conversation-id))
 
-(defun-w-lock make-report (account-id status-id comment forward)
-    *client-lock*
+(defun-api-call make-report (account-id status-id comment forward)
   "Report    an   user    (identified   by    `account-id')   and    a
 status (identified by `status-id') to and instance admin, if `forward'
 is non nil the  report will be forwarded to the  non local admin where
@@ -584,23 +579,20 @@ the account belongs."
                       :comment  comment
                       :forward  forward))
 
-(defun-w-lock get-activity ()
-    *client-lock*
+(defun-api-call get-activity ()
   "Get instance stats"
   (tooter:get-activity *client*))
 
-(defun-w-lock application-credentials ()
-    *client-lock*
+(defun-api-call application-credentials ()
   "Verify the  credentials to log  into the server with  the instance,
 returns nil if the credentials are invalid"
   (tooter:verify-app-credentials *client*))
 
-(defun-w-lock bookmarks (&key
+(defun-api-call bookmarks (&key
                          (min-id    nil)
                          (since-id  nil)
                          (max-id    nil)
                          (limit     20))
-    *client-lock*
   "List Bookmarked statuses.
 - max-id get status until this id
 - min-id starts getting messages newer than this id
@@ -612,26 +604,22 @@ returns nil if the credentials are invalid"
                     :max-id   max-id
                     :limit    limit))
 
-(defun-w-lock bookmark (id)
-    *client-lock*
+(defun-api-call bookmark (id)
   "Bookmark a status identified by `id'"
   (assert (stringp id))
   (tooter:bookmark *client* id))
 
-(defun-w-lock unbookmark (id)
-    *client-lock*
+(defun-api-call unbookmark (id)
   "Unbokmark a status identified by `id'"
   (assert (stringp id))
   (tooter:unbookmark *client* id))
 
-(defun-w-lock polls (id)
-    *client-lock*
+(defun-api-call polls (id)
   "Get a poll identified by `id'"
   (assert (stringp id))
   (tooter:polls *client* id))
 
-(defun-w-lock poll-vote (poll-id choices)
-  *client-lock*
+(defun-api-call poll-vote (poll-id choices)
   "Vote  for a  poll identified  by `poll-id',  choices is  a list  of
 numerical indices identifying the option voting for"
   (assert (every (lambda (a)
@@ -640,14 +628,13 @@ numerical indices identifying the option voting for"
                  choices))
   (tooter:poll-vote *client* poll-id choices))
 
-(defun-w-lock get-notifications (&key
+(defun-api-call get-notifications (&key
                                    (max-id        nil)
                                    (min-id        nil)
                                    (since-id      nil)
                                    (limit         10)
                                    (exclude-types nil)
                                    (account-id    nil))
-  *client-lock*
   "get notifications
 
 - max-id get notification until this id
@@ -669,8 +656,7 @@ the latest 15 mentions)."
   (get-notifications :max-id max-id
                      :exclude-types excluded-types))
 
-(defun-w-lock delete-notification (notification-id)
-    *client-lock*
+(defun-api-call delete-notification (notification-id)
   "Delete a notification identified by `notification-id'"
   (tooter:delete-notification *client* notification-id))
 
