@@ -6748,7 +6748,7 @@ fi
 
 
 
-SBCL_MIN_VERSION="1.5.9";
+SBCL_MIN_VERSION="1.4.16";
 SBCL_VERSION=`${LISP_COMPILER} --version | ${GAWK} -- '// {print $2}'`
 
 CHECK_COMPILER_VERSION_P="yes"
@@ -6764,6 +6764,8 @@ if test "$enable_check_sbcl_version" = "yes" || test "$enable_check_sbcl_version
 
    { $as_echo "$as_me:${as_lineno-$LINENO}: checking if the compiler is too old" >&5
 $as_echo_n "checking if the compiler is too old... " >&6; }
+   { $as_echo "$as_me:${as_lineno-$LINENO}: To Disable this tests use type './configure --disable-check-sbcl-version." >&5
+$as_echo "$as_me: To Disable this tests use type './configure --disable-check-sbcl-version." >&6;}
 
    if test "$SBCL_VERSION_OK" = "1" ; then
       as_fn_error $? "Lisp compiler too old, $SBCL_MIN_VERSION is the oldest supported." "$LINENO" 5
