@@ -1,3 +1,49 @@
+2021-01-13  cage
+
+	* po/tinmop.pot:
+	* src/package.lisp,
+	* src/resources-utils.lisp,
+        * po/it.po,
+        * src/main.lisp,
+        * src/software-configuration.lisp,
+
+	- create an empty config file if the user did not provided oopne,
+        instread of printing an error and exit.
+	- updated italian translation.
+
+
+2021-01-12  cage
+
+        * src/api-client.lisp,
+	* src/api-pleroma.lisp,
+	* src/package.lisp:
+
+	- prevented authorization of client if no server name has been
+          provided by the user in the config file.
+
+2021-01-11  cage
+
+	* po/POTFILES.in,
+	* po/it.po,
+	* po/tinmop.pot,
+	* src/db.lisp,
+	* src/open-message-link-window.lisp,
+	* src/package.lisp,
+	* src/program-events.lisp,
+	* src/scheduled-events.lisp,
+	* src/ui-goodies.lisp,
+        * src/open-message-link-window.lisp,
+        * src/ui-goodies.lisp:
+
+	- [gemini] ensure link opened is saved in history.
+	- [gemini] fixed reendering of 'seen' flag for gemini post;
+	- [gemini] mark post as read when opening the corresponding link.
+	- [gemini] prevent gemlog window to lose focus when a gemlog is
+          selected.
+	- made gemlog window close when focus passes to thread window.
+	- added scheduling of purging of old gemlog's posts;
+	- updated italian translation.
+
 2021-01-10  cage
 
 	* po/tinmop.pot,
