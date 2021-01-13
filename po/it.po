@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tinmop 0.0.1\n"
 "Report-Msgid-Bugs-To: https://notabug.org/cage/tinmop/\n"
-"POT-Creation-Date: 2021-01-11 19:34+0100\n"
-"PO-Revision-Date: 2021-01-11 19:35+0100\n"
+"POT-Creation-Date: 2021-01-13 17:28+0100\n"
+"PO-Revision-Date: 2021-01-13 17:30+0100\n"
 "Last-Translator: cage <cage@invalid.org>\n"
 "Language-Team: Italian\n"
 "Language: it\n"
@@ -26,7 +26,7 @@ msgstr "La finestra non sta mostrando un documento gemini"
 msgid "Please visit the address below."
 msgstr "Per favore visita l'indirizzo mostrato piu' sotto."
 
-#: src/api-client.lisp:178
+#: src/api-client.lisp:185
 #, lisp-format
 msgid ""
 "Credential invalid. Try to remove ~a and restart the software to "
@@ -35,44 +35,44 @@ msgstr ""
 "Credenziali non più valide. Provare a rimuovere ~a e riavviare il programma "
 "per riautenticarsi."
 
-#: src/api-client.lisp:189
+#: src/api-client.lisp:196
 msgid "Save address"
 msgstr "Salva l'indirizzo"
 
-#: src/api-client.lisp:190
+#: src/api-client.lisp:197
 msgid "Open address"
 msgstr "Apri l'indirizzo"
 
-#: src/api-client.lisp:191 src/ui-goodies.lisp:160 src/ui-goodies.lisp:165
+#: src/api-client.lisp:198 src/ui-goodies.lisp:160 src/ui-goodies.lisp:165
 #: src/windows.lisp:532 src/windows.lisp:588
 msgid "Cancel"
 msgstr "Annulla"
 
-#: src/api-client.lisp:203
+#: src/api-client.lisp:210
 msgid "This client has been authorized"
 msgstr "Questo client è stato autorizzato."
 
-#: src/api-client.lisp:207
+#: src/api-client.lisp:214
 msgid "Got a generic error when registering client"
 msgstr "Errore generico provando a registare il client"
 
-#: src/api-client.lisp:209
+#: src/api-client.lisp:216
 #, lisp-format
 msgid "File ~a saved"
 msgstr "File ~a salvato"
 
-#: src/api-client.lisp:211
+#: src/api-client.lisp:218
 msgid "Please enter below the file where to save the address"
 msgstr "Inserisci piu' sotto il file dove salvare l'indirizzo"
 
-#: src/api-client.lisp:231
+#: src/api-client.lisp:238
 msgid ""
 "Error: was not able to create server socket to listen for authorization code"
 msgstr ""
 "Errore: non sono stato in grado di creare il socket per la cattura del "
 "codice di autorizzazione."
 
-#: src/api-client.lisp:788
+#: src/api-client.lisp:774
 #, lisp-format
 msgid "Initializing empty credentials file in ~a"
 msgstr "Inizializzo credenziali vuote (segnaposto) nel file ~a"
@@ -322,6 +322,18 @@ msgstr "Informazione"
 msgid "Folder ~s does not exists"
 msgstr "La cartella ~s non esiste."
 
+#: src/main.lisp:112
+#, lisp-format
+msgid ""
+"Non fatal error~%~a~%Tinmop will add an empty file for you. This file will "
+"be enough to use the program as a gemini client but to connect to pleroma "
+"the file must be properly filled.~%Consult the manpage ~a(1) for more details"
+msgstr ""
+"Errore non fatale~%~a~%Tinmop creerà un file vuoto sufficiente a usare il "
+"programma come client gemini ma non abbastanza per connettersi ad un server "
+"pleroma; in questo caso il file va riempito in accordo con la "
+"documentazione: vedi la manpage ~a(1)."
+
 #: src/message-rendering-utils.lisp:93
 msgid "This message will *not* be crypted"
 msgstr "Questo messaggion *non* sarà cifrato"
@@ -493,10 +505,10 @@ msgstr "nessuna etichetta"
 
 #: src/resources-utils.lisp:55
 #, lisp-format
-msgid "Unrecoverable error: cannot find ~s in either ~s or ~s."
-msgstr "Errore non rimediabile: non trovo il file ~s né in ~s né ~s."
+msgid "Cannot find ~s in either ~s or ~s."
+msgstr "Non trovo il file ~s né in ~s né ~s."
 
-#: src/resources-utils.lisp:72
+#: src/resources-utils.lisp:73
 #, lisp-format
 msgid "Unrecoverable error: cannot find file ~s."
 msgstr "Errore non rimediabile: non trovo il file ~s."
@@ -529,7 +541,7 @@ msgstr "Menzioni: "
 msgid "Subject: "
 msgstr "Oggetto del messaggio: "
 
-#: src/software-configuration.lisp:532
+#: src/software-configuration.lisp:527
 msgid "This message was crypted."
 msgstr "Questo messaggion era cifrato."
 

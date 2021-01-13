@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tinmop 0.5.0\n"
 "Report-Msgid-Bugs-To: https://notabug.org/cage/tinmop/\n"
-"POT-Creation-Date: 2021-01-11 19:34+0100\n"
+"POT-Creation-Date: 2021-01-13 17:28+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -26,49 +26,49 @@ msgstr ""
 msgid "Please visit the address below."
 msgstr ""
 
-#: src/api-client.lisp:178
+#: src/api-client.lisp:185
 #, lisp-format
 msgid ""
 "Credential invalid. Try to remove ~a and restart the software to "
 "authenticate again."
 msgstr ""
 
-#: src/api-client.lisp:189
+#: src/api-client.lisp:196
 msgid "Save address"
 msgstr ""
 
-#: src/api-client.lisp:190
+#: src/api-client.lisp:197
 msgid "Open address"
 msgstr ""
 
-#: src/api-client.lisp:191 src/ui-goodies.lisp:160 src/ui-goodies.lisp:165
+#: src/api-client.lisp:198 src/ui-goodies.lisp:160 src/ui-goodies.lisp:165
 #: src/windows.lisp:532 src/windows.lisp:588
 msgid "Cancel"
 msgstr ""
 
-#: src/api-client.lisp:203
+#: src/api-client.lisp:210
 msgid "This client has been authorized"
 msgstr ""
 
-#: src/api-client.lisp:207
+#: src/api-client.lisp:214
 msgid "Got a generic error when registering client"
 msgstr ""
 
-#: src/api-client.lisp:209
+#: src/api-client.lisp:216
 #, lisp-format
 msgid "File ~a saved"
 msgstr ""
 
-#: src/api-client.lisp:211
+#: src/api-client.lisp:218
 msgid "Please enter below the file where to save the address"
 msgstr ""
 
-#: src/api-client.lisp:231
+#: src/api-client.lisp:238
 msgid ""
 "Error: was not able to create server socket to listen for authorization code"
 msgstr ""
 
-#: src/api-client.lisp:788
+#: src/api-client.lisp:774
 #, lisp-format
 msgid "Initializing empty credentials file in ~a"
 msgstr ""
@@ -313,6 +313,14 @@ msgstr ""
 msgid "Folder ~s does not exists"
 msgstr ""
 
+#: src/main.lisp:112
+#, lisp-format
+msgid ""
+"Non fatal error~%~a~%Tinmop will add an empty file for you. This file will "
+"be enough to use the program as a gemini client but to connect to pleroma "
+"the file must be properly filled.~%Consult the manpage ~a(1) for more details"
+msgstr ""
+
 #: src/message-rendering-utils.lisp:93
 msgid "This message will *not* be crypted"
 msgstr ""
@@ -480,10 +488,10 @@ msgstr ""
 
 #: src/resources-utils.lisp:55
 #, lisp-format
-msgid "Unrecoverable error: cannot find ~s in either ~s or ~s."
+msgid "Cannot find ~s in either ~s or ~s."
 msgstr ""
 
-#: src/resources-utils.lisp:72
+#: src/resources-utils.lisp:73
 #, lisp-format
 msgid "Unrecoverable error: cannot find file ~s."
 msgstr ""
@@ -516,7 +524,7 @@ msgstr ""
 msgid "Subject: "
 msgstr ""
 
-#: src/software-configuration.lisp:532
+#: src/software-configuration.lisp:527
 msgid "This message was crypted."
 msgstr ""
 
