@@ -31,7 +31,7 @@
 
 (defun setup-bindings ()
   "This is where an  UI event is bound to a function  the event nil is
-the event  that is fired  wnen no input  from user (key  pressed mouse
+the event  that is fired  when no input  from user (key  pressed mouse
 etc.) happened"
   (windows:with-croatoan-window (croatoan-window specials:*main-window*)
     (bind croatoan-window
@@ -101,14 +101,25 @@ etc.) happened"
     (program-events:push-event event)))
 
 (defun load-configuration-files ()
-  (swconf:load-config-file swconf:+shared-conf-filename+)
-  (swconf:load-config-file swconf:+conf-filename+))
+  (handler-case
+      (swconf:load-config-file swconf:+shared-conf-filename+)
+    (error (e)
+      (format *error-output* "~a~%" e)
+      (os-utils:exit-program 1)))
+  (handler-bind ((error
+                   #'(lambda (e)
+                     (format *error-output*
+                             (_ "Non fatal error~%~a~%Tinmop will add an empty file for you. This file will be enough to use the program as a gemini client but to connect to pleroma the file must be properly filled.~%Consult the manpage ~a(1) for more details")
+                             e
+                             +program-name+)
+                     (invoke-restart 'res:create-empty-in-home))))
+    (swconf:load-config-file swconf:+conf-filename+)))
 
 (defun init ()
   "Initialize the program"
-  (res:init)
-  (load-configuration-files)
-  (init-db)
+  ;; (res:init)
+  ;; (load-configuration-files)
+  ;; (init-db)
   (gemini-client:init-default-gemini-theme)
   (db-utils:with-ready-database (:connect nil)
     (complete:initialize-complete-username-cache)
@@ -171,6 +182,9 @@ etc.) happened"
 (defun main ()
   "The entry point function of the program"
   (init-i18n)
+  (res:init)
+  (load-configuration-files)
+  (init-db)
   (command-line:manage-opts)
   (if command-line:*script-file*
       (load-script-file)

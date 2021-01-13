@@ -413,30 +413,25 @@
                    purge-cache-days-offset)
 
 (defun load-config-file (&optional (virtual-filepath +conf-filename+))
-  (handler-case
-      (progn
-        (let* ((file (res:get-config-file virtual-filepath))
-               (tree (parse-config (fs:namestring->pathname file))))
-          (loop for entry in tree do
-               (let ((key   (first  entry))
-                     (value (second entry)))
-                 (cond
-                   ((or (eq +key-color-re+ key)
-                        (eq +key-ignore-user-re+ key))
-                    (setf (access:accesses *software-configuration* key)
-                          (append (access:accesses *software-configuration* key)
-                                  (list value))))
-                   ((keywordp key)
-                    (setf (access:accesses *software-configuration* key) value))
-                   (t
-                    (multiple-value-bind (rest all)
-                        (apply #'access:set-accesses value *software-configuration* key)
-                      (declare (ignore rest))
-                      (setf *software-configuration* all))))))
-          *software-configuration*))
-    (error (e)
-      (format *error-output* "~a~%" e)
-      (os-utils:exit-program 1))))
+  (let* ((file (res:get-config-file virtual-filepath))
+         (tree (parse-config (fs:namestring->pathname file))))
+    (loop for entry in tree do
+      (let ((key   (first  entry))
+            (value (second entry)))
+        (cond
+          ((or (eq +key-color-re+ key)
+               (eq +key-ignore-user-re+ key))
+           (setf (access:accesses *software-configuration* key)
+                 (append (access:accesses *software-configuration* key)
+                         (list value))))
+          ((keywordp key)
+           (setf (access:accesses *software-configuration* key) value))
+          (t
+           (multiple-value-bind (rest all)
+               (apply #'access:set-accesses value *software-configuration* key)
+             (declare (ignore rest))
+             (setf *software-configuration* all))))))
+    *software-configuration*))
 
 ;;;; end of parser
 

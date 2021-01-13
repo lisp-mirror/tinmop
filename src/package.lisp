@@ -411,6 +411,7 @@
    :home-confdir
    :return-home-filename
    :return-system-filename
+   :create-empty-in-home
    :get-config-file
    :get-sys-config-file
    :get-data-file))

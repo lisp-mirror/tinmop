@@ -52,15 +52,16 @@
       ((fs:file-exists-p system-file)
        system-file)
       (t
-       (let ((msg (_ "Unrecoverable error: cannot find ~s in either ~s or ~s.")))
+       (let ((msg (_ "Cannot find ~s in either ~s or ~s.")))
          (restart-case
              (error (format nil msg path system-file home-file))
-           (return-home-filename (e)
-             (declare (ignore e))
+           (return-home-filename ()
              home-file)
-           (return-system-filename (e)
-             (declare (ignore e))
-             system-file)))))))
+           (return-system-filename ()
+             system-file)
+           (create-empty-in-home  ()
+             (fs:create-file home-file :skip-if-exists t)
+             (get-resource-file system-dir home-dir path))))))))
 
 (defun get-config-file (path)
   (get-resource-file +sys-conf-dir+ (home-confdir) path))
