@@ -7,8 +7,8 @@
         * src/main.lisp,
         * src/software-configuration.lisp,
 
-	- create an empty config file if the user did not provided oopne,
-        instread of printing an error and exit.
+	- create an empty config file if the user did not provided one,
+        instead of printing an error and exit.
 	- updated italian translation.
 
 
