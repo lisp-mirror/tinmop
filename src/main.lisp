@@ -103,7 +103,10 @@ etc.) happened"
 (defun load-configuration-files ()
   (format t (_ "Loading configuration file ~a~%") swconf:+shared-conf-filename+)
   (handler-case
-      (swconf:load-config-file swconf:+shared-conf-filename+)
+      (multiple-value-bind (x configuration-file-path)
+          (swconf:load-config-file swconf:+shared-conf-filename+)
+        (declare (ignore x))
+        (swconf:perform-missing-value-check configuration-file-path))
     (error (e)
       (format *error-output* "~a~%" e)
       (os-utils:exit-program 1)))
@@ -119,7 +122,7 @@ etc.) happened"
 (defun init ()
   "Initialize the program"
   ;; (res:init)
- ;; (load-configuration-files)
+  ;; (load-configuration-files)
   ;; (init-db)
   (gemini-client:init-default-gemini-theme)
   (db-utils:with-ready-database (:connect nil)

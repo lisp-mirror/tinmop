@@ -1069,6 +1069,7 @@
    :color-value
    :attributes
    :parse
+   :perform-missing-value-check
    :load-config-file
    :external-editor
    :gemini-link-prefix-to-gemini
