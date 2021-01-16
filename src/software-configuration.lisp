@@ -303,15 +303,18 @@
 
 (defparameter *software-configuration* ())
 
+(defun gen-key-constant-name (name)
+  (format-fn-symbol t "+key-~a+" name))
+
 (defmacro gen-key-constant (name)
-  `(define-constant ,(format-fn-symbol t "+key-~a+" name)
+  `(define-constant ,(gen-key-constant-name name)
        ,(format-keyword name)
-       :test #'eq))
+     :test #'eq))
 
 (defmacro gen-key-constants (&rest names)
   `(progn
      ,@(loop for name in names collect
-            `(gen-key-constant ,name))))
+             `(gen-key-constant ,name))))
 
 (gen-key-constants background
                    foreground
@@ -431,7 +434,8 @@
                (apply #'access:set-accesses value *software-configuration* key)
              (declare (ignore rest))
              (setf *software-configuration* all))))))
-    *software-configuration*))
+    (or *software-configuration*
+        (error (format nil (_ "fatal error: The file ~a is empty") file)))))
 
 ;;;; end of parser
 
@@ -447,13 +451,21 @@
 
 ;;;; interface
 
+(defun access-non-null-conf-value (object &rest keys)
+  (let ((value (apply #'access:accesses object keys)))
+    (if (null value)
+        (error (_ (format nil
+                          (_ "The configuration (*.conf) file is missing the value for ~a")
+                          keys)))
+        value)))
+
 (defun gemini-link-prefix (scheme)
-  (access:accesses *software-configuration*
-                   +key-gemini+
-                   +key-link+
-                   +key-scheme+
-                   scheme
-                   +key-prefix+))
+  (access-non-null-conf-value *software-configuration*
+                              +key-gemini+
+                              +key-link+
+                              +key-scheme+
+                              scheme
+                              +key-prefix+))
 
 (defun gemini-link-prefix-to-gemini ()
   (gemini-link-prefix +key-gemini+))
@@ -462,17 +474,17 @@
   (gemini-link-prefix +key-other+))
 
 (defun gemini-quote-prefix ()
-  (access:accesses *software-configuration*
-                   +key-gemini+
-                   +key-quote+
-                   +key-prefix+))
+  (access-non-null-conf-value *software-configuration*
+                              +key-gemini+
+                              +key-quote+
+                              +key-prefix+))
 
 
 (defun gemini-h*-prefix (level)
-  (access:accesses *software-configuration*
-                   +key-gemini+
-                   level
-                   +key-prefix+))
+  (access-non-null-conf-value *software-configuration*
+                              +key-gemini+
+                              level
+                              +key-prefix+))
 
 (defun gemini-h1-prefix ()
   (gemini-h*-prefix +key-h1+))
@@ -484,25 +496,25 @@
   (gemini-h*-prefix +key-h3+))
 
 (defun gemini-bullet-prefix ()
-  (access:accesses *software-configuration*
-                   +key-gemini+
-                   +key-bullet+
-                   +key-prefix+))
+  (access-non-null-conf-value *software-configuration*
+                              +key-gemini+
+                              +key-bullet+
+                              +key-prefix+))
 
 (defun gemini-certificates-window-colors ()
   "return three color values"
-  (values (access:accesses *software-configuration*
-                           +key-gemini-certificates-window+
-                           +key-link+
-                           +key-foreground+)
-          (access:accesses *software-configuration*
-                           +key-gemini-certificates-window+
-                           +key-creation-time+
-                           +key-foreground+)
-          (access:accesses *software-configuration*
-                           +key-gemini-certificates-window+
-                           +key-access-time+
-                           +key-foreground+)))
+  (values (access-non-null-conf-value *software-configuration*
+                                      +key-gemini-certificates-window+
+                                      +key-link+
+                                      +key-foreground+)
+          (access-non-null-conf-value *software-configuration*
+                                      +key-gemini-certificates-window+
+                                      +key-creation-time+
+                                      +key-foreground+)
+          (access-non-null-conf-value *software-configuration*
+                                      +key-gemini-certificates-window+
+                                      +key-access-time+
+                                      +key-foreground+)))
 
 (defun signature-file-path ()
   "Returns the filepath of the signature file, the $HOME is prepended."
@@ -527,27 +539,27 @@
       (_ "This message was crypted.")))
 
 (defun quick-help-header-colors ()
-  (values (access:accesses *software-configuration*
-                           +key-quick-help+
-                           +key-header+
-                           +key-background+)
-          (access:accesses *software-configuration*
-                           +key-quick-help+
-                           +key-header+
-                           +key-foreground+)
-          (tui-utils:text->tui-attribute (access:accesses *software-configuration*
-                                                          +key-quick-help+
-                                                          +key-header+
-                                                          +key-attribute+))))
+  (values (access-non-null-conf-value *software-configuration*
+                                      +key-quick-help+
+                                      +key-header+
+                                      +key-background+)
+          (access-non-null-conf-value *software-configuration*
+                                      +key-quick-help+
+                                      +key-header+
+                                      +key-foreground+)
+          (tui-utils:text->tui-attribute (access-non-null-conf-value *software-configuration*
+                                                                     +key-quick-help+
+                                                                     +key-header+
+                                                                     +key-attribute+))))
 
 (defun window-titles-end (side)
   (assert (member side (list +key-left+ +key-right+)))
-  (access:accesses *software-configuration*
-                   +key-window+
-                   +key-title+
-                   side
-                   +key-stopper+
-                   +key-value+))
+  (access-non-null-conf-value *software-configuration*
+                              +key-window+
+                              +key-title+
+                              side
+                              +key-stopper+
+                              +key-value+))
 
 (defun window-titles-ends ()
   (multiple-value-bind (x y focus-value)
@@ -558,27 +570,27 @@
             (+ 2 (length focus-value)))))
 
 (defun tags-histogram-foreground ()
-  (access:accesses *software-configuration*
-                   +key-tags-window+
-                   +key-histogram+
-                   +key-foreground+))
+  (access-non-null-conf-value *software-configuration*
+                              +key-tags-window+
+                              +key-histogram+
+                              +key-foreground+))
 
 (defun tags-new-message-mark ()
-  (access:accesses *software-configuration*
-                   +key-tags-window+
-                   +key-new-message+
-                   +key-mark+
-                   +key-value+))
+  (access-non-null-conf-value *software-configuration*
+                              +key-tags-window+
+                              +key-new-message+
+                              +key-mark+
+                              +key-value+))
 
 (defun conversation-window-message-count-colors (key-read/unread)
-  (values (access:accesses *software-configuration*
-                           +key-conversations-window+
-                           key-read/unread
-                           +key-foreground+)
-          (access:accesses *software-configuration*
-                           +key-conversations-window+
-                           key-read/unread
-                           +key-background+)))
+  (values (access-non-null-conf-value *software-configuration*
+                                      +key-conversations-window+
+                                      key-read/unread
+                                      +key-foreground+)
+          (access-non-null-conf-value *software-configuration*
+                                      +key-conversations-window+
+                                      key-read/unread
+                                      +key-background+)))
 
 (defun conversation-window-read-colors ()
   (multiple-value-bind (fg bg)
@@ -607,26 +619,26 @@
 
 (defun max-attachments-allowed ()
   (num:parse-number-default (access:accesses *software-configuration*
-                                          +key-max-numbers-allowed-attachments+)
+                                             +key-max-numbers-allowed-attachments+)
                             4))
 
 (defun external-editor ()
-  (access:accesses *software-configuration*
-                   +key-editor+))
+  (access-non-null-conf-value *software-configuration*
+                              +key-editor+))
 
 (defun color-regexps ()
-  (access:accesses *software-configuration*
-                   +key-color-re+))
+  (access-non-null-conf-value *software-configuration*
+                              +key-color-re+))
 
 (defun ignore-users-regexps ()
-  (access:accesses *software-configuration*
-                   +key-ignore-user-re+))
+  (access-non-null-conf-value *software-configuration*
+                              +key-ignore-user-re+))
 
 (defmacro gen-win-key-access (fn-suffix key)
   `(defun ,(misc:format-fn-symbol t "win-~a" fn-suffix) (win-key)
-     (access:accesses *software-configuration*
-                      win-key
-                      ,key)))
+     (access-non-null-conf-value *software-configuration*
+                                 win-key
+                                 ,key)))
 
 (gen-win-key-access bg     +key-background+)
 
@@ -648,7 +660,7 @@
                                              :fix-fn (lambda (e)
                                                        (declare (ignore e))
                                                        100))))
-                    +key-purge-history-days-offset+)
+                   +key-purge-history-days-offset+)
 
 (gen-simple-access (purge-cage-days-offset
                     :transform-value-fn
@@ -657,7 +669,7 @@
                                              :fix-fn (lambda (e)
                                                        (declare (ignore e))
                                                        100))))
-                    +key-purge-history-days-offset+)
+                   +key-purge-history-days-offset+)
 
 (gen-simple-access (notification-life
                     :transform-value-fn
@@ -679,124 +691,124 @@
                    +key-password-echo-character+)
 
 (defun config-win-focus-mark ()
-  (values (access:accesses  *software-configuration*
-                            +key-window+
-                            +key-focus+
-                            +key-mark+
-                            +key-background+)
-          (access:accesses  *software-configuration*
-                            +key-window+
-                            +key-focus+
-                            +key-mark+
-                            +key-foreground+)
-          (access:accesses  *software-configuration*
-                            +key-window+
-                            +key-focus+
-                            +key-mark+
-                            +key-value+)))
+  (values (access-non-null-conf-value  *software-configuration*
+                                       +key-window+
+                                       +key-focus+
+                                       +key-mark+
+                                       +key-background+)
+          (access-non-null-conf-value  *software-configuration*
+                                       +key-window+
+                                       +key-focus+
+                                       +key-mark+
+                                       +key-foreground+)
+          (access-non-null-conf-value  *software-configuration*
+                                       +key-window+
+                                       +key-focus+
+                                       +key-mark+
+                                       +key-value+)))
 
 (defun command-separator-config-values ()
-  (values (access:accesses *software-configuration*
-                           +key-command-window+
-                           +key-command-separator+
-                           +key-background+)
-          (access:accesses *software-configuration*
-                           +key-command-window+
-                           +key-command-separator+
-                           +key-foreground+)
-          (access:accesses *software-configuration*
-                           +key-command-window+
-                           +key-command-separator+
-                           +key-value+)))
+  (values (access-non-null-conf-value *software-configuration*
+                                      +key-command-window+
+                                      +key-command-separator+
+                                      +key-background+)
+          (access-non-null-conf-value *software-configuration*
+                                      +key-command-window+
+                                      +key-command-separator+
+                                      +key-foreground+)
+          (access-non-null-conf-value *software-configuration*
+                                      +key-command-window+
+                                      +key-command-separator+
+                                      +key-value+)))
 
 (defun command-error-message-colors ()
-  (values (access:accesses *software-configuration*
-                           +key-command-window+
-                           +key-error+
-                           +key-message+
-                           +key-background+)
-          (access:accesses *software-configuration*
-                           +key-command-window+
-                           +key-error+
-                           +key-message+
-                           +key-foreground+)
-          (tui-utils:text->tui-attribute (access:accesses *software-configuration*
-                                                          +key-command-window+
-                                                          +key-error+
-                                                          +key-message+
-                                                          +key-attribute+))))
+  (values (access-non-null-conf-value *software-configuration*
+                                      +key-command-window+
+                                      +key-error+
+                                      +key-message+
+                                      +key-background+)
+          (access-non-null-conf-value *software-configuration*
+                                      +key-command-window+
+                                      +key-error+
+                                      +key-message+
+                                      +key-foreground+)
+          (tui-utils:text->tui-attribute (access-non-null-conf-value *software-configuration*
+                                                                     +key-command-window+
+                                                                     +key-error+
+                                                                     +key-message+
+                                                                     +key-attribute+))))
 
 (defun command-info-message-colors ()
-  (values (access:accesses *software-configuration*
-                           +key-command-window+
-                           +key-info+
-                           +key-message+
-                           +key-background+)
-          (access:accesses *software-configuration*
-                           +key-command-window+
-                           +key-info+
-                           +key-message+
-                           +key-foreground+)
-          (tui-utils:text->tui-attribute (access:accesses *software-configuration*
-                                                          +key-command-window+
-                                                          +key-info+
-                                                          +key-message+
-                                                          +key-attribute+))))
+  (values (access-non-null-conf-value *software-configuration*
+                                      +key-command-window+
+                                      +key-info+
+                                      +key-message+
+                                      +key-background+)
+          (access-non-null-conf-value *software-configuration*
+                                      +key-command-window+
+                                      +key-info+
+                                      +key-message+
+                                      +key-foreground+)
+          (tui-utils:text->tui-attribute (access-non-null-conf-value *software-configuration*
+                                                                     +key-command-window+
+                                                                     +key-info+
+                                                                     +key-message+
+                                                                     +key-attribute+))))
 
 
 (defun tree-config-colors (tree-win-holder)
-  (values (access:accesses *software-configuration*
-                           tree-win-holder
-                           +key-tree+
-                           +key-branch+
-                           +key-foreground+)
-          (access:accesses *software-configuration*
-                           tree-win-holder
-                           +key-tree+
-                           +key-arrow+
-                           +key-foreground+)
-          (access:accesses *software-configuration*
-                           tree-win-holder
-                           +key-tree+
-                           +key-data+
-                           +key-foreground+)
-          (access:accesses *software-configuration*
-                           tree-win-holder
-                           +key-tree+
-                           +key-data-leaf+
-                           +key-foreground+)
-          (access:accesses *software-configuration*
-                           tree-win-holder
-                           +key-tree+
-                           +key-root+
-                           +key-foreground+)))
+  (values (access-non-null-conf-value *software-configuration*
+                                      tree-win-holder
+                                      +key-tree+
+                                      +key-branch+
+                                      +key-foreground+)
+          (access-non-null-conf-value *software-configuration*
+                                      tree-win-holder
+                                      +key-tree+
+                                      +key-arrow+
+                                      +key-foreground+)
+          (access-non-null-conf-value *software-configuration*
+                                      tree-win-holder
+                                      +key-tree+
+                                      +key-data+
+                                      +key-foreground+)
+          (access-non-null-conf-value *software-configuration*
+                                      tree-win-holder
+                                      +key-tree+
+                                      +key-data-leaf+
+                                      +key-foreground+)
+          (access-non-null-conf-value *software-configuration*
+                                      tree-win-holder
+                                      +key-tree+
+                                      +key-root+
+                                      +key-foreground+)))
 
 (defun tree-config-rendering-values (tree-win-holder)
-  (values (access:accesses *software-configuration*
-                           tree-win-holder
-                           +key-tree+
-                           +key-arrow+
-                           +key-value+)
-          (access:accesses *software-configuration*
-                           tree-win-holder
-                           +key-tree+
-                           +key-leaf+
-                           +key-value+)
-          (access:accesses *software-configuration*
-                           tree-win-holder
-                           +key-tree+
-                           +key-branch+
-                           +key-value+)
-          (access:accesses *software-configuration*
-                           tree-win-holder
-                           +key-tree+
-                           +key-spacer+
-                           +key-value+)
-          (access:accesses *software-configuration*
-                           tree-win-holder
-                           +key-tree+
-                           +key-vertical-line+
-                           +key-value+)))
+  (values (access-non-null-conf-value *software-configuration*
+                                      tree-win-holder
+                                      +key-tree+
+                                      +key-arrow+
+                                      +key-value+)
+          (access-non-null-conf-value *software-configuration*
+                                      tree-win-holder
+                                      +key-tree+
+                                      +key-leaf+
+                                      +key-value+)
+          (access-non-null-conf-value *software-configuration*
+                                      tree-win-holder
+                                      +key-tree+
+                                      +key-branch+
+                                      +key-value+)
+          (access-non-null-conf-value *software-configuration*
+                                      tree-win-holder
+                                      +key-tree+
+                                      +key-spacer+
+                                      +key-value+)
+          (access-non-null-conf-value *software-configuration*
+                                      tree-win-holder
+                                      +key-tree+
+                                      +key-vertical-line+
+                                      +key-value+)))
 
 (defun make-tree-colormap (window-key)
   (let ((tree-color-map ()))
@@ -812,11 +824,11 @@
       tree-color-map)))
 
 (defun thread-message-symbol-lookup (field key)
-  (access:accesses *software-configuration*
-                   +key-thread-window+
-                   +key-message+
-                   field
-                   key))
+  (access-non-null-conf-value *software-configuration*
+                              +key-thread-window+
+                              +key-message+
+                              field
+                              key))
 
 (defun thread-message-symbol-value (field)
   (thread-message-symbol-lookup field +key-value+))
@@ -829,21 +841,21 @@
           (thread-message-symbol-fg    field)))
 
 (defun thread-message-colors (key)
-  (values (access:accesses *software-configuration*
-                           +key-thread-window+
-                           +key-message+
-                           key
-                           +key-background+)
-          (access:accesses *software-configuration*
-                           +key-thread-window+
-                           +key-message+
-                           key
-                           +key-foreground+)
-          (tui-utils:text->tui-attribute (access:accesses *software-configuration*
-                                                          +key-thread-window+
-                                                          +key-message+
-                                                          key
-                                                          +key-attribute+))))
+  (values (access-non-null-conf-value *software-configuration*
+                                      +key-thread-window+
+                                      +key-message+
+                                      key
+                                      +key-background+)
+          (access-non-null-conf-value *software-configuration*
+                                      +key-thread-window+
+                                      +key-message+
+                                      key
+                                      +key-foreground+)
+          (tui-utils:text->tui-attribute (access-non-null-conf-value *software-configuration*
+                                                                     +key-thread-window+
+                                                                     +key-message+
+                                                                     key
+                                                                     +key-attribute+))))
 (defun thread-message-read-colors ()
   (multiple-value-bind (bg fg attribute)
       (thread-message-colors +key-read+)
@@ -865,47 +877,47 @@
     (values bg fg attribute)))
 
 (defun modeline-colors (window-key)
-  (values (access:accesses *software-configuration*
-                           window-key
-                           +key-modeline+
-                           +key-background+)
-          (access:accesses *software-configuration*
-                           window-key
-                           +key-modeline+
-                           +key-foreground+)))
+  (values (access-non-null-conf-value *software-configuration*
+                                      window-key
+                                      +key-modeline+
+                                      +key-background+)
+          (access-non-null-conf-value *software-configuration*
+                                      window-key
+                                      +key-modeline+
+                                      +key-foreground+)))
 
 (defun modeline-fmt (window-key)
-  (access:accesses *software-configuration*
-                   window-key
-                   +key-modeline+
-                   +key-value+))
+  (access-non-null-conf-value *software-configuration*
+                              window-key
+                              +key-modeline+
+                              +key-value+))
 
 (defun date-fmt (window-key)
-  (let* ((raw (access:accesses *software-configuration*
-                                    window-key
-                                    +key-date-format+
-                                    +key-value+)))
+  (let* ((raw (access-non-null-conf-value *software-configuration*
+                                          window-key
+                                          +key-date-format+
+                                          +key-value+)))
     (date-formatter:expand-date-formatter-spec raw)))
 
 (defun locked/unlocked-value (key-window locked)
   (let ((key-locked (if locked
                         +key-locked+
                         +key-unlocked+)))
-    (access:accesses *software-configuration*
-                     key-window
-                     key-locked
-                     +key-value+)))
+    (access-non-null-conf-value *software-configuration*
+                                key-window
+                                key-locked
+                                +key-value+)))
 
 (defun locked/unlocked-account-mark-value (key-window locked)
   (let ((key-locked (if locked
                         +key-locked+
                         +key-unlocked+)))
-    (access:accesses *software-configuration*
-                     key-window
-                     +key-account+
-                     key-locked
-                     +key-mark+
-                     +key-value+)))
+    (access-non-null-conf-value *software-configuration*
+                                key-window
+                                +key-account+
+                                key-locked
+                                +key-mark+
+                                +key-value+)))
 
 (defun message-window-locked-account-mark ()
   (locked/unlocked-account-mark-value +key-message-window+ t))
@@ -920,34 +932,34 @@
 
 (defun message-window-line-mark-values ()
   "return three values: mark string fg and bg"
-  (values (access:accesses *software-configuration*
-                           +key-message-window+
-                           +key-line-position-mark+
-                           +key-value+)
-          (access:accesses *software-configuration*
-                           +key-message-window+
-                           +key-line-position-mark+
-                           +key-foreground+)
-          (access:accesses *software-configuration*
-                           +key-message-window+
-                           +key-line-position-mark+
-                           +key-background+)))
+  (values (access-non-null-conf-value *software-configuration*
+                                      +key-message-window+
+                                      +key-line-position-mark+
+                                      +key-value+)
+          (access-non-null-conf-value *software-configuration*
+                                      +key-message-window+
+                                      +key-line-position-mark+
+                                      +key-foreground+)
+          (access-non-null-conf-value *software-configuration*
+                                      +key-message-window+
+                                      +key-line-position-mark+
+                                      +key-background+)))
 
 (defun message-window-attachments-header ()
-  (values (access:accesses *software-configuration*
-                           +key-message-window+
-                           +key-attachment-header+
-                           +key-prefix+
-                           +key-value+)
-          (access:accesses *software-configuration*
-                           +key-message-window+
-                           +key-attachment-header+
-                           +key-postfix+
-                           +key-value+)
-          (access:accesses *software-configuration*
-                           +key-message-window+
-                           +key-attachment-header+
-                           +key-value+)))
+  (values (access-non-null-conf-value *software-configuration*
+                                      +key-message-window+
+                                      +key-attachment-header+
+                                      +key-prefix+
+                                      +key-value+)
+          (access-non-null-conf-value *software-configuration*
+                                      +key-message-window+
+                                      +key-attachment-header+
+                                      +key-postfix+
+                                      +key-value+)
+          (access-non-null-conf-value *software-configuration*
+                                      +key-message-window+
+                                      +key-attachment-header+
+                                      +key-value+)))
 
 (defclass form-style ()
   ((background
@@ -994,27 +1006,27 @@
 
 (defun form-style (window-key)
   (make-instance 'form-style
-                 :background          (access:accesses *software-configuration*
-                                                       window-key
-                                                       +key-background+)
-                 :foreground          (access:accesses *software-configuration*
-                                                       window-key
-                                                       +key-foreground+)
-                 :selected-background (access:accesses *software-configuration*
-                                                       window-key
-                                                       +key-input+
-                                                       +key-selected+
-                                                       +key-background+)
-                 :selected-foreground (access:accesses *software-configuration*
-                                                       window-key
-                                                       +key-input+
-                                                       +key-selected+
-                                                       +key-foreground+)
-                 :input-background    (access:accesses *software-configuration*
-                                                       window-key
-                                                       +key-input+
-                                                       +key-background+)
-                 :input-foreground    (access:accesses *software-configuration*
-                                                       window-key
-                                                       +key-input+
-                                                       +key-foreground+)))
+                 :background          (access-non-null-conf-value *software-configuration*
+                                                                  window-key
+                                                                  +key-background+)
+                 :foreground          (access-non-null-conf-value *software-configuration*
+                                                                  window-key
+                                                                  +key-foreground+)
+                 :selected-background (access-non-null-conf-value *software-configuration*
+                                                                  window-key
+                                                                  +key-input+
+                                                                  +key-selected+
+                                                                  +key-background+)
+                 :selected-foreground (access-non-null-conf-value *software-configuration*
+                                                                  window-key
+                                                                  +key-input+
+                                                                  +key-selected+
+                                                                  +key-foreground+)
+                 :input-background    (access-non-null-conf-value *software-configuration*
+                                                                  window-key
+                                                                  +key-input+
+                                                                  +key-background+)
+                 :input-foreground    (access-non-null-conf-value *software-configuration*
+                                                                  window-key
+                                                                  +key-input+
+                                                                  +key-foreground+)))

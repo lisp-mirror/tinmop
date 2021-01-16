@@ -101,6 +101,7 @@ etc.) happened"
     (program-events:push-event event)))
 
 (defun load-configuration-files ()
+  (format t (_ "Loading configuration file ~a~%") swconf:+shared-conf-filename+)
   (handler-case
       (swconf:load-config-file swconf:+shared-conf-filename+)
     (error (e)
@@ -118,7 +119,7 @@ etc.) happened"
 (defun init ()
   "Initialize the program"
   ;; (res:init)
-  ;; (load-configuration-files)
+ ;; (load-configuration-files)
   ;; (init-db)
   (gemini-client:init-default-gemini-theme)
   (db-utils:with-ready-database (:connect nil)
