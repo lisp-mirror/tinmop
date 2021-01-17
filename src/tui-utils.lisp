@@ -127,6 +127,7 @@ as argument `complex-string'."
   (text-width text))
 
 (defun find-max-line-width (lines)
+  (assert lines)
   (reduce #'max (mapcar #'text-length lines)))
 
 (defmethod (setf bgcolor) ((object complex-string) new-bg)

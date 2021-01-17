@@ -592,7 +592,7 @@ Metadata includes:
                       :complete-fn #'complete:complete-always-empty)))
 
 (defun move-message-tree ()
-  "Move messages tree"
+  "Move messages tree to a different folder. If folder does not exist will be created."
   (flet ((on-input-complete (new-folder)
            (let ((move-event     (make-instance 'move-selected-tree-event
                                                 :new-folder new-folder))

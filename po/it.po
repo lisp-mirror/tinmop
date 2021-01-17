@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tinmop 0.0.1\n"
 "Report-Msgid-Bugs-To: https://notabug.org/cage/tinmop/\n"
-"POT-Creation-Date: 2021-01-13 17:28+0100\n"
-"PO-Revision-Date: 2021-01-13 17:30+0100\n"
+"POT-Creation-Date: 2021-01-17 20:31+0100\n"
+"PO-Revision-Date: 2021-01-17 20:33+0100\n"
 "Last-Translator: cage <cage@invalid.org>\n"
 "Language-Team: Italian\n"
 "Language: it\n"
@@ -217,17 +217,17 @@ msgstr "Scaricamento del documento in formato gemini completato"
 msgid "Could not understand the address ~s"
 msgstr "Non riesco ad interpretare l'indirizzo: ~s"
 
-#: src/gemini-viewer.lisp:501
+#: src/gemini-viewer.lisp:506
 #, lisp-format
 msgid "Server ~s asks: ~s "
 msgstr "Il server ~s chiede: ~s "
 
-#: src/gemini-viewer.lisp:529
+#: src/gemini-viewer.lisp:534
 #, lisp-format
 msgid "Redirects to ~s, follows redirect? [y/N] "
 msgstr "Seguire la redirezione a ~s? [s/N] "
 
-#: src/gemini-viewer.lisp:617
+#: src/gemini-viewer.lisp:622
 #, lisp-format
 msgid ""
 "Host ~s signature changed! This is a potential security risk! Ignore this "
@@ -236,27 +236,27 @@ msgstr ""
 "La firma dell'host ~s è cambiata! Questo è un potenziale problema di "
 "sicurezza! Proseguire? [s/N]"
 
-#: src/gemini-viewer.lisp:621 src/tui-utils.lisp:397
+#: src/gemini-viewer.lisp:626 src/tui-utils.lisp:398
 #, lisp-format
 msgid "Error: ~a"
 msgstr "Errore: ~a"
 
-#: src/gemini-viewer.lisp:629
+#: src/gemini-viewer.lisp:634
 #, lisp-format
 msgid "Error getting ~s: ~a"
 msgstr "Errore connettendomi a ~s: ~a"
 
-#: src/gemini-viewer.lisp:640
+#: src/gemini-viewer.lisp:645
 #, lisp-format
 msgid "Going back to: ~a"
 msgstr "Ritorno a: ~a"
 
-#: src/gemini-viewer.lisp:652
+#: src/gemini-viewer.lisp:657
 #, lisp-format
 msgid "Viewing source of: ~a"
 msgstr "Visualizzo il sorgente di: ~a"
 
-#: src/gemini-viewer.lisp:707
+#: src/gemini-viewer.lisp:712
 msgid "Current gemini streams"
 msgstr "Flussi di dati gemini attuali"
 
@@ -302,17 +302,25 @@ msgstr "Tasti finestra attiva"
 msgid "Global keys"
 msgstr "Mappa tasti globale"
 
-#: src/keybindings.lisp:540
+#: src/keybindings.lisp:536
+msgid "No command matching your criteria found"
+msgstr "Nessun comando che corrisponda alla tua ricerca è stato trovato."
+
+#: src/keybindings.lisp:542
 msgid "Quick help"
 msgstr "Aiuto rapido"
 
-#: src/keybindings.lisp:542 src/line-oriented-window.lisp:261
-#: src/open-message-link-window.lisp:108 src/open-message-link-window.lisp:195
-#: src/program-events.lisp:441
+#: src/keybindings.lisp:550
+#, lisp-format
+msgid "invalid regular expression ~s ~a"
+msgstr "Espressione regolare non valida ~s ~a"
+
+#: src/line-oriented-window.lisp:261 src/open-message-link-window.lisp:108
+#: src/open-message-link-window.lisp:195 src/program-events.lisp:441
 msgid "Invalid regular expression"
 msgstr "Espressione regolare non valida"
 
-#: src/line-oriented-window.lisp:330 src/ui-goodies.lisp:103
+#: src/line-oriented-window.lisp:331 src/ui-goodies.lisp:103
 #: src/ui-goodies.lisp:120
 msgid "Information"
 msgstr "Informazione"
@@ -322,7 +330,12 @@ msgstr "Informazione"
 msgid "Folder ~s does not exists"
 msgstr "La cartella ~s non esiste."
 
-#: src/main.lisp:112
+#: src/main.lisp:104
+#, lisp-format
+msgid "Loading configuration file ~a~%"
+msgstr "Carico il file di configurazione: ~a~%"
+
+#: src/main.lisp:116
 #, lisp-format
 msgid ""
 "Non fatal error~%~a~%Tinmop will add an empty file for you. This file will "
@@ -541,7 +554,18 @@ msgstr "Menzioni: "
 msgid "Subject: "
 msgstr "Oggetto del messaggio: "
 
-#: src/software-configuration.lisp:527
+#: src/software-configuration.lisp:449
+#, lisp-format
+msgid "fatal error: The file ~a is empty"
+msgstr "errore fatale: il file ~a è vuoto."
+
+#: src/software-configuration.lisp:469
+#, lisp-format
+msgid "The configuration (*.conf) file is missing the value for ~a"
+msgstr ""
+"Il file di configurazione (*.conf) manca del valore corrispondente a: ~a"
+
+#: src/software-configuration.lisp:550
 msgid "This message was crypted."
 msgstr "Questo messaggion era cifrato."
 
@@ -718,7 +742,7 @@ msgstr "Il focus è passato alla finestra degli abbonamenti ai gemlog."
 
 #: src/ui-goodies.lisp:591
 msgid "Search for commands (regexp): "
-msgstr "Cerca tra i comandi (espressione regolare):"
+msgstr "Cerca tra i comandi (espressione regolare): "
 
 #: src/ui-goodies.lisp:602
 #, lisp-format

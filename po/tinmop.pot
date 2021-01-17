@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tinmop 0.5.0\n"
 "Report-Msgid-Bugs-To: https://notabug.org/cage/tinmop/\n"
-"POT-Creation-Date: 2021-01-13 17:28+0100\n"
+"POT-Creation-Date: 2021-01-17 20:31+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -210,44 +210,44 @@ msgstr ""
 msgid "Could not understand the address ~s"
 msgstr ""
 
-#: src/gemini-viewer.lisp:501
+#: src/gemini-viewer.lisp:506
 #, lisp-format
 msgid "Server ~s asks: ~s "
 msgstr ""
 
-#: src/gemini-viewer.lisp:529
+#: src/gemini-viewer.lisp:534
 #, lisp-format
 msgid "Redirects to ~s, follows redirect? [y/N] "
 msgstr ""
 
-#: src/gemini-viewer.lisp:617
+#: src/gemini-viewer.lisp:622
 #, lisp-format
 msgid ""
 "Host ~s signature changed! This is a potential security risk! Ignore this "
 "warning? [y/N] "
 msgstr ""
 
-#: src/gemini-viewer.lisp:621 src/tui-utils.lisp:397
+#: src/gemini-viewer.lisp:626 src/tui-utils.lisp:398
 #, lisp-format
 msgid "Error: ~a"
 msgstr ""
 
-#: src/gemini-viewer.lisp:629
+#: src/gemini-viewer.lisp:634
 #, lisp-format
 msgid "Error getting ~s: ~a"
 msgstr ""
 
-#: src/gemini-viewer.lisp:640
+#: src/gemini-viewer.lisp:645
 #, lisp-format
 msgid "Going back to: ~a"
 msgstr ""
 
-#: src/gemini-viewer.lisp:652
+#: src/gemini-viewer.lisp:657
 #, lisp-format
 msgid "Viewing source of: ~a"
 msgstr ""
 
-#: src/gemini-viewer.lisp:707
+#: src/gemini-viewer.lisp:712
 msgid "Current gemini streams"
 msgstr ""
 
@@ -293,17 +293,25 @@ msgstr ""
 msgid "Global keys"
 msgstr ""
 
-#: src/keybindings.lisp:540
+#: src/keybindings.lisp:536
+msgid "No command matching your criteria found"
+msgstr ""
+
+#: src/keybindings.lisp:542
 msgid "Quick help"
 msgstr ""
 
-#: src/keybindings.lisp:542 src/line-oriented-window.lisp:261
-#: src/open-message-link-window.lisp:108 src/open-message-link-window.lisp:195
-#: src/program-events.lisp:441
+#: src/keybindings.lisp:550
+#, lisp-format
+msgid "invalid regular expression ~s ~a"
+msgstr ""
+
+#: src/line-oriented-window.lisp:261 src/open-message-link-window.lisp:108
+#: src/open-message-link-window.lisp:195 src/program-events.lisp:441
 msgid "Invalid regular expression"
 msgstr ""
 
-#: src/line-oriented-window.lisp:330 src/ui-goodies.lisp:103
+#: src/line-oriented-window.lisp:331 src/ui-goodies.lisp:103
 #: src/ui-goodies.lisp:120
 msgid "Information"
 msgstr ""
@@ -313,7 +321,12 @@ msgstr ""
 msgid "Folder ~s does not exists"
 msgstr ""
 
-#: src/main.lisp:112
+#: src/main.lisp:104
+#, lisp-format
+msgid "Loading configuration file ~a~%"
+msgstr ""
+
+#: src/main.lisp:116
 #, lisp-format
 msgid ""
 "Non fatal error~%~a~%Tinmop will add an empty file for you. This file will "
@@ -524,7 +537,17 @@ msgstr ""
 msgid "Subject: "
 msgstr ""
 
-#: src/software-configuration.lisp:527
+#: src/software-configuration.lisp:449
+#, lisp-format
+msgid "fatal error: The file ~a is empty"
+msgstr ""
+
+#: src/software-configuration.lisp:469
+#, lisp-format
+msgid "The configuration (*.conf) file is missing the value for ~a"
+msgstr ""
+
+#: src/software-configuration.lisp:550
 msgid "This message was crypted."
 msgstr ""
 

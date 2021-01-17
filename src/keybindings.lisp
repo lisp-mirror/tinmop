@@ -532,11 +532,21 @@ and `make-blocking-list-dialog-window') showing the full docstring for a command
           (let* ((scanner   (create-scanner regex :case-insensitive-mode t))
                  (all-lines (remove-if-not (make-filter-help-text scanner)
                                            (mapcar #'help-fields-get-text
-                                                   fields))))
-            (line-oriented-window:make-blocking-list-dialog-window specials:*main-window*
-                                                                   fields
-                                                                   all-lines
-                                                                   #'help-expand
-                                                                   (_ "Quick help")))
-          (error ()
-            (ui:error-message (_ "Invalid regular expression"))))))))
+                                                   fields)))
+                 (no-help-message (list (_ "No command matching your criteria found"))))
+            (if all-lines
+                (line-oriented-window:make-blocking-list-dialog-window specials:*main-window*
+                                                                       fields
+                                                                       all-lines
+                                                                       #'help-expand
+                                                                       (_ "Quick help"))
+                (line-oriented-window:make-blocking-list-dialog-window specials:*main-window*
+                                                                       '("dummy")
+                                                                       no-help-message
+                                                                       (lambda (a b)
+                                                                         (declare (ignore a b))))))
+          (cl-ppcre:ppcre-syntax-error (e)
+            (ui:error-message (format nil
+                                      (_ "invalid regular expression ~s ~a")
+                                      regex
+                                      e))))))))
