@@ -474,16 +474,21 @@
                                    :streaming
                                    :running)))
                          (fetch-cached-certificate (actual-iri)
-                           (let* ((certificate-and-key
-                                   (or (multiple-value-list
-                                        (db:ssl-cert-find actual-iri))
-                                       (multiple-value-list
-                                        (gemini-client:make-client-certificate actual-iri))))
-                                  (certificate (first  certificate-and-key))
-                                  (key         (second certificate-and-key)))
-                             (assert certificate)
-                             (assert key)
-                             (values certificate key)))
+                           (let ((certificate nil)
+                                 (key         nil))
+                             (multiple-value-bind (certificate-cache key-cache)
+                                 (db:ssl-cert-find actual-iri)
+                               (if (and certificate-cache
+                                        key-cache)
+                                   (setf certificate certificate-cache
+                                         key         key-cache)
+                                   (multiple-value-bind (certificate-new key-new)
+                                       (gemini-client:make-client-certificate actual-iri)
+                                     (setf certificate certificate-new
+                                           key         key-new)))
+                               (assert certificate)
+                               (assert key)
+                               (values certificate key))))
                          (get-user-input (hide-input host prompt)
                            (flet ((on-input-complete (input)
                                     (when (string-not-empty-p input)
