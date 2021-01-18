@@ -557,6 +557,7 @@
                            " snippet TEXT, "
                            ;; boolean
                            " seenp INTEGER DEFAULT 0, "
+                           " deletedp INTEGER DEFAULT 0, "
                            " UNIQUE(url) ON CONFLICT FAIL"
                            +make-close+)))
 
@@ -773,7 +774,7 @@ than `max-id'"
 (defun threshold-time (days-in-the-past)
   "Returns a time object `days-in-the-past' days in the past"
   (local-time:adjust-timestamp (local-time-obj-now)
-    (offset :day days-in-the-past)))
+    (offset :day (- (abs days-in-the-past)))))
 
 (defun purge-history ()
   "Remove expired entry in history.
@@ -2890,6 +2891,8 @@ than `days-in-the-past' days (default: `(swconf:config-purge-cache-days-offset)'
                                      (from :gemlog-entries)
                                      (where (:and (:= :gemlog-entries.seenp
                                                       (prepare-for-db nil :to-integer t))
+                                                  (:= :gemlog-entries.deletedp
+                                                      (prepare-for-db nil :to-integer t))
                                                   (:= :gemlog-entries.gemlog-id
                                                    :gemini-subscription.url))))
                                :unseen-count)
@@ -2897,6 +2900,8 @@ than `days-in-the-past' days (default: `(swconf:config-purge-cache-days-offset)'
                                      (from :gemlog-entries)
                                      (where (:and (:= :gemlog-entries.seenp
                                                       (prepare-for-db t :to-integer t))
+                                                  (:= :gemlog-entries.deletedp
+                                                      (prepare-for-db nil :to-integer t))
                                                   (:= :gemlog-entries.gemlog-id
                                                    :gemini-subscription.url))))
                                :seen-count))
@@ -2963,7 +2968,9 @@ than `days-in-the-past' days (default: `(swconf:config-purge-cache-days-offset)'
                                (join :gemini-subscription
                                      :on (:= :gemlog-entries.gemlog-id
                                           :gemini-subscription.url))
-                               (where (:= :gemini-subscription.url gemlog-url))))
+                               (where (:and (:= :gemini-subscription.url gemlog-url)
+                                            (:= :gemlog-entries.deletedp
+                                                (prepare-for-db nil :to-integer t))))))
               (unordered-rows (fetch-all-rows query))
               (actual-rows    (cond
                                 (unseen-only
@@ -2992,14 +2999,19 @@ than `days-in-the-past' days (default: `(swconf:config-purge-cache-days-offset)'
                                                                (row-post-date a)))))))
 
 (defun delete-gemlog-entry (gemlog-url)
-  (query (delete-from +table-gemlog-entries+ (where (:= :url gemlog-url)))))
+  (query (make-update +table-gemlog-entries+
+                        (:deletedp)
+                        ((prepare-for-db t :to-integer 1))
+                        (where (:= :url gemlog-url)))))
 
 (defun purge-seen-gemlog-entries ()
   "Remove expired gemlog and (seen) entries.
 
-An         entry          is         expired          if         older
-than (swconf:config-purge-history-days-offset) days in the past"
-  (let ((treshold (threshold-time 255)))
-    (query (make-delete +table-gemlog-entries+
+An entry is expired if older than (swconf:config-purge-history-days-offset)
+days in the past"
+  (let ((treshold (threshold-time -255)))
+    (query (make-update +table-gemlog-entries+
+                        (:deletedp)
+                        ((prepare-for-db t :to-integer 1))
                         (:and (:= :seenp (prepare-for-db t :to-integer 1))
                               (:< :date  (prepare-for-db treshold)))))))
