@@ -686,7 +686,8 @@
          (account-known-p db-account-row))
     (and account-known-p
          (db-getf db-account-row
-                  :ignoredp nil))))
+                  :ignoredp
+                  :default nil))))
 
 (defun user-ignored-p (account-id)
   "Returns non nil if this account must be ignored"
@@ -1697,12 +1698,18 @@ returns an alist of (local-username . acct)."
          (cons (msg-utils:add-mention-prefix local-name)
                (msg-utils:add-mention-prefix username))))))
 
-(defmacro gen-access-message-row (name column)
+(defmacro gen-access-message-row (name column
+                                  &key
+                                    (default nil)
+                                    (only-empty-or-0-are-null nil))
   "Convenience macro to generate function to access a value of a table
 row."
   `(defun ,(misc:format-fn-symbol t "row-~a" name) (row)
        (and row
-        (db-getf row ,column))))
+            (db-getf row
+                     ,column
+                     :default ,default
+                     :only-empty-or-0-are-null ,only-empty-or-0-are-null))))
 
 (gen-access-message-row id                          :id)
 
@@ -1750,9 +1757,9 @@ row."
 
 (gen-access-message-row poll-multiple-vote-p        :multiple)
 
-(gen-access-message-row title                       :title)
+(gen-access-message-row title                       :title :only-empty-or-0-are-null t)
 
-(gen-access-message-row subtitle                    :subtitle)
+(gen-access-message-row subtitle                    :subtitle :only-empty-or-0-are-null t)
 
 (gen-access-message-row url                         :url)
 
@@ -1783,7 +1790,7 @@ row."
 (gen-access-message-row seenp                       :seenp)
 
 (defun row-votes-count (row)
-  (and row (db-getf row :votes-count 0)))
+  (and row (db-getf row :votes-count :default 0)))
 
 (defun row-message-reply-to-id (row)
   (and row
@@ -2879,11 +2886,11 @@ than `days-in-the-past' days (default: `(swconf:config-purge-cache-days-offset)'
 
 (defun row-unseen-count (row)
   (and row
-       (db-getf row :unseen-count 0)))
+       (db-getf row :unseen-count :default 0)))
 
 (defun row-seen-count (row)
   (and row
-       (db-getf row :seen-count 0)))
+       (db-getf row :seen-count :default 0)))
 
 (defun gemini-all-subscriptions ()
   (when-let* ((query (select (:gemini-subscription.*
@@ -2942,13 +2949,13 @@ than `days-in-the-past' days (default: `(swconf:config-purge-cache-days-offset)'
 
 (gen-access-message-row gemlog-url      :gemlog-url)
 
-(gen-access-message-row gemlog-title    :gemlog-title)
+(gen-access-message-row gemlog-title    :gemlog-title :only-empty-or-0-are-null t)
 
-(gen-access-message-row gemlog-subtitle :gemlog-subtitle)
+(gen-access-message-row gemlog-subtitle :gemlog-subtitle :only-empty-or-0-are-null t)
 
 (gen-access-message-row post-date       :post-date)
 
-(gen-access-message-row post-title      :post-title)
+(gen-access-message-row post-title      :post-title :only-empty-or-0-are-null t)
 
 (gen-access-message-row post-link       :post-link)
 

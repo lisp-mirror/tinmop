@@ -187,12 +187,12 @@
         (loop for attachment in all-attachments do
              (let ((type (db-utils:db-getf attachment
                                            :type
-                                           (_ "unknown"))))
+                                           :default (_ "unknown"))))
                (format stream
                        (_"type: ~a~%metadata~%~a~%address: ~a~2%")
                        (attachment-type->description type)
                        (attachment-type->metadata    type attachment)
-                       (db-utils:db-getf attachment :url  (_ "unknown")))))))
+                       (db-utils:db-getf attachment :url  :default (_ "unknown")))))))
     text))
 
 (defgeneric message-original->text-body (object &key &allow-other-keys))

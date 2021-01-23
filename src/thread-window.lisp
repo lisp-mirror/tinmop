@@ -797,7 +797,7 @@ db:renumber-timeline-message-index."
                    (timeline-folder    timeline-folder)) object
     (when-let* ((selected-row (selected-row object))
                 (fields       (fields selected-row))
-                (original     (db-utils:db-getf fields :content ""))
+                (original     (db-utils:db-getf fields :content :default ""))
                 (status-id    (db:row-message-status-id fields))
                 (header       (message-original->text-header fields)))
       (let* ((body          (db:row-message-rendered-text fields))

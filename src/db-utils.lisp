@@ -168,7 +168,7 @@
                            (from ,table)
                            (where ,clause))))))
 
-(defgeneric db-nil-p (a)
+(defgeneric db-nil-p (a  &key &allow-other-keys)
   (:documentation "Non nil if the column can be considered a null value in lisp
 example:
 
@@ -180,27 +180,30 @@ example:
 \"null\"  -> T
 "))
 
-(defmethod db-nil-p ((a null))
+(defmethod db-nil-p ((a null) &key &allow-other-keys)
   t)
 
-(defmethod db-nil-p ((a symbol))
+(defmethod db-nil-p ((a symbol) &key &allow-other-keys)
   (eq a :nil))
 
-(defmethod db-nil-p ((a string))
-  (or (string-empty-p a)
-      (string-equal a "false")
-      (string-equal a "null")
-      (string-equal a "nil")
-      (string-equal a "no")
-      (string-equal a "0")))
+(defmethod db-nil-p ((a string) &key (only-empty-or-0-are-null nil) &allow-other-keys)
+  (if only-empty-or-0-are-null
+      (or (string-empty-p a)
+          (string-equal a "0"))
+      (or (string-empty-p a)
+          (string-equal a "false")
+          (string-equal a "null")
+          (string-equal a "nil")
+          (string-equal a "no")
+          (string-equal a "0"))))
 
-(defmethod db-nil-p ((a number))
-  (num:epsilon= a 0.0))
+(defmethod db-nil-p ((a integer) &key &allow-other-keys)
+  (= a 0))
 
 (defun db-not-nil-p (a)
   (not (db-nil-p a)))
 
-(defun db-getf (row indicator &optional (default nil))
+(defun db-getf (row indicator &key (default nil) (only-empty-or-0-are-null nil))
   "Try  to  find a  value  in  a `row'  (modeled  as  a plist),  return
 `default'  if  indicator has  a  value  of nil  in  row  and signal  a
 `conditions:column-not-found'  if  `indicator'   does  not  exists  in
@@ -209,7 +212,7 @@ example:
     (cond
       ((eq res :not-found)
        (error 'conditions:column-not-found :column indicator :row row))
-      ((db-nil-p res)
+      ((db-nil-p res :only-empty-or-0-are-null only-empty-or-0-are-null)
        default)
       (t
        res))))
