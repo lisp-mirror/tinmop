@@ -519,10 +519,8 @@
                       ((gemini-client:response-redirect-p status)
                        (flet ((on-input-complete (maybe-accepted)
                                 (when (ui::boolean-input-accepted-p maybe-accepted)
-                                  (let ((new-url (gemini-parser:absolutize-link meta
-                                                                                (uri:host parsed-iri)
-                                                                                (uri:port parsed-iri)
-                                                                                (uri:path parsed-iri))))
+                                  (let ((new-url (gemini-client:build-redirect-iri meta
+                                                                                   parsed-iri)))
                                     (db-utils:with-ready-database (:connect nil)
                                       (request new-url
                                                :certificate-key certificate-key

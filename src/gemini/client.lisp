@@ -336,3 +336,35 @@
                        (multiple-value-bind (status description meta response)
                            (parse-response ssl-stream)
                          (values status description meta response socket)))))))))))
+
+(defun gemini-file-stream-p (meta)
+  (gemini-client:mime-gemini-p meta))
+
+(defun fetch-cached-certificate (url)
+  (let ((certificate nil)
+        (key         nil))
+    (multiple-value-bind (certificate-cache key-cache)
+        (db:ssl-cert-find url)
+      (if (and certificate-cache
+               key-cache)
+          (setf certificate certificate-cache
+                key         key-cache)
+          (multiple-value-bind (certificate-new key-new)
+              (gemini-client:make-client-certificate url)
+            (setf certificate certificate-new
+                  key         key-new)))
+      (assert certificate)
+      (assert key)
+      (values certificate key))))
+
+(defgeneric build-redirect-iri (meta iri-from))
+
+(defmethod build-redirect-iri (meta (iri-from iri:iri))
+  (let ((new-url (gemini-parser:absolutize-link meta
+                                                (uri:host iri-from)
+                                                (uri:port iri-from)
+                                                (uri:path iri-from))))
+    new-url))
+
+(defmethod build-redirect-iri (meta (iri-from string))
+  (build-redirect-iri meta (iri:iri-parse iri-from)))

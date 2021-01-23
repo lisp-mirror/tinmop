@@ -114,7 +114,10 @@
    :gemini-file-response-p
    :close-ssl-socket
    :make-client-certificate
-   :request))
+   :request
+   :gemini-file-stream-p
+   :fetch-cached-certificate
+   :build-redirect-iri))
 
 (defpackage :gemini-subscription
   (:use
