@@ -1125,6 +1125,7 @@
    :message-window-unlocked-account-mark
    :message-window-account-locking-status-mark
    :message-window-line-mark-values
+   :message-windows-visibility-marks
    :message-window-attachments-header
    :form-style
    :background

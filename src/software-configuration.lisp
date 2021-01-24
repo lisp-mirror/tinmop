@@ -340,6 +340,11 @@
                    link
                    creation-time
                    access-time
+                   visibility
+                   public
+                   unlisted
+                   private
+                   direct
                    quote
                    h1
                    h2
@@ -955,6 +960,31 @@
                            +key-message-window+
                            +key-line-position-mark+
                            +key-background+)))
+
+(defun message-window-visibility-mark (visibility-level)
+  (access:accesses *software-configuration*
+                   +key-message-window+
+                   +key-visibility+
+                   visibility-level))
+
+
+(defmacro gen-visibility-mapping-marks (visibility-level)
+  `(defun ,(format-fn-symbol t "message-window-visibility-~a-mark" visibility-level) ()
+     (message-window-visibility-mark ,visibility-level)))
+
+(gen-visibility-mapping-marks "public")
+
+(gen-visibility-mapping-marks "unlisted")
+
+(gen-visibility-mapping-marks "private")
+
+(gen-visibility-mapping-marks "direct")
+
+(defun message-windows-visibility-marks ()
+  (list :public   (message-window-visibility-public-mark)
+        :unlisted (message-window-visibility-unlisted-mark)
+        :private  (message-window-visibility-private-mark)
+        :direct   (message-window-visibility-direct-mark)))
 
 (defun message-window-attachments-header ()
   (values (access:accesses *software-configuration*

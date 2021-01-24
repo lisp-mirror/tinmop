@@ -223,12 +223,19 @@
               as-text))
         as-text)))
 
+(defun visibility->mark (visibility)
+  (let ((mapping (swconf:message-windows-visibility-marks)))
+    (db-getf mapping
+             (make-keyword (string-upcase visibility))
+             :default                  visibility
+             :only-empty-or-0-are-null t)))
+
 (defun message-original->text-header (message-row)
   (let* ((date-format      (swconf:date-fmt swconf:+key-message-window+))
          (username         (db:row-message-username          message-row))
          (display-name     (db:row-message-user-display-name message-row))
          (creation-time    (db:row-message-creation-time     message-row))
-         (visibility       (db:row-message-visibility        message-row))
+         (visibility       (visibility->mark (db:row-message-visibility message-row)))
          (lockedp          (db-utils:db-not-nil-p (db:row-lockedp message-row)))
          (locked-mark      (swconf:message-window-account-locking-status-mark lockedp))
          (encoded-date     (db-utils:encode-datetime-string creation-time))
