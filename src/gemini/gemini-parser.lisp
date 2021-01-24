@@ -116,7 +116,7 @@
   (:function (lambda (a)
                (list (first a)
                      (list (list :href (second a)))
-                     (second (third a))))))
+                     (text-utils:trim-blanks (second (third a)))))))
 
 (defrule h1 (and h1-prefix
                  text-line)

@@ -240,8 +240,13 @@ Uses `test' to match strings (default #'string=)"
 (defvar *blanks* '(#\Space #\Newline #\Backspace #\Tab
                    #\Linefeed #\Page #\Return #\Rubout))
 
-(defun trim-blanks (s)
+(defgeneric trim-blanks (s))
+
+(defmethod trim-blanks ((s string))
   (string-trim *blanks* s))
+
+(defmethod trim-blanks ((s null))
+  s)
 
 (defun justify-monospaced-text (text &optional (chars-per-line 30))
   (if (null (split-words text))
