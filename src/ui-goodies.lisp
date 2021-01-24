@@ -1859,10 +1859,10 @@ open-message-link-window:open-message-link"
     (draw  *gemini-subscription-window*)))
 
 (defun gemlogs-subscription-go-down ()
-  (follow-request-move 1))
+  (gemlogs-subscription-move 1))
 
 (defun gemlogs-subscription-go-up ()
-  (follow-request-move -1))
+  (gemlogs-subscription-move -1))
 
 (defun gemini-subscribe-gemlog ()
   "Subscribe to the gemlog shown in the main window.
