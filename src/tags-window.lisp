@@ -67,7 +67,7 @@
                    (new-messages-mark new-messages-mark)) object
     (win-clear object)
     (with-croatoan-window (croatoan-window object)
-      (let ((histogram-width (* 2/3 (win-width-no-border object))))
+      (let ((histogram-width (truncate (* 2/3 (win-width-no-border object)))))
         (loop
            for y from (+ 2 top-row-padding) by single-row-height
            for row-fields  in (mapcar #'fields rows) do
