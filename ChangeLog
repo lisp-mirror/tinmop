@@ -1,5 +1,84 @@
+2021-01-24  cage
+
+        * src/gemini/gemini-parser.lisp,
+	* src/text-utils.lisp,
+        * etc/default-theme.conf,
+	* src/ui-goodies.lisp:
+
+	- made 'text-utils:strim-blanks' returns nil and not "NIL" when
+        input is null; - [gemini] trim white spaces from link name.
+	- [gemini] shown selected row in gemlog subscription window.
+
+2021-01-23  cage
+
+        * src/db-utils.lisp,
+	* src/db.lisp,
+	* src/message-rendering-utils.lisp,
+        * src/thread-window.lisp,
+	* src/gemini-viewer.lisp,
+	* src/gemini/client.lisp,
+        * src/gemini/package.lisp,
+	* src/gemini/subscription.lisp:
+
+	- changed  db-nil-p this function  was transforming "no"  and even
+	0.0 (floating point number) to  nil.  That behaviour was incorrect
+	for numbers and  probably not desirable for the  string "No" (in
+	fact poll  with "No"  option was not  rendered because  of this).
+	Removed  conversion   for  non-  integer  numbers   and  prevented
+	conversion from some kind of non empty string (like "nil" or "no")
+	via a key argument.
+
+	- [gemini]  made slurp-gemini-url works with  redirect; - [gemini]
+	made some refactoring for building redirect IRIs.
+
+2021-01-18  cage
+
+        * src/db.lisp,
+	* src/gemini-subscription-window.lisp:
+
+	- [gemini] fixed purging and refreshing posts from subscribed gemlog
+
+	-  changing  deleting  of  posts references  to  logical  deleting
+	(i.e. setting  a boolean column  to true); - fixed  time threshold
+	for purging (must be a negative integer).
+
+
+2021-01-17  cage
+
+	* po/it.po,
+	* po/tinmop.pot,
+	* src/keybindings.lisp,
+	* src/tui-utils.lisp,
+	* src/ui-goodies.lisp:
+        * src/gemini-viewer.lisp,
+
+	 - shown  a message when  user's searching for commands  returns no
+	results.  - updated Italian translation  - improved a bit a single
+	docstring
+
+	-  [gemini]  fixed  test  for  checking  valid  cached  value  for
+	certificate/key   pair.    The   function   to   find   a   cached
+	certificate/key or create  a new pair returns a  multiple value.  I
+	was    using   multiple-value-list    for   getting    the   pairs
+	certificate/key  from said  functions.   Then i  was checking  the
+	results of  'multiple-value-list' for null  values to get  the non
+	correct pair, but that expression  never return nil (was returning
+	'(nil) instead).  This was breaking the client authentication.
+
+2021-01-16  cage
+
+        * src/main.lisp,
+	* src/package.lisp,
+	* src/software-configuration.lisp:
+
+	- added some more tests for checking missing values from
+        configuration files.
+
+
 2021-01-13  cage
 
+	* configure,
+	* configure.ac:
 	* po/tinmop.pot:
 	* src/package.lisp,
 	* src/resources-utils.lisp,
@@ -7,10 +86,11 @@
         * src/main.lisp,
         * src/software-configuration.lisp,
 
+	- Reportedly the program works with 1.4.16.
+	- suggest the user how to bypass the compiler check
 	- create an empty config file if the user did not provided one,
         instead of printing an error and exit.
-	- updated italian translation.
-
+	- updated Italian translation.
 
 2021-01-12  cage
 
@@ -36,13 +116,13 @@
         * src/ui-goodies.lisp:
 
 	- [gemini] ensure link opened is saved in history.
-	- [gemini] fixed reendering of 'seen' flag for gemini post;
+	- [gemini] fixed rendering of 'seen' flag for gemini post;
 	- [gemini] mark post as read when opening the corresponding link.
 	- [gemini] prevent gemlog window to lose focus when a gemlog is
           selected.
 	- made gemlog window close when focus passes to thread window.
 	- added scheduling of purging of old gemlog's posts;
-	- updated italian translation.
+	- updated Italian translation.
 
 2021-01-10  cage
 
@@ -61,7 +141,7 @@
         * src/program-events.lisp,
         * src/ui-goodies.lisp,
 
-	- updated italian translation;
+	- updated Italian translation;
 	- [gemini]
 	  - added command to refresh all gemlogs;
 	  - added scheduled refresh of all gemlogs;
@@ -101,7 +181,7 @@
 	  - added a draft for gemlog subscriptions;
 	  - added subscription command to gemlog.
 	- used pkg-config in the libidn2 grovel file (thanks to yumh!);
-	- updated italian translation;
+	- updated Italian translation;
 	- using pkg-config for checking libidn2 with configure script.
 
 2021-01-08  cage
@@ -224,7 +304,7 @@
 	* src/ui-goodies.lisp:
 
 	- allow repeat search on links window's items;
-	- updated italian translation;
+	- updated Italian translation;
 	- added a command to send data to an external program.
 
 2020-12-29  cage
@@ -296,7 +376,7 @@
         * po/POTFILES.in,
 
 	- used a parameter for the welcome message;
-	- udated manpage;
+	- updated manpage;
 	- updated italian translation;
 	- moved welcomebot script in the right directory when installed;
 	- added a module to share a gemini page on pleroma.
@@ -322,7 +402,7 @@
         * src/tests/iri-tests.lisp,
         * src/uri-parser.lisp:
 
-	- [gemini] percent encoding path query and fragment before perfoming
+	- [gemini] percent encoding path query and fragment before performing
         the request.
 	- removed warning for missing constants in grovel file.
 	- fixed IRI and URI parser;
@@ -334,7 +414,7 @@
 
         * src/program-events.lisp:
 
-	- fixed swappend functions (unfollow -> follow).
+	- fixed swapped functions (unfollow -> follow).
 
 2020-12-21  cage
 
@@ -569,7 +649,7 @@
 
         * NEWS.org, src/constants.lisp, src/program-events.lisp:
 
-	- actually use the compiled regex-scanner when seraching text in the
+	- actually use the compiled regex-scanner when searching text in the
         message window;
 	- increased refresh frequency;
 	- removed author name from NEWS.org.
@@ -670,7 +750,7 @@
 
         * src/os-utils.lisp, src/ui-goodies.lisp:
 
-	- lowered permancence of notification when updating timelines;
+	- lowered permanence of notification when updating timelines;
 	- fixed managing of editor arguments.
 
 2020-09-12  cage
@@ -970,7 +1050,7 @@
 	- added 'gemini-stream' class.
 
 	Starting  wrapping  streaming  of   gemini's  data  using  hi  level
-	structures  (this way  we can  associate a  for aecha  stream), this
+	structures  (this way  we can  associate a  for each  stream), this
 	could be useful to let the user start or stop the stream or open the
 	data downloaded so far.
 
