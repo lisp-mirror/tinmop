@@ -724,14 +724,24 @@ to the corresponding id in table +table-account+"
   (when-let ((user (user-id->user user-id)))
     (db-getf user :acct)))
 
+(defun last-in-history (prompt)
+  (let* ((query (select (:*
+                         (:as (fields (:max :id)) :max))
+                  (from :input-history)
+                  (where (:= :prompt prompt)))))
+    (fetch-single query)))
+
 (defun insert-in-history (prompt input)
   "insert an history entry with `prompt` and `input'"
   (when (string-not-empty-p input)
-   (let* ((now          (prepare-for-db (local-time-obj-now)))
-          (insert-query (make-insert :input-history
-                                     (:prompt :input :date-added)
-                                     (prompt input   now))))
-     (query insert-query))))
+    (let* ((last-inserted (last-in-history prompt)))
+      (when (or (null last-inserted)
+                (not (string= input (getf last-inserted :input))))
+        (let* ((now           (prepare-for-db (local-time-obj-now)))
+               (insert-query  (make-insert :input-history
+                                           (:prompt :input :date-added)
+                                           (prompt input   now))))
+          (query insert-query))))))
 
 (defun next-in-history (min-id prompt)
   "Return the history entry with prompt `prompt` and id that is greater

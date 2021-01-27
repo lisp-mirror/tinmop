@@ -174,7 +174,9 @@ list af all possible candidtae for completion."
 (defun make-complete-gemini-iri-fn (prompt)
   (lambda (hint)
     (when-let ((matched (remove-if-not (starts-with-clsr hint)
-                                       (funcall #'db:history-prompt->values prompt))))
+                                       (remove-duplicates (funcall #'db:history-prompt->values
+                                                                   prompt)
+                                                          :test #'string=))))
       (values matched (reduce-to-common-prefix matched)))))
 
 (defun complete-chat-message (hint)
