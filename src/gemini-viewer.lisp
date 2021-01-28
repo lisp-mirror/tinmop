@@ -312,8 +312,27 @@
                      :payload         response
                      :append-text     append-text))))
 
+(let ((cache ()))
+  (defun fetch-favicon (parsed-url)
+    (flet ((fetch-from-cache (key)
+             (assoc-value cache key :test #'string=)))
+       (multiple-value-bind (actual-iri host path query port fragment)
+           (displace-iri parsed-url)
+         (declare (ignore actual-iri path query fragment))
+         (or (fetch-from-cache host)
+             (ignore-errors
+              (let* ((favicon-url   (gemini-parser:make-gemini-iri host
+                                                                   "/favicon.txt"
+                                                                   :port port))
+                     (response-body (gemini-client:slurp-gemini-url favicon-url))
+                     (favicon (misc:safe-subseq (babel:octets-to-string response-body :errorp t)
+                                                0 1)))
+                (setf cache (acons host favicon cache))
+                (fetch-favicon parsed-url)))
+             (swconf:gemini-default-favicon))))))
+
 (defun request-stream-gemini-document-thread (wrapper-object host
-                                              port path query fragment)
+                                              port path query fragment favicon)
   (with-accessors ((download-socket download-socket)
                    (download-stream download-stream)
                    (octect-count    octect-count)
@@ -328,7 +347,7 @@
                                                               :query    query
                                                               :port     port
                                                               :fragment fragment))
-                 (url-header   (format nil "-> ~a~%" url))
+                 (url-header   (format nil "~a ~a~2%" favicon url))
                  (parsed-url   (gemini-parser:parse-gemini-file url-header))
                  (url-response (gemini-client:make-gemini-file-response nil
                                                                         nil
@@ -559,13 +578,15 @@
                                                                   :stream-status   starting-status
                                                                   :download-stream response
                                                                   :download-socket socket))
+                                  (favicon          (fetch-favicon parsed-iri))
                                   (thread-fn
                                    (request-stream-gemini-document-thread gemini-stream
                                                                           host
                                                                           port
                                                                           path
                                                                           query
-                                                                          fragment))
+                                                                          fragment
+                                                                          favicon))
                                   (enqueue-event (make-instance 'program-events:gemini-enqueue-download-event
                                                                 :payload gemini-stream)))
                              (program-events:push-event enqueue-event)

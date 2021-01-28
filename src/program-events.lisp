@@ -1212,8 +1212,8 @@
                                                 (uri:host url)
                                                 (uri:port url)
                                                 (uri:path url)))
-           (theme   gemini-client::*gemini-page-theme*))
-      (gemini-viewer::maybe-initialize-metadata specials:*message-window*)
+           (theme   gemini-client:*gemini-page-theme*))
+      (gemini-viewer:maybe-initialize-metadata specials:*message-window*)
       (refresh-gemini-message-window links
                                      gemini-page
                                      (gemini-parser:sexp->text parsed theme)

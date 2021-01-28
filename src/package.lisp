@@ -1072,6 +1072,7 @@
    :perform-missing-value-check
    :load-config-file
    :external-editor
+   :gemini-default-favicon
    :gemini-link-prefix-to-gemini
    :gemini-link-prefix-to-other
    :gemini-quote-prefix
@@ -2175,6 +2176,7 @@
    :abort-download-stream
    :db-entry-to-foreground
    :gemini-metadata-p
+   :maybe-initialize-metadata
    :make-gemini-metadata
    :gemini-metadata-links
    :gemini-metadata-source-file

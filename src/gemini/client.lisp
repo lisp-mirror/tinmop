@@ -368,3 +368,32 @@
 
 (defmethod build-redirect-iri (meta (iri-from string))
   (build-redirect-iri meta (iri:iri-parse iri-from)))
+
+(define-constant +maximum-redirections+ 5 :test `=)
+
+(defun slurp-gemini-url (url &optional (redirect-count 0))
+  "Read 'full'  data from gemini  address `url'; note that  specs says
+that gemini flow  is streamed by default so this  function has limited
+use as there is a chance that  it would not returns. Anyway for gemlog
+subscription (for example) could be used.
+
+TODO: Add client certificate."
+  (let ((iri         (iri:iri-parse url)))
+    (multiple-value-bind (status description meta response socket)
+        (request (uri:host iri)
+                 (uri:path iri)
+                 :query    (uri:query    iri)
+                 :port     (uri:port     iri)
+                 :fragment (uri:fragment iri))
+      (declare (ignore description))
+      (cond
+        ((response-success-p status)
+         (let ((data (misc:make-fresh-array 0 0 '(unsigned-byte 8) nil)))
+           (loop for new-byte = (read-byte response nil nil)
+                 while new-byte do
+                   (vector-push-extend new-byte data))
+           (close-ssl-socket socket)
+           data))
+        ((and (response-redirect-p status)
+              (< redirect-count +maximum-redirections+))
+         (slurp-gemini-url (build-redirect-iri meta iri) (1+ redirect-count)))))))

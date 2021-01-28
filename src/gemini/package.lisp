@@ -92,6 +92,7 @@
    :error-code
    :error-description
    :gemini-tofu-error
+   :*gemini-page-theme*
    :make-gemini-file-response
    :host
    :response-certificate-requested-p
@@ -117,7 +118,8 @@
    :request
    :gemini-file-stream-p
    :fetch-cached-certificate
-   :build-redirect-iri))
+   :build-redirect-iri
+   :slurp-gemini-url))
 
 (defpackage :gemini-subscription
   (:use

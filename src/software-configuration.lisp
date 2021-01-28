@@ -397,6 +397,7 @@
                    command-window
                    command-separator
                    gemini
+                   favicon
                    tree
                    branch
                    arrow
@@ -474,6 +475,11 @@
                           (_ "The configuration (*.conf) file is missing the value for ~a")
                           keys)))
         value)))
+
+(defun gemini-default-favicon ()
+  (access-non-null-conf-value *software-configuration*
+                              +key-gemini+
+                              +key-favicon+))
 
 (defun gemini-link-prefix (scheme)
   (access-non-null-conf-value *software-configuration*
