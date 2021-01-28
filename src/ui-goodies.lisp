@@ -1252,9 +1252,8 @@ certificate).
 
 (defun gemlog-cancel-subscription ()
   (with-selected-gemlog-id (fields gemlog-id)
-    (when-let* ((entries   (db:gemlog-entries gemlog-id))
-                (event     (make-instance 'program-events:gemlog-cancel-subscription-event
-                                          :payload gemlog-id)))
+    (when-let* ((event (make-instance 'program-events:gemlog-cancel-subscription-event
+                                      :payload gemlog-id)))
       (with-blocking-notify-procedure ((format nil (_ "Canceling subscription for ~s") gemlog-id))
         (program-events:push-event event)))))
 
