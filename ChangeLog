@@ -1,12 +1,71 @@
+2021-01-31  cage
+
+	* README.org,
+	* README.txt,
+	* aclocal.m4,
+	* configure,
+	* src/gemini/client.lisp,
+	* src/grovel-idn.lisp,
+	* src/package.lisp,
+	* src/tests/idn-tests.lisp,
+	* tinmop.asd,
+        * Makefile.in,
+        * configure.ac,
+        * src/idn.lisp,
+        * src/tests/package.lisp:
+
+	- removed dependency from libidn2  punycode encoding comes from an
+	internal implementation instead of using an C library.
+
+2021-01-28  cage
+
+	* src/gemini-viewer.lisp,
+	* src/gemini/package.lisp,
+	* src/package.lisp,
+	* src/software-configuration.lisp,
+	* src/ui-goodies.lisp,
+        * etc/default-theme.conf,
+        * src/gemini/client.lisp,
+        * src/gemini/subscription.lisp,
+        * src/program-events.lisp:
+
+	- [gemini] added support  for favicon.txt, the implementation more
+	or  less follow  gemini://mozz.us/files/rfc_gemini_favicon.gmi but
+	it does render the first character of the file instead of checking
+	for emoji characters;
+	- [gemini] fixed canceling subscription to gemlogs.
+
+2021-01-27  cage
+
+	* src/complete.lisp,
+	* src/db.lisp,
+        * etc/default-theme.conf:
+
+	- made input command history less messy
+	- adding a sequence of n equals entries count as one (no duplicate
+	entries on top of the history);
+	- removed duplicate for gemini history URL.
+
+
 2021-01-24  cage
 
-        * src/gemini/gemini-parser.lisp,
+	* etc/default-theme.conf,
+	* src/message-rendering-utils.lisp,
+	* src/software-configuration.lisp,
 	* src/text-utils.lisp,
+	* src/ui-goodies.lisp,
         * etc/default-theme.conf,
-	* src/ui-goodies.lisp:
+        * src/gemini/gemini-parser.lisp,
+        * src/package.lisp,
+        * src/tags-window.lisp:
 
+        - added feature to allow users to configure symbols rendered for
+        each toot visibility level in main window.
+	- prevented crash truncating the scaled width of tags window.
+	- prevented non rendering of 'new-message' character in tags window.
 	- made 'text-utils:strim-blanks' returns nil and not "NIL" when
-        input is null; - [gemini] trim white spaces from link name.
+        input is null;
+	- [gemini] trim white spaces from link name.
 	- [gemini] shown selected row in gemlog subscription window.
 
 2021-01-23  cage
