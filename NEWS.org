@@ -1,3 +1,20 @@
+* 2021-01-21 version 0.5.1
+
+  - New features
+    - [gemini] added support for favicon.txt more or less as specified in
+      gemini://mozz.us/files/rfc_gemini_favicon.gmi
+      (it does render the first character of the file instead of checking
+      for emoji characters);
+    - made the text for toot's visibility level (as rendered in main window)
+      configurable.
+    - Bugfix
+      - fixed many problems in gemlog subscriptions;
+      - fixed regression: using client certificate for gemini capsules
+        works again;
+      For other bugfix, please check the changelog.
+    - Misc
+      - removed dependency form libidn2.
+
 * 2021-01-10 version 0.5.0
 
   - New features
