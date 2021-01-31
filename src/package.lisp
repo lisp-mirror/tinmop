@@ -15,10 +15,12 @@
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 (defpackage :idn
-  (:use :cl)
+  (:use
+   :cl
+   :alexandria)
   (:export
-   :unicode->ascii
-   :ascii->unicode))
+   :host-unicode->ascii
+   :host-ascii->unicode))
 
 (defpackage :config
   (:use :cl)

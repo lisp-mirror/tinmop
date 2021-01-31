@@ -76,7 +76,7 @@ Table of Contents
 3.1 Programs
 ────────────
 
-  ⁃ to build the package: xgettext; a C compiler.
+  ⁃ to build the package: xgettext.
 
   ⁃ to install the package, including running the script to install lisp
     libraries (`quick_quicklisp.sh'):
@@ -128,14 +128,13 @@ Table of Contents
 ────────────────────────────────
 
   • libssl (TLS socket)
-  • linidn2 (i18n domain name aka idna)
 
     The C library should be installed with their header (`*.h') files.
     On Debian or derived system this means installing the library
     package with the `-dev' suffix as shown below:
 
     ┌────
-    │ # apt-get install libssl-dev libidn2-dev
+    │ # apt-get install libssl-dev
     └────
 
 

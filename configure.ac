@@ -21,8 +21,6 @@ AM_INIT_AUTOMAKE([-Wall foreign])
 
 AM_GNU_GETTEXT([external])
 
-PKG_CHECK_MODULES([IDN], [libidn2])
-
 AC_CHECK_LIB([ssl], [SSL_get_version], [], AC_MSG_ERROR([Can not find libssl.]))
 
 AC_PATH_PROG([LISP_COMPILER],[sbcl],[no])

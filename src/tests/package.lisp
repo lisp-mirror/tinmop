@@ -110,3 +110,11 @@
         :text-utils
         :all-tests)
   (:export))
+
+(defpackage :idn-tests
+  (:use :cl
+        :clunit
+        :misc
+        :text-utils
+        :all-tests)
+  (:export))

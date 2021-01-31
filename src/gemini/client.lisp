@@ -306,14 +306,14 @@
                             (fragment nil)
                             (client-certificate nil)
                             (certificate-key    nil))
-  (let* ((iri (make-gemini-iri host
+  (let* ((iri (make-gemini-iri (idn:host-unicode->ascii host)
                                (percent-encode-path path)
                                :query    (percent-encode-query query)
                                :port     port
                                :fragment (percent-encode-fragment fragment)))
          (ctx (cl+ssl:make-context :verify-mode cl+ssl:+ssl-verify-none+)))
     (cl+ssl:with-global-context (ctx :auto-free-p t)
-      (let ((socket (usocket:socket-connect (idn:unicode->ascii host)
+      (let ((socket (usocket:socket-connect (idn:host-unicode->ascii host)
                                             port
                                             :element-type '(unsigned-byte 8))))
         (unwind-protect

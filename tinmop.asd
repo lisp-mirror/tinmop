@@ -21,7 +21,6 @@
   :version     "0.5.0"
   :pathname    "src"
   :serial      t
-  :defsystem-depends-on ("cffi-grovel")
   :depends-on (:alexandria
                :cl-ppcre
                :tooter
@@ -53,7 +52,6 @@
                :percent-encoding
                :uiop)
   :components ((:file "package")
-               (:cffi-grovel-file "grovel-idn")
                (:file "idn")
                (:file "config")
                (:file "constants")
@@ -140,6 +138,7 @@
                                      (:file "thread-window-tests")
                                      (:file "gemini-parser-tests")
                                      (:file "program-events-tests")
-                                     (:file "x509-tests")))))
+                                     (:file "x509-tests")
+                                     (:file "idn-tests")))))
 
 ;; (push :debug-mode *features*)
