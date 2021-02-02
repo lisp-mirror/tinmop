@@ -454,9 +454,9 @@
     (maybe-initialize-metadata specials:*message-window*)
     (cond
       ((null parsed-iri)
-        (ui:error-message (format nil
-                                  (_ "Could not understand the address ~s")
-                                  url)))
+       (ui:error-message (format nil
+                                 (_ "Could not understand the address ~s")
+                                 url)))
       (use-cached-file-if-exists
        (multiple-value-bind (actual-iri host path query port fragment)
            (displace-iri parsed-iri)
@@ -474,114 +474,114 @@
                       :use-cached-file-if-exists nil
                       :do-nothing-if-exists-in-db
                       do-nothing-if-exists-in-db))))
-       (t
-        (multiple-value-bind (actual-iri host path query port fragment)
-            (displace-iri parsed-iri)
-          (when (not (and do-nothing-if-exists-in-db
-                          (find-db-stream-url actual-iri)))
-            (when (null enqueue)
-              (ensure-just-one-stream-rendering))
-            (handler-case
-                (labels ((gemini-file-stream-p (meta)
-                           (gemini-client:mime-gemini-p meta))
-                         (starting-status (meta)
-                           (if (gemini-file-stream-p meta)
-                               (if enqueue
-                                   :streaming
-                                   :rendering)
-                               (if enqueue
-                                   :streaming
-                                   :running)))
-                         (fetch-cached-certificate (actual-iri)
-                           (let ((certificate nil)
-                                 (key         nil))
-                             (multiple-value-bind (certificate-cache key-cache)
-                                 (db:ssl-cert-find actual-iri)
-                               (if (and certificate-cache
-                                        key-cache)
-                                   (setf certificate certificate-cache
-                                         key         key-cache)
-                                   (multiple-value-bind (certificate-new key-new)
-                                       (gemini-client:make-client-certificate actual-iri)
-                                     (setf certificate certificate-new
-                                           key         key-new)))
-                               (assert certificate)
-                               (assert key)
-                               (values certificate key))))
-                         (get-user-input (hide-input host prompt)
-                           (flet ((on-input-complete (input)
-                                    (when (string-not-empty-p input)
-                                      (db-utils:with-ready-database (:connect nil)
-                                        (let ((encoded-input (maybe-percent-encode input)))
-                                          (request (gemini-parser:make-gemini-iri host
-                                                                                  path
-                                                                                  :query
-                                                                                  encoded-input
-                                                                                  :port     port
-                                                                                  :fragment fragment)
-                                                   :certificate-key    certificate-key
-                                                   :certificate        certificate))))))
-                             (ui:ask-string-input #'on-input-complete
-                                                  :hide-input hide-input
-                                                  :prompt (format nil
-                                                                  (_ "Server ~s asks: ~s ")
-                                                                  host
-                                                                  prompt)))))
-                  (multiple-value-bind (status code-description meta response socket)
-                      (gemini-client:request host
-                                             path
-                                             :certificate-key    certificate-key
-                                             :client-certificate certificate
-                                             :query              query
-                                             :port               port
-                                             :fragment           fragment)
-                    (add-url-to-history specials:*message-window* actual-iri)
-                    (cond
-                      ((gemini-client:response-redirect-p status)
-                       (flet ((on-input-complete (maybe-accepted)
-                                (when (ui::boolean-input-accepted-p maybe-accepted)
-                                  (let ((new-url (gemini-client:build-redirect-iri meta
-                                                                                   parsed-iri)))
-                                    (db-utils:with-ready-database (:connect nil)
-                                      (request new-url
-                                               :certificate-key certificate-key
-                                               :certificate     certificate))))))
-                         (ui:ask-string-input #'on-input-complete
-                                              :priority program-events:+minimum-event-priority+
-                                              :prompt
-                                              (format nil
-                                                      (_ "Redirects to ~s, follows redirect? [y/N] ")
-                                                      meta))))
-                      ((gemini-client:response-certificate-requested-p status)
-                       (multiple-value-bind (cached-certificate cached-key)
-                           (fetch-cached-certificate actual-iri)
-                         (request actual-iri
-                                  :enqueue                    enqueue
-                                  :do-nothing-if-exists-in-db do-nothing-if-exists-in-db
-                                  :certificate-key            cached-key
-                                  :certificate                cached-certificate)))
-                      ((gemini-client:response-input-p status)
-                       (get-user-input nil host meta))
-                      ((gemini-client:response-sensitive-input-p status)
-                       (get-user-input t host meta))
-                      ((streamp response)
-                       (if (gemini-file-stream-p meta)
-                           (let* ((starting-status (starting-status meta))
-                                  (gemini-stream   (make-instance 'gemini-file-stream
-                                                                  :host            host
-                                                                  :port            port
-                                                                  :path            path
-                                                                  :query           query
-                                                                  :fragment        fragment
-                                                                  :meta            meta
-                                                                  :status-code     status
-                                                                  :status-code-description
-                                                                  code-description
-                                                                  :stream-status   starting-status
-                                                                  :download-stream response
-                                                                  :download-socket socket))
-                                  (favicon          (fetch-favicon parsed-iri))
-                                  (thread-fn
+      (t
+       (multiple-value-bind (actual-iri host path query port fragment)
+           (displace-iri parsed-iri)
+         (when (not (and do-nothing-if-exists-in-db
+                         (find-db-stream-url actual-iri)))
+           (when (null enqueue)
+             (ensure-just-one-stream-rendering))
+           (handler-case
+               (labels ((gemini-file-stream-p (meta)
+                          (gemini-client:mime-gemini-p meta))
+                        (starting-status (meta)
+                          (if (gemini-file-stream-p meta)
+                              (if enqueue
+                                  :streaming
+                                  :rendering)
+                              (if enqueue
+                                  :streaming
+                                  :running)))
+                        (fetch-cached-certificate (actual-iri)
+                          (let ((certificate nil)
+                                (key         nil))
+                            (multiple-value-bind (certificate-cache key-cache)
+                                (db:ssl-cert-find actual-iri)
+                              (if (and certificate-cache
+                                       key-cache)
+                                  (setf certificate certificate-cache
+                                        key         key-cache)
+                                  (multiple-value-bind (certificate-new key-new)
+                                      (gemini-client:make-client-certificate actual-iri)
+                                    (setf certificate certificate-new
+                                          key         key-new)))
+                              (assert certificate)
+                              (assert key)
+                              (values certificate key))))
+                        (get-user-input (hide-input host prompt)
+                          (flet ((on-input-complete (input)
+                                   (when (string-not-empty-p input)
+                                     (db-utils:with-ready-database (:connect nil)
+                                       (let ((encoded-input (maybe-percent-encode input)))
+                                         (request (gemini-parser:make-gemini-iri host
+                                                                                 path
+                                                                                 :query
+                                                                                 encoded-input
+                                                                                 :port     port
+                                                                                 :fragment fragment)
+                                                  :certificate-key    certificate-key
+                                                  :certificate        certificate))))))
+                            (ui:ask-string-input #'on-input-complete
+                                                 :hide-input hide-input
+                                                 :prompt (format nil
+                                                                 (_ "Server ~s asks: ~s ")
+                                                                 host
+                                                                 prompt)))))
+                 (multiple-value-bind (status code-description meta response socket)
+                     (gemini-client:request host
+                                            path
+                                            :certificate-key    certificate-key
+                                            :client-certificate certificate
+                                            :query              query
+                                            :port               port
+                                            :fragment           fragment)
+                   (add-url-to-history specials:*message-window* actual-iri)
+                   (cond
+                     ((gemini-client:response-redirect-p status)
+                      (flet ((on-input-complete (maybe-accepted)
+                               (when (ui::boolean-input-accepted-p maybe-accepted)
+                                 (let ((new-url (gemini-client:build-redirect-iri meta
+                                                                                  parsed-iri)))
+                                   (db-utils:with-ready-database (:connect nil)
+                                     (request new-url
+                                              :certificate-key certificate-key
+                                              :certificate     certificate))))))
+                        (ui:ask-string-input #'on-input-complete
+                                             :priority program-events:+minimum-event-priority+
+                                             :prompt
+                                             (format nil
+                                                     (_ "Redirects to ~s, follows redirect? [y/N] ")
+                                                     meta))))
+                     ((gemini-client:response-certificate-requested-p status)
+                      (multiple-value-bind (cached-certificate cached-key)
+                          (fetch-cached-certificate actual-iri)
+                        (request actual-iri
+                                 :enqueue                    enqueue
+                                 :do-nothing-if-exists-in-db do-nothing-if-exists-in-db
+                                 :certificate-key            cached-key
+                                 :certificate                cached-certificate)))
+                     ((gemini-client:response-input-p status)
+                      (get-user-input nil host meta))
+                     ((gemini-client:response-sensitive-input-p status)
+                      (get-user-input t host meta))
+                     ((streamp response)
+                      (if (gemini-file-stream-p meta)
+                          (let* ((starting-status (starting-status meta))
+                                 (gemini-stream   (make-instance 'gemini-file-stream
+                                                                 :host            host
+                                                                 :port            port
+                                                                 :path            path
+                                                                 :query           query
+                                                                 :fragment        fragment
+                                                                 :meta            meta
+                                                                 :status-code     status
+                                                                 :status-code-description
+                                                                 code-description
+                                                                 :stream-status   starting-status
+                                                                 :download-stream response
+                                                                 :download-socket socket))
+                                 (favicon          (fetch-favicon parsed-iri))
+                                 (thread-fn
                                    (request-stream-gemini-document-thread gemini-stream
                                                                           host
                                                                           port
@@ -589,22 +589,22 @@
                                                                           query
                                                                           fragment
                                                                           favicon))
-                                  (enqueue-event (make-instance 'program-events:gemini-enqueue-download-event
-                                                                :payload gemini-stream)))
-                             (program-events:push-event enqueue-event)
-                             (downloading-start-thread gemini-stream
-                                                       thread-fn
-                                                       host
-                                                       port
-                                                       path
-                                                       query
-                                                       fragment))
-                           (let* ((starting-status (starting-status meta))
-                                  (gemini-stream   (make-instance 'gemini-others-data-stream
-                                                                  :stream-status   starting-status
-                                                                  :download-stream response
-                                                                  :download-socket socket))
-                                  (thread-fn
+                                 (enqueue-event (make-instance 'program-events:gemini-enqueue-download-event
+                                                               :payload gemini-stream)))
+                            (program-events:push-event enqueue-event)
+                            (downloading-start-thread gemini-stream
+                                                      thread-fn
+                                                      host
+                                                      port
+                                                      path
+                                                      query
+                                                      fragment))
+                          (let* ((starting-status (starting-status meta))
+                                 (gemini-stream   (make-instance 'gemini-others-data-stream
+                                                                 :stream-status   starting-status
+                                                                 :download-stream response
+                                                                 :download-socket socket))
+                                 (thread-fn
                                    (request-stream-other-document-thread gemini-stream
                                                                          socket
                                                                          host
@@ -615,47 +615,47 @@
                                                                          status
                                                                          code-description
                                                                          meta))
-                                  (enqueue-event (make-instance 'program-events:gemini-enqueue-download-event
-                                                                :payload gemini-stream)))
-                             (program-events:push-event enqueue-event)
-                             (downloading-start-thread gemini-stream
-                                                       thread-fn
-                                                       host
-                                                       port
-                                                       path
-                                                       query
-                                                       fragment)))))))
-              (gemini-client:gemini-tofu-error (e)
-                (let ((host (gemini-client:host e)))
-                  (flet ((on-input-complete (maybe-accepted)
-                           (when (ui::boolean-input-accepted-p maybe-accepted)
-                             (db-utils:with-ready-database (:connect nil)
-                               (db:tofu-delete host)
-                               (request url
-                                        :enqueue         enqueue
-                                        :certificate     certificate
-                                        :certificate-key certificate-key
-                                        :do-nothing-if-exists-in-db
-                                        do-nothing-if-exists-in-db)))))
-                    (ui:ask-string-input #'on-input-complete
-                                         :prompt
-                                         (format nil
-                                                 (_ "Host ~s signature changed! This is a potential security risk! Ignore this warning? [y/N] ")
-                                                 host)
-                                         :priority program-events:+standard-event-priority+))))
-              (conditions:not-implemented-error (e)
-                (ui:notify (format nil (_ "Error: ~a") e)
-                           :as-error t))
-              (gemini-client:gemini-protocol-error (e)
-                (ui:notify (format nil "~a" e)
-                           :as-error t))
-              #-debug-mode
-              (error (e)
-                (ui:notify (format nil
-                                   (_ "Error getting ~s: ~a")
-                                   url
-                                   e)
-                           :as-error t)))))))))
+                                 (enqueue-event (make-instance 'program-events:gemini-enqueue-download-event
+                                                               :payload gemini-stream)))
+                            (program-events:push-event enqueue-event)
+                            (downloading-start-thread gemini-stream
+                                                      thread-fn
+                                                      host
+                                                      port
+                                                      path
+                                                      query
+                                                      fragment)))))))
+             (gemini-client:gemini-tofu-error (e)
+               (let ((host (gemini-client:host e)))
+                 (flet ((on-input-complete (maybe-accepted)
+                          (when (ui::boolean-input-accepted-p maybe-accepted)
+                            (db-utils:with-ready-database (:connect nil)
+                              (db:tofu-delete host)
+                              (request url
+                                       :enqueue         enqueue
+                                       :certificate     certificate
+                                       :certificate-key certificate-key
+                                       :do-nothing-if-exists-in-db
+                                       do-nothing-if-exists-in-db)))))
+                   (ui:ask-string-input #'on-input-complete
+                                        :prompt
+                                        (format nil
+                                                (_ "Host ~s signature changed! This is a potential security risk! Ignore this warning? [y/N] ")
+                                                host)
+                                        :priority program-events:+standard-event-priority+))))
+             (conditions:not-implemented-error (e)
+               (ui:notify (format nil (_ "Error: ~a") e)
+                          :as-error t))
+             (gemini-client:gemini-protocol-error (e)
+               (ui:notify (format nil "~a" e)
+                          :as-error t))
+             #-debug-mode
+             (error (e)
+               (ui:notify (format nil
+                                  (_ "Error getting ~s: ~a")
+                                  url
+                                  e)
+                          :as-error t)))))))))
 
 (defun history-back (window)
   (when-let* ((metadata (message-window:metadata window))
