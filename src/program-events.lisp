@@ -1384,7 +1384,8 @@
 (defmethod process-event ((object send-to-pipe-event))
   (with-accessors ((data    data)
                    (command command)) object
-    (os-utils:send-to-pipe data command)))
+      (tui:with-print-error-message
+        (os-utils:send-to-pipe data command))))
 
 ;;;; general usage
 

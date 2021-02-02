@@ -1186,6 +1186,7 @@
      :colorized-line->tui-string
      :standard-error-notify-life
      :with-notify-errors
+     :with-print-error-message
      :make-tui-char
      :make-tui-string))
 

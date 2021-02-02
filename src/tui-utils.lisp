@@ -398,3 +398,11 @@ latter has a length equals to `total-size'"))
                     (ui:notify (format nil (_ "Error: ~a") e)
                                :life     (* (swconf:config-notification-life) 5)
                                :as-error t))))
+
+(defmacro with-print-error-message (&body body)
+  #+debug-mode `(progn ,@body)
+  #-debug-mode `(handler-case
+                    (progn
+                      ,@body)
+                  (error (e)
+                    (ui:error-message (format nil (_ "Error: ~a") e)))))
