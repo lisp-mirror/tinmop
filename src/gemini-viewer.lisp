@@ -512,13 +512,15 @@
                            (flet ((on-input-complete (input)
                                     (when (string-not-empty-p input)
                                       (db-utils:with-ready-database (:connect nil)
-                                        (request (gemini-parser:make-gemini-iri host
-                                                                                path
-                                                                                :query    input
-                                                                                :port     port
-                                                                                :fragment fragment)
-                                                 :certificate-key    certificate-key
-                                                 :certificate        certificate)))))
+                                        (let ((encoded-input (maybe-percent-encode input)))
+                                          (request (gemini-parser:make-gemini-iri host
+                                                                                  path
+                                                                                  :query
+                                                                                  encoded-input
+                                                                                  :port     port
+                                                                                  :fragment fragment)
+                                                   :certificate-key    certificate-key
+                                                   :certificate        certificate))))))
                              (ui:ask-string-input #'on-input-complete
                                                   :hide-input hide-input
                                                   :prompt (format nil
