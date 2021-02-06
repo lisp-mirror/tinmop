@@ -317,7 +317,7 @@
     (flet ((fetch-from-cache (key)
              (assoc-value cache key :test #'string=)))
        (multiple-value-bind (actual-iri host path query port fragment)
-           (displace-iri parsed-url)
+           (gemini-client:displace-iri parsed-url)
          (declare (ignore actual-iri path query fragment))
          (or (fetch-from-cache host)
              (ignore-errors
@@ -367,9 +367,13 @@
                named download-loop
                for line-as-array = (read-line-into-array download-stream)
                while line-as-array do
+                 (gemini-client:debug-gemini "[stream] gemini file stream raw data line : ~a"
+                                              line-as-array)
                  (if (downloading-allowed-p wrapper-object)
-                     (let* ((line   (babel:octets-to-string line-as-array :errorp nil))
-                            (event  (make-gemini-download-event line wrapper-object t)))
+                     (let* ((line  (babel:octets-to-string line-as-array :errorp nil))
+                            (event (make-gemini-download-event line wrapper-object t)))
+                       (gemini-client:debug-gemini "[stream] gemini file stream got data line : ~a"
+                                                    line)
                        (write-sequence line file-stream)
                        (increment-bytes-count wrapper-object line :convert-to-octects t)
                        (maybe-render-line event))
@@ -425,25 +429,6 @@
                            (%fill-buffer)))))))
           (%fill-buffer))))))
 
-(defun displace-iri (iri)
-  (let* ((host       (uri:host     iri))
-         (path       (uri:path     iri))
-         (query      (uri:query    iri))
-         (fragment   (uri:fragment iri))
-         (port       (or (uri:port  iri)
-                         gemini-client:+gemini-default-port+))
-         (actual-iri (gemini-parser:make-gemini-iri host
-                                                    path
-                                                    :query    query
-                                                    :port     port
-                                                    :fragment fragment)))
-    (values actual-iri
-            host
-            path
-            query
-            port
-            fragment)))
-
 (defun request (url &key
                       (enqueue                    nil)
                       (certificate                nil)
@@ -451,6 +436,7 @@
                       (use-cached-file-if-exists  nil)
                       (do-nothing-if-exists-in-db t))
   (let ((parsed-iri (ignore-errors (iri:iri-parse url))))
+    (gemini-client:debug-gemini "viewer requesting iri ~s" url)
     (maybe-initialize-metadata specials:*message-window*)
     (cond
       ((null parsed-iri)
@@ -458,25 +444,29 @@
                                  (_ "Could not understand the address ~s")
                                  url)))
       (use-cached-file-if-exists
+       (gemini-client:debug-gemini "checking cache")
        (multiple-value-bind (actual-iri host path query port fragment)
-           (displace-iri parsed-iri)
+           (gemini-client:displace-iri parsed-iri)
          (if (find-db-stream-url actual-iri)
              (progn
+               (gemini-client:debug-gemini  "caching found for ~a" actual-iri)
                (add-url-to-history specials:*message-window* actual-iri)
                (db-entry-to-foreground actual-iri))
-             (request (gemini-parser:make-gemini-iri host
-                                                     path
-                                                     :query    query
-                                                     :port     port
-                                                     :fragment fragment)
-                      :certificate-key    certificate-key
-                      :certificate        certificate
-                      :use-cached-file-if-exists nil
-                      :do-nothing-if-exists-in-db
-                      do-nothing-if-exists-in-db))))
+             (progn
+               (gemini-client:debug-gemini "caching *not* found for ~a" actual-iri)
+               (request (gemini-parser:make-gemini-iri host
+                                                       path
+                                                       :query    query
+                                                       :port     port
+                                                       :fragment fragment)
+                        :certificate-key    certificate-key
+                        :certificate        certificate
+                        :use-cached-file-if-exists nil
+                        :do-nothing-if-exists-in-db
+                        do-nothing-if-exists-in-db)))))
       (t
        (multiple-value-bind (actual-iri host path query port fragment)
-           (displace-iri parsed-iri)
+           (gemini-client:displace-iri parsed-iri)
          (when (not (and do-nothing-if-exists-in-db
                          (find-db-stream-url actual-iri)))
            (when (null enqueue)
@@ -520,8 +510,11 @@
                                                                                  :port     port
                                                                                  :fragment fragment)
                                                   :certificate-key    certificate-key
-                                                  :certificate        certificate))))))
+                                                  :certificate        certificate
+                                                  :do-nothing-if-exists-in-db nil))))))
                             (ui:ask-string-input #'on-input-complete
+                                                 :priority
+                                                 program-events:+minimum-event-priority+
                                                  :hide-input hide-input
                                                  :prompt (format nil
                                                                  (_ "Server ~s asks: ~s ")
@@ -538,6 +531,7 @@
                    (add-url-to-history specials:*message-window* actual-iri)
                    (cond
                      ((gemini-client:response-redirect-p status)
+                      (gemini-client:debug-gemini "response redirect to: ~s" meta)
                       (flet ((on-input-complete (maybe-accepted)
                                (when (ui::boolean-input-accepted-p maybe-accepted)
                                  (let ((new-url (gemini-client:build-redirect-iri meta
@@ -553,6 +547,7 @@
                                                      (_ "Redirects to ~s, follows redirect? [y/N] ")
                                                      meta))))
                      ((gemini-client:response-certificate-requested-p status)
+                      (gemini-client:debug-gemini "response requested certificate")
                       (multiple-value-bind (cached-certificate cached-key)
                           (fetch-cached-certificate actual-iri)
                         (request actual-iri
@@ -561,10 +556,14 @@
                                  :certificate-key            cached-key
                                  :certificate                cached-certificate)))
                      ((gemini-client:response-input-p status)
+                      (gemini-client:debug-gemini "response requested input: ~s" meta)
                       (get-user-input nil host meta))
                      ((gemini-client:response-sensitive-input-p status)
+                      (gemini-client:debug-gemini "response requested sensitive input: ~s"
+                                                  meta)
                       (get-user-input t host meta))
                      ((streamp response)
+                      (gemini-client:debug-gemini "response is a stream")
                       (if (gemini-file-stream-p meta)
                           (let* ((starting-status (starting-status meta))
                                  (gemini-stream   (make-instance 'gemini-file-stream
@@ -591,6 +590,7 @@
                                                                           favicon))
                                  (enqueue-event (make-instance 'program-events:gemini-enqueue-download-event
                                                                :payload gemini-stream)))
+                            (gemini-client:debug-gemini "response is a gemini file stream")
                             (program-events:push-event enqueue-event)
                             (downloading-start-thread gemini-stream
                                                       thread-fn
@@ -617,6 +617,7 @@
                                                                          meta))
                                  (enqueue-event (make-instance 'program-events:gemini-enqueue-download-event
                                                                :payload gemini-stream)))
+                            (gemini-client:debug-gemini "response is *not* a gemini file stream")
                             (program-events:push-event enqueue-event)
                             (downloading-start-thread gemini-stream
                                                       thread-fn

@@ -141,4 +141,5 @@
                                      (:file "x509-tests")
                                      (:file "idn-tests")))))
 
-;; (push :debug-mode *features*)
+;;(push :debug-mode            *features*)
+(push :debug-gemini-request  *features*)

@@ -113,10 +113,14 @@
    :links
    :text-rendering-theme
    :gemini-file-response-p
+   :displace-iri
    :close-ssl-socket
    :make-client-certificate
+   :debug-gemini
    :request
    :gemini-file-stream-p
+   :request-dispatch
+   :with-request-dispatch-table
    :fetch-cached-certificate
    :build-redirect-iri
    :slurp-gemini-url))

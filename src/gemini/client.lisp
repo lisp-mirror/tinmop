@@ -300,6 +300,30 @@
 (defun percent-encode-fragment (fragment)
   (maybe-percent-encode fragment))
 
+(defun displace-iri (iri)
+  (let* ((host       (uri:host     iri))
+         (path       (uri:path     iri))
+         (query      (uri:query    iri))
+         (fragment   (uri:fragment iri))
+         (port       (or (uri:port  iri)
+                         +gemini-default-port+))
+         (actual-iri (gemini-parser:make-gemini-iri host
+                                                    path
+                                                    :query    query
+                                                    :port     port
+                                                    :fragment fragment)))
+    (values actual-iri
+            host
+            path
+            query
+            port
+            fragment)))
+
+(defun debug-gemini (&rest data)
+  #+(and debug-mode
+         debug-gemini-request)
+  (apply #'misc:dbg (text-utils:strcat "[gemini] " (first data)) (rest data)))
+
 (defun request (host path &key
                             (query nil)
                             (port  +gemini-default-port+)
@@ -328,6 +352,7 @@
                                                                  :hostname        host))
                       (request    (format nil "~a~a~a" iri #\return #\newline))
                       (cert-hash  (crypto-shortcuts:sha512 (x509:dump-certificate ssl-stream))))
+                 (debug-gemini "sending request ~a" request)
                  (if (not (db:tofu-passes-p host cert-hash))
                      (error 'gemini-tofu-error :host host)
                      (progn
@@ -336,6 +361,56 @@
                        (multiple-value-bind (status description meta response)
                            (parse-response ssl-stream)
                          (values status description meta response socket)))))))))))
+
+(defun request-dispatch (url manage-functions &key (certificate nil) (certificate-key nil))
+  (let ((parsed-iri (iri:iri-parse url)))
+    (multiple-value-bind (actual-iri host path query port fragment)
+        (displace-iri parsed-iri)
+      (multiple-value-bind (status code-description meta response socket)
+          (gemini-client:request host
+                                 path
+                                 :certificate-key    certificate-key
+                                 :client-certificate certificate
+                                 :query              query
+                                 :port               port
+                                 :fragment           fragment)
+        (flet ((call-appropriate-function (response-type)
+                 (funcall (getf manage-functions
+                                response-type
+                                (lambda (status code-description meta response socket iri)
+                                  (declare (ignore status code-description meta response socket iri))))
+                          status code-description meta response socket actual-iri)))
+          (cond
+            ((gemini-client:response-redirect-p status)
+             (call-appropriate-function :redirect))
+            ((gemini-client:response-certificate-requested-p status)
+             (call-appropriate-function :certificate-requested))
+            ((gemini-client:response-input-p status)
+             (call-appropriate-function :input-requested))
+            ((gemini-client:response-sensitive-input-p status)
+             (call-appropriate-function :sensitive-input-requested))
+            (t
+             (call-appropriate-function :others-responses))))))))
+
+(defmacro with-request-dispatch-table ((table &key (ignore-warning nil)) &body body)
+  "Anaphoric, the anaphora is `dispatch-table'"
+  (assert (listp table))
+  (if (null table)
+      (error "Empty dispatch-table")
+      (progn
+        (when (not ignore-warning)
+          (when (null (getf table :redirect))
+            (warn "No dispatch for redirect found"))
+          (when (null (getf  table :certificate-requested))
+            (warn "No dispatch for certificate request"))
+          (when (null (getf table :input-requested))
+            (warn "No dispatch for input request"))
+          (when (null (getf table :sensitive-input-requested))
+            (warn "No dispatch for sensitive-input request")))
+        (when (null (getf table :others-responses))
+          (error "No dispatch for others responses"))
+        `(let ((dispatch-table (list ,@table)))
+           ,@body))))
 
 (defun gemini-file-stream-p (meta)
   (gemini-client:mime-gemini-p meta))
@@ -378,22 +453,23 @@ use as there is a chance that  it would not returns. Anyway for gemlog
 subscription (for example) could be used.
 
 TODO: Add client certificate."
-  (let ((iri         (iri:iri-parse url)))
-    (multiple-value-bind (status description meta response socket)
-        (request (uri:host iri)
-                 (uri:path iri)
-                 :query    (uri:query    iri)
-                 :port     (uri:port     iri)
-                 :fragment (uri:fragment iri))
-      (declare (ignore description))
-      (cond
-        ((response-success-p status)
-         (let ((data (misc:make-fresh-array 0 0 '(unsigned-byte 8) nil)))
-           (loop for new-byte = (read-byte response nil nil)
-                 while new-byte do
-                   (vector-push-extend new-byte data))
-           (close-ssl-socket socket)
-           data))
-        ((and (response-redirect-p status)
-              (< redirect-count +maximum-redirections+))
-         (slurp-gemini-url (build-redirect-iri meta iri) (1+ redirect-count)))))))
+  (labels ((redirect-dispatch (status code-description meta response socket iri)
+             (declare (ignore status code-description response socket))
+             (when (< redirect-count +maximum-redirections+)
+               (slurp-gemini-url (build-redirect-iri meta iri) (1+ redirect-count))))
+           (default-dispatch (status code-description meta response socket iri)
+             (declare (ignorable code-description iri meta))
+             (debug-gemini "response data: ~s ~s ~s ~s ~s ~s"
+                           status code-description meta response socket iri)
+             (cond
+               ((response-success-p status)
+                (let ((data (misc:make-fresh-array 0 0 '(unsigned-byte 8) nil)))
+                  (loop for new-byte = (read-byte response nil nil)
+                        while new-byte do
+                          (vector-push-extend new-byte data))
+                  (close-ssl-socket socket)
+                  data)))))
+    (with-request-dispatch-table ((:others-responses #'default-dispatch
+                                   :redirect         #'redirect-dispatch)
+                                  :ignore-warning t)
+      (request-dispatch url dispatch-table))))
