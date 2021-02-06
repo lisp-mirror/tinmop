@@ -472,10 +472,8 @@
            (when (null enqueue)
              (ensure-just-one-stream-rendering))
            (handler-case
-               (labels ((gemini-file-stream-p (meta)
-                          (gemini-client:mime-gemini-p meta))
-                        (starting-status (meta)
-                          (if (gemini-file-stream-p meta)
+               (labels ((starting-status (meta)
+                          (if (gemini-client:gemini-file-stream-p meta)
                               (if enqueue
                                   :streaming
                                   :rendering)
@@ -564,7 +562,7 @@
                       (get-user-input t host meta))
                      ((streamp response)
                       (gemini-client:debug-gemini "response is a stream")
-                      (if (gemini-file-stream-p meta)
+                      (if (gemini-client:gemini-file-stream-p meta)
                           (let* ((starting-status (starting-status meta))
                                  (gemini-stream   (make-instance 'gemini-file-stream
                                                                  :host            host
