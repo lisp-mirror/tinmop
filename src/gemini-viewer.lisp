@@ -480,22 +480,6 @@
                               (if enqueue
                                   :streaming
                                   :running)))
-                        (fetch-cached-certificate (actual-iri)
-                          (let ((certificate nil)
-                                (key         nil))
-                            (multiple-value-bind (certificate-cache key-cache)
-                                (db:ssl-cert-find actual-iri)
-                              (if (and certificate-cache
-                                       key-cache)
-                                  (setf certificate certificate-cache
-                                        key         key-cache)
-                                  (multiple-value-bind (certificate-new key-new)
-                                      (gemini-client:make-client-certificate actual-iri)
-                                    (setf certificate certificate-new
-                                          key         key-new)))
-                              (assert certificate)
-                              (assert key)
-                              (values certificate key))))
                         (get-user-input (hide-input host prompt)
                           (flet ((on-input-complete (input)
                                    (when (string-not-empty-p input)
@@ -547,7 +531,7 @@
                      ((gemini-client:response-certificate-requested-p status)
                       (gemini-client:debug-gemini "response requested certificate")
                       (multiple-value-bind (cached-certificate cached-key)
-                          (fetch-cached-certificate actual-iri)
+                          (gemini-client:fetch-cached-certificate actual-iri)
                         (request actual-iri
                                  :enqueue                    enqueue
                                  :do-nothing-if-exists-in-db do-nothing-if-exists-in-db
