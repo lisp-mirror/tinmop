@@ -1272,7 +1272,9 @@ than (swconf:config-purge-history-days-offset) days in the past"
                        :skip-ignored-p skip-ignored-p
                        :timeline       +default-reblogged-timeline+)
             ;; now try to decrypt message if possible/needed
-            (maybe-decrypt-update-status-text id timeline folder))
+            (maybe-decrypt-update-status-text id timeline folder)
+            (let ((db-status (find-status-id-folder-timeline id folder timeline)))
+              (hooks:run-hook-compose 'hooks:*after-saving-message* db-status)))
           ;; add poll or update poll's votes
           (when poll
             (update-db poll :status-id id)))))))

@@ -100,6 +100,11 @@ all hooks must returns nil for this message to be not skipped
 Each function takes 4 parameters: status, timeline, folder, kind (:home :public)
 localp")
 
+(defparameter *after-saving-message* '()
+  "Run this  hooks to a message just saved in the database.
+
+Each function takes 1 parameter: the database row for the saved status.")
+
 (defparameter *before-displaying-links-hook* '()
   "Run this hooks before sending the list of URLs to the window that allow the user to
 open the links")

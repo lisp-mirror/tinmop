@@ -1492,6 +1492,7 @@
    :*before-prepare-for-rendering-message*
    :*before-sending-message*
    :*skip-message-hook*
+   :*after-saving-message*
    :*before-displaying-links-hook*))
 
 (defpackage :keybindings
