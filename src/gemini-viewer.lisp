@@ -551,6 +551,7 @@
                                                                          parsed-iri)))
                           (db-utils:with-ready-database (:connect nil)
                             (request new-url
+                                     :enqueue         enqueue
                                      :certificate-key certificate-key
                                      :certificate     certificate))))))
                (ui:ask-string-input #'on-input-complete
@@ -611,6 +612,7 @@
                       (progn
                         (gemini-client:debug-gemini "caching *not* found for ~a" actual-iri)
                         (request actual-iri
+                                 :enqueue            enqueue
                                  :certificate-key    certificate-key
                                  :certificate        certificate
                                  :use-cached-file-if-exists nil
