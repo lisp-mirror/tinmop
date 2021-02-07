@@ -30,6 +30,8 @@
 
 (define-condition not-implemented-error (text-error)
   ()
+  (:report (lambda (condition stream)
+             (format stream "~a" (text condition))))
   (:documentation "Error for not-implemented features"))
 
 (define-condition null-reference (text-error)

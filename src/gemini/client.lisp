@@ -320,6 +320,7 @@
             fragment)))
 
 (defun debug-gemini (&rest data)
+  (declare (ignorable data))
   #+(and debug-mode
          debug-gemini-request)
   (apply #'misc:dbg (text-utils:strcat "[gemini] " (first data)) (rest data)))
@@ -377,40 +378,65 @@
         (flet ((call-appropriate-function (response-type)
                  (funcall (getf manage-functions
                                 response-type
-                                (lambda (status code-description meta response socket iri)
-                                  (declare (ignore status code-description meta response socket iri))))
-                          status code-description meta response socket actual-iri)))
+                                (lambda (status code-description meta response socket iri parsed-iri)
+                                  (declare (ignore status code-description meta response socket iri parsed-iri))))
+                          status
+                          code-description
+                          meta
+                          response
+                          socket
+                          actual-iri
+                          parsed-iri)))
           (cond
             ((gemini-client:response-redirect-p status)
              (call-appropriate-function :redirect))
             ((gemini-client:response-certificate-requested-p status)
              (call-appropriate-function :certificate-requested))
+            ((gemini-client:response-success-p status)
+             (call-appropriate-function :success))
             ((gemini-client:response-input-p status)
              (call-appropriate-function :input-requested))
             ((gemini-client:response-sensitive-input-p status)
              (call-appropriate-function :sensitive-input-requested))
             (t
-             (call-appropriate-function :others-responses))))))))
+             (call-appropriate-function :fallback))))))))
+
+(define-constant +allowed-dispatch-keys+ '(:redirect
+                                           :certificate-requested
+                                           :success
+                                           :input-requested
+                                           :sensitive-input-requested
+                                           :fallback)
+  :test #'equalp)
 
 (defmacro with-request-dispatch-table ((table &key (ignore-warning nil)) &body body)
   "Anaphoric, the anaphora is `dispatch-table'"
   (assert (listp table))
-  (if (null table)
-      (error "Empty dispatch-table")
-      (progn
-        (when (not ignore-warning)
-          (when (null (getf table :redirect))
-            (warn "No dispatch for redirect found"))
-          (when (null (getf  table :certificate-requested))
-            (warn "No dispatch for certificate request"))
-          (when (null (getf table :input-requested))
-            (warn "No dispatch for input request"))
-          (when (null (getf table :sensitive-input-requested))
-            (warn "No dispatch for sensitive-input request")))
-        (when (null (getf table :others-responses))
-          (error "No dispatch for others responses"))
-        `(let ((dispatch-table (list ,@table)))
-           ,@body))))
+  (let* ((unknown-keys (loop for i in (remove-if-not #'keywordp table)
+                             when (not (find i +allowed-dispatch-keys+))
+                               collect i)))
+    (if (null table)
+        (error "Empty dispatch-table")
+        (progn
+          (when (not ignore-warning)
+            (when unknown-keys
+              (warn (format nil
+                            "found unkown keys in dispatch-table table: ~s"
+                            unknown-keys)))
+            (when (null (getf table :redirect))
+              (warn "No dispatch for redirect found"))
+            (when (null (getf  table :certificate-requested))
+              (warn "No dispatch for certificate request"))
+            (when (null (getf table :success))
+              (warn "No dispatch for success found"))
+            (when (null (getf table :input-requested))
+              (warn "No dispatch for input request"))
+            (when (null (getf table :sensitive-input-requested))
+              (warn "No dispatch for sensitive-input request"))
+            (when (null (getf table :fallback))
+              (warn "No dispatch for others responses")))
+          `(let ((dispatch-table (list ,@table)))
+             ,@body)))))
 
 (defun gemini-file-stream-p (meta)
   (gemini-client:mime-gemini-p meta))
@@ -453,23 +479,21 @@ use as there is a chance that  it would not returns. Anyway for gemlog
 subscription (for example) could be used.
 
 TODO: Add client certificate."
-  (labels ((redirect-dispatch (status code-description meta response socket iri)
-             (declare (ignore status code-description response socket))
+  (labels ((redirect-dispatch (status code-description meta response socket iri parsed-iri)
+             (declare (ignore status code-description response socket parsed-iri))
              (when (< redirect-count +maximum-redirections+)
                (slurp-gemini-url (build-redirect-iri meta iri) (1+ redirect-count))))
-           (default-dispatch (status code-description meta response socket iri)
-             (declare (ignorable code-description iri meta))
-             (debug-gemini "response data: ~s ~s ~s ~s ~s ~s"
+           (success-dispatch (status code-description meta response socket iri parsed-iri)
+             (declare (ignorable code-description iri meta parsed-iri))
+             (debug-gemini "success response data: ~s ~s ~s ~s ~s ~s"
                            status code-description meta response socket iri)
-             (cond
-               ((response-success-p status)
-                (let ((data (misc:make-fresh-array 0 0 '(unsigned-byte 8) nil)))
-                  (loop for new-byte = (read-byte response nil nil)
-                        while new-byte do
-                          (vector-push-extend new-byte data))
-                  (close-ssl-socket socket)
-                  data)))))
-    (with-request-dispatch-table ((:others-responses #'default-dispatch
-                                   :redirect         #'redirect-dispatch)
+             (let ((data (misc:make-fresh-array 0 0 '(unsigned-byte 8) nil)))
+               (loop for new-byte = (read-byte response nil nil)
+                     while new-byte do
+                       (vector-push-extend new-byte data))
+               (close-ssl-socket socket)
+               data)))
+    (with-request-dispatch-table ((:success  #'success-dispatch
+                                   :redirect #'redirect-dispatch)
                                   :ignore-warning t)
       (request-dispatch url dispatch-table))))
