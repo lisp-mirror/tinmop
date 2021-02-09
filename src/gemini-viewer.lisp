@@ -429,13 +429,6 @@
                            (%fill-buffer)))))))
           (%fill-buffer))))))
 
-(defun request-fallback-dispatched (status code-description meta response socket iri parsed-iri)
-  (declare (ignore response socket parsed-iri))
-  (error (make-condition 'conditions:not-implemented-error
-                         :text (format nil
-                                       "received an unknown response from server ~s ~a ~s ~s"
-                                       iri status code-description meta))))
-
 (defun request-success-dispatched-clrs (enqueue)
   (lambda (status code-description meta response socket iri parsed-iri)
     (declare (ignore iri))
@@ -594,10 +587,8 @@
                                                      :redirect
                                                      #'redirect-dispatch
                                                      :success
-                                                     (request-success-dispatched-clrs enqueue)
-                                                     :fallback
-                                                     #'request-fallback-dispatched)
-                                                    :ignore-warning nil)
+                                                     (request-success-dispatched-clrs enqueue))
+                                                     :ignore-warning nil)
           (gemini-client:debug-gemini "viewer requesting iri ~s" url)
           (maybe-initialize-metadata specials:*message-window*)
           (let ((actual-iri (gemini-client:displace-iri (iri:iri-parse url))))

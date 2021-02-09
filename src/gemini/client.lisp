@@ -363,6 +363,13 @@
                            (parse-response ssl-stream)
                          (values status description meta response socket)))))))))))
 
+(defun missing-dispath-function (status code-description meta response socket iri parsed-iri)
+  (declare (ignore response socket parsed-iri))
+  (error (make-condition 'conditions:not-implemented-error
+                         :text (format nil
+                                       "received an unknown response from server ~s ~a ~s ~s"
+                                       iri status code-description meta))))
+
 (defun request-dispatch (url manage-functions &key (certificate nil) (certificate-key nil))
   (let ((parsed-iri (iri:iri-parse url)))
     (multiple-value-bind (actual-iri host path query port fragment)
@@ -378,8 +385,7 @@
         (flet ((call-appropriate-function (response-type)
                  (funcall (getf manage-functions
                                 response-type
-                                (lambda (status code-description meta response socket iri parsed-iri)
-                                  (declare (ignore status code-description meta response socket iri parsed-iri))))
+                                #'missing-dispath-function)
                           status
                           code-description
                           meta
@@ -415,28 +421,25 @@
   (let* ((unknown-keys (loop for i in (remove-if-not #'keywordp table)
                              when (not (find i +allowed-dispatch-keys+))
                                collect i)))
-    (if (null table)
-        (error "Empty dispatch-table")
-        (progn
-          (when (not ignore-warning)
-            (when unknown-keys
-              (warn (format nil
-                            "found unkown keys in dispatch-table table: ~s"
-                            unknown-keys)))
-            (when (null (getf table :redirect))
-              (warn "No dispatch for redirect found"))
-            (when (null (getf  table :certificate-requested))
-              (warn "No dispatch for certificate request"))
-            (when (null (getf table :success))
-              (warn "No dispatch for success found"))
-            (when (null (getf table :input-requested))
-              (warn "No dispatch for input request"))
-            (when (null (getf table :sensitive-input-requested))
-              (warn "No dispatch for sensitive-input request"))
-            (when (null (getf table :fallback))
-              (warn "No dispatch for others responses")))
-          `(let ((dispatch-table (list ,@table)))
-             ,@body)))))
+    (when (not ignore-warning)
+      (when (null table)
+        (error "Empty dispatch-table"))
+      (when unknown-keys
+        (warn (format nil
+                      "found unkown keys in dispatch-table table: ~s"
+                      unknown-keys)))
+      (when (null (getf table :redirect))
+        (warn "No dispatch for redirect found"))
+      (when (null (getf  table :certificate-requested))
+        (warn "No dispatch for certificate request"))
+      (when (null (getf table :success))
+        (warn "No dispatch for success found"))
+      (when (null (getf table :input-requested))
+        (warn "No dispatch for input request"))
+      (when (null (getf table :sensitive-input-requested))
+        (warn "No dispatch for sensitive-input request")))
+    `(let ((dispatch-table (list ,@table)))
+       ,@body)))
 
 (defun gemini-file-stream-p (meta)
   (gemini-client:mime-gemini-p meta))
