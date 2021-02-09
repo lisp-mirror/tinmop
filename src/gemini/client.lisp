@@ -338,30 +338,28 @@
                                :fragment (percent-encode-fragment fragment)))
          (ctx (cl+ssl:make-context :verify-mode cl+ssl:+ssl-verify-none+)))
     (cl+ssl:with-global-context (ctx :auto-free-p t)
-      (let ((socket (usocket:socket-connect (idn:host-unicode->ascii host)
-                                            port
-                                            :element-type '(unsigned-byte 8))))
-        (unwind-protect
-             (when socket
-               (let* ((stream     (usocket:socket-stream socket))
-                      (ssl-stream (cl+ssl:make-ssl-client-stream stream
-                                                                 :certificate     client-certificate
-                                                                 :key             certificate-key
-                                                                 :external-format nil
-                                                                 :unwrap-stream-p t
-                                                                 :verify          nil
-                                                                 :hostname        host))
-                      (request    (format nil "~a~a~a" iri #\return #\newline))
-                      (cert-hash  (crypto-shortcuts:sha512 (x509:dump-certificate ssl-stream))))
-                 (debug-gemini "sending request ~a" request)
-                 (if (not (db:tofu-passes-p host cert-hash))
-                     (error 'gemini-tofu-error :host host)
-                     (progn
-                       (write-sequence (babel:string-to-octets request) ssl-stream)
-                       (force-output ssl-stream)
-                       (multiple-value-bind (status description meta response)
-                           (parse-response ssl-stream)
-                         (values status description meta response socket)))))))))))
+      (when-let* ((socket      (usocket:socket-connect (idn:host-unicode->ascii host)
+                                                       port
+                                                       :element-type '(unsigned-byte 8)))
+                  (stream     (usocket:socket-stream socket))
+                  (ssl-stream (cl+ssl:make-ssl-client-stream stream
+                                                             :certificate     client-certificate
+                                                             :key             certificate-key
+                                                             :external-format nil
+                                                             :unwrap-stream-p t
+                                                             :verify          nil
+                                                             :hostname        host))
+                  (request    (format nil "~a~a~a" iri #\return #\newline))
+                  (cert-hash  (crypto-shortcuts:sha512 (x509:dump-certificate ssl-stream))))
+        (debug-gemini "sending request ~a" request)
+        (if (not (db:tofu-passes-p host cert-hash))
+            (error 'gemini-tofu-error :host host)
+            (progn
+              (write-sequence (babel:string-to-octets request) ssl-stream)
+              (force-output ssl-stream)
+              (multiple-value-bind (status description meta response)
+                  (parse-response ssl-stream)
+                (values status description meta response socket))))))))
 
 (defun missing-dispath-function (status code-description meta response socket iri parsed-iri)
   (declare (ignore response socket parsed-iri))
