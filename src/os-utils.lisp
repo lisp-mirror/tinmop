@@ -119,10 +119,14 @@
                           :output t
                           :error  t))))
 
-(defun open-link-with-program (program link)
-  (sb-ext:run-program program
-                      (list link)
-                      :search t
-                      :wait nil
-                      :output nil
-                      :error  :output))
+(defun open-link-with-program (program-and-args link)
+  (let* ((command-line-splitted (text-utils:split-words program-and-args))
+         (program               (first command-line-splitted))
+         (args                  (append (rest command-line-splitted)
+                                        (list link))))
+    (sb-ext:run-program program
+                        args
+                        :search t
+                        :wait nil
+                        :output nil
+                        :error  :output)))
