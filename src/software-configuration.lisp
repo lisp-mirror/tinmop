@@ -24,10 +24,12 @@
 ;;                          | COLOR-RE-ASSIGN
 ;;                          | SERVER-ASSIGN
 ;;                          | USERNAME-ASSIGN
+;;                          | OPEN-LINK-HELPER
 ;;                          | GENERIC-ASSIGN)
 ;;                         COMMENT*
 ;; SERVER-ASSIGN         := SERVER-KEY BLANKS ASSIGN BLANKS GENERIC-VALUE BLANKS
-;; USERNAME-ASSIGN       := USERNAME-KEY BLANKS ASSIGN BLANKS GENERIC-VALUE BLANKS
+;; USERNAME-ASSIGN       := USERNAME-KEY BLANKS WITH BLANKS GENERIC-VALUE BLANKS
+;; OPEN-LINK-HELPER      := OPEN-LINK-HELPER-KEY BLANKS ASSIGN BLANKS REGEXP PROGRAM-NAME
 ;; GENERIC-ASSIGN        := (and key blanks assign blanks
 ;;                           (or quoted-string
 ;;                               hexcolor
@@ -40,11 +42,15 @@
 ;; KEY                   := FIELD (FIELD-SEPARATOR KEY)*
 ;; BLANKS                := (BLANK)*
 ;; FILEPATH              := QUOTED-STRING
+;; PROGRAM-NAME          := QUOTED-STRING
 ;; USE                   := "use"
 ;; SERVER-KEY            := "server"
 ;; USERNAME-KEY          := "username"
 ;; COLOR-RE-KEY          := "color-regexp"
 ;; IGNORE-USER-RE-KEY    := "ignore-user-regexp"
+;; OPEN                  := "open"
+;; OPEN-LINK-HELPER-KEY  := OPEN
+;; WITH-KEY              := "with"
 ;; REGEXP                := QUOTED-STRING
 ;; QUOTED-STRING         := #\" (not #\") #\"
 ;; FIELD                 := ( (or ESCAPED-CHARACTER
@@ -257,6 +263,14 @@
 (defrule username-key "username"
   (:constant :username))
 
+(defrule open "open"
+  (:constant :open))
+
+(defrule open-link-helper-key open)
+
+(defrule with "with"
+  (:constant :with))
+
 (defrule server-assign
     (and server-key blanks assign blanks generic-value blanks)
   (:function remove-if-null))
@@ -264,6 +278,43 @@
 (defrule username-assign
     (and username-key blanks assign blanks generic-value blanks)
   (:function remove-if-null))
+
+(defclass open-link-helper ()
+  ((re
+    :initform nil
+    :initarg  :re
+    :accessor re)
+   (program-name
+    :initform nil
+    :initarg  :program-name
+    :accessor program-name))
+  (:documentation "When a gemini link matches `re' try to open it with 'program-name'"))
+
+(defmethod print-object ((object open-link-helper) stream)
+  (print-unreadable-object (object stream :type t :identity nil)
+    (with-accessors ((re           re)
+                     (program-name program-name)) object
+      (format stream "re: ~s program: ~s" re program-name))))
+
+(defun make-open-link-helper (re program-name)
+  (assert (stringp program-name))
+  (assert (stringp re))
+  (make-instance 'open-link-helper
+                 :re          re
+                 :program-name  program-name))
+
+(defrule open-link-helper
+    (and open-link-helper-key
+         blanks
+         regexp ; 2
+         blanks
+         with
+         blanks
+         regexp ; 6
+         blanks)
+  (:function (lambda (args)
+               (list :open-link-helper
+                     (make-open-link-helper (elt args 2) (elt args 6))))))
 
 (defrule filepath quoted-string)
 
@@ -286,6 +337,7 @@
              ignore-user-re-assign
              server-assign
              username-assign
+             open-link-helper
              generic-assign)
          (* comment))
   (:function second))
@@ -356,6 +408,7 @@
                    mark
                    vote-vertical-bar
                    crypted
+                   open-link-helper
                    histogram
                    error-dialog
                    info-dialog
@@ -437,7 +490,8 @@
             (value (second entry)))
         (cond
           ((or (eq +key-color-re+ key)
-               (eq +key-ignore-user-re+ key))
+               (eq +key-ignore-user-re+ key)
+               (eq +key-open-link-helper+ key))
            (setf (access:accesses *software-configuration* key)
                  (append (access:accesses *software-configuration* key)
                          (list value))))
@@ -711,6 +765,14 @@
 
 (gen-simple-access (password-echo-character)
                    +key-password-echo-character+)
+
+(gen-simple-access (all-link-open-program) +key-open-link-helper+)
+
+(defun link-regex->program-to-use (link)
+  (let ((found (find-if (lambda (a)
+                          (cl-ppcre:scan (re a) link))
+                        (config-all-link-open-program))))
+    (program-name found)))
 
 (defun config-win-focus-mark ()
   (values (access:accesses  *software-configuration*

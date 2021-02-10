@@ -82,7 +82,10 @@
           (program-events:push-event event))
         (gemini-viewer:request url :enqueue enqueue
                                    :use-cached-file-if-exists t))
-      (os-utils:xdg-open url)))
+      (let ((program (swconf:link-regex->program-to-use url)))
+        (if program
+            (os-utils:open-link-with-program program url)
+            (os-utils:xdg-open url)))))
 
 (defclass open-links-window ()
   ((links

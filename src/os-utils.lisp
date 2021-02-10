@@ -118,3 +118,11 @@
                           :input  stream
                           :output t
                           :error  t))))
+
+(defun open-link-with-program (program link)
+  (sb-ext:run-program program
+                      (list link)
+                      :search t
+                      :wait nil
+                      :output nil
+                      :error  :output))

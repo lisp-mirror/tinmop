@@ -323,6 +323,7 @@
    :+ssl-key-name+
    :cpu-number
    :xdg-open
+   :open-link-with-program
    :getenv
    :default-temp-dir
    :open-with-editor
@@ -1116,6 +1117,7 @@
    :config-username
    :config-password-echo-character
    :config-win-focus-mark
+   :link-regex->program-to-use
    :thread-message-symbol
    :thread-message-read-colors
    :thread-message-unread-colors
