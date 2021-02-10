@@ -102,6 +102,11 @@ completed) and the common prefix of the completion string."
   (lambda (a)
     (text-utils:string-starts-with-p hint a)))
 
+(defun contains-clsr (hint)
+  (let ((scanner (cl-ppcre:create-scanner hint)))
+    (lambda (a)
+      (cl-ppcre:scan scanner a))))
+
 (defun remove-if-hidden (candidates)
   (remove-if #'db:hidden-recipient-p candidates))
 
@@ -173,7 +178,7 @@ list af all possible candidtae for completion."
 
 (defun make-complete-gemini-iri-fn (prompt)
   (lambda (hint)
-    (when-let ((matched (remove-if-not (starts-with-clsr hint)
+    (when-let ((matched (remove-if-not (contains-clsr hint)
                                        (remove-duplicates (funcall #'db:history-prompt->values
                                                                    prompt)
                                                           :test #'string=))))
