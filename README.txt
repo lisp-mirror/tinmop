@@ -318,8 +318,8 @@ Table of Contents
     │ username = username
     └────
 
-    If this file does not exists or is invalid tinmop will refuse to
-    start.
+    If this file does not exists or is invalid tinmop could be used just
+    as a gemini client.
 
     Please check the man page (tinmop(1)) for more information.
 
