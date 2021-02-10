@@ -1,3 +1,69 @@
+2021-02-10  cage
+
+	* README.txt:
+	* etc/default-theme.conf,
+	* src/open-message-link-window.lisp,
+	* src/package.lisp,
+        * README.org,
+        * src/os-utils.lisp,
+        * src/software-configuration.lisp:
+
+	- added configuration  directive to use  a specific program to  open
+          a link (e.g. open all mp3 files with program mpv);
+	- updated README, if no configuration file is given tinmop can be
+        used as a gemini client.
+
+2021-02-09  cage
+
+	* src/gemini/client.lisp,
+        * src/gemini-viewer.lisp:
+
+	 - [gemini] removed useless 'unwind-protect' (and simplified code)
+	from 'gemini-client:request';
+
+	-  [gemini] in  gemini-client:request-dispatch signal  a condition
+	('not-implemented-error') instead of doing nothing when a response
+	in not handled (i.e. no function for that response type exists).
+
+2021-02-07  cage
+
+        * src/gemini-viewer.lisp:
+
+	- [gemini] ensured  'gemini-viewer:request' respects the 'enqueue'
+	argument when making recursive call to itself.
+
+2021-02-07  cage
+
+        * src/conditions.lisp, src/gemini-viewer.lisp,
+        src/gemini/client.lisp: - [gemini] rewritten gemini-viewer:request using
+          gemini-client:request-dispatch machinery; hopefully this should made
+        the function easier to read (by human) and extend.
+
+2021-02-06  cage
+
+	* src/gemini/client.lisp,
+	* src/hooks.lisp,
+	* src/package.lisp:
+        * src/db.lisp,
+        * src/gemini-viewer.lisp,
+
+	- replaced local function 'fetch-cached-certificate' with a global;
+	- replaced local function with a global one;
+	- added hook '*after-saving-message*.
+
+2021-02-02  cage
+
+	* src/gemini-viewer.lisp,
+	* src/program-events.lisp,
+	* src/tui-utils.lisp:
+        * src/package.lisp,
+
+	- fixed indentation of 'gemini-viewer:request';
+	- [gemini] encoded the input string before making the request;
+	- prevented crash when sending  message to command did not worked.
+	Printing error to command line instead.
+
+
 2021-01-31  cage
 
 	* README.org,
