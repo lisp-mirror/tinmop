@@ -769,7 +769,7 @@
 (gen-simple-access (all-link-open-program) +key-open-link-helper+)
 
 (defun link-regex->program-to-use (link)
-  (let ((found (find-if (lambda (a)
+  (when-let ((found (find-if (lambda (a)
                           (cl-ppcre:scan (re a) link))
                         (config-all-link-open-program))))
     (program-name found)))
