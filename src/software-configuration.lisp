@@ -241,7 +241,7 @@
                              "underline"
                              "blink")
   (:text t)
-  (:function tui-utils:text->tui-attribute))
+  (:function (lambda (a) (tui-utils:text->tui-attribute a))))
 
 (defrule color-re-assign
     (and color-re-key blanks

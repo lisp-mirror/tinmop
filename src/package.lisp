@@ -995,58 +995,6 @@
    :shortcode-lookup
    :emojify))
 
-(defpackage :tui-utils
-    (:use
-     :cl
-     :alexandria
-     :cl-ppcre
-     :local-time
-     :croatoan
-     :config
-     :constants
-     :interfaces
-     :text-utils)
-    (:nicknames :tui)
-    (:import-from :misc-utils :defalias)
-    (:export
-     :make-win-background
-     :make-croatoan-window
-     :make-blocking-croatoan-window
-     :make-screen
-     :make-tui-char
-     :make-tui-string
-     :tui-format
-     :decode-key-event
-     :colorize-tree-element
-     :colorize-tree-line
-     :text-length
-     :find-max-line-width
-     :ncat-complex-string
-     :to-tui-string
-     :cat-complex-string
-     :cat-tui-string
-     :tui-char->char
-     :tui-string->chars-string
-     :text-ellipsis
-     :right-pad-text
-     :text->tui-attribute
-     :assemble-attributes
-     :attribute-reverse
-     :attribute-bold
-     :attribute-underline
-     :attribute-italic
-     :attribute-blink
-     :attribute-dim
-     :attribute-invisible
-     :combine-attributes
-     :colorize-line
-     :colorized-line->tui-string
-     :standard-error-notify-life
-     :with-notify-errors
-     :with-print-error-message
-     :make-tui-char
-     :make-tui-string))
-
 (defpackage :software-configuration
   (:use
    :cl
@@ -1191,6 +1139,58 @@
    :input-foreground
    :selected-background
    :selected-foreground))
+
+(defpackage :tui-utils
+    (:use
+     :cl
+     :alexandria
+     :cl-ppcre
+     :local-time
+     :croatoan
+     :config
+     :constants
+     :interfaces
+     :text-utils)
+    (:nicknames :tui)
+    (:import-from :misc-utils :defalias)
+    (:export
+     :make-win-background
+     :make-croatoan-window
+     :make-blocking-croatoan-window
+     :make-screen
+     :make-tui-char
+     :make-tui-string
+     :tui-format
+     :decode-key-event
+     :colorize-tree-element
+     :colorize-tree-line
+     :text-length
+     :find-max-line-width
+     :ncat-complex-string
+     :to-tui-string
+     :cat-complex-string
+     :cat-tui-string
+     :tui-char->char
+     :tui-string->chars-string
+     :text-ellipsis
+     :right-pad-text
+     :text->tui-attribute
+     :assemble-attributes
+     :attribute-reverse
+     :attribute-bold
+     :attribute-underline
+     :attribute-italic
+     :attribute-blink
+     :attribute-dim
+     :attribute-invisible
+     :combine-attributes
+     :colorize-line
+     :colorized-line->tui-string
+     :standard-error-notify-life
+     :with-notify-errors
+     :with-print-error-message
+     :make-tui-char
+     :make-tui-string))
 
 (defpackage :command-line
   (:use
