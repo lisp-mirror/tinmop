@@ -29,7 +29,7 @@
 ;;                         COMMENT*
 ;; SERVER-ASSIGN         := SERVER-KEY BLANKS ASSIGN BLANKS GENERIC-VALUE BLANKS
 ;; USERNAME-ASSIGN       := USERNAME-KEY BLANKS WITH BLANKS GENERIC-VALUE BLANKS
-;; OPEN-LINK-HELPER      := OPEN-LINK-HELPER-KEY BLANKS ASSIGN BLANKS REGEXP PROGRAM-NAME
+;; OPEN-LINK-HELPER      := OPEN-LINK-HELPER-KEY BLANKS ASSIGN BLANKS REGEXP PROGRAM-NAME BLANKS USE-CACHE
 ;; GENERIC-ASSIGN        := (and key blanks assign blanks
 ;;                           (or quoted-string
 ;;                               hexcolor
@@ -43,6 +43,8 @@
 ;; BLANKS                := (BLANK)*
 ;; FILEPATH              := QUOTED-STRING
 ;; PROGRAM-NAME          := QUOTED-STRING
+;; USE-CACHE             := USE BLANKS CACHE
+;; CACHE                 := "cache"
 ;; USE                   := "use"
 ;; SERVER-KEY            := "server"
 ;; USERNAME-KEY          := "username"
@@ -287,40 +289,57 @@
    (program-name
     :initform nil
     :initarg  :program-name
-    :accessor program-name))
+    :accessor program-name)
+   (use-cache
+    :initform t
+    :initarg  :use-cache
+    :reader   use-cache-p
+    :writer   (setf use-cache)))
   (:documentation "When a gemini link matches `re' try to open it with 'program-name'"))
 
 (defmethod print-object ((object open-link-helper) stream)
   (print-unreadable-object (object stream :type t :identity nil)
     (with-accessors ((re           re)
-                     (program-name program-name)) object
-      (format stream "re: ~s program: ~s" re program-name))))
+                     (program-name program-name)
+                     (use-cache-p  use-cache-p)) object
+      (format stream "re: ~s program: ~s use cache? ~a" re program-name use-cache-p))))
 
-(defun make-open-link-helper (re program-name)
+(defun make-open-link-helper (re program-name use-cache)
   (assert (stringp program-name))
   (assert (stringp re))
   (make-instance 'open-link-helper
-                 :re          re
-                 :program-name  program-name))
+                 :re           re
+                 :program-name program-name
+                 :use-cache    use-cache))
+
+(defrule use "use"
+  (:text t))
+
+(defrule cache "cache"
+  (:text t))
+
+(defrule use-cache (and use blanks cache))
 
 (defrule open-link-helper
     (and open-link-helper-key
          blanks
-         regexp ; 2
+         regexp ; 2 link-pattern
          blanks
          with
          blanks
-         regexp ; 6
-         blanks)
+         regexp ; 6 program to use
+         blanks
+         (? (and use-cache ; 8 use cache?
+                 blanks)))
   (:function (lambda (args)
                (list :open-link-helper
-                     (make-open-link-helper (elt args 2) (elt args 6))))))
+                     (make-open-link-helper (elt args 2) (elt args 6) (elt args 8))))))
 
 (defrule filepath quoted-string)
 
 (defparameter *already-included-files* ())
 
-(defrule use-file (and "use" blanks filepath blanks)
+(defrule use-file (and use blanks filepath blanks)
   (:function (lambda (a)
                (let ((file (third a)))
                  (if (find file *already-included-files* :test #'string=)
@@ -772,7 +791,8 @@
   (when-let ((found (find-if (lambda (a)
                           (cl-ppcre:scan (re a) link))
                         (config-all-link-open-program))))
-    (program-name found)))
+    (values (program-name found)
+            (use-cache-p  found))))
 
 (defun config-win-focus-mark ()
   (values (access:accesses  *software-configuration*

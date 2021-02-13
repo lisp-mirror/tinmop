@@ -105,27 +105,37 @@
       (first-elt res))))
 
 (defun open-attachment (url)
-  (flet ((add-extension (cached-value)
-           (strcat (to-s cached-value) (get-extension url))))
-    (let ((cached (db:cache-get-value url)))
-      (if (not cached)
-          (let* ((cached-file-name (add-extension (db:cache-put url)))
-                 (cached-output-file (os-utils:cached-file-path cached-file-name))
-                 (stream (get-url-content url)))
-            (fs:create-file cached-output-file :skip-if-exists t)
-            (with-open-file (out-stream
-                             cached-output-file
-                             :element-type      '(unsigned-byte 8)
-                             :if-does-not-exist :error
-                             :if-exists         :supersede
-                             :direction         :output)
-              (loop for byte = (read-byte stream nil nil) while byte do
-                   (write-byte byte out-stream)))
-            (open-attachment url))
-          (let ((cached-file (os-utils:cached-file-path (add-extension cached))))
-            (if (or (not (fs:file-exists-p cached-file))
-                    (<= (fs:file-size cached-file) 0))
+  (labels ((add-extension (cached-value)
+             (strcat (to-s cached-value) (get-extension url)))
+           (fill-cache (url)
+             (let* ((cached-file-name (add-extension (db:cache-put url)))
+                    (cached-output-file (os-utils:cached-file-path cached-file-name))
+                    (stream (get-url-content url)))
+               (fs:create-file cached-output-file :skip-if-exists t)
+               (with-open-file (out-stream
+                                cached-output-file
+                                :element-type      '(unsigned-byte 8)
+                                :if-does-not-exist :error
+                                :if-exists         :supersede
+                                :direction         :output)
+                 (loop for byte = (read-byte stream nil nil) while byte do
+                   (write-byte byte out-stream))))))
+    (multiple-value-bind (program use-cache-p)
+        (swconf:link-regex->program-to-use url)
+      (let ((cached (db:cache-get-value url)))
+        (if (not cached)
+            (if (and program
+                     (not use-cache-p))
+                (os-utils:open-link-with-program program url)
                 (progn
-                  (db:cache-invalidate url)
-                  (open-attachment url))
-                (os-utils:xdg-open cached-file)))))))
+                  (fill-cache url)
+                  (open-attachment url)))
+            (let ((cached-file (os-utils:cached-file-path (add-extension cached))))
+              (if (or (not (fs:file-exists-p cached-file))
+                      (<= (fs:file-size cached-file) 0))
+                  (progn
+                    (db:cache-invalidate url)
+                    (open-attachment url))
+                  (if program
+                      (os-utils:open-link-with-program program url)
+                      (os-utils:xdg-open cached-file)))))))))
