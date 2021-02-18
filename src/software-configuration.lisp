@@ -231,7 +231,7 @@
          (color-name-p  (keywordp color))
          (attributes    (first (fourth parsed))))
     (list (first clean)
-          (make-color-re-assign re
+          (make-color-re-assign (cl-ppcre:create-scanner re)
                                 (and color-name-p       color)
                                 (and (not color-name-p) color)
                                 attributes))))

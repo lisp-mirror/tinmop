@@ -230,7 +230,8 @@
    :defun-w-lock
    :with-lock
    :get-url-content
-   :with-profile-time))
+   :with-profile-time
+   :with-debug-print-profile-time))
 
 (defpackage :box
   (:use

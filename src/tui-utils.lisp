@@ -295,10 +295,23 @@ latter has a length equals to `total-size'"))
                             (bgcolor          nil)
                             (attributes       nil)
                             (return-as-list-p t))
+    (colorize-line line
+                   (create-scanner regexp)
+                   :fgcolor    fgcolor
+                   :bgcolor    bgcolor
+                   :attributes attributes
+                   :return-as-list-p return-as-list-p))
+
+(defmethod colorize-line ((line string) (regexp function)
+                          &key
+                            (fgcolor          nil)
+                            (bgcolor          nil)
+                            (attributes       nil)
+                            (return-as-list-p t))
   (let ((res     ())
-        (scanner (create-scanner regexp)))
+        (scanner regexp))
     (labels ((append-to-res (data)
-               (setf res (append res (list data))))
+               (setf res (reverse (push data res))))
              (re-split (data)
                (when (string-not-empty-p data)
                  (multiple-value-bind (start-re end-re)

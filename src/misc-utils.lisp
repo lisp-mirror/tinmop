@@ -949,4 +949,7 @@ to the array"
 (defmacro with-profile-time (&body body)
   `(with-output-to-string (stream)
      (let ((*trace-output* stream))
-       (time ,@body))))
+       (time (progn ,@body)))))
+
+(defmacro with-debug-print-profile-time ((&optional prefix) &body body)
+  `(misc:dbg "~a ~a" ,prefix (with-profile-time ,@body)))
