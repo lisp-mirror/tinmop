@@ -307,9 +307,9 @@ Returns nil if the user did not provided a server in the configuration file"
          (program-events:push-event add-fetched-event))))
 
 (defun-api-call update-timeline (timeline
-                               kind
-                               folder
-                               &key
+                                 kind
+                                 folder
+                                 &key
                                  recover-from-skipped-statuses
                                  local
                                  only-media
