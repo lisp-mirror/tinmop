@@ -137,7 +137,7 @@ if tree is nil set the slot `keybindings-tree' to `tree'.
 
 (defun init ()
   "Initialize the window"
-  (let* ((low-level-window  (make-croatoan-window :draw-border t))
+  (let* ((low-level-window  (make-croatoan-window :border t))
          (high-level-window (make-instance 'keybindings-window
                                            :key-config      swconf:+key-keybindings-window+
                                            :croatoan-window low-level-window)))

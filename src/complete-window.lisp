@@ -62,7 +62,7 @@
 
 (defun init ()
   "Initialize a complete window"
-  (let* ((low-level-window  (make-croatoan-window :draw-border t))
+  (let* ((low-level-window  (make-croatoan-window :border t))
          (high-level-window (make-instance 'complete-window
                                            :croatoan-window low-level-window)))
     (refresh-config high-level-window)

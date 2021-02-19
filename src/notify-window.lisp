@@ -84,7 +84,7 @@
   window)
 
 (defun make-notification-window (message life &key (pending 0) (hidep nil) (notify-error nil))
-  (let* ((low-level-window  (make-croatoan-window :draw-border t))
+  (let* ((low-level-window  (make-croatoan-window :border t))
          (high-level-window (make-instance 'notify-window
                                            :life            life
                                            :pending         pending

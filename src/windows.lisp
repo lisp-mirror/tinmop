@@ -461,7 +461,7 @@ list of strings (the text lines)."
                                             :width                (min (+ max-line-size 4)
                                                                        (- (win-width parent)
                                                                           4))
-                                            :draw-border          t
+                                            :border               t
                                             :enable-function-keys t
                                             :name                 title
                                             :title                t
@@ -549,7 +549,7 @@ insetred by the user"
                                             :height         window-height
                                             :position       window-position
                                             :insert-mode    t
-                                            :draw-border    t
+                                            :border         t
                                             :elements       (list field
                                                                   button-accept
                                                                   button-cancel)
@@ -600,7 +600,7 @@ insetred by the user"
                                             :items                options
                                             :position             window-position
                                             :title                title
-                                            :draw-border          t
+                                            :border               t
                                             :input-blocking       t
                                             :enable-function-keys t
                                             :menu-type            :checklist
