@@ -1,3 +1,51 @@
+2021-02-19  cage
+
+	* src/keybindings-window.lisp,
+	* src/windows.lisp,
+        * src/complete-window.lisp,
+        * src/notify-window.lisp:
+
+	- changed ':draw-border' to ':border' to track the new croatoan API.
+
+2021-02-19  cage
+
+	* src/api-pleroma.lisp,
+        * src/api-client.lisp:
+
+	- added version 2 of get chat list endpoint.
+
+2021-02-18  cage
+
+        * src/tui-utils.lisp:
+
+	- fixed append.
+
+2021-02-18  cage
+
+	* src/package.lisp,
+	* src/tui-utils.lisp,
+        * src/misc-utils.lisp,
+        * src/software-configuration.lisp:
+
+	- improved a bit rendering speed of text in message window.
+
+2021-02-13  cage
+
+        * etc/default-theme.conf,
+	* etc/shared.conf,
+        * src/open-attach-window.lisp,
+	* src/software-configuration.lisp:
+	* src/package.lisp:
+
+	- allowed users (via configuration directive) to use (or not) cache
+        when opening a link with a custom program.
+
+2021-02-11  cage
+
+        * src/software-configuration.lisp:
+
+	- prevented crash when a program to open a link is not found.
+
 2021-02-10  cage
 
 	* README.txt:
