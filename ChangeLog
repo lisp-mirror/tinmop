@@ -1,3 +1,10 @@
+2021-02-20 cage
+
+        * src/api-client.lisp:
+
+	- fixed crash when starting the program without a configuration
+        file.
+
 2021-02-19  cage
 
 	* src/keybindings-window.lisp,

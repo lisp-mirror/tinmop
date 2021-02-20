@@ -1,3 +1,8 @@
+* 2021-02-20 version 0.5.3
+
+  - Bugfix
+    - The program crashed when started from the first time.
+
 * 2021-02-19 version 0.5.2
 
   - New features
