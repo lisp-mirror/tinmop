@@ -765,8 +765,9 @@ and day is current time)"
   "Initialize the client, prepare it for `authorize'."
   (flet ((credentials-filename ()
            (handler-bind ((error
-                           (lambda (e)
-                             (invoke-restart 'res:return-home-filename e))))
+                            (lambda (e)
+                              (declare (ignore e))
+                              (invoke-restart 'res:return-home-filename))))
              (res:get-data-file +credentials-filename+))))
     (let ((resource-file (credentials-filename)))
       (if (not (fs:file-exists-p resource-file))
