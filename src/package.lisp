@@ -1077,6 +1077,7 @@
    :load-config-file
    :external-editor
    :gemini-default-favicon
+   :gemini-fetch-favicon-p
    :gemini-link-prefix-to-gemini
    :gemini-link-prefix-to-other
    :gemini-quote-prefix

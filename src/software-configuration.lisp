@@ -488,6 +488,7 @@
                    input
                    read
                    unread
+                   fetch
                    password-echo-character
                    color-re
                    ignore-user-re
@@ -553,6 +554,13 @@
   (access-non-null-conf-value *software-configuration*
                               +key-gemini+
                               +key-favicon+))
+
+(defun gemini-fetch-favicon-p ()
+  (let ((fetchp (access:accesses *software-configuration*
+                                 +key-gemini+
+                                 +key-fetch+
+                                 +key-favicon+)))
+    (db-utils:db-not-nil-p fetchp)))
 
 (defun gemini-link-prefix (scheme)
   (access-non-null-conf-value *software-configuration*
