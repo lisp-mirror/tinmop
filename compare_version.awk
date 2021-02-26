@@ -24,7 +24,7 @@ BEGIN {
 function split_version_number (version, parsed) {
     split(version, parsed, VERSION_SEP);
     for (i in parsed) {
-        parsed[i] = strtonum(parsed[i]);
+        parsed[i] = parsed[i] + 0;
     }
 }
 
