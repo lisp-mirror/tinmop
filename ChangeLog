@@ -1,3 +1,33 @@
+
+2021-02-27  cage
+
+        * Makefile.in,
+	* configure:
+
+	- updated building script and Makefile.
+
+2021-02-26  Omar Polo
+
+        * configure.ac:
+
+	- use autoconf' ${AWK} instead of looking for gawk This also fixes
+	an instance of `awk' that should be ${AWK}
+
+2021-02-26  Omar Polo
+
+        * compare_version.awk:
+
+	- avoid strtonum (a GNU AWK extension) this drops the requirements
+	on  strtonum, making  the  script (AFAIK)  POSIX compliant.   This
+	(ab)uses  the fact  that `+'  will cast  its operator  to numbers.
+	Tested with GNU AWK and "The One True AWK" on OpenBSD.
+
+2021-02-21  cage
+
+        * etc/shared.conf, src/gemini-viewer.lisp, src/package.lisp,
+        src/software-configuration.lisp: - [gemini] made fetching of favicon opt-in   by default tinmop  will not fetch favicon.txt  anymore, this
+          feature must be enabled by user using a configuration directive.
+
 2021-02-20 cage
 
         * src/api-client.lisp:
