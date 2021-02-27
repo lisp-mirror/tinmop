@@ -592,7 +592,6 @@ LTLIBOBJS
 LIBOBJS
 OPENSSL
 XDG_OPEN
-GAWK
 BASH
 GPG
 CURL
@@ -6361,51 +6360,9 @@ if test "$BASH" = "no" ; then
    exit 1;
 fi
 
-# Extract the first word of "gawk", so it can be a program name with args.
-set dummy gawk; ac_word=$2
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
-$as_echo_n "checking for $ac_word... " >&6; }
-if ${ac_cv_path_GAWK+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  case $GAWK in
-  [\\/]* | ?:[\\/]*)
-  ac_cv_path_GAWK="$GAWK" # Let the user override the test with a path.
-  ;;
-  *)
-  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
-for as_dir in $PATH
-do
-  IFS=$as_save_IFS
-  test -z "$as_dir" && as_dir=.
-    for ac_exec_ext in '' $ac_executable_extensions; do
-  if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
-    ac_cv_path_GAWK="$as_dir/$ac_word$ac_exec_ext"
-    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
-    break 2
-  fi
-done
-  done
-IFS=$as_save_IFS
-
-  test -z "$ac_cv_path_GAWK" && ac_cv_path_GAWK="no"
-  ;;
-esac
-fi
-GAWK=$ac_cv_path_GAWK
-if test -n "$GAWK"; then
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $GAWK" >&5
-$as_echo "$GAWK" >&6; }
-else
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-fi
-
-
-
-if test "$GAWK" = "no" ; then
-   as_fn_error $? "Can not find GNU AWK (gawk)." "$LINENO" 5
-   exit 1;
+if test -z "${AWK}"; then
+   as_fn_error $? "Can not find AWK." "$LINENO" 5
+   exit 1
 fi
 
 for ac_prog in xdg-open open
@@ -6515,7 +6472,7 @@ fi
 
 
 SBCL_MIN_VERSION="1.4.16";
-SBCL_VERSION=`${LISP_COMPILER} --version | ${GAWK} -- '// {print $2}'`
+SBCL_VERSION=`${LISP_COMPILER} --version | ${AWK} -- '// {print $2}'`
 
 CHECK_COMPILER_VERSION_P="yes"
 
@@ -6526,7 +6483,7 @@ fi
 
 
 if test "$enable_check_sbcl_version" = "yes" || test "$enable_check_sbcl_version" = "" ; then
-   SBCL_VERSION_OK=`echo "$SBCL_VERSION $SBCL_MIN_VERSION" | awk -f compare_version.awk`
+   SBCL_VERSION_OK=`echo "$SBCL_VERSION $SBCL_MIN_VERSION" | ${AWK} -f compare_version.awk`
 
    { $as_echo "$as_me:${as_lineno-$LINENO}: checking if the compiler is too old" >&5
 $as_echo_n "checking if the compiler is too old... " >&6; }
