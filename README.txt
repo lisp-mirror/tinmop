@@ -80,7 +80,7 @@ Table of Contents
 
   ⁃ to install the package, including running the script to install lisp
     libraries (`quick_quicklisp.sh'):
-    • GNU AWK (Gawk);
+    • AWK;
     • BASH shell.
 
   ⁃ to run the program:
