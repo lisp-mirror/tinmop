@@ -1,8 +1,8 @@
 
 2021-02-27  cage
 
-        * Makefile.in,
 	* configure:
+        * Makefile.in,
 
 	- updated building script and Makefile.
 
@@ -24,9 +24,14 @@
 
 2021-02-21  cage
 
-        * etc/shared.conf, src/gemini-viewer.lisp, src/package.lisp,
-        src/software-configuration.lisp: - [gemini] made fetching of favicon opt-in   by default tinmop  will not fetch favicon.txt  anymore, this
-          feature must be enabled by user using a configuration directive.
+	* src/gemini-viewer.lisp,
+	* src/package.lisp,
+        * etc/shared.conf,
+        * src/software-configuration.lisp:
+
+	- [gemini] made fetching of  favicon opt-in by default tinmop will
+	not fetch  favicon.txt anymore,  this feature  must be  enabled by
+	user using a configuration directive.
 
 2021-02-20 cage
 
