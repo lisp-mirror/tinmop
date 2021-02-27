@@ -50,11 +50,10 @@ if test "$BASH" = "no" ; then
    exit 1;
 fi
 
-AC_PATH_PROG([GAWK],[gawk],[no])
-
-if test "$GAWK" = "no" ; then
-   AC_MSG_ERROR([Can not find GNU AWK (gawk).])
-   exit 1;
+dnl autoconf has an automatic test for AWK
+if test -z "${AWK}"; then
+   AC_MSG_ERROR([Can not find AWK.])
+   exit 1
 fi
 
 AC_PATH_PROGS([XDG_OPEN],[xdg-open open],[no])
@@ -75,14 +74,14 @@ AC_PROG_MKDIR_P
 
 dnl check sbcl version
 SBCL_MIN_VERSION="1.4.16";
-SBCL_VERSION=`${LISP_COMPILER} --version | ${GAWK} -- '// {print $2}'`
+SBCL_VERSION=`${LISP_COMPILER} --version | ${AWK} -- '// {print $2}'`
 
 CHECK_COMPILER_VERSION_P="yes"
 
 AC_ARG_ENABLE([check-sbcl-version], [AS_HELP_STRING([--disable-check-sbcl-version], [Disable checks for minimum supported SBCL version])], [], [])
 
 if test "$enable_check_sbcl_version" = "yes" || test "$enable_check_sbcl_version" = "" ; then
-   SBCL_VERSION_OK=`echo "$SBCL_VERSION $SBCL_MIN_VERSION" | awk -f compare_version.awk`
+   SBCL_VERSION_OK=`echo "$SBCL_VERSION $SBCL_MIN_VERSION" | ${AWK} -f compare_version.awk`
 
    AC_MSG_CHECKING([if the compiler is too old])
    AC_MSG_NOTICE([To Disable this tests use type './configure --disable-check-sbcl-version.])
