@@ -1,3 +1,13 @@
+* 2021-03-03 version 0.5.9
+
+  - Breaking changes
+    - The favicon.txt (gemini://mozz.us/files/rfc_gemini_favicon.gmi)
+      is now disabled by default, user can enable setting the configurarion directive
+      'gemini.fetch.favicon' to 'yes'.
+  - Improvements
+    - Removed dependency on GNU AWK, any standard AWK implemmentation will
+      be able to be used by the building script 'quick_quicklisp.sh'.
+
 * 2021-02-20 version 0.5.3
 
   - Bugfix
