@@ -47,6 +47,7 @@
    + to run the program:
      - SBCL compiler;
      - xdg-open;
+     - openssl;
      - your favourite editor (default: nano).
 
 All  the dependencies  above  should be  available  using the  package
@@ -97,6 +98,24 @@ manager of your distribution (~apt~, ~yum~ etc).
 
 * Install
 
+** Using guix
+
+   Using [[https://guix.gnu.org/][guix]] is the simpler way to install this software:
+
+   #+BEGIN_SRC sh
+   $ guix install tinmop
+   #+END_SRC
+
+   Guix can be installed on debian (testing or sid):
+
+   #+BEGIN_SRC sh
+   $ apt-get install guix
+   #+END_SRC
+
+   or using a shell script [[https://guix.gnu.org/manual/en/guix.html#Binary-Installation][as explained in the guix manual]].
+
+
+** From source
   1. optional step needed only if  you have not already the configure script,
      you will need ~autotools~ for that.
 
