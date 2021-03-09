@@ -341,6 +341,8 @@
 
 (define-key "s"         #'gemini-subscribe-gemlog                    *gemini-message-keymap*)
 
+(define-key "|"         #'send-to-pipe                               *gemini-message-keymap*)
+
 ;; gemini stream window keymap
 
 (define-key "a"         #'gemini-abort-download                      *gemini-downloads-keymap*)
