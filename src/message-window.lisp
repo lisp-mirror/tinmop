@@ -136,38 +136,41 @@
 
 (defgeneric search-regex (object regex))
 
-(defmethod prepare-for-rendering ((object message-window) &key (jump-to-first-row t))
+(defun text->rendered-lines-rows (window text)
   (flet ((fit-lines (lines)
            (let ((res ()))
              (loop for line in lines do
-                  (if (string-empty-p line)
-                      (push nil res)
-                      (loop
-                         for fitted-line in
-                           (flush-left-mono-text (split-words line)
-                                                 (win-width-no-border object))
-                         do
-                           (push fitted-line res))))
+               (if (string-empty-p line)
+                   (push nil res)
+                   (loop
+                     for fitted-line in
+                                     (flush-left-mono-text (split-words line)
+                                                           (win-width-no-border window))
+                     do
+                        (push fitted-line res))))
              (reverse res))))
-    (with-accessors ((source-text source-text)) object
-      (when hooks:*before-prepare-for-rendering-message*
-        (hooks:run-hook 'hooks:*before-prepare-for-rendering-message* object))
-      (let* ((lines        (split-lines source-text))
-             (fitted-lines (fit-lines lines))
-             (color-re     (swconf:color-regexps))
-             (new-rows     (loop for line in fitted-lines collect
-                                (let ((res line))
-                                  (loop for re in color-re do
-                                       (setf res (colorize-line res re)))
-                                  (colorized-line->tui-string res)))))
-        (setf (rows object)
-              (mapcar (lambda (text-line)
-                        (make-instance 'line
-                                       :normal-text text-line))
-                      new-rows))
-        (when jump-to-first-row
-          (select-row object 0))
-        object))))
+    (let* ((lines        (split-lines text))
+           (fitted-lines (fit-lines lines))
+           (color-re     (swconf:color-regexps))
+           (new-rows     (loop for line in fitted-lines collect
+                           (let ((res line))
+                             (loop for re in color-re do
+                               (setf res (colorize-line res re)))
+                             (colorized-line->tui-string res)))))
+      (mapcar (lambda (text-line)
+                (make-instance 'line
+                               :normal-text text-line))
+              new-rows))))
+
+(defmethod prepare-for-rendering ((object message-window) &key (jump-to-first-row t))
+  (with-accessors ((source-text source-text)) object
+    (when hooks:*before-prepare-for-rendering-message*
+      (hooks:run-hook 'hooks:*before-prepare-for-rendering-message* object))
+    (setf (rows object)
+          (text->rendered-lines-rows object source-text))
+    (when jump-to-first-row
+      (select-row object 0))
+    object))
 
 (defmethod append-source-text ((object message-window) text
                                &key

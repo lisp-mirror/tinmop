@@ -1905,6 +1905,7 @@
    :gemini-window-p
    :display-gemini-text-p
    :display-chat-p
+   :text->rendered-lines-rows
    :prepare-for-display-status-mode
    :append-source-text
    :scroll-down

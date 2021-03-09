@@ -1028,10 +1028,16 @@
   (let* ((win specials:*message-window*)
          (window-metadata (message-window:metadata win)))
     (if append-text
-        (progn
-          (message-window:append-source-text win rendered-text :prepare-for-rendering t)
-          (gemini-viewer:append-metadata-link window-metadata links)
-          (gemini-viewer:append-metadata-source window-metadata source))
+        (with-accessors ((rows message-window::rows)) win
+          (let ((new-rows      (message-window:text->rendered-lines-rows win
+                                                                         rendered-text))
+                (reversed-rows (reverse rows)))
+            (message-window:append-source-text win rendered-text :prepare-for-rendering nil)
+            (gemini-viewer:append-metadata-link window-metadata links)
+            (gemini-viewer:append-metadata-source window-metadata source)
+            (loop for new-row in new-rows do
+              (push new-row reversed-rows))
+            (setf rows (reverse reversed-rows))))
         (progn
           (setf (message-window:source-text win) rendered-text)
           (setf (gemini-viewer:gemini-metadata-source-file window-metadata) source)
