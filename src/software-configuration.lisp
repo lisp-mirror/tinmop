@@ -542,12 +542,15 @@
 
 ;;;; interface
 
+(defun access-key->user-directive (key)
+  (join-with-strings (mapcar #'string-downcase key) "."))
+
 (defun access-non-null-conf-value (object &rest keys)
   (let ((value (apply #'access:accesses object keys)))
     (if (null value)
         (error (_ (format nil
-                          (_ "The configuration (*.conf) file is missing the value for ~a")
-                          keys)))
+                          (_ "The configuration (*.conf) file is missing the value for ~s")
+                          (access-key->user-directive keys))))
         value)))
 
 (defun gemini-default-favicon ()
@@ -1171,6 +1174,7 @@
 
 (defun trivial-configuration-missing-value-check ()
   (loop for fn in (list
+                   #'gemini-default-favicon
                    #'gemini-link-prefix-to-gemini
                    #'gemini-link-prefix-to-other
                    #'gemini-quote-prefix
