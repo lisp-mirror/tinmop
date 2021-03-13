@@ -158,6 +158,10 @@
 (define-constant +default-reblogged-timeline+   ".reblogged"
   :test #'string=)
 
+(define-constant +default-reblogged-folder+     "reblogged"
+  :test #'string=)
+
+
 (define-constant +message-index-start+          1
   :test #'=)
 
@@ -1270,7 +1274,8 @@ than (swconf:config-purge-history-days-offset) days in the past"
                    (update-db tag-history :tag tag-name)))
             (update-db parent
                        :skip-ignored-p skip-ignored-p
-                       :timeline       +default-reblogged-timeline+)
+                       :timeline       +default-reblogged-timeline+
+                       :folder         +default-reblogged-folder+)
             ;; now try to decrypt message if possible/needed
             (maybe-decrypt-update-status-text id timeline folder)
             (let ((db-status (find-status-id-folder-timeline id folder timeline)))
@@ -2304,6 +2309,10 @@ to  `timeline' ,  `folder'  and possibly  `account-id', older  than
                          (:= :folder   folder))))))
 
 (defun delete-all-statuses-marked-deleted ()
+  "Delete all  messages marked  for deletion  and parent  message (AKA
+reblogged or retooted), if such parent message exists, from the timeline
+specified by  +default-reblogged-timeline+.  The latter is  the folder
+where all parent messages are saved."
   (let ((all-folders   (all-folders))
         (all-timelines (all-status-timelines)))
     (loop for folder in all-folders do
