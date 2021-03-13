@@ -158,7 +158,7 @@
 (define-constant +default-reblogged-timeline+   ".reblogged"
   :test #'string=)
 
-(define-constant +default-reblogged-folder+     "reblogged"
+(define-constant +default-reblogged-folder+     +default-status-folder+
   :test #'string=)
 
 
@@ -2301,8 +2301,8 @@ to  `timeline' ,  `folder'  and possibly  `account-id', older  than
                           (from :status)
                           (where (:= :deletedp +db-true+))))))
 
-(defun statuses-id-marked-to-delete (timeline folder)
-   (query (select :status-id
+(defun statuses-marked-to-delete (timeline folder)
+   (query (select :*
             (from :status)
             (where (:and (:= :deletedp +db-true+)
                          (:= :timeline timeline)
@@ -2317,9 +2317,13 @@ where all parent messages are saved."
         (all-timelines (all-status-timelines)))
     (loop for folder in all-folders do
          (loop for timeline in all-timelines do
-              (let ((marked-to-delete (statuses-id-marked-to-delete timeline folder)))
+              (let ((marked-to-delete (statuses-marked-to-delete timeline folder)))
                 (loop for status-to-delete in marked-to-delete do
-                     (delete-status timeline folder (row-message-status-id status-to-delete))))))))
+                  (when-let ((reblogged-id (row-message-reblog-id status-to-delete)))
+                    (delete-status +default-reblogged-timeline+
+                                   +default-reblogged-folder+
+                                   reblogged-id))
+                  (delete-status timeline folder (row-message-status-id status-to-delete))))))))
 
 (defun max-username-length (timeline-type folder)
   (let ((query (select (fields (:max (:length :account.acct)))
@@ -2503,7 +2507,7 @@ status has been downloaded from the net and ignored because belog to an ignored 
         (all-timelines (all-status-timelines)))
     (loop for folder in all-folders do
          (loop for timeline in all-timelines do
-              (let ((marked-to-delete (statuses-id-marked-to-delete timeline folder)))
+              (let ((marked-to-delete (statuses-marked-to-delete timeline folder)))
                 (loop for status-to-delete in marked-to-delete do
                      (add-to-status-ignored (row-message-status-id status-to-delete)
                                             folder
