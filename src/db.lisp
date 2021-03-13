@@ -1915,7 +1915,7 @@ to `timeline', `folder' and `account-id'"
   (rest (last-elt line)))
 
 (defun renumber-timeline-message-index (timeline-type folder &key (account-id nil))
- "Add a  unique numeric index to each message thei is an unique ID
+ "Add a  unique numeric index to each message, that is, an unique ID
 inside `timeline' and `folder'.
 
 `account-id' additional  restrict the message to be processed to the
