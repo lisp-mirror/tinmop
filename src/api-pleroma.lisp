@@ -46,21 +46,15 @@
                              :offset     offset
                              :limits     limits)))
 
-(defgeneric get-all-chats-v2 (object min-id &key &allow-other-keys))
+(defgeneric get-all-chats (object &key &allow-other-keys))
 
-(defmethod get-all-chats-v2 ((object tooter:client) min-id &key (accum ()))
+(defmethod get-all-chats ((object tooter:client) &key (accum ()))
   "Get a list of all chats, ordered from the more recent updated."
   (let ((chats (api-client:sort-id< (get-chats-list object))))
     (if chats
         (let ((new-min-id (tooter:id (last-elt chats))))
-          (get-all-chats-v2 object object new-min-id (append chats accum)))
+          (get-all-chats object object new-min-id (append chats accum)))
         (api-client:sort-id< accum))))
-
-(defgeneric get-all-chats (object))
-
-(defmethod get-all-chats ((object tooter:client))
-  "Get a list of all chats, ordered from the more recent updated."
-  (decode-chat (tooter:query object "/api/v1/pleroma/chats")))
 
 (defgeneric post-chat-message (object chat-id content media))
 
