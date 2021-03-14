@@ -176,7 +176,6 @@ etc.) happened"
 (defun load-script-file ()
   "Load (execute) a lisp file used in requests of a command line switch"
   (setf program-events:*process-events-immediately* t)
-  (load-configuration-files)
   (init-db)
   (db-utils:with-ready-database (:connect nil)
     (client:init)
