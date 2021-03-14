@@ -26,7 +26,7 @@
                                       account-id))))
 
 
-(defgeneric get-chats-list (object &key with-muted-p max-id min-id since-id offset limits))
+(defgeneric get-chats-list (object &key with-muted-p max-id min-id since-id offset limit))
 
 (defmethod get-chats-list ((object tooter:client)
                           &key
@@ -35,7 +35,7 @@
                             (min-id nil)
                             (since-id nil)
                             (offset 0)
-                            (limits 200))
+                            (limit 200))
   "Get a list of all chats, ordered from the more recent updated. Note: uses version 2 of the API."
   (decode-chat (tooter:query object
                              "/api/v2/pleroma/chats"
@@ -44,7 +44,7 @@
                              :min-id     min-id
                              :since-id   since-id
                              :offset     offset
-                             :limits     limits)))
+                             :limit      limit)))
 
 (defgeneric get-all-chats (object &key &allow-other-keys))
 
