@@ -1,3 +1,61 @@
+021-03-14  cage
+
+        * src/api-pleroma.lisp,
+	* src/main.lisp:
+
+	- fixed chat API;
+	- fixed regression, loading scripts works again.
+
+2021-03-13  cage
+
+        * src/api-pleroma.lisp:
+	* src/db.lisp:
+
+	- used version 2 for get chats;
+	- changed the way a message is deleted: when deleting a reblogging
+	message  delete the  reblogged  message as  well.   This way  quit
+	should be faster as the  folder ".reblogged" can not grows without
+	limit anymore;
+	- made explicit the folder for parent (reblogged) messages;
+	- fixed docstring.
+
+2021-03-09  cage
+
+	* README.txt,
+	* configure,
+	* etc/init.lisp,
+	* po/it.po,
+	* po/tinmop.pot,
+	* src/gemini-viewer.lisp,
+	* src/message-window.lisp,
+	* src/program-events.lisp,
+	* src/software-configuration.lisp,
+        * NEWS.org,
+        * README.org,
+        * src/package.lisp:
+
+	- fixed typos in NEWS.org;
+	- reverted  method of  rendering of  text in  message window  to a
+	line-based one.  The  old method that packed text  got from Gemini
+	stream in single event was ugly  and blocked the UI.  This version
+	revert to  a line by line  rendering but it is  optimized and does
+	not gets slow with the size of the text the window holds;
+	- added command for sending to pipe contents of message windows;
+	- made  nicer the error message  when a directive is  missing from
+	configuration file;
+	-  updated README  (new  installation  instruction and  mentioning
+	openssl);
+	-  updated translations  files; -  updated configure  (new version
+	number).
+
+2021-03-03  cage
+
+	* configure.ac,
+	* tinmop.asd,
+        * NEWS.org:
+
+	- updated version number and NEWS file.
+
 2021-02-27  cage
 
 	* configure:
