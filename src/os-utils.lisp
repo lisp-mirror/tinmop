@@ -44,8 +44,10 @@
         (incf cpu-count)))))
 
 (defun xdg-open (file)
-  (uiop:launch-program (format nil "~a '~a'" +xdg-open-bin+ file)
-                       :output nil))
+  (let ((cmd-line (format nil "~a '~a'" +xdg-open-bin+ file)))
+    #+debug-mode
+    (misc:dbg "xdg-open: ~a" cmd-line)
+    (uiop:launch-program cmd-line :output nil)))
 
 (defun getenv (name)
   (nix:getenv name))

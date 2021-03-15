@@ -243,6 +243,7 @@
   (let* ((header-raw   (read-line-into-array stream :add-newline-stopper nil))
          (header       (babel:octets-to-string header-raw :errorp nil))
          (parsed-header (parse-gemini-response-header (format nil "~a~a" header #\Newline))))
+    (debug-gemini (format nil "response header ~s" header))
     (with-accessors ((meta        meta)
                      (status-code status-code)) parsed-header
       (flet ((results (code-class body)

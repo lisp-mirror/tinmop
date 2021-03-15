@@ -110,7 +110,9 @@
 (defrule pct-encoded (and "%" hexdig hexdig)
   (:text t))
 
-(defrule hexdig (or (character-ranges #\a #\f) digit)
+(defrule hexdig (or (character-ranges (#\a #\f))
+                    (character-ranges (#\A #\F))
+                    digit)
   (:text t))
 
 (defrule ipv4-address (and dec-octet "." dec-octet "." dec-octet "." dec-octet)

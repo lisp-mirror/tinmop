@@ -413,19 +413,19 @@
       (with-open-support-file (file-stream support-file)
         (labels ((%fill-buffer ()
                    (when (downloading-allowed-p wrapper-object)
-                   (multiple-value-bind (buffer read-so-far)
-                       (read-array download-stream +read-buffer-size+)
-                     (increment-bytes-count wrapper-object read-so-far)
-                     (if (< read-so-far (length buffer))
-                         (progn
-                           (write-sequence buffer file-stream :start 0 :end read-so-far)
-                           (force-output file-stream)
-                           (setf (stream-status wrapper-object) :completed)
-                           (gemini-client:close-ssl-socket socket)
-                           (os-utils:xdg-open support-file))
-                         (progn
-                           (write-sequence buffer file-stream)
-                           (%fill-buffer)))))))
+                     (multiple-value-bind (buffer read-so-far)
+                         (read-array download-stream +read-buffer-size+)
+                       (increment-bytes-count wrapper-object read-so-far)
+                       (if (< read-so-far (length buffer))
+                           (progn
+                             (write-sequence buffer file-stream :start 0 :end read-so-far)
+                             (force-output file-stream)
+                             (setf (stream-status wrapper-object) :completed)
+                             (gemini-client:close-ssl-socket socket)
+                             (os-utils:xdg-open support-file))
+                           (progn
+                             (write-sequence buffer file-stream)
+                             (%fill-buffer)))))))
           (%fill-buffer))))))
 
 (defun request-success-dispatched-clrs (enqueue)
