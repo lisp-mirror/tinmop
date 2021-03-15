@@ -2320,9 +2320,19 @@ where all parent messages are saved."
               (let ((marked-to-delete (statuses-marked-to-delete timeline folder)))
                 (loop for status-to-delete in marked-to-delete do
                   (when-let ((reblogged-id (row-message-reblog-id status-to-delete)))
-                    (delete-status +default-reblogged-timeline+
-                                   +default-reblogged-folder+
-                                   reblogged-id))
+                    ;; sometimes a  status is  reblogged by  more than
+                    ;; one of the statuses  that you downloaded and if
+                    ;; you delete at least two of the latter the first
+                    ;; deletion will remove also the reblogged status,
+                    ;; so the  other statuses should skip  deletion of
+                    ;; the  reblogged  one  as  it  has  been  already
+                    ;; removed
+                    (when (find-status-id-folder-timeline reblogged-id
+                                                          +default-reblogged-folder+
+                                                           +default-reblogged-timeline+)
+                      (delete-status +default-reblogged-timeline+
+                                     +default-reblogged-folder+
+                                     reblogged-id)))
                   (delete-status timeline folder (row-message-status-id status-to-delete))))))))
 
 (defun max-username-length (timeline-type folder)
