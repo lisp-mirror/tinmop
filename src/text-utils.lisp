@@ -695,8 +695,9 @@ printed in the box column by column; in the example above the results are:
                (return-from percent-encoded-p nil)))
             ((or (percent:reservedp i)
                  (char= i #\Space)
-                 (not (or (percent:alphap (char-code i))
-                          (percent:digitp (char-code i)))))
+                 (not (or (percent:alphap      (char-code i))
+                          (percent:digitp      (char-code i))
+                          (percent:unreservedp (char-code i)))))
              (return-from percent-encoded-p nil))))
   t)
 
