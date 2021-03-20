@@ -1974,8 +1974,10 @@ messages are sorted as below:
   (let ((all-folders   (all-folders))
         (all-timelines (all-status-timelines)))
     (loop for folder in all-folders do
-         (loop for timeline in all-timelines do
-              (renumber-timeline-message-index timeline folder :account-id nil)))))
+      (loop for timeline in all-timelines
+            when (statuses-marked-to-delete timeline folder)
+              do
+                 (renumber-timeline-message-index timeline folder :account-id nil)))))
 
 (defun all-attachments-to-status (status-id)
   (fetch-all-rows (select :*
