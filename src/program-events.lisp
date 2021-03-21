@@ -473,9 +473,10 @@
 (defclass delete-all-status-event (program-event) ())
 
 (defmethod process-event ((object delete-all-status-event))
-  (db:forget-all-statuses-marked-deleted) ; do not change the order. Forget, then delete.
-  (db:delete-all-statuses-marked-deleted)
-  (db:renumber-all-timelines))
+  ;; do not change the order. Forget, then delete.
+  (let ((timelines/folders-with-forgotten (db:forget-all-statuses-marked-deleted)))
+    (db:delete-all-statuses-marked-deleted)
+    (db:renumber-all-timelines timelines/folders-with-forgotten)))
 
 (defclass quit-program-event (program-event) ())
 

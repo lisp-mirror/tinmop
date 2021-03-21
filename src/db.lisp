@@ -1970,12 +1970,15 @@ messages are sorted as below:
   (mapcar #'second
           (fetch-all-rows (select (fields (:distinct :timeline)) (from :status)))))
 
-(defun renumber-all-timelines ()
+(defun renumber-all-timelines (timelines/folders-with-forgotten)
   (let ((all-folders   (all-folders))
         (all-timelines (all-status-timelines)))
     (loop for folder in all-folders do
       (loop for timeline in all-timelines
-            when (statuses-marked-to-delete timeline folder)
+            when (or (statuses-marked-to-delete timeline folder)
+                     (find (cons timeline folder)
+                           timelines/folders-with-forgotten
+                           :test #'equalp))
               do
                  (renumber-timeline-message-index timeline folder :account-id nil)))))
 
@@ -2514,16 +2517,22 @@ status has been downloaded from the net and ignored because belog to an ignored 
                       (:= :user-id user-id))))
 
 (defun forget-all-statuses-marked-deleted ()
-  "Ignore all statuses marked for deletion"
+  "Ignore  all   statuses  marked  for  deletion.   Returns  an  alist
+of (timeline, folder) pairs that has statuses marked for deletion."
   (let ((all-folders   (all-folders))
-        (all-timelines (all-status-timelines)))
+        (all-timelines (all-status-timelines))
+        (results       ()))
     (loop for folder in all-folders do
-         (loop for timeline in all-timelines do
-              (let ((marked-to-delete (statuses-marked-to-delete timeline folder)))
-                (loop for status-to-delete in marked-to-delete do
-                     (add-to-status-ignored (row-message-status-id status-to-delete)
-                                            folder
-                                            timeline)))))))
+      (loop for timeline in all-timelines do
+        (let ((marked-to-delete (statuses-marked-to-delete timeline folder)))
+          (loop for status-to-delete in marked-to-delete do
+            (pushnew (cons timeline folder)
+                     results
+                     :test #'equalp)
+            (add-to-status-ignored (row-message-status-id status-to-delete)
+                                   folder
+                                   timeline)))))
+    results))
 
 (defun status-id->username (status-id)
   (when-let ((message (fetch-single (make-filtered-message-select nil nil nil nil
