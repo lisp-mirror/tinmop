@@ -326,6 +326,14 @@
          debug-gemini-request)
   (apply #'misc:dbg (text-utils:strcat "[gemini] " (first data)) (rest data)))
 
+(defun open-tls-socket (host port)
+  (flet ((open-socket (hostname)
+           (usocket:socket-connect hostname
+                                   port
+                                   :element-type '(unsigned-byte 8))))
+    (or (ignore-errors (open-socket host))
+        (open-socket (idn:host-unicode->ascii host)))))
+
 (defun request (host path &key
                             (query nil)
                             (port  +gemini-default-port+)
@@ -339,9 +347,8 @@
                                :fragment (percent-encode-fragment fragment)))
          (ctx (cl+ssl:make-context :verify-mode cl+ssl:+ssl-verify-none+)))
     (cl+ssl:with-global-context (ctx :auto-free-p t)
-      (when-let* ((socket      (usocket:socket-connect (idn:host-unicode->ascii host)
-                                                       port
-                                                       :element-type '(unsigned-byte 8)))
+
+      (when-let* ((socket     (open-tls-socket host port))
                   (stream     (usocket:socket-stream socket))
                   (ssl-stream (cl+ssl:make-ssl-client-stream stream
                                                              :certificate     client-certificate
