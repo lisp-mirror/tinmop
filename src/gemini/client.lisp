@@ -347,7 +347,6 @@
                                :fragment (percent-encode-fragment fragment)))
          (ctx (cl+ssl:make-context :verify-mode cl+ssl:+ssl-verify-none+)))
     (cl+ssl:with-global-context (ctx :auto-free-p t)
-
       (when-let* ((socket     (open-tls-socket host port))
                   (stream     (usocket:socket-stream socket))
                   (ssl-stream (cl+ssl:make-ssl-client-stream stream
