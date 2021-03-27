@@ -1065,12 +1065,9 @@
               (push new-row reversed-rows))
             (setf rows (reverse reversed-rows))))
         (progn
-          (when rendered-text
-            (setf (message-window:source-text win) rendered-text))
-          (when source
-            (setf (gemini-viewer:gemini-metadata-source-file window-metadata) source))
-          (when links
-            (setf (gemini-viewer:gemini-metadata-links window-metadata) links))))))
+          (setf (message-window:source-text win) rendered-text)
+          (setf (gemini-viewer:gemini-metadata-source-file window-metadata) source)
+          (setf (gemini-viewer:gemini-metadata-links window-metadata) links)))))
 
 (defmethod process-event ((object gemini-got-line-event))
   (with-accessors ((response       payload)
