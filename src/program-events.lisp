@@ -1025,9 +1025,15 @@
                                                          url))
                                                 stream)
                                 (loop for path in all-paths do
-                                  (format stream
-                                          "~a~%"
-                                          (gemini-parser:make-gemini-link path path)))))
+                                  (let* ((dirp       (fs:dirp path))
+                                         (dir-symbol (swconf:directory-symbol))
+                                         (link-label (if dirp
+                                                         (text-utils:strcat path " " dir-symbol)
+                                                         path)))
+                                    (format stream
+                                            "~a~%"
+                                            (gemini-parser:make-gemini-link path
+                                                                            link-label))))))
                   (parsed     (gemini-parser:parse-gemini-file raw-text))
                   (links      (gemini-parser:sexp->links parsed
                                                          nil

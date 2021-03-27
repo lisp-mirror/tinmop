@@ -488,6 +488,7 @@
                    input
                    read
                    unread
+                   directory-symbol
                    fetch
                    password-echo-character
                    color-re
@@ -557,6 +558,11 @@
   (access-non-null-conf-value *software-configuration*
                               +key-gemini+
                               +key-favicon+))
+
+(defun directory-symbol ()
+  (or (access:accesses *software-configuration*
+                       +key-directory-symbol+)
+      (_ "(directory)")))
 
 (defun gemini-fetch-favicon-p ()
   (let ((fetchp (access:accesses *software-configuration*
