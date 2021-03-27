@@ -71,9 +71,11 @@
     *open-message-link-window*))
 
 (defun open-message-link (url enqueue)
-  (if (string-starts-with-p gemini-constants:+gemini-scheme+ url)
-      (progn
-        (let ((program-events:*process-events-immediately* t)
+  (let* ((parsed (iri:iri-parse url))
+         (scheme (uri:scheme parsed)))
+    (cond
+      ((string= gemini-constants:+gemini-scheme+ scheme)
+       (let ((program-events:*process-events-immediately* t)
               (event (make-instance 'program-events:gemini-push-behind-downloading-event
                                     :priority program-events:+maximum-event-priority+)))
           (db:insert-in-history (ui:gemini-open-url-prompt) url)
@@ -82,10 +84,17 @@
           (program-events:push-event event))
         (gemini-viewer:request url :enqueue enqueue
                                    :use-cached-file-if-exists t))
-      (let ((program (swconf:link-regex->program-to-use url)))
-        (if program
-            (os-utils:open-link-with-program program url)
-            (os-utils:xdg-open url)))))
+      ((null scheme)
+       (let* ((event (make-instance 'program-events:gemini-request-event
+                                    :url url
+                                    :give-focus-to-message-window nil)))
+         (program-events:push-event event)))
+      (t
+       (let ((program (swconf:link-regex->program-to-use url)))
+         (if program
+             (os-utils:open-link-with-program program url)
+             (os-utils:xdg-open url)))))))
+
 
 (defclass open-links-window ()
   ((links

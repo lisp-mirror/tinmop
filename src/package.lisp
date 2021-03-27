@@ -399,6 +399,7 @@
    :find-attribute
    :find-tag
    :position-tag
+   :node->link
    :html->text))
 
 (defpackage :resources-utils
@@ -660,11 +661,13 @@
    :text-utils)
   (:nicknames :iri)
   (:export
+   :+segment-separator+
    :iri
    :copy-iri
    :render-iri
    :make-iri
-   :iri-parse))
+   :iri-parse
+   :absolute-url-p))
 
 (defpackage :x509
   (:use
@@ -2215,7 +2218,8 @@
    :abort-downloading
    :downloading-allowed-p
    :request
-   :open-gemini-stream-window))
+   :open-gemini-stream-window
+   :load-gemini-url))
 
 (defpackage :main-window
   (:use

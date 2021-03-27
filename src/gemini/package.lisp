@@ -100,7 +100,7 @@
    :response-sensitive-input-p
    :response-redirect-p
    :response-success-p
-   :absolute-url-p
+   :absolute-gemini-url-p
    :init-default-gemini-theme
    :gemini-file-response
    :status-code

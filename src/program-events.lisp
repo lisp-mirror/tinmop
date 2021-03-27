@@ -996,13 +996,38 @@
    (use-cached-file-if-exists
     :initform nil
     :initarg :use-cached-file-if-exists
-    :accessor use-cached-file-if-exists)))
+    :accessor use-cached-file-if-exists)
+   (give-focus-to-message-window
+    :initform t
+    :initarg :give-focus-to-message-window
+    :reader  give-focus-to-message-window-p
+    :writer  (setf give-focus-to-message-window))))
 
 (defmethod process-event ((object gemini-request-event))
-  (with-accessors ((url                       url)
-                   (use-cached-file-if-exists use-cached-file-if-exists)) object
-    (ui:focus-to-message-window)
-    (gemini-viewer:request url :use-cached-file-if-exists use-cached-file-if-exists)))
+  (tui:with-notify-errors
+    (with-accessors ((url                            url)
+                     (give-focus-to-message-window-p give-focus-to-message-window-p)
+                     (use-cached-file-if-exists      use-cached-file-if-exists)) object
+      (let ((window specials:*message-window*))
+        (setf (windows:keybindings window)
+              keybindings:*gemini-message-keymap*)
+        (when give-focus-to-message-window-p
+          (ui:focus-to-message-window))
+        (if (gemini-client:absolute-gemini-url-p url)
+            (gemini-viewer:request url :use-cached-file-if-exists use-cached-file-if-exists)
+            (let* ((file-string (fs:slurp-file url))
+                   (parent-dir  (fs:parent-dir-path url))
+                   (parsed (gemini-parser:parse-gemini-file file-string))
+                   (links  (gemini-parser:sexp->links parsed
+                                                      nil
+                                                      nil
+                                                      parent-dir
+                                                      :comes-from-local-file t))
+                   (text   (gemini-parser:sexp->text parsed
+                                                     gemini-client:*gemini-page-theme*)))
+              (gemini-viewer:maybe-initialize-metadata window)
+              (refresh-gemini-message-window links file-string text nil)
+              (windows:draw window)))))))
 
 (defclass gemini-back-event (program-event) ())
 
@@ -1040,9 +1065,12 @@
               (push new-row reversed-rows))
             (setf rows (reverse reversed-rows))))
         (progn
-          (setf (message-window:source-text win) rendered-text)
-          (setf (gemini-viewer:gemini-metadata-source-file window-metadata) source)
-          (setf (gemini-viewer:gemini-metadata-links window-metadata) links)))))
+          (when rendered-text
+            (setf (message-window:source-text win) rendered-text))
+          (when source
+            (setf (gemini-viewer:gemini-metadata-source-file window-metadata) source))
+          (when links
+            (setf (gemini-viewer:gemini-metadata-links window-metadata) links))))))
 
 (defmethod process-event ((object gemini-got-line-event))
   (with-accessors ((response       payload)

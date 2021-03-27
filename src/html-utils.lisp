@@ -75,6 +75,9 @@
   (position-if (lambda (a) (tag= tag a))
                node))
 
+(defun node->link (node)
+  (html-utils:attribute-value (html-utils:find-attribute :href node)))
+
 (defun html->text (html &key (add-link-footnotes t))
   "Transform html to text, note that if `add-link-footnotes` is non nil footnotes that marks html link in the text are added aftere the body of the message
 

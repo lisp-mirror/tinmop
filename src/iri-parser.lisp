@@ -17,6 +17,8 @@
 
 (in-package :iri-parser)
 
+(define-constant +segment-separator+ "/" :test #'string=)
+
 (defrule alpha (character-ranges (#\a #\z) (#\A #\Z))
   (:text t))
 
@@ -244,23 +246,28 @@
                  :query     query
                  :fragment  fragment))
 
-(defun iri-parse (iri)
-  (let* ((parsed (parse 'iri-reference iri :junk-allowed nil))
-         (res    (mapcar (lambda (a) (cond
-                                       ((typep a 'string)
-                                        (if (text-utils:string-empty-p a)
-                                            nil
-                                            a))
-                                       (t a)))
-                         (list (first   parsed)       ; scheme
-                               (second  parsed)       ; user-credentials
-                               (third   parsed)       ; host
-                               (fourth  parsed)       ; port
-                               (fifth   parsed)       ; path
-                               (sixth   parsed)       ; query
-                               (seventh parsed)))))   ; fragment
-    (values (apply #'make-iri res)
-            res)))
+(defun iri-parse (iri &key (null-on-error nil))
+  (handler-case
+      (let* ((parsed (parse 'iri-reference iri :junk-allowed nil))
+             (res    (mapcar (lambda (a) (cond
+                                           ((typep a 'string)
+                                            (if (text-utils:string-empty-p a)
+                                                nil
+                                                a))
+                                           (t a)))
+                             (list (first   parsed)       ; scheme
+                                   (second  parsed)       ; user-credentials
+                                   (third   parsed)       ; host
+                                   (fourth  parsed)       ; port
+                                   (fifth   parsed)       ; path
+                                   (sixth   parsed)       ; query
+                                   (seventh parsed)))))   ; fragment
+        (values (apply #'make-iri res)
+                res))
+    (esrap:esrap-parse-error (e)
+      (if null-on-error
+          nil
+          (error e)))))
 
 (defun copy-iri (from)
   (let ((scheme    (uri:scheme    from))
@@ -315,3 +322,7 @@
 (defmethod to-s ((object iri))
   (with-output-to-string (stream)
     (render-iri object stream)))
+
+(defun absolute-url-p (url)
+  (when-let ((iri (iri:iri-parse url :null-on-error t)))
+    (not (null (uri:scheme iri)))))

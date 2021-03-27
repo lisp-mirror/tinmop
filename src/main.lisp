@@ -95,11 +95,6 @@ etc.) happened"
 (defun reset-timeline-pagination ()
   (ui:reset-timeline-pagination))
 
-(defun load-gemini-url (url)
-  (let* ((event (make-instance 'program-events:gemini-request-event
-                                       :url url)))
-    (program-events:push-event event)))
-
 (defun load-configuration-files ()
   (format t (_ "Loading configuration file ~a~%") swconf:+shared-conf-filename+)
   (handler-case
@@ -147,7 +142,7 @@ etc.) happened"
     (client:init)
     (client:authorize)
     (if command-line:*gemini-url*
-        (load-gemini-url command-line:*gemini-url*)
+        (gemini-viewer:load-gemini-url command-line:*gemini-url*)
         (progn
           (when command-line:*module-file*
             (modules:load-module command-line:*module-file*))

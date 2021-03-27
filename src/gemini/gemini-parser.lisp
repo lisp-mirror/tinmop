@@ -228,14 +228,15 @@
 (defun make-gemini-iri (host path &key
                                     (query    nil)
                                     (port     +gemini-default-port+)
-                                    (fragment nil))
+                                    (fragment nil)
+                                    (scheme  +gemini-scheme+))
   (let* ((actual-path (if (string-starts-with-p "/" path)
                           (subseq path 1)
                           path))
          (actual-port (if port
                           (to-s port)
                           (to-s +gemini-default-port+)))
-         (iri (strcat +gemini-scheme+ "://"
+         (iri (strcat scheme         "://"
                       host            ":"
                       actual-port     "/"
                       actual-path)))
@@ -245,15 +246,29 @@
       (setf iri (strcat iri "#" fragment)))
     iri))
 
-(defun sexp->links (parsed-gemini original-host original-port original-path)
-  (loop for node in parsed-gemini when (html-utils:tag= :a node) collect
-       (let ((link-value (html-utils:attribute-value (html-utils:find-attribute :href node))))
-         (make-instance 'gemini-link
-                        :target (absolutize-link link-value
-                                                 original-host
-                                                 original-port
-                                                 original-path)
-                        :name   (tag-value node)))))
+(defun sexp->links (parsed-gemini original-host original-port original-path
+                    &key (comes-from-local-file nil))
+  (loop
+    for node in parsed-gemini
+    when (html-utils:tag= :a node)
+      collect
+      (let* ((link-value    (html-utils:node->link node))
+             (absolute-p    (iri:absolute-url-p link-value))
+             (rendered-link (cond
+                                  (absolute-p
+                                   link-value)
+                                  (comes-from-local-file
+                                   (strcat original-path
+                                           iri:+segment-separator+
+                                           link-value))
+                                  (t
+                                   (absolutize-link link-value
+                                                    original-host
+                                                    original-port
+                                                    original-path)))))
+            (make-instance 'gemini-link
+                           :target rendered-link
+                           :name   (tag-value node)))))
 
 (defun gemini-link-iri-p (iri)
   (conditions:with-default-on-error (nil)

@@ -730,3 +730,12 @@
       (select-row  *gemini-streams-window* 0))
     (draw  *gemini-streams-window*)
      *gemini-streams-window*))
+
+(defun load-gemini-url (url)
+  "Load `url', that  is a web resource or a  local file. This function
+can be  used only when  the event polling  is enabled (e.g.  from user
+command) otherwise  te actual code to  get the resource will  never be
+executed."
+  (let* ((event (make-instance 'program-events:gemini-request-event
+                               :url url)))
+    (program-events:push-event event)))

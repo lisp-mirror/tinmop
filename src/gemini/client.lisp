@@ -274,8 +274,9 @@
           (t
            parsed-header))))))
 
-(defun absolute-url-p (url)
-  (text-utils:string-starts-with-p +gemini-scheme+ url))
+(defun absolute-gemini-url-p (url)
+  (when-let ((iri (iri:iri-parse url :null-on-error t)))
+    (string= (uri:scheme iri) +gemini-scheme+)))
 
 (defun close-ssl-socket (socket)
   (usocket:socket-close socket))
@@ -306,19 +307,22 @@
          (path       (uri:path     iri))
          (query      (uri:query    iri))
          (fragment   (uri:fragment iri))
-         (port       (or (uri:port  iri)
+         (port       (or (uri:port iri)
                          +gemini-default-port+))
+         (scheme     (uri:scheme   iri))
          (actual-iri (gemini-parser:make-gemini-iri host
                                                     path
                                                     :query    query
                                                     :port     port
-                                                    :fragment fragment)))
+                                                    :fragment fragment
+                                                    :scheme   scheme)))
     (values actual-iri
             host
             path
             query
             port
-            fragment)))
+            fragment
+            scheme)))
 
 (defun debug-gemini (&rest data)
   (declare (ignorable data))
