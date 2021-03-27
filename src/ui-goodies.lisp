@@ -1779,12 +1779,8 @@ open-message-link-window:open-message-link"
   "Ask for a gemini address and try to load it"
   (flet ((on-input-complete (url)
            (if (gemini-parser:gemini-iri-p url)
-               (let* ((event (make-instance 'gemini-request-event
-                                            :priority
-                                            program-events:+maximum-event-priority+
-                                            :use-cached-file-if-exists t
-                                            :url                       url)))
-                 (program-events:push-event event))
+               (gemini-viewer:load-gemini-url url
+                                              :priority program-events:+maximum-event-priority+)
                (error-message (_ "This is not a valid gemini address")))))
     (let ((prompt (gemini-open-url-prompt)))
       (ask-string-input #'on-input-complete

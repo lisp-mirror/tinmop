@@ -82,19 +82,16 @@
           (db:gemlog-mark-as-seen url)
           (gemini-viewer:ensure-just-one-stream-rendering)
           (program-events:push-event event))
-        (gemini-viewer:request url :enqueue enqueue
+        (gemini-viewer:request url :enqueue                   enqueue
                                    :use-cached-file-if-exists t))
       ((null scheme)
-       (let* ((event (make-instance 'program-events:gemini-request-event
-                                    :url url
-                                    :give-focus-to-message-window nil)))
-         (program-events:push-event event)))
+       (gemini-viewer:load-gemini-url url
+                                      :give-focus-to-message-window nil))
       (t
        (let ((program (swconf:link-regex->program-to-use url)))
          (if program
              (os-utils:open-link-with-program program url)
              (os-utils:xdg-open url)))))))
-
 
 (defclass open-links-window ()
   ((links

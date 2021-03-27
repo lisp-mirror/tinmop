@@ -675,8 +675,8 @@
 (defmethod refresh-config :after ((object gemini-streams-window))
   (open-attach-window:refresh-view-links-window-config object
                                                        swconf:+key-open-gemini-stream-window+)
-  (let* ((win-w (truncate (* (win-width  specials:*main-window*) 3/4)))
-         (win-h (truncate (* (win-height specials:*main-window*) 3/4)))
+  (let* ((win-w       (truncate (* (win-width  specials:*main-window*) 3/4)))
+         (win-h       (truncate (* (win-height specials:*main-window*) 3/4)))
          (x           (truncate (- (/ (win-width specials:*main-window*) 2)
                                    (/ win-w 2))))
          (y           (truncate (- (/ (win-height specials:*main-window*) 2)
@@ -731,11 +731,15 @@
     (draw  *gemini-streams-window*)
      *gemini-streams-window*))
 
-(defun load-gemini-url (url)
+(defun load-gemini-url (url &key
+                              (priority program-events:+standard-event-priority+)
+                              (give-focus-to-message-window t))
   "Load `url', that  is a web resource or a  local file. This function
 can be  used only when  the event polling  is enabled (e.g.  from user
 command) otherwise  te actual code to  get the resource will  never be
 executed."
   (let* ((event (make-instance 'program-events:gemini-request-event
-                               :url url)))
+                               :give-focus-to-message-window give-focus-to-message-window
+                               :priority priority
+                               :url      url)))
     (program-events:push-event event)))
