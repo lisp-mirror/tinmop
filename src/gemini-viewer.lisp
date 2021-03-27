@@ -656,7 +656,7 @@
     (let ((found (find-db-stream-url last)))
       (if found
           (db-entry-to-foreground last)
-          (request last))))) ; this should never happens
+          (load-gemini-url last))))) ; this happens if navigating in a local tree
 
 (defun view-source (window)
   (when-let* ((metadata (message-window:metadata window))
