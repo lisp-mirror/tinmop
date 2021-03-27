@@ -1013,21 +1013,46 @@
               keybindings:*gemini-message-keymap*)
         (when give-focus-to-message-window-p
           (ui:focus-to-message-window))
-        (if (gemini-client:absolute-gemini-url-p url)
-            (gemini-viewer:request url :use-cached-file-if-exists use-cached-file-if-exists)
-            (let* ((file-string (fs:slurp-file url))
-                   (parent-dir  (fs:parent-dir-path url))
-                   (parsed (gemini-parser:parse-gemini-file file-string))
-                   (links  (gemini-parser:sexp->links parsed
-                                                      nil
-                                                      nil
-                                                      parent-dir
-                                                      :comes-from-local-file t))
-                   (text   (gemini-parser:sexp->text parsed
-                                                     gemini-client:*gemini-page-theme*)))
-              (gemini-viewer:maybe-initialize-metadata window)
-              (refresh-gemini-message-window links file-string text nil)
-              (windows:draw window)))))))
+        (cond
+          ((gemini-client:absolute-gemini-url-p url)
+           (gemini-viewer:request url :use-cached-file-if-exists use-cached-file-if-exists))
+          ((fs:dirp url)
+           (let* ((all-paths  (fs:collect-children url))
+                  (raw-text   (with-output-to-string (stream)
+                                (write-sequence (gemini-parser:geminize-h1
+                                                 (format nil
+                                                         (_ "Index of local directory ~a~2%")
+                                                         url))
+                                                stream)
+                                (loop for path in all-paths do
+                                  (format stream
+                                          "~a~%"
+                                          (gemini-parser:make-gemini-link path path)))))
+                  (parsed     (gemini-parser:parse-gemini-file raw-text))
+                  (links      (gemini-parser:sexp->links parsed
+                                                         nil
+                                                         nil
+                                                         ""
+                                                         :comes-from-local-file t))
+                  (text       (gemini-parser:sexp->text parsed
+                                                        gemini-client:*gemini-page-theme*)))
+             (gemini-viewer:maybe-initialize-metadata window)
+             (refresh-gemini-message-window links raw-text text nil)
+             (windows:draw window)))
+          (t
+           (let* ((file-string (fs:slurp-file url))
+                  (parent-dir  (fs:parent-dir-path url))
+                  (parsed (gemini-parser:parse-gemini-file file-string))
+                  (links  (gemini-parser:sexp->links parsed
+                                                     nil
+                                                     nil
+                                                     parent-dir
+                                                     :comes-from-local-file t))
+                  (text   (gemini-parser:sexp->text parsed
+                                                    gemini-client:*gemini-page-theme*)))
+             (gemini-viewer:maybe-initialize-metadata window)
+             (refresh-gemini-message-window links file-string text nil)
+             (windows:draw window))))))))
 
 (defclass gemini-back-event (program-event) ())
 

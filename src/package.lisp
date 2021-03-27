@@ -278,7 +278,10 @@
    :strip-extension
    :add-extension
    :do-directory
+   :collect-children
    :search-matching-file
+   :regular-file-p
+   :dirp
    :split-path-elements
    :path-last-element
    :path-first-element

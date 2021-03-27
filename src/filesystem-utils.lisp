@@ -126,6 +126,13 @@
               (nix:eloop () 0))
        (nix:closedir ,dir)))))
 
+(defun collect-children (parent-dir)
+  (let ((all-paths ()))
+    (fs:do-directory (path) parent-dir
+      (push path all-paths))
+    (setf all-paths (sort all-paths #'string<))
+    all-paths))
+
 (defun search-matching-file (root-directory &key (name ".*"))
   "Scan a filesystem saving files that match the provided criteria,
    does not follow symlinks."
