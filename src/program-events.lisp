@@ -1017,12 +1017,13 @@
           ((gemini-client:absolute-gemini-url-p url)
            (gemini-viewer:request url :use-cached-file-if-exists use-cached-file-if-exists))
           ((fs:dirp url)
-           (let* ((all-paths  (fs:prepend-pwd (fs:collect-children url)))
+           (let* ((index-path (fs:prepend-pwd url))
+                  (all-paths  (fs:collect-children index-path))
                   (raw-text   (with-output-to-string (stream)
                                 (write-sequence (gemini-parser:geminize-h1
                                                  (format nil
                                                          (_ "Index of local directory ~a~2%")
-                                                         url))
+                                                         index-path))
                                                 stream)
                                 (loop for path in all-paths do
                                   (let* ((dirp       (fs:dirp path))
@@ -1043,7 +1044,7 @@
                   (text       (gemini-parser:sexp->text parsed
                                                         gemini-client:*gemini-page-theme*)))
              (gemini-viewer:maybe-initialize-metadata window)
-             (gemini-viewer:add-url-to-history window url)
+             (gemini-viewer:add-url-to-history window index-path)
              (refresh-gemini-message-window links raw-text text nil)
              (windows:draw window)))
           (t
