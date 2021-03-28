@@ -1,4 +1,55 @@
-021-03-14  cage
+2021-03-28  cage <cage-dev@twistfold.it>
+
+	* etc/default-theme.conf:
+	* src/filesystem-utils.lisp,
+	* src/open-message-link-window.lisp,
+	* src/os-utils.lisp,
+	* src/package.lisp,
+	* src/program-events.lisp,
+	* src/program-events.lisp,
+	* src/tests/uri-tests.lisp,
+        * etc/shared.conf,
+        * src/open-attach-window.lisp,
+        * src/software-configuration.lisp,
+        * src/uri-parser.lisp,
+
+	- [gemini] allowed  exploring  directory using  relative path;
+	- [gemini] allowed opening a file using tinmop itself
+          (example: opening a gemini text file);
+	- added a  more hi-level function to open a  file with an external
+	program.
+	   - this  function takes  into account the  file that  should be
+	     opened with tinmop and uses 'xdg-open' as fallback if the user did
+	     not specified an association program file-type.
+        - fixed 'uri:normalize-path';
+	- [gemini] cleaned paths when exploring local tree;
+	- changed link color when printed in link windows;
+        - cleaned a bit reults of 'prepend-pwd'.
+
+2021-03-27  cage <cage-dev@twistfold.it>
+
+	* src/filesystem-utils.lisp,
+	* src/gemini/client.lisp,
+	* src/gemini/package.lisp,
+	* src/iri-parser.lisp,
+	* src/main.lisp,
+	* src/open-message-link-window.lisp,
+	* src/package.lisp,
+	* src/package.lisp,
+	* src/uri-parser.lisp,
+        * src/gemini-viewer.lisp,
+        * src/gemini-viewer.lisp,
+        * src/gemini/gemini-parser.lisp,
+        * src/html-utils.lisp,
+        * src/open-message-link-window.lisp,
+        * src/program-events.lisp,
+        * src/ui-goodies.lisp:
+
+	- [gemini] added feature: loading local gemini folders or files from command
+        line (switch: '-o') or using TUI;
+	- used 'load-gemini-url', when possible, to avoid duplication.
+
+2021-03-14  cage
 
         * src/api-pleroma.lisp,
 	* src/main.lisp:
