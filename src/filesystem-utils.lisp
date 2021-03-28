@@ -137,7 +137,7 @@
 
 (defmethod prepend-pwd ((object string))
   (if (cl-ppcre:scan "^\\." object)
-      (text-utils:strcat (os-utils:pwd) *directory-sep* object)
+      (text-utils:strcat (os-utils:pwd) (subseq object 1))
       object))
 
 (defmethod prepend-pwd ((object sequence))
