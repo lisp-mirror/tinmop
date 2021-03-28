@@ -75,5 +75,6 @@
 (deftest test-normalize-path (uri-suite)
   (assert-true (normalize "/a/x" "/a/x"))
   (assert-true (normalize "/a/../b/x" "/b/x"))
-  (assert-true (normalize "/a/../b/x/.." "/b/x/"))
-  (assert-true (normalize "/a/../b/x/." "/b/x/")))
+  (assert-true (normalize "/a/../b/x/.." "/b/"))
+  (assert-true (normalize "/a/../b/x/." "/b/x/"))
+  (assert-true (normalize "/a/b/c/./../../g" "/a/g")))

@@ -1017,8 +1017,9 @@
           ((gemini-client:absolute-gemini-url-p url)
            (gemini-viewer:request url :use-cached-file-if-exists use-cached-file-if-exists))
           ((fs:dirp url)
-           (let* ((index-path (fs:prepend-pwd url))
-                  (all-paths  (fs:collect-children index-path))
+           (let* ((index-path (uri:normalize-path (fs:prepend-pwd url)))
+                  (all-paths  (mapcar #'uri:normalize-path
+                                      (fs:collect-children index-path)))
                   (raw-text   (with-output-to-string (stream)
                                 (write-sequence (gemini-parser:geminize-h1
                                                  (format nil
