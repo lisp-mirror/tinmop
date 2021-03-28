@@ -17,7 +17,7 @@
 	- [gemini] allowed opening a file using tinmop itself
           (example: opening a gemini text file);
 	- added a  more hi-level function to open a  file with an external
-	program.
+	  program.
 	   - this  function takes  into account the  file that  should be
 	     opened with tinmop and uses 'xdg-open' as fallback if the user did
 	     not specified an association program file-type.
