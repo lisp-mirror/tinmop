@@ -136,6 +136,4 @@
                   (progn
                     (db:cache-invalidate url)
                     (open-attachment url))
-                  (if program
-                      (os-utils:open-link-with-program program url)
-                      (os-utils:xdg-open cached-file)))))))))
+                  (os-utils:open-resource-with-external-program url nil))))))))

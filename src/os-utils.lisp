@@ -56,6 +56,9 @@
   (or (os-utils:getenv "TMPDIR")
       "/tmp/"))
 
+(defun pwd ()
+  (os-utils:getenv "PWD"))
+
 (defun external-editor ()
   (let ((error-message
          (_ "No editor found, please configure the 'editor' directive in your configuration file"))
@@ -132,3 +135,13 @@
                         :wait nil
                         :output nil
                         :error  :output)))
+
+(defun open-resource-with-external-program (resource give-focus-to-message-window)
+  (let ((program (swconf:link-regex->program-to-use resource)))
+    (if program
+        (if (swconf:use-tinmop-as-external-program-p program)
+            (gemini-viewer:load-gemini-url resource
+                                           :give-focus-to-message-window
+                                           give-focus-to-message-window)
+            (os-utils:open-link-with-program program resource))
+        (os-utils:xdg-open resource))))

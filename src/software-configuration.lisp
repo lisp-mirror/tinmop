@@ -811,6 +811,9 @@
     (values (program-name found)
             (use-cache-p  found))))
 
+(defun use-tinmop-as-external-program-p (program)
+  (cl-ppcre:scan "(^me$)|(^internal$)|(tinmop)" program))
+
 (defun config-win-focus-mark ()
   (values (access:accesses  *software-configuration*
                             +key-window+

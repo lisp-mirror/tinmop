@@ -279,6 +279,7 @@
    :add-extension
    :do-directory
    :collect-children
+   :prepend-pwd
    :search-matching-file
    :regular-file-p
    :dirp
@@ -327,15 +328,17 @@
    :+ssl-key-name+
    :cpu-number
    :xdg-open
-   :open-link-with-program
    :getenv
    :default-temp-dir
+   :pwd
    :open-with-editor
    :exit-program
    :user-cache-dir
    :cached-file-path
    :generate-ssl-certificate
-   :send-to-pipe))
+   :send-to-pipe
+   :open-link-with-program
+   :open-resource-with-external-program))
 
 (defpackage :text-utils
   (:use
@@ -1127,6 +1130,7 @@
    :config-password-echo-character
    :config-win-focus-mark
    :link-regex->program-to-use
+   :use-tinmop-as-external-program-p
    :thread-message-symbol
    :thread-message-read-colors
    :thread-message-unread-colors

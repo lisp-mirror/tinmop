@@ -133,6 +133,16 @@
     (setf all-paths (sort all-paths #'string<))
     all-paths))
 
+(defgeneric prepend-pwd (object))
+
+(defmethod prepend-pwd ((object string))
+  (if (cl-ppcre:scan "^\\." object)
+      (text-utils:strcat (os-utils:pwd) *directory-sep* object)
+      object))
+
+(defmethod prepend-pwd ((object sequence))
+  (map 'list #'prepend-pwd object))
+
 (defun search-matching-file (root-directory &key (name ".*"))
   "Scan a filesystem saving files that match the provided criteria,
    does not follow symlinks."
