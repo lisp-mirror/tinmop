@@ -96,6 +96,9 @@
 (defun mime-gemini-p (header-meta)
   (string-starts-with-p "text/gemini" header-meta))
 
+(defun mime-text-p (header-meta)
+  (string-starts-with-p "text/" header-meta))
+
 (defun header-code= (header code-class)
   (code= (status-code header)
          code-class))
@@ -451,7 +454,10 @@
        ,@body)))
 
 (defun gemini-file-stream-p (meta)
-  (gemini-client:mime-gemini-p meta))
+  (mime-gemini-p meta))
+
+(defun text-file-stream-p (meta)
+  (mime-text-p meta))
 
 (defun fetch-cached-certificate (url)
   (let ((certificate nil)

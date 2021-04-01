@@ -49,6 +49,12 @@
 
 (gen-geminize-line link +link-prefix+)
 
+(defun geminize-preformatted (text)
+  (format nil "~a~%~a~a~%"
+          +preformatted-prefix+
+          text
+          +preformatted-prefix+))
+
 (defun make-gemini-link (url title)
   (format nil "~a ~a"
           (geminize-link url)

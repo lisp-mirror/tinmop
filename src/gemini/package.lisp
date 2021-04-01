@@ -37,12 +37,14 @@
   (:shadowing-import-from :misc :random-elt :shuffle)
   (:export
    :+gemini-scheme+
+   :+preformatted-prefix+
    :geminize-h1
    :geminize-h2
    :geminize-h3
    :geminize-list
    :geminize-quote
    :geminize-link
+   :geminize-preformatted
    :make-gemini-link
    :gemini-link
    :target
@@ -88,6 +90,7 @@
    :find-code-description
    :find-code-class
    :mime-gemini-p
+   :mime-text-stream
    :gemini-protocol-error
    :error-code
    :error-description
@@ -119,6 +122,7 @@
    :debug-gemini
    :request
    :gemini-file-stream-p
+   :text-file-stream-p
    :request-dispatch
    :with-request-dispatch-table
    :fetch-cached-certificate

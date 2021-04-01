@@ -166,7 +166,8 @@
   (nix:s-isreg (nix:stat-mode (nix:stat path))))
 
 (defun dirp (path)
-  (nix:s-isdir (nix:stat-mode (nix:stat path))))
+  (and (nix:stat path)
+       (nix:s-isdir (nix:stat-mode (nix:stat path)))))
 
 (defun split-path-elements (path)
   (cl-ppcre:split *directory-sep-regexp* path))
@@ -265,20 +266,28 @@
         (text-utils:strcat home *directory-sep*)
         home)))
 
+(cffi:defcfun (ffi-mkstemp "mkstemp") :int (template :pointer))
+
+(defun %mkstemp (prefix suffix)
+  (let ((template (text-utils:strcat prefix "XXXXXX" suffix)))
+    (cffi:with-foreign-string (ptr-template template)
+      (ffi-mkstemp ptr-template)
+      (cffi:foreign-string-to-lisp ptr-template))))
+
 (defparameter *temporary-files-created* ())
 
-(defun temporary-file (&optional (temp-directory nil))
+(defun temporary-file (&key (temp-directory nil) (extension ""))
   (let ((tmpdir (or temp-directory
                     (os-utils:default-temp-dir))))
-    (multiple-value-bind (x filename)
-        (if tmpdir
-            (nix:mkstemp (format nil "~a~a~a" tmpdir *directory-sep*
-                                config:+program-name+))
-            (nix:mkstemp (format nil "~atmp~a~a" *directory-sep* *directory-sep*
-                                config:+program-name+)))
-      (declare (ignore x))
-      (push filename *temporary-files-created*)
-      filename)))
+    (let ((filepath (if tmpdir
+                    (%mkstemp (format nil "~a~a~a" tmpdir *directory-sep*
+                                      config:+program-name+)
+                              extension)
+                    (%mkstemp (format nil "~atmp~a~a" *directory-sep* *directory-sep*
+                                      config:+program-name+)
+                              extension))))
+      (push filepath *temporary-files-created*)
+      filepath)))
 
 (defun clean-temporary-files ()
   (dolist (temporary-file *temporary-files-created*)

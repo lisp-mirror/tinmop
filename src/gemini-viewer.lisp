@@ -335,53 +335,69 @@
                 (swconf:gemini-default-favicon)))))))
 
 (defun request-stream-gemini-document-thread (wrapper-object host
-                                              port path query fragment favicon)
+                                              port path query fragment favicon
+                                              gemini-format-p)
   (with-accessors ((download-socket download-socket)
                    (download-stream download-stream)
                    (octect-count    octect-count)
                    (support-file    support-file)) wrapper-object
-    (flet ((maybe-render-line (line-event)
-             (when (eq (stream-status wrapper-object) :rendering)
-               (program-events:push-event line-event))))
+    (labels ((maybe-render-line (line-event)
+               (when (eq (stream-status wrapper-object) :rendering)
+                 (program-events:push-event line-event)))
+             (maybe-render-preformat-wrapper (file-stream wrapper-object)
+               (when (not gemini-format-p)
+                 (let* ((preformat-line (format nil "~a~%" gemini-parser:+preformatted-prefix+))
+                        (preformat-wrapper-event (make-gemini-download-event preformat-line
+                                                                             wrapper-object
+                                                                             t)))
+                   (maybe-render-line preformat-wrapper-event)
+                   (write-sequence preformat-line file-stream)))))
       (lambda ()
+        (when-let ((extension (fs:get-extension path)))
+          (setf support-file (fs:temporary-file :extension extension)))
         (with-open-support-file (file-stream support-file character)
-          (let* ((url          (gemini-parser:make-gemini-iri host
-                                                              path
-                                                              :query    query
-                                                              :port     port
-                                                              :fragment fragment))
-                 (url-header   (format nil "~a ~a~2%" favicon url))
-                 (parsed-url   (gemini-parser:parse-gemini-file url-header))
-                 (url-response (gemini-client:make-gemini-file-response nil
-                                                                        nil
-                                                                        nil
-                                                                        parsed-url
-                                                                        nil
-                                                                        ""
-                                                                        nil))
-                 (url-event    (make-instance 'program-events:gemini-got-line-event
-                                              :wrapper-object  wrapper-object
-                                              :payload         url-response
-                                              :append-text     nil)))
+          (let* ((url                    (gemini-parser:make-gemini-iri host
+                                                                        path
+                                                                        :query    query
+                                                                        :port     port
+                                                                        :fragment fragment))
+                 (url-header             (format nil "~a ~a~2%" favicon url))
+                 (parsed-url             (gemini-parser:parse-gemini-file url-header))
+                 (url-response           (gemini-client:make-gemini-file-response nil
+                                                                                  nil
+                                                                                  nil
+                                                                                  parsed-url
+                                                                                  nil
+                                                                                  ""
+                                                                                  nil))
+                 (url-event               (make-instance 'program-events:gemini-got-line-event
+                                                         :wrapper-object  wrapper-object
+                                                         :payload         url-response
+                                                         :append-text     nil)))
+
             (write-sequence url-header file-stream)
             (increment-bytes-count wrapper-object url-header :convert-to-octects t)
             (maybe-render-line url-event)
+            (maybe-render-preformat-wrapper file-stream wrapper-object)
             (loop
-               named download-loop
-               for line-as-array = (read-line-into-array download-stream)
-               while line-as-array do
-                 (gemini-client:debug-gemini "[stream] gemini file stream raw data line : ~a"
-                                              line-as-array)
-                 (if (downloading-allowed-p wrapper-object)
-                     (let* ((line  (babel:octets-to-string line-as-array :errorp nil))
-                            (event (make-gemini-download-event line wrapper-object t)))
-                       (gemini-client:debug-gemini "[stream] gemini file stream got data line : ~a"
-                                                    line)
-                       (write-sequence line file-stream)
-                       (increment-bytes-count wrapper-object line :convert-to-octects t)
-                       (maybe-render-line event))
-                     (progn
-                       (return-from download-loop nil))))
+              named download-loop
+              for line-as-array = (read-line-into-array download-stream)
+              while line-as-array do
+                (gemini-client:debug-gemini "[stream] gemini file stream raw data line : ~a"
+                                            line-as-array)
+                (if (downloading-allowed-p wrapper-object)
+                    (let* ((line  (babel:octets-to-string line-as-array :errorp nil))
+                           (event (make-gemini-download-event line
+                                                              wrapper-object
+                                                              t)))
+                      (gemini-client:debug-gemini "[stream] gemini file stream got data line : ~a"
+                                                  line)
+                      (write-sequence line file-stream)
+                      (increment-bytes-count wrapper-object line :convert-to-octects t)
+                      (maybe-render-line event))
+                    (progn
+                      (return-from download-loop nil))))
+            (maybe-render-preformat-wrapper file-stream wrapper-object)
             (if (not (downloading-allowed-p wrapper-object))
                 (ui:notify (_ "Gemini document downloading aborted"))
                 (progn
@@ -410,6 +426,8 @@
                    (support-file    support-file)) wrapper-object
 
     (lambda ()
+      (when-let ((extension (fs:get-extension path)))
+        (setf support-file (fs:temporary-file :extension extension)))
       (with-open-support-file (file-stream support-file)
         (labels ((%fill-buffer ()
                    (when (downloading-allowed-p wrapper-object)
@@ -422,7 +440,7 @@
                              (force-output file-stream)
                              (setf (stream-status wrapper-object) :completed)
                              (gemini-client:close-ssl-socket socket)
-                             (os-utils:xdg-open support-file))
+                             (os-utils:open-resource-with-external-program support-file nil))
                            (progn
                              (write-sequence buffer file-stream)
                              (%fill-buffer)))))))
@@ -432,7 +450,8 @@
   (lambda (status code-description meta response socket iri parsed-iri)
     (declare (ignore iri))
     (labels ((starting-status (meta)
-               (if (gemini-client:gemini-file-stream-p meta)
+               (if (or (gemini-client:gemini-file-stream-p meta)
+                       (gemini-client:text-file-stream-p   meta))
                    (if enqueue
                        :streaming
                        :rendering)
@@ -443,66 +462,74 @@
           (gemini-client:displace-iri parsed-iri)
         (declare (ignore actual-iri))
         (gemini-client:debug-gemini "response is a stream")
-        (if (gemini-client:gemini-file-stream-p meta)
-            (let* ((starting-status (starting-status meta))
-                   (gemini-stream   (make-instance 'gemini-file-stream
-                                                   :host            host
-                                                   :port            port
-                                                   :path            path
-                                                   :query           query
-                                                   :fragment        fragment
-                                                   :meta            meta
-                                                   :status-code     status
-                                                   :status-code-description
-                                                   code-description
-                                                   :stream-status   starting-status
-                                                   :download-stream response
-                                                   :download-socket socket))
-                   (favicon      (fetch-favicon parsed-iri))
-                   (thread-fn    (request-stream-gemini-document-thread gemini-stream
-                                                                        host
-                                                                        port
-                                                                        path
-                                                                        query
-                                                                        fragment
-                                                                        favicon))
-                   (enqueue-event (make-instance 'program-events:gemini-enqueue-download-event
-                                                 :payload gemini-stream)))
-              (gemini-client:debug-gemini "response is a gemini file stream")
-              (program-events:push-event enqueue-event)
-              (downloading-start-thread gemini-stream
-                                        thread-fn
-                                        host
-                                        port
-                                        path
-                                        query
-                                        fragment))
-            (let* ((starting-status (starting-status meta))
-                   (gemini-stream   (make-instance 'gemini-others-data-stream
-                                                   :stream-status   starting-status
-                                                   :download-stream response
-                                                   :download-socket socket))
-                   (thread-fn       (request-stream-other-document-thread gemini-stream
-                                                                          socket
-                                                                          host
-                                                                          port
-                                                                          path
-                                                                          query
-                                                                          fragment
-                                                                          status
-                                                                          code-description
-                                                                          meta))
-                   (enqueue-event (make-instance 'program-events:gemini-enqueue-download-event
-                                                 :payload gemini-stream)))
-              (gemini-client:debug-gemini "response is *not* a gemini file stream")
-              (program-events:push-event enqueue-event)
-              (downloading-start-thread gemini-stream
-                                        thread-fn
-                                        host
-                                        port
-                                        path
-                                        query
-                                        fragment)))))))
+        (labels ((make-text-based-stream (gemini-format-p)
+                   (let* ((starting-status (starting-status meta))
+                          (gemini-stream   (make-instance 'gemini-file-stream
+                                                          :host            host
+                                                          :port            port
+                                                          :path            path
+                                                          :query           query
+                                                          :fragment        fragment
+                                                          :meta            meta
+                                                          :status-code     status
+                                                          :status-code-description
+                                                          code-description
+                                                          :stream-status   starting-status
+                                                          :download-stream response
+                                                          :download-socket socket))
+                          (favicon      (fetch-favicon parsed-iri))
+                          (thread-fn    (request-stream-gemini-document-thread gemini-stream
+                                                                               host
+                                                                               port
+                                                                               path
+                                                                               query
+                                                                               fragment
+                                                                               favicon
+                                                                               gemini-format-p))
+                          (enqueue-event (make-instance 'program-events:gemini-enqueue-download-event
+                                                        :payload gemini-stream)))
+                     (program-events:push-event enqueue-event)
+                     (downloading-start-thread gemini-stream
+                                               thread-fn
+                                               host
+                                               port
+                                               path
+                                               query
+                                               fragment))))
+          (cond
+            ((gemini-client:gemini-file-stream-p meta)
+             (gemini-client:debug-gemini "response is a gemini document stream")
+             (make-text-based-stream t))
+            ((gemini-client:text-file-stream-p meta)
+             (gemini-client:debug-gemini "response is a text stream")
+             (make-text-based-stream nil))
+            (t
+             (let* ((starting-status (starting-status meta))
+                    (gemini-stream   (make-instance 'gemini-others-data-stream
+                                                    :stream-status   starting-status
+                                                    :download-stream response
+                                                    :download-socket socket))
+                    (thread-fn       (request-stream-other-document-thread gemini-stream
+                                                                           socket
+                                                                           host
+                                                                           port
+                                                                           path
+                                                                           query
+                                                                           fragment
+                                                                           status
+                                                                           code-description
+                                                                           meta))
+                    (enqueue-event (make-instance 'program-events:gemini-enqueue-download-event
+                                                  :payload gemini-stream)))
+               (gemini-client:debug-gemini "response is *not* a gemini file stream")
+               (program-events:push-event enqueue-event)
+               (downloading-start-thread gemini-stream
+                                         thread-fn
+                                         host
+                                         port
+                                         path
+                                         query
+                                         fragment)))))))))
 
 (defun request (url &key
                       (enqueue                    nil)
