@@ -83,8 +83,10 @@
 (defrule scheme (and alpha (* (or alpha  digit  "+"  "-"  "." )))
   (:text t))
 
-(defrule ihier-part  (and iauthority-start iauthority)
-  (:function second))
+(defrule ihier-part (or (and iauthority-start iauthority ipath-abempty)
+                        ipath-absolute ; text
+                        ipath-rootless ;text
+                        ipath-empty)) ;text
 
 (defrule user-credentials (and iuserinfo credential-delim)
   (:function first))
@@ -169,21 +171,28 @@
   (:text t))
 
 (defun extract-fields-from-absolute-iri (parsed)
-  (let ((authority (third parsed)))
-    (list (first  parsed)    ; scheme
-          (first  authority) ; user-credentials
-          (second authority) ; host
-          (third  authority) ; port
-          (fourth parsed)    ; path
-          (fifth  parsed)    ; iquery
-          (sixth  parsed)))) ; ifragment
+  (let* ((scheme           (first parsed))
+         (ihier-part       (third parsed))
+         (authority        (when (consp ihier-part)
+                             (second ihier-part)))
+         (user-credentials (first authority))
+         (host             (second authority))
+         (port             (third authority))
+         (ipath            (if (consp ihier-part)
+                               (third ihier-part)
+                               ihier-part))
+         (iquery           (fourth parsed))
+         (ifragment        (fifth  parsed)))
+    (list scheme
+          user-credentials
+          host
+          port
+          ipath
+          iquery
+          ifragment)))
 
 (defrule iri (and scheme ":"
                   ihier-part
-                  (or ipath-abempty
-                      ipath-absolute
-                      ipath-noscheme
-                      ipath-empty)
                   (? iquery)
                   (? ifragment))
   (:function extract-fields-from-absolute-iri))

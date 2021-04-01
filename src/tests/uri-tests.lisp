@@ -52,9 +52,6 @@
      (nil nil nil nil "http" nil nil))
     ("http://" .
      ("http" nil nil nil nil nil nil))
-    ;; are these valid URI?
-    ;; ("tel:+31-641044153" .
-    ;;  ("tel" nil nil "+31-641044153" nil nil))
     ;; ("http:" .
     ;;  ("http" nil nil nil nil nil))
     ("ldap://[2001:db8::7]/c=GB?objectClass?one" .

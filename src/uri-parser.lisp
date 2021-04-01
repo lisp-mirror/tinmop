@@ -17,6 +17,8 @@
 
 (in-package :uri-parser)
 
+;; NOTE: the parser is broken, use :iri-parser, instead
+
 (define-constant +segment-separator+ "/" :test #'string=)
 
 (defrule alpha (character-ranges (#\a #\z) (#\A #\Z))

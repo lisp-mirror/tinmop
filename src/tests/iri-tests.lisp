@@ -61,7 +61,11 @@
     ("http://" .
      ("http" nil nil nil nil nil nil))
     ("http" .
-     (nil nil nil nil "http" nil nil))))
+     (nil nil nil nil "http" nil nil))
+    ("tel:+31-thisiisnotanumber" .
+     ("tel" nil nil nil "+31-thisiisnotanumber" nil nil))
+    ("mailto:name@localhost.localdomain" .
+     ("mailto" nil nil nil "name@localhost.localdomain" nil nil))))
 
 (deftest test-parsing (iri-suite)
   (loop for (a . b) in *test-cases* do

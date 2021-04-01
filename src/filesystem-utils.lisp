@@ -166,8 +166,9 @@
   (nix:s-isreg (nix:stat-mode (nix:stat path))))
 
 (defun dirp (path)
-  (and (nix:stat path)
-       (nix:s-isdir (nix:stat-mode (nix:stat path)))))
+  (ignore-errors
+   (and (nix:stat path)
+        (nix:s-isdir (nix:stat-mode (nix:stat path))))))
 
 (defun split-path-elements (path)
   (cl-ppcre:split *directory-sep-regexp* path))
