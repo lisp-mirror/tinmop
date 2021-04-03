@@ -119,7 +119,6 @@ etc.) happened"
   ;; (res:init)
   ;; (load-configuration-files)
   ;; (init-db)
-  (gemini-client:init-default-gemini-theme)
   (db-utils:with-ready-database (:connect nil)
     (complete:initialize-complete-username-cache)
     (modules:load-module +starting-init-file+)
@@ -133,6 +132,7 @@ etc.) happened"
     ;; initialized after the latter
     (message-window:init)
     (tags-window:init)
+    (gemini-client:init-default-gemini-theme specials:*message-window*)
     (conversations-window:init)
     (setup-bindings)
     ;; ... and init-keyboard-mapping-for last

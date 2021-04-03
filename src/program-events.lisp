@@ -1122,9 +1122,9 @@
                      (text-rendering-theme gemini-client:text-rendering-theme)) response
       (when (and (gemini-viewer:downloading-allowed-p wrapper-object)
                  (not (skip-rendering-p object)))
-        (let* ((win specials:*message-window*)
-               (rendered-line   (gemini-parser:sexp->text parsed-file
-                                                          text-rendering-theme)))
+        (let* ((win           specials:*message-window*)
+               (rendered-line (gemini-parser:sexp->text parsed-file
+                                                        text-rendering-theme)))
           (setf (windows:keybindings win)
                 keybindings:*gemini-message-keymap*)
           (refresh-gemini-message-window links source rendered-line append-text)

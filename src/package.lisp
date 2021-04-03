@@ -1926,7 +1926,8 @@
    :scroll-next-page
    :scroll-previous-page
    :search-regex
-   :init))
+   :init
+   :viewport-width))
 
 (defpackage :open-attach-window
   (:use

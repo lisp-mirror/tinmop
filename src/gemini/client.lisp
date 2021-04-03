@@ -181,9 +181,10 @@
 
 (defparameter *gemini-page-theme* nil)
 
-(defun init-default-gemini-theme ()
+(defun init-default-gemini-theme (viewport)
   (setf *gemini-page-theme*
         (make-instance 'gemini-parser:gemini-page-theme
+                       :viewport           viewport
                        :link-prefix-other  (swconf:gemini-link-prefix-to-other)
                        :link-prefix-gemini (swconf:gemini-link-prefix-to-gemini)
                        :quote-prefix       (swconf:gemini-quote-prefix)

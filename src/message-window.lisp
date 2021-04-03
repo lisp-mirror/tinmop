@@ -137,18 +137,18 @@
 (defgeneric search-regex (object regex))
 
 (defun text->rendered-lines-rows (window text)
-  (flet ((fit-lines (lines)
-           (let ((res ()))
-             (loop for line in lines do
-               (if (string-empty-p line)
-                   (push nil res)
-                   (loop
-                     for fitted-line in
-                                     (flush-left-mono-text (split-words line)
-                                                           (win-width-no-border window))
-                     do
-                        (push fitted-line res))))
-             (reverse res))))
+  (labels ((fit-lines (lines)
+             (let ((res ()))
+               (loop for line in lines do
+                 (if (string-empty-p line)
+                     (push nil res)
+                     (loop
+                       for fitted-line in
+                                       (flush-left-mono-text (split-words line)
+                                                             (win-width-no-border window))
+                       do
+                          (push fitted-line res))))
+               (reverse res))))
     (let* ((lines        (split-lines text))
            (fitted-lines (fit-lines lines))
            (color-re     (swconf:color-regexps))
@@ -279,3 +279,8 @@
     (refresh-config *message-window*)
     (draw *message-window*)
     *message-window*))
+
+(defgeneric viewport-width (object))
+
+(defmethod viewport-width ((object message-window))
+  (windows:win-width-no-border object))

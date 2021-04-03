@@ -309,7 +309,11 @@
    (bullet-prefix
     :initarg  :bullet-prefix
     :initform +bullet-line-prefix+
-    :accessor bullet-prefix)))
+    :accessor bullet-prefix)
+   (viewport
+    :initarg  :viewport
+    :initform nil
+    :accessor viewport)))
 
 (defun sexp->text (parsed-gemini theme)
   (labels ((header-prefix (prefix header)
@@ -317,9 +321,9 @@
            (header-prefix-h1 (header)
              (header-prefix (h1-prefix theme) header))
            (header-prefix-h2 (header)
-              (header-prefix (h2-prefix theme) header))
+             (header-prefix (h2-prefix theme) header))
            (header-prefix-h3 (header)
-              (header-prefix (h3-prefix theme) header))
+             (header-prefix (h3-prefix theme) header))
            (underlineize (stream text underline-char)
              (let* ((size      (length text))
                     (underline (build-string size underline-char)))
@@ -334,47 +338,53 @@
            (linkify (link-name link-value)
              (if (gemini-link-iri-p link-value)
                  (format nil "~a~a~%" (link-prefix-gemini theme) link-name)
-                 (format nil "~a~a~%" (link-prefix-other  theme) link-name))))
-    (with-output-to-string (stream)
-      (loop for node in parsed-gemini do
-           (cond
-             ((null node)
-              (format stream "~%"))
-             ((html-utils:tag= :as-is node)
-              (format stream "~a~%" (text-value node)))
-             ((html-utils:tag= :text node)
-              (format stream "~a~%" (text-value node)))
-             ((html-utils:tag= :h1 node)
-              (underlineize stream
-                            (header-prefix-h1 (text-value node))
-                            +h1-underline+))
-             ((html-utils:tag= :h2 node)
-              (underlineize stream
-                            (header-prefix-h2 (text-value node))
-                            +h2-underline+))
-             ((html-utils:tag= :h3 node)
-              (underlineize stream
-                            (header-prefix-h3 (text-value node))
-                            +h3-underline+))
-             ((html-utils:tag= :li node)
-              (format stream
-                      "~a ~a~%"
-                      (bullet-prefix theme)
-                      (text-value node)))
-             ((html-utils:tag= :quote node)
-              (format stream
-                      "~a ~a~%"
-                      (quote-prefix theme)
-                      (text-value node)))
-             ((html-utils:tag= :pre node)
-              (write-sequence (text-value node :trim nil) stream))
-             ((html-utils:tag= :a node)
-              (let ((link-name  (text-value node :trim nil))
-                    (link-value (html-utils:attribute-value (html-utils:find-attribute :href
-                                                                                       node))))
-                (if link-name
-                    (write-string (linkify link-name link-value)  stream)
-                    (write-string (linkify link-value link-value) stream)))))))))
+                 (format nil "~a~a~%" (link-prefix-other  theme) link-name)))
+           (fit-quote-lines (line win-width)
+             (join-with-strings (mapcar (lambda (a) (strcat (quote-prefix theme) a))
+                                        (flush-left-mono-text (split-words line)
+                                                              (- win-width
+                                                                 (length (quote-prefix theme)))))
+                                (format nil "~%"))))
+    (let ((win-width (message-window:viewport-width (viewport theme))))
+      (with-output-to-string (stream)
+        (loop for node in parsed-gemini do
+          (cond
+            ((null node)
+             (format stream "~%"))
+            ((html-utils:tag= :as-is node)
+             (format stream "~a~%" (text-value node)))
+            ((html-utils:tag= :text node)
+             (format stream "~a~%" (text-value node)))
+            ((html-utils:tag= :h1 node)
+             (underlineize stream
+                           (header-prefix-h1 (text-value node))
+                           +h1-underline+))
+            ((html-utils:tag= :h2 node)
+             (underlineize stream
+                           (header-prefix-h2 (text-value node))
+                           +h2-underline+))
+            ((html-utils:tag= :h3 node)
+             (underlineize stream
+                           (header-prefix-h3 (text-value node))
+                           +h3-underline+))
+            ((html-utils:tag= :li node)
+             (format stream
+                     "~a ~a~%"
+                     (bullet-prefix theme)
+                     (text-value node)))
+            ((html-utils:tag= :quote node)
+             (write-sequence (fit-quote-lines (text-value node :trim nil)
+                                              win-width)
+                             stream))
+            ((html-utils:tag= :pre node)
+             (write-sequence (text-value node :trim nil) stream))
+            ((html-utils:tag= :a node)
+             (let ((link-name  (text-value node :trim nil))
+                   (link-value (html-utils:attribute-value (html-utils:find-attribute :href
+                                                                                      node))))
+               (if link-name
+                   (write-string (linkify link-name link-value)  stream)
+                   (write-string (linkify link-value link-value) stream))))))))))
 
 (defun parse-gemini-file (data)
   (let* ((was-raw-mode *raw-mode*)
