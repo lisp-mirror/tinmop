@@ -1005,10 +1005,13 @@
 
 (defmethod process-event ((object gemini-request-event))
   (tui:with-notify-errors
-    (with-accessors ((url                            url)
+    (with-accessors ((url                            url) ; if a local file *not* percent encoded
                      (give-focus-to-message-window-p give-focus-to-message-window-p)
                      (use-cached-file-if-exists      use-cached-file-if-exists)) object
-      (let ((window specials:*message-window*))
+      (let ((window     specials:*message-window*)
+            (local-path (if (text-utils:percent-encoded-p url)
+                            (text-utils:percent-decode url)
+                            url)))
         (setf (windows:keybindings window)
               keybindings:*gemini-message-keymap*)
         (when give-focus-to-message-window-p
@@ -1016,8 +1019,8 @@
         (cond
           ((gemini-client:absolute-gemini-url-p url)
            (gemini-viewer:request url :use-cached-file-if-exists use-cached-file-if-exists))
-          ((fs:dirp url)
-           (let* ((index-path (uri:normalize-path (fs:prepend-pwd url)))
+          ((fs:dirp local-path)
+           (let* ((index-path (uri:normalize-path (fs:prepend-pwd local-path)))
                   (all-paths  (mapcar #'uri:normalize-path
                                       (fs:collect-children index-path)))
                   (raw-text   (with-output-to-string (stream)
@@ -1031,10 +1034,11 @@
                                          (dir-symbol (swconf:directory-symbol))
                                          (link-label (if dirp
                                                          (text-utils:strcat path " " dir-symbol)
-                                                         path)))
+                                                         path))
+                                         (encoded-path (gemini-client::percent-encode-path path)))
                                     (format stream
                                             "~a~%"
-                                            (gemini-parser:make-gemini-link path
+                                            (gemini-parser:make-gemini-link encoded-path
                                                                             link-label))))))
                   (parsed     (gemini-parser:parse-gemini-file raw-text))
                   (links      (gemini-parser:sexp->links parsed
@@ -1049,8 +1053,8 @@
              (refresh-gemini-message-window links raw-text text nil)
              (windows:draw window)))
           (t
-           (let* ((file-string (fs:slurp-file url))
-                  (parent-dir  (fs:parent-dir-path url))
+           (let* ((file-string (fs:slurp-file local-path))
+                  (parent-dir  (fs:parent-dir-path local-path))
                   (parsed (gemini-parser:parse-gemini-file file-string))
                   (links  (gemini-parser:sexp->links parsed
                                                      nil
@@ -1060,7 +1064,7 @@
                   (text   (gemini-parser:sexp->text parsed
                                                     gemini-client:*gemini-page-theme*)))
              (gemini-viewer:maybe-initialize-metadata window)
-             (gemini-viewer:add-url-to-history window url)
+             (gemini-viewer:add-url-to-history window local-path)
              (refresh-gemini-message-window links file-string text nil)
              (windows:draw window))))))))
 

@@ -71,8 +71,9 @@
     *open-message-link-window*))
 
 (defun open-message-link (url enqueue)
-  (let* ((parsed (iri:iri-parse url))
-         (scheme (uri:scheme parsed)))
+  (let* ((parsed       (iri:iri-parse url))
+         (scheme       (uri:scheme parsed))
+         (decoded-path (percent-decode url)))
     (cond
       ((string= gemini-constants:+gemini-scheme+ scheme)
        (let ((program-events:*process-events-immediately* t)
@@ -84,14 +85,14 @@
          (program-events:push-event event)
          (gemini-viewer:request url :enqueue                   enqueue
                                     :use-cached-file-if-exists t)))
-      ((fs:dirp url)
+      ((fs:dirp decoded-path)
        (let ((program-events:*process-events-immediately* t)
              (event (make-instance 'program-events:gemini-push-behind-downloading-event
                                    :priority program-events:+maximum-event-priority+)))
          (program-events:push-event event)
-         (gemini-viewer:load-gemini-url url :give-focus-to-message-window nil)))
+         (gemini-viewer:load-gemini-url decoded-path :give-focus-to-message-window nil)))
       (t
-       (os-utils:open-resource-with-external-program url nil)))))
+       (os-utils:open-resource-with-external-program decoded-path nil)))))
 
 (defclass open-links-window ()
   ((links

@@ -1778,7 +1778,7 @@ open-message-link-window:open-message-link"
 (defun open-gemini-address ()
   "Ask for a gemini address and try to load it"
   (flet ((on-input-complete (url)
-           (gemini-viewer:load-gemini-url url
+           (gemini-viewer:load-gemini-url (trim-blanks url)
                                           :use-cached-file-if-exists t
                                           :priority program-events:+maximum-event-priority+)))
 
