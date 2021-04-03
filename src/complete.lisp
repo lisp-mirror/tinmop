@@ -103,9 +103,14 @@ completed) and the common prefix of the completion string."
     (text-utils:string-starts-with-p hint a)))
 
 (defun contains-clsr (hint)
-  (let ((scanner (cl-ppcre:create-scanner hint)))
-    (lambda (a)
-      (cl-ppcre:scan scanner a))))
+  (handler-case
+      (let ((scanner (cl-ppcre:create-scanner hint)))
+        (lambda (a)
+          (cl-ppcre:scan scanner a)))
+    (error ()
+      (let ((scanner (cl-ppcre:create-scanner `(:sequence ,hint))))
+        (lambda (a)
+          (cl-ppcre:scan scanner a))))))
 
 (defun remove-if-hidden (candidates)
   (remove-if #'db:hidden-recipient-p candidates))

@@ -1779,6 +1779,7 @@ open-message-link-window:open-message-link"
   "Ask for a gemini address and try to load it"
   (flet ((on-input-complete (url)
            (gemini-viewer:load-gemini-url url
+                                          :use-cached-file-if-exists t
                                           :priority program-events:+maximum-event-priority+)))
 
     (let ((prompt (gemini-open-url-prompt)))

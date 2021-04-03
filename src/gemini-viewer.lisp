@@ -536,7 +536,7 @@
                       (certificate                nil)
                       (certificate-key            nil)
                       (use-cached-file-if-exists  nil)
-                      (do-nothing-if-exists-in-db t))
+                      (do-nothing-if-exists-in-db nil))
   (labels ((get-user-input (hide-input url prompt)
              (multiple-value-bind (actual-iri host path query port fragment)
                  (gemini-client:displace-iri (iri:iri-parse url))
@@ -743,7 +743,7 @@
 
 (defun open-gemini-stream-window ()
   (let* ((low-level-window (make-croatoan-window :enable-function-keys t)))
-    (setf  *gemini-streams-window*
+    (setf *gemini-streams-window*
           (make-instance 'gemini-streams-window
                          :top-row-padding   0
                          :title             (_ "Current gemini streams")
@@ -760,7 +760,8 @@
 
 (defun load-gemini-url (url &key
                               (priority program-events:+standard-event-priority+)
-                              (give-focus-to-message-window t))
+                              (give-focus-to-message-window t)
+                              (use-cached-file-if-exists nil))
   "Load `url', that  is a web resource or a  local file. This function
 can be  used only when  the event polling  is enabled (e.g.  from user
 command) otherwise  te actual code to  get the resource will  never be
@@ -768,5 +769,6 @@ executed."
   (let* ((event (make-instance 'program-events:gemini-request-event
                                :give-focus-to-message-window give-focus-to-message-window
                                :priority priority
+                               :use-cached-file-if-exists use-cached-file-if-exists
                                :url      url)))
     (program-events:push-event event)))
