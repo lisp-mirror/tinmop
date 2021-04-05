@@ -1096,7 +1096,6 @@
 (defun refresh-gemini-message-window (links source rendered-text ir-rows append-text)
   (let* ((win specials:*message-window*)
          (window-metadata (message-window:metadata win)))
-    (misc:dbg "append ~a ~a" append-text rendered-text)
     (with-accessors ((rows message-window::rows)) win
       (let ((new-rows      (message-window:text->rendered-lines-rows win
                                                                      ir-rows))
