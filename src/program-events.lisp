@@ -1096,21 +1096,22 @@
 (defun refresh-gemini-message-window (links source rendered-text ir-rows append-text)
   (let* ((win specials:*message-window*)
          (window-metadata (message-window:metadata win)))
+    (misc:dbg "append ~a ~a" append-text rendered-text)
     (with-accessors ((rows message-window::rows)) win
       (let ((new-rows      (message-window:text->rendered-lines-rows win
                                                                      ir-rows))
             (reversed-rows (reverse rows)))
-        (loop for new-row in new-rows do
-          (push new-row reversed-rows))
-        (setf rows (reverse reversed-rows))
-        (message-window:append-source-text win rendered-text :prepare-for-rendering nil)
         (if append-text
             (progn
+              (loop for new-row in new-rows do
+                (push new-row reversed-rows))
               (gemini-viewer:append-metadata-link window-metadata links)
-              (gemini-viewer:append-metadata-source window-metadata source))
+              (gemini-viewer:append-metadata-source window-metadata source)
+              (setf rows (reverse reversed-rows)))
             (progn
               (setf (gemini-viewer:gemini-metadata-source-file window-metadata) source)
-              (setf (gemini-viewer:gemini-metadata-links window-metadata) links)))))))
+              (setf (gemini-viewer:gemini-metadata-links window-metadata) links)
+              (setf rows new-rows)))))))
 
 (defmethod process-event ((object gemini-got-line-event))
   (with-accessors ((response       payload)
