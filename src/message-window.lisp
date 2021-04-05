@@ -147,12 +147,29 @@
                  :normal-text ""))
 
 (defmethod text->rendered-lines-rows (window (text list))
-  (flatten (loop for i in text collect
-                               (text->rendered-lines-rows window i))))
+  (flatten (loop for i in text
+                 collect
+                 (text->rendered-lines-rows window i))))
 
 (defmethod text->rendered-lines-rows (window (text complex-string))
   (make-instance 'line
                  :normal-text text))
+
+(defun colorize-lines (lines)
+    (let ((color-re (swconf:color-regexps)))
+      (loop for line in lines
+            collect
+            (let ((res line))
+              (loop for re in color-re do
+                (setf res (colorize-line res re)))
+              (colorized-line->tui-string res)))))
+
+(defmethod text->rendered-lines-rows (window (text gemini-parser:quoted-lines))
+  (let ((colorized-lines (colorize-lines (gemini-parser:lines text))))
+    (loop for i in colorized-lines
+          collect
+          (make-instance 'line
+                         :normal-text i))))
 
 (defmethod text->rendered-lines-rows (window (text string))
   (labels ((fit-lines (lines)
@@ -172,12 +189,7 @@
                        :normal-text nil)
         (let* ((lines        (split-lines text))
                (fitted-lines (fit-lines lines))
-               (color-re     (swconf:color-regexps))
-               (new-rows     (loop for line in fitted-lines collect
-                                (let ((res line))
-                                  (loop for re in color-re do
-                                    (setf res (colorize-line res re)))
-                                  (colorized-line->tui-string res)))))
+               (new-rows     (colorize-lines fitted-lines)))
           (mapcar (lambda (text-line)
                     (make-instance 'line
                                    :normal-text text-line))

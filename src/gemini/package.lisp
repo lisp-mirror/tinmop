@@ -65,8 +65,10 @@
    :quote-prefix
    :bullet-prefix
    :pre-start
-   :pre-end
    :value
+   :pre-end
+   :quoted-lines
+   :lines
    :sexp->text-rows
    :sexp->text
    :parse-gemini-response-header

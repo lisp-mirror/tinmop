@@ -336,6 +336,16 @@
 (defun make-pre-end ()
   (make-instance 'pre-end))
 
+(defclass quoted-lines ()
+  ((lines
+    :initform ()
+    :initarg :lines
+    :accessor lines)))
+
+(defun make-quoted-lines (text-lines)
+  (make-instance 'quoted-lines
+                 :lines (split-lines text-lines)))
+
 (defun sexp->text-rows (parsed-gemini theme)
   (labels ((header-prefix (prefix header)
              (strcat prefix header))
@@ -361,11 +371,12 @@
                  (format nil "~a~a~%" (link-prefix-gemini theme) link-name)
                  (format nil "~a~a~%" (link-prefix-other  theme) link-name)))
            (fit-quote-lines (line win-width)
-             (join-with-strings (mapcar (lambda (a) (strcat (quote-prefix theme) a))
-                                        (flush-left-mono-text (split-words line)
-                                                              (- win-width
-                                                                 (length (quote-prefix theme)))))
-                                (format nil "~%")))
+             (let* ((justified (flush-left-mono-text (split-words line)
+                                                     (- win-width
+                                                        (length (quote-prefix theme)))))
+                    (lines (mapcar (lambda (a) (strcat (quote-prefix theme) a))
+                                   justified)))
+               (make-quoted-lines (join-with-strings lines (format nil "~%")))))
            (pre-alt-text (node)
              (trim (html-utils:attribute-value (html-utils:find-attribute :alt node)))))
     (let ((win-width (message-window:viewport-width (viewport theme))))

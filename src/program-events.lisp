@@ -1063,8 +1063,8 @@
                                                       nil
                                                       parent-dir
                                                       :comes-from-local-file t))
-                  (ir-text (gemini-parser:sexp->text-rows parsed
-                                                         gemini-client:*gemini-page-theme*))
+                  (ir-text   (gemini-parser:sexp->text-rows parsed
+                                                            gemini-client:*gemini-page-theme*))
                   (flat-text (gemini-parser:sexp->text parsed
                                                        gemini-client:*gemini-page-theme*)))
              (gemini-viewer:maybe-initialize-metadata window)
@@ -1114,7 +1114,7 @@
             (loop for new-row in new-rows do
               (push new-row reversed-rows))
             (setf rows (reverse reversed-rows))
-            (setf (message-window:source-text win) rendered-text)
+            (message-window:append-source-text win rendered-text :prepare-for-rendering nil)
             (setf (gemini-viewer:gemini-metadata-source-file window-metadata) source)
             (setf (gemini-viewer:gemini-metadata-links window-metadata) links))))))
 
