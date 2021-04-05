@@ -815,7 +815,7 @@ db:renumber-timeline-message-index."
                 (actual-attachments (if (string= attachments reblogged-status-attachments)
                                         attachments
                                         (strcat reblogged-status-attachments attachments))))
-            (setf (message-window:source-text *message-window*)
+            (setf (message-window:support-text *message-window*)
                   (strcat header
                           actual-body
                           poll-text

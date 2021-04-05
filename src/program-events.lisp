@@ -1361,7 +1361,7 @@
       (db:mark-all-chat-messages-read chat-id)
       (setf (windows:keybindings specials:*message-window*)
             keybindings:*chat-message-keymap*)
-      (setf (message-window:source-text specials:*message-window*)
+      (setf (message-window:support-text specials:*message-window*)
              (chats-list-window:chat->text chat))
       (message-window:scroll-end specials:*message-window*)
       (setf (message-window:metadata specials:*message-window*)

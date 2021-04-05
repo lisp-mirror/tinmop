@@ -57,12 +57,12 @@ So the whole list is like: '((\"foo\" \"bar\") (\"old\" \"new\") ...)")
                               (cdr mapping)))
 
 (defun rewriting-link-message-hook-fn (message-window)
-  (with-accessors ((source-text message-window:source-text)) message-window
-    (let* ((all-links      (text-utils:collect-links source-text))
+  (with-accessors ((support-text message-window:support-text)) message-window
+    (let* ((all-links      (text-utils:collect-links support-text))
            (links-mapping  (rewriting-link-messages-links-rules all-links)))
       (loop for mapping in links-mapping do
-        (setf source-text
-              (rewriting-link-replace-mapping mapping source-text))))))
+        (setf support-text
+              (rewriting-link-replace-mapping mapping support-text))))))
 
 (defun rewriting-link-links-window-hook-fn (all-links)
   (let ((links-mapping  (rewriting-link-messages-links-rules all-links))

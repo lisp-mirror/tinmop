@@ -1912,14 +1912,14 @@
   (:shadowing-import-from :misc :random-elt :shuffle)
   (:export
    :message-window
-   :source-text
+   :support-text
    :metadata
    :gemini-window-p
    :display-gemini-text-p
    :display-chat-p
    :text->rendered-lines-rows
    :prepare-for-display-status-mode
-   :append-source-text
+   :append-support-text
    :scroll-down
    :scroll-up
    :scroll-end

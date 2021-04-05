@@ -20,10 +20,10 @@
                           row-oriented-widget
                           focus-marked-window
                           title-window)
-  ((source-text
+  ((support-text
      :initform nil
-     :initarg  :source-text
-     :reader   source-text)
+     :initarg  :support-text
+     :reader   support-text)
    (line-position-mark
     :initform (make-tui-string "0")
     :initarg  :line-position-mark
@@ -50,8 +50,8 @@
     (setf (keybindings window)
           keybindings:*message-keymap*)))
 
-(defmethod (setf source-text) (new-text (object message-window))
-  (setf (slot-value object 'source-text) new-text)
+(defmethod (setf support-text) (new-text (object message-window))
+  (setf (slot-value object 'support-text) new-text)
   (handler-bind ((conditions:out-of-bounds
                   (lambda (e)
                     (invoke-restart 'ignore-selecting-action e))))
@@ -119,7 +119,7 @@
 
 (defgeneric prepare-for-rendering (object &key (jump-to-first-row)))
 
-(defgeneric append-source-text (object text
+(defgeneric append-support-text (object text
                                 &key prepare-for-rendering jump-to-first-row))
 
 (defgeneric scroll-down  (object &optional amount))
@@ -200,21 +200,21 @@
                  :normal-text ""))
 
 (defmethod prepare-for-rendering ((object message-window) &key (jump-to-first-row t))
-  (with-accessors ((source-text source-text)) object
+  (with-accessors ((support-text support-text)) object
     (when hooks:*before-prepare-for-rendering-message*
       (hooks:run-hook 'hooks:*before-prepare-for-rendering-message* object))
     (setf (rows object)
-          (text->rendered-lines-rows object source-text))
+          (text->rendered-lines-rows object support-text))
     (when jump-to-first-row
       (select-row object 0))
     object))
 
-(defmethod append-source-text ((object message-window) text
+(defmethod append-support-text ((object message-window) text
                                &key
                                  (prepare-for-rendering nil)
                                  (jump-to-first-row     nil))
-  (with-slots (source-text) object
-    (setf source-text (strcat source-text text))
+  (with-slots (support-text) object
+    (setf support-text (strcat support-text text))
     (when prepare-for-rendering
       (prepare-for-rendering object :jump-to-first-row jump-to-first-row))))
 

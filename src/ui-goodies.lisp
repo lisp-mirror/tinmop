@@ -42,7 +42,7 @@
           (temporary-files-count (length fs:*temporary-files-created*)))
       (if (> temporary-files-count 0)
           (progn
-            (setf (message-window:source-text *message-window*) temporary-text)
+            (setf (message-window:support-text *message-window*) temporary-text)
             (windows:draw *message-window*)
             (ask-string-input #'on-input-complete
                               :prompt (format nil
@@ -1877,7 +1877,7 @@ gemini://gemini.circumlunar.space/docs/companion/subscription.gmi
   "Send contents of window to a command"
   (flet ((on-input-complete (command)
            (when (string-not-empty-p command)
-             (when-let ((data (message-window:source-text *message-window*)))
+             (when-let ((data (message-window:support-text *message-window*)))
                (push-event (make-instance 'send-to-pipe-event
                                           :data    data
                                           :command command))
