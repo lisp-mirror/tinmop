@@ -1096,6 +1096,7 @@
    :gemini-h2-prefix
    :gemini-h3-prefix
    :gemini-bullet-prefix
+   :gemini-preformatted-fg
    :gemini-certificates-window-colors
    :signature-file-path
    :vote-vertical-bar

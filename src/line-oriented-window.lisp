@@ -70,6 +70,9 @@
     :documentation "Non nil if this line is selected state"))
   (:documentation "This class represents a single line in a row-oriented-widget"))
 
+(defmethod print-object ((object line) stream)
+  (format stream "line: ~s" (normal-text object)))
+
 (defclass row-oriented-widget ()
   ((rows
     :initform ()

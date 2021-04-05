@@ -91,11 +91,12 @@
                                     (* (not cr-lf))
                                     cr-lf)
   (:function (lambda (a)
-               (let ((saved-mode *raw-mode*))
+               (let ((saved-raw-mode *raw-mode*))
                  (setf *raw-mode* (not *raw-mode*))
-                 (when (not saved-mode)
-                   (list :pre
-                         (list (list :alt (coerce (second a) 'string)))))))))
+                 (if (not saved-raw-mode)
+                     (list :pre
+                           (list (list :alt (coerce (second a) 'string))))
+                     (list :pre-end () ""))))))
 
 (defrule link-prefix (and "=>"
                           (* space))
@@ -103,7 +104,9 @@
 
 (defrule text-line (and (+ (not cr-lf)) cr-lf)
   (:function (lambda (a)
-               (list :text
+               (list (if *raw-mode*
+                         :as-is
+                         :text)
                      nil
                      (coerce (first a) 'string)))))
 
@@ -304,16 +307,109 @@
     :accessor h3-prefix)
    (quote-prefix
     :initarg  :quote-prefix
-    :initform +quote-line-prefix+
+    :initform +quote-prefix+
     :accessor quote-prefix)
    (bullet-prefix
     :initarg  :bullet-prefix
-    :initform +bullet-line-prefix+
+    :initform "@ "
     :accessor bullet-prefix)
+   (preformatted-fg
+    :initarg  :preformatted-fg
+    :initform :red
+    :accessor preformatted-fg)
    (viewport
     :initarg  :viewport
     :initform nil
     :accessor viewport)))
+
+(defclass pre-start ()
+  ((alt-text
+    :initform nil
+    :initarg :alt-text
+    :accessor alt-text)))
+
+(defun make-pre-start (value)
+  (make-instance 'pre-start :alt-text value))
+
+(defclass pre-end () ())
+
+(defun make-pre-end ()
+  (make-instance 'pre-end))
+
+(defun sexp->text-rows (parsed-gemini theme)
+  (labels ((header-prefix (prefix header)
+             (strcat prefix header))
+           (header-prefix-h1 (header)
+             (header-prefix (h1-prefix theme) header))
+           (header-prefix-h2 (header)
+             (header-prefix (h2-prefix theme) header))
+           (header-prefix-h3 (header)
+             (header-prefix (h3-prefix theme) header))
+           (underlineize (text underline-char)
+             (let* ((size      (length text))
+                    (underline (build-string size underline-char)))
+               (format nil"~a~%~a~%" text underline)))
+           (trim (a)
+             (string-trim '(#\Newline #\Return) a))
+           (text-value (node &key (trim t))
+             (let ((text (first (html-utils:children node))))
+               (if trim
+                   (trim text)
+                   text)))
+           (linkify (link-name link-value)
+             (if (gemini-link-iri-p link-value)
+                 (format nil "~a~a~%" (link-prefix-gemini theme) link-name)
+                 (format nil "~a~a~%" (link-prefix-other  theme) link-name)))
+           (fit-quote-lines (line win-width)
+             (join-with-strings (mapcar (lambda (a) (strcat (quote-prefix theme) a))
+                                        (flush-left-mono-text (split-words line)
+                                                              (- win-width
+                                                                 (length (quote-prefix theme)))))
+                                (format nil "~%")))
+           (pre-alt-text (node)
+             (trim (html-utils:attribute-value (html-utils:find-attribute :alt node)))))
+    (let ((win-width (message-window:viewport-width (viewport theme))))
+      (loop for node in parsed-gemini collect
+        (cond
+          ((null node)
+           (format nil "~%"))
+          ((html-utils:tag= :as-is node)
+           (let ((truncated-line (safe-subseq (text-value node) 0 (1- win-width)))
+                 (fg             (preformatted-fg theme)))
+             (tui:make-tui-string (format nil "~a" truncated-line)
+                                  :fgcolor fg)))
+          ((html-utils:tag= :text node)
+           (format nil "~a~%" (text-value node)))
+          ((html-utils:tag= :h1 node)
+           (underlineize (header-prefix-h1 (text-value node))
+                         +h1-underline+))
+          ((html-utils:tag= :h2 node)
+           (underlineize (header-prefix-h2 (text-value node))
+                         +h2-underline+))
+          ((html-utils:tag= :h3 node)
+           (underlineize (header-prefix-h3 (text-value node))
+                         +h3-underline+))
+          ((html-utils:tag= :li node)
+           (format nil
+                   "~a ~a~%"
+                   (bullet-prefix theme)
+                   (text-value node)))
+          ((html-utils:tag= :quote node)
+           (fit-quote-lines (text-value node :trim nil)
+                            win-width))
+          ((html-utils:tag= :pre node)
+           (make-pre-start (pre-alt-text node)))
+          ((html-utils:tag= :pre-end node)
+           (make-pre-end))
+          ((html-utils:tag= :a node)
+           (let ((link-name  (text-value node :trim nil))
+                 (link-value (html-utils:attribute-value (html-utils:find-attribute :href
+                                                                                    node))))
+             (if link-name
+                 (linkify link-name link-value)
+                 (linkify link-value link-value))))
+          (t
+           (break)))))))
 
 (defun sexp->text (parsed-gemini theme)
   (labels ((header-prefix (prefix header)
@@ -352,7 +448,8 @@
             ((null node)
              (format stream "~%"))
             ((html-utils:tag= :as-is node)
-             (format stream "~a~%" (text-value node)))
+             (let ((truncated-line (safe-subseq (text-value node) 0 win-width)))
+               (format stream "~a~%" truncated-line)))
             ((html-utils:tag= :text node)
              (format stream "~a~%" (text-value node)))
             ((html-utils:tag= :h1 node)
@@ -376,8 +473,8 @@
              (write-sequence (fit-quote-lines (text-value node :trim nil)
                                               win-width)
                              stream))
-            ((html-utils:tag= :pre node)
-             (write-sequence (text-value node :trim nil) stream))
+            ;; ((html-utils:tag= :pre node)
+            ;;  (write-sequence (text-value node :trim nil) stream))
             ((html-utils:tag= :a node)
              (let ((link-name  (text-value node :trim nil))
                    (link-value (html-utils:attribute-value (html-utils:find-attribute :href
@@ -396,7 +493,7 @@
     (if was-raw-mode
         (if *raw-mode*
             (list (html-utils:make-tag-node :as-is nil data))
-            nil)
+            parsed)
         parsed)))
 
 ;; response header

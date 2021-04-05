@@ -64,6 +64,10 @@
    :h3-prefix
    :quote-prefix
    :bullet-prefix
+   :pre-start
+   :pre-end
+   :value
+   :sexp->text-rows
    :sexp->text
    :parse-gemini-response-header
    :gemini-iri-p))

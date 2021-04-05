@@ -191,7 +191,8 @@
                        :h1-prefix          (swconf:gemini-h1-prefix)
                        :h2-prefix          (swconf:gemini-h2-prefix)
                        :h3-prefix          (swconf:gemini-h3-prefix)
-                       :bullet-prefix      (swconf:gemini-bullet-prefix))))
+                       :bullet-prefix      (swconf:gemini-bullet-prefix)
+                       :preformatted-fg    (swconf:gemini-preformatted-fg))))
 
 (defclass gemini-file-response ()
   ((status-code

@@ -21,9 +21,9 @@
                           focus-marked-window
                           title-window)
   ((source-text
-    :initform nil
-    :initarg  :source-text
-    :reader   source-text)
+     :initform nil
+     :initarg  :source-text
+     :reader   source-text)
    (line-position-mark
     :initform (make-tui-string "0")
     :initarg  :line-position-mark
@@ -93,8 +93,8 @@
          for line in actual-rows
          for y from  1  below (win-height-no-border window) do
            (let ((text-line (normal-text line)))
-           (when (string-not-empty-p text-line)
-             (print-text window text-line 1 y)))))))
+             (when (string-not-empty-p text-line)
+               (print-text window text-line 1 y)))))))
 
 (defun draw-buffer-line-mark (window)
   (with-accessors ((rows                 rows)
@@ -113,7 +113,7 @@
     (win-clear object :redraw nil)
     (win-box object)
     (draw-text object)
-    (when (source-text object)
+    (when (rows object)
       (draw-buffer-line-mark object))
     (call-next-method)))
 
@@ -136,31 +136,56 @@
 
 (defgeneric search-regex (object regex))
 
-(defun text->rendered-lines-rows (window text)
+(defgeneric text->rendered-lines-rows (window text))
+
+(defmethod text->rendered-lines-rows (window (text gemini-parser:pre-start))
+  (make-instance 'line
+                 :normal-text ""))
+
+(defmethod text->rendered-lines-rows (window (text gemini-parser:pre-end))
+  (make-instance 'line
+                 :normal-text ""))
+
+(defmethod text->rendered-lines-rows (window (text list))
+  (flatten (loop for i in text collect
+                               (text->rendered-lines-rows window i))))
+
+(defmethod text->rendered-lines-rows (window (text complex-string))
+  (make-instance 'line
+                 :normal-text text))
+
+(defmethod text->rendered-lines-rows (window (text string))
   (labels ((fit-lines (lines)
              (let ((res ()))
                (loop for line in lines do
                  (if (string-empty-p line)
                      (push nil res)
                      (loop
-                       for fitted-line in
-                                       (flush-left-mono-text (split-words line)
-                                                             (win-width-no-border window))
+                       for fitted-line
+                         in (flush-left-mono-text (split-words line)
+                                                  (win-width-no-border window))
                        do
                           (push fitted-line res))))
                (reverse res))))
-    (let* ((lines        (split-lines text))
-           (fitted-lines (fit-lines lines))
-           (color-re     (swconf:color-regexps))
-           (new-rows     (loop for line in fitted-lines collect
-                           (let ((res line))
-                             (loop for re in color-re do
-                               (setf res (colorize-line res re)))
-                             (colorized-line->tui-string res)))))
-      (mapcar (lambda (text-line)
-                (make-instance 'line
-                               :normal-text text-line))
-              new-rows))))
+    (if (string= text (format nil "~%"))
+        (make-instance 'line
+                       :normal-text nil)
+        (let* ((lines        (split-lines text))
+               (fitted-lines (fit-lines lines))
+               (color-re     (swconf:color-regexps))
+               (new-rows     (loop for line in fitted-lines collect
+                                (let ((res line))
+                                  (loop for re in color-re do
+                                    (setf res (colorize-line res re)))
+                                  (colorized-line->tui-string res)))))
+          (mapcar (lambda (text-line)
+                    (make-instance 'line
+                                   :normal-text text-line))
+                  new-rows)))))
+
+(defmethod text->rendered-lines-rows (window (text null))
+  (make-instance 'line
+                 :normal-text ""))
 
 (defmethod prepare-for-rendering ((object message-window) &key (jump-to-first-row t))
   (with-accessors ((source-text source-text)) object

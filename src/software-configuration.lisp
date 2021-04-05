@@ -421,6 +421,7 @@
                    h2
                    h3
                    bullet
+                   preformatted-text
                    other
                    attribute
                    new-message
@@ -612,6 +613,14 @@
                               +key-gemini+
                               +key-bullet+
                               +key-prefix+))
+
+(defun gemini-preformatted-fg ()
+  (or
+   (access-non-null-conf-value *software-configuration*
+                               +key-gemini+
+                               +key-preformatted-text+
+                               +key-foreground+)
+   :white))
 
 (defun gemini-certificates-window-colors ()
   "return three color values"
