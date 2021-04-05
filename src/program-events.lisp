@@ -437,7 +437,7 @@
       (handler-case
           (let ((scanner (cl-ppcre:create-scanner regexp :case-insensitive-mode t)))
             (message-window:search-regex specials:*message-window* scanner))
-        (error ()
+        (cl-ppcre:ppcre-syntax-error ()
           (ui:error-message (_ "Invalid regular expression")))))))
 
 (defclass thread-search-event (search-event)

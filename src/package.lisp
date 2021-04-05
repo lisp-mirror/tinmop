@@ -1186,6 +1186,7 @@
      :cat-tui-string
      :tui-char->char
      :tui-string->chars-string
+     :tui-string-subseq
      :text-ellipsis
      :right-pad-text
      :text->tui-attribute

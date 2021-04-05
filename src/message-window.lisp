@@ -140,11 +140,11 @@
 
 (defmethod text->rendered-lines-rows (window (text gemini-parser:pre-start))
   (make-instance 'line
-                 :normal-text ""))
+                 :normal-text (make-tui-string "")))
 
 (defmethod text->rendered-lines-rows (window (text gemini-parser:pre-end))
   (make-instance 'line
-                 :normal-text ""))
+                 :normal-text (make-tui-string "")))
 
 (defmethod text->rendered-lines-rows (window (text list))
   (flatten (loop for i in text
@@ -186,7 +186,7 @@
                (reverse res))))
     (if (string= text (format nil "~%"))
         (make-instance 'line
-                       :normal-text nil)
+                       :normal-text (make-tui-string ""))
         (let* ((lines        (split-lines text))
                (fitted-lines (fit-lines lines))
                (new-rows     (colorize-lines fitted-lines)))
@@ -279,7 +279,9 @@
 (defun first-line->string (window)
   (with-accessors ((rows                 rows)
                    (row-selected-index   row-selected-index)) window
-    (tui-string->chars-string (normal-text (elt rows row-selected-index)))))
+    (let ((complex (normal-text (elt rows row-selected-index))))
+      (values (tui-string->chars-string complex)
+              complex))))
 
 (defmethod search-regex ((object message-window) regex)
   (with-accessors ((rows                 rows)
@@ -293,15 +295,21 @@
       (when line-found
         (row-move object (- line-found row-selected-index))
         (draw object)
-        (let ((line (first-line->string object)))
+        (multiple-value-bind (first-window-line-simple first-window-line-complex)
+            (first-line->string object)
           (labels ((highlight (&optional (start-scan 0))
                      (multiple-value-bind (start end)
-                         (scan regex line :start start-scan)
+                         (scan regex first-window-line-simple :start start-scan)
                        (when start
-                         (let ((mask (make-tui-string (subseq line start end)
-                                                      :fgcolor (win-bgcolor object)
-                                                      :bgcolor (win-fgcolor object))))
-                           (print-text object mask (1+ start) 1)
+                         (let* ((mask   (make-tui-string (subseq first-window-line-simple
+                                                                 start end)
+                                                         :fgcolor (win-bgcolor object)
+                                                         :bgcolor (win-fgcolor object)))
+                                (prefix (tui-string-subseq first-window-line-complex
+                                                           0
+                                                           start))
+                                (new-prefix (cat-tui-string prefix mask)))
+                           (print-text object new-prefix 1 1)
                            (highlight end))))))
             (highlight)))))))
 

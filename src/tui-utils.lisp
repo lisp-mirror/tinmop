@@ -184,6 +184,9 @@ as argument `complex-string'."
   "Convert a `tui-string' to a `string'."
   (croatoan:complex-string->chars-string tui-string))
 
+(defun tui-string-subseq (string start end)
+  (croatoan:text-slice string start end))
+
 (defgeneric text-ellipsis (object len &key truncate-string)
   (:documentation "If `object''s length is bigger  than `len', cut the last characters
   out.  Also replaces the last n  characters (where n is the length of
