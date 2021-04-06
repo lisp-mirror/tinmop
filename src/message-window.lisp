@@ -286,18 +286,19 @@
 (defmethod search-regex ((object message-window) regex)
   (with-accessors ((rows                 rows)
                    (row-selected-index   row-selected-index)) object
-    (let ((line-found (position-if (lambda (a)
-                                     (scan regex
-                                           (tui-string->chars-string (normal-text a))))
-                                   rows
-                                   :start (min (1+ row-selected-index)
-                                               (length rows)))))
+    (let ((line-found           (position-if (lambda (a)
+                                               (scan regex
+                                                     (tui-string->chars-string (normal-text a))))
+                                             rows
+                                             :start (min (1+ row-selected-index)
+                                                         (length rows))))
+          (replacements-strings ()))
       (when line-found
         (row-move object (- line-found row-selected-index))
         (draw object)
         (multiple-value-bind (first-window-line-simple first-window-line-complex)
             (first-line->string object)
-          (labels ((highlight (&optional (start-scan 0))
+          (labels ((calc-highlight (&optional (start-scan 0))
                      (multiple-value-bind (start end)
                          (scan regex first-window-line-simple :start start-scan)
                        (when start
@@ -309,8 +310,12 @@
                                                            0
                                                            start))
                                 (new-prefix (cat-tui-string prefix mask)))
-                           (print-text object new-prefix 1 1)
-                           (highlight end))))))
+                           (push new-prefix replacements-strings)
+                           (calc-highlight end)))))
+                   (highlight ()
+                     (loop for replacement in replacements-strings do
+                       (print-text object replacement 1 1))))
+            (calc-highlight)
             (highlight)))))))
 
 (defun init ()
