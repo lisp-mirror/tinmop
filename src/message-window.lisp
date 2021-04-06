@@ -293,30 +293,32 @@
                                              :start (min (1+ row-selected-index)
                                                          (length rows))))
           (replacements-strings ()))
-      (when line-found
-        (row-move object (- line-found row-selected-index))
-        (draw object)
-        (multiple-value-bind (first-window-line-simple first-window-line-complex)
-            (first-line->string object)
-          (labels ((calc-highlight (&optional (start-scan 0))
-                     (multiple-value-bind (start end)
-                         (scan regex first-window-line-simple :start start-scan)
-                       (when start
-                         (let* ((mask   (make-tui-string (subseq first-window-line-simple
-                                                                 start end)
-                                                         :fgcolor (win-bgcolor object)
-                                                         :bgcolor (win-fgcolor object)))
-                                (prefix (tui-string-subseq first-window-line-complex
-                                                           0
-                                                           start))
-                                (new-prefix (cat-tui-string prefix mask)))
-                           (push new-prefix replacements-strings)
-                           (calc-highlight end)))))
-                   (highlight ()
-                     (loop for replacement in replacements-strings do
-                       (print-text object replacement 1 1))))
-            (calc-highlight)
-            (highlight)))))))
+      (if line-found
+          (progn
+            (row-move object (- line-found row-selected-index))
+            (draw object)
+            (multiple-value-bind (first-window-line-simple first-window-line-complex)
+                (first-line->string object)
+              (labels ((calc-highlight (&optional (start-scan 0))
+                         (multiple-value-bind (start end)
+                             (scan regex first-window-line-simple :start start-scan)
+                           (when start
+                             (let* ((mask   (make-tui-string (subseq first-window-line-simple
+                                                                     start end)
+                                                             :fgcolor (win-bgcolor object)
+                                                             :bgcolor (win-fgcolor object)))
+                                    (prefix (tui-string-subseq first-window-line-complex
+                                                               0
+                                                               start))
+                                    (new-prefix (cat-tui-string prefix mask)))
+                               (push new-prefix replacements-strings)
+                               (calc-highlight end)))))
+                       (highlight ()
+                         (loop for replacement in replacements-strings do
+                           (print-text object replacement 1 1))))
+                (calc-highlight)
+                (highlight))))
+          (line-oriented-window:cleanup-after-search object)))))
 
 (defun init ()
   (let* ((low-level-window (make-croatoan-window :enable-function-keys t)))

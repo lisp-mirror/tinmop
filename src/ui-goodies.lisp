@@ -354,7 +354,9 @@ Metadata includes:
   "Search regular expression in message"
   (flet ((on-input-complete (regex)
            (let ((event (make-instance 'search-regex-message-content-event
-                                       :payload regex)))
+                                       :payload regex))
+                 (win   specials:*message-window*))
+             (line-oriented-window:prepare-new-search win)
              (push-event event))))
     (ask-string-input #'on-input-complete :prompt (_ "Search key: "))))
 
@@ -1125,6 +1127,7 @@ Force the checking for new message in the thread the selected message belong."
              (let ((event (make-instance 'search-link-event
                                          :window window
                                          :regex  regex)))
+               (line-oriented-window:prepare-new-search window)
                (push-event event)))))
     (ask-string-input #'on-input-complete
                       :prompt      (_ "Search key: ")

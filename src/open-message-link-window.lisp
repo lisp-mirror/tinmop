@@ -100,23 +100,6 @@
     :initarg  :links
     :accessor links)))
 
-(defmethod search-row ((object open-links-window) regex &key (redraw t))
-  (handler-case
-      (with-accessors ((row-selected-index row-selected-index)) object
-        (when-let* ((scanner        (create-scanner regex :case-insensitive-mode t))
-                    (position-found (position-if (lambda (a)
-                                                   (if (selectedp a)
-                                                       (scan scanner (selected-text a))
-                                                       (scan scanner (normal-text   a))))
-                                                 (safe-subseq (rows object)
-                                                              row-selected-index))))
-          (unselect-all object)
-          (select-row object position-found)
-          (when redraw
-            (draw object))))
-    (error ()
-      (ui:error-message (_ "Invalid regular expression")))))
-
 (defclass open-gemini-document-link-window (focus-marked-window
                                             simple-line-navigation-window
                                             title-window
@@ -196,12 +179,15 @@
                                                   (safe-subseq (links object)
                                                                (1+ row-selected-index)))))
           (call-next-method)    ; search in urls
-          (when position-header ; but if an header has been found, it wins
-            (unselect-all object)
-            (select-row object (+ 1 saved-selected-index position-header))
-            (when redraw
-              (draw object)))))
+          (if position-header ; but if an header has been found, it wins
+              (progn
+                (unselect-all object)
+                (select-row object (+ 1 saved-selected-index position-header))
+                (when redraw
+                  (draw object)))
+              (line-oriented-window:cleanup-after-search object))))
     (error ()
+      (line-oriented-window:cleanup-after-search object)
       (ui:error-message (_ "Invalid regular expression")))))
 
 (defun init-gemini-links (links)

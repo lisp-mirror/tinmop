@@ -245,22 +245,38 @@ this exact quantity wold go beyond the length or rows or zero."
           actual-amount)
         0)))
 
+(defun prepare-new-search (window)
+  (when (<= (line-oriented-window:row-selected-index window)
+            0)
+    (setf (line-oriented-window:row-selected-index window) -1)))
+
+(defun cleanup-after-search (window)
+  (when (< (line-oriented-window:row-selected-index window)
+           0)
+    (setf (line-oriented-window:row-selected-index window) 0)))
+
 (defmethod search-row ((object row-oriented-widget) regex &key (redraw t))
   (handler-case
       (with-accessors ((row-selected-index row-selected-index)) object
-        (when-let* ((scanner        (create-scanner regex :case-insensitive-mode t))
-                    (position-found (position-if (lambda (a)
-                                                   (if (selectedp a)
-                                                       (scan scanner (selected-text a))
-                                                       (scan scanner (normal-text   a))))
-                                                 (safe-subseq (rows object)
-                                                              (1+ row-selected-index)))))
-          (unselect-all object)
-          (select-row object (+ 1 row-selected-index position-found))
-          (when redraw
-            (draw object))
-          position-found))
+        (let* ((scanner        (create-scanner regex :case-insensitive-mode t))
+               (position-found (position-if (lambda (a)
+                                              (if (selectedp a)
+                                                  (scan scanner (selected-text a))
+                                                  (scan scanner (normal-text   a))))
+                                            (safe-subseq (rows object)
+                                                         (1+ row-selected-index)))))
+          (if position-found
+              (progn
+                (unselect-all object)
+                (select-row object (+ 1 row-selected-index position-found))
+                (when redraw
+                  (draw object))
+                position-found)
+              (progn
+                (line-oriented-window:cleanup-after-search object)
+                nil))))
     (error ()
+      (line-oriented-window:cleanup-after-search object)
       (ui:error-message (_ "Invalid regular expression")))))
 
 (defclass simple-line-navigation-window (wrapper-window row-oriented-widget border-window)

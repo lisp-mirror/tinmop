@@ -435,8 +435,9 @@
   (let ((regexp (payload object)))
     (when (text-utils:string-not-empty-p regexp)
       (handler-case
-          (let ((scanner (cl-ppcre:create-scanner regexp :case-insensitive-mode t)))
-            (message-window:search-regex specials:*message-window* scanner))
+          (let ((scanner (cl-ppcre:create-scanner regexp :case-insensitive-mode t))
+                (win     specials:*message-window*))
+            (message-window:search-regex win scanner))
         (cl-ppcre:ppcre-syntax-error ()
           (ui:error-message (_ "Invalid regular expression")))))))
 
