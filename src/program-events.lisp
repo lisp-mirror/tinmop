@@ -1047,13 +1047,11 @@
                                                          nil
                                                          ""
                                                          :comes-from-local-file t))
-                  (text       (gemini-parser:sexp->text parsed
-                                                        gemini-client:*gemini-page-theme*))
                   (ir         (gemini-parser:sexp->text-rows parsed
                                                              gemini-client:*gemini-page-theme*)))
              (gemini-viewer:maybe-initialize-metadata window)
              (gemini-viewer:add-url-to-history window index-path)
-             (refresh-gemini-message-window links raw-text text ir nil)
+             (refresh-gemini-message-window links raw-text ir nil)
              (windows:draw window)))
           (t
            (let* ((file-string (fs:slurp-file local-path))
@@ -1065,12 +1063,10 @@
                                                       parent-dir
                                                       :comes-from-local-file t))
                   (ir-text   (gemini-parser:sexp->text-rows parsed
-                                                            gemini-client:*gemini-page-theme*))
-                  (flat-text (gemini-parser:sexp->text parsed
-                                                       gemini-client:*gemini-page-theme*)))
+                                                            gemini-client:*gemini-page-theme*)))
              (gemini-viewer:maybe-initialize-metadata window)
              (gemini-viewer:add-url-to-history window local-path)
-             (refresh-gemini-message-window links file-string flat-text ir-text nil)
+             (refresh-gemini-message-window links file-string ir-text nil)
              (windows:draw window))))))))
 
 (defclass gemini-back-event (program-event) ())
@@ -1094,7 +1090,7 @@
     :reader   skip-rendering-p
     :writer   (setf skip-rendering))))
 
-(defun refresh-gemini-message-window (links source rendered-text ir-rows append-text)
+(defun refresh-gemini-message-window (links source ir-rows append-text)
   (let* ((win specials:*message-window*)
          (window-metadata (message-window:metadata win)))
     (with-accessors ((rows message-window::rows)) win
@@ -1129,12 +1125,10 @@
                  (not (skip-rendering-p object)))
         (let* ((win           specials:*message-window*)
                (ir-line       (gemini-parser:sexp->text-rows parsed-file
-                                                        text-rendering-theme))
-               (rendered-line (gemini-parser:sexp->text parsed-file
                                                         text-rendering-theme)))
           (setf (windows:keybindings win)
                 keybindings:*gemini-message-keymap*)
-          (refresh-gemini-message-window links source rendered-line ir-line append-text)
+          (refresh-gemini-message-window links source ir-line append-text)
           (windows:draw win))))))
 
 ;; (defclass gemini-compact-lines-event (program-event)
@@ -1295,7 +1289,6 @@
       (refresh-gemini-message-window links
                                      gemini-page
                                      (gemini-parser:sexp->text parsed theme)
-                                     (gemini-parser:sexp->text-rows parsed theme)
                                      nil)
       (setf (windows:keybindings specials:*message-window*)
             keybindings:*gemini-message-keymap*)
