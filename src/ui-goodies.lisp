@@ -1079,9 +1079,9 @@ Force the checking for new message in the thread the selected message belong."
   (when (and *send-message-window*
              (sending-message:message-data *send-message-window*))
     (let ((data               (sending-message:message-data *send-message-window*))
-          (attachments        (line-oriented-window:rows *send-message-window*))
+          (attachments-count  (line-oriented-window:rows-length *send-message-window*))
           (max-allowed-attach (swconf:max-attachments-allowed)))
-        (if (> (length attachments)
+        (if (> attachments-count
                max-allowed-attach)
             (error-message (format nil
                                    (_ "The maximum allowed number of media is ~a.")

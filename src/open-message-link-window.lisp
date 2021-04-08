@@ -45,9 +45,10 @@
           (when hooks:*before-displaying-links-hook*
             (setf links
                   (hooks:run-hook-compose 'hooks:*before-displaying-links-hook* links)))
-          (setf rows (make-rows links
-                                selected-line-bg
-                                selected-line-fg))
+          (line-oriented-window:update-all-rows object
+                                                (make-rows links
+                                                           selected-line-bg
+                                                           selected-line-fg))
           (when suggested-message-index
             (select-row object suggested-message-index))
           (when redraw
@@ -65,7 +66,7 @@
                          :croatoan-window   low-level-window))
     (refresh-config *open-message-link-window*)
     (resync-rows-db *open-message-link-window* :redraw nil)
-    (when (rows *open-message-link-window*)
+    (when (not (line-oriented-window:rows-empty-p *open-message-link-window*))
       (select-row *open-message-link-window* 0))
     (draw *open-message-link-window*)
     *open-message-link-window*))
@@ -137,9 +138,10 @@
                                       :selected-fg   bg))
                      links)))
       (with-croatoan-window (croatoan-window object)
-        (setf rows (make-rows links
-                              selected-line-bg
-                              selected-line-fg))
+        (line-oriented-window:update-all-rows object
+                                              (make-rows links
+                                                         selected-line-bg
+                                                         selected-line-fg))
         (when suggested-message-index
           (select-row object suggested-message-index))
         (when redraw
@@ -204,7 +206,7 @@
                          :croatoan-window        low-level-window))
     (refresh-config *open-message-link-window*)
     (resync-rows-db *open-message-link-window* :redraw nil)
-    (when (rows *open-message-link-window*)
+    (when (not (line-oriented-window:rows-empty-p *open-message-link-window*))
       (select-row *open-message-link-window* 0))
     (draw *open-message-link-window*)
     *open-message-link-window*))
@@ -246,9 +248,10 @@
                                       :selected-fg   bg))
                      links)))
       (with-croatoan-window (croatoan-window object)
-        (setf rows (make-rows links
-                              selected-line-bg
-                              selected-line-fg))
+        (line-oriented-window:update-all-rows object
+                                              (make-rows links
+                                                         selected-line-bg
+                                                         selected-line-fg))
         (when suggested-message-index
           (select-row object suggested-message-index))
         (when redraw
@@ -267,7 +270,7 @@
                          :croatoan-window        low-level-window))
     (refresh-config *open-message-link-window*)
     (resync-rows-db *open-message-link-window* :redraw nil)
-    (when (rows *open-message-link-window*)
+    (when (not (line-oriented-window:rows-empty-p *open-message-link-window*))
       (select-row *open-message-link-window* 0))
     (draw *open-message-link-window*)
     *open-message-link-window*))

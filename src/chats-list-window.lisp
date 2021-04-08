@@ -88,9 +88,10 @@
                                       :selected-fg   fg))
                      chats)))
       (with-croatoan-window (croatoan-window object)
-        (setf rows (make-rows (db:all-chats)
-                              selected-line-bg
-                              selected-line-fg))
+        (line-oriented-window:update-all-rows object
+                                              (make-rows (db:all-chats)
+                                                         selected-line-bg
+                                                         selected-line-fg))
         (when suggested-message-index
           (select-row object suggested-message-index))
         (when redraw
@@ -108,7 +109,7 @@
                          :croatoan-window   low-level-window))
     (refresh-config  *chats-list-window*)
     (resync-rows-db  *chats-list-window* :redraw nil)
-    (when (rows  *chats-list-window*)
+    (when (not (line-oriented-window:rows-empty-p  *chats-list-window*))
       (select-row  *chats-list-window* 0))
     (draw  *chats-list-window*)
      *chats-list-window*))

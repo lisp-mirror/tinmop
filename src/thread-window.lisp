@@ -254,18 +254,19 @@
 (defmethod calculate ((object thread-window) dt))
 
 (defun render-messages (window)
-  (loop
-     for message in (rows window)
-     for y from 1                do
-       (cond
-         ((selectedp message)
-          (print-text window (selected-text message) 1 y))
-         ((marked-to-delete-p message)
-          (print-text window (deleted-text message) 1 y))
-         (t
-          (print-text window (normal-text message) 1 y))))
-  (expand-modeline-spec window)
-  (win-refresh window))
+  (let ((y 1))
+    (map-rows window
+              (lambda (message)
+                (cond
+                  ((selectedp message)
+                   (print-text window (selected-text message) 1 y))
+                  ((marked-to-delete-p message)
+                   (print-text window (deleted-text message) 1 y))
+                  (t
+                   (print-text window (normal-text message) 1 y)))
+                (incf y)))
+    (expand-modeline-spec window)
+    (win-refresh window)))
 
 (defmethod draw ((object thread-window))
   (when-window-shown (object)
@@ -640,10 +641,9 @@ db:renumber-timeline-message-index."
                    (selected-fg        selected-fg)
                    (timeline-type      timeline-type)
                    (timeline-folder    timeline-folder)
-                   (row-selected-index row-selected-index)
-                   (rows               rows)) object
+                   (row-selected-index row-selected-index)) object
     (if (null annotated-tree)
-        (setf rows nil)
+        (update-all-rows object nil)
         (progn
           (setf row-selected-index selected-pos)
           (multiple-value-bind (tree-lines all-fields)
@@ -688,7 +688,7 @@ db:renumber-timeline-message-index."
                        (setf normal-text   message)
                        (setf selected-text selected-message)
                        (setf deleted-text  deleted-message))))
-              (setf rows new-rows))))))
+              (update-all-rows object new-rows))))))
     object)
 
 (defmethod go-message-down ((object thread-window))
@@ -696,13 +696,12 @@ db:renumber-timeline-message-index."
                    (selected-fg        selected-fg)
                    (row-selected-index row-selected-index)
                    (timeline-type      timeline-type)
-                   (timeline-folder    timeline-folder)
-                   (rows               rows)) object
-    (when rows
+                   (timeline-folder    timeline-folder)) object
+    (when (not (rows-empty-p object))
       (let ((new-index (1+ row-selected-index)))
         (if (>= new-index
-                (length rows))
-            (let* ((last-message-index (db:row-message-index (fields (last-elt rows))))
+                (rows-length object))
+            (let* ((last-message-index (db:row-message-index (fields (rows-last-elt object))))
                    (next-message-index (1+ last-message-index)))
               (when (db:message-from-timeline-folder-message-index timeline-type
                                                                    timeline-folder
@@ -722,10 +721,10 @@ db:renumber-timeline-message-index."
                    (timeline-type      timeline-type)
                    (timeline-folder    timeline-folder)
                    (rows               rows)) object
-    (when rows
+    (when (not (rows-empty-p object))
       (let ((new-index (1- row-selected-index)))
         (if (< new-index 0)
-            (let* ((first-message-index    (db:row-message-index (fields (first-elt rows))))
+            (let* ((first-message-index    (db:row-message-index (fields (rows-first-elt object))))
                    (previous-message-index (1- first-message-index)))
               (when (db:message-from-timeline-folder-message-index timeline-type
                                                                    timeline-folder
@@ -770,7 +769,7 @@ db:renumber-timeline-message-index."
                                         (db:message-index->sequence-index suggested-message-index)
                                         row-selected-index))
           (first-message-index      (or suggested-message-index
-                                        (db:row-message-index (fields (first-elt rows))))))
+                                        (db:row-message-index (fields (rows-first-elt object))))))
       (handler-bind ((conditions:out-of-bounds
                       (lambda (e)
                         (invoke-restart 'ignore-selecting-action e))))

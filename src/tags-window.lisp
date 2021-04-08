@@ -70,7 +70,7 @@
       (let ((histogram-width (truncate (* 2/3 (win-width-no-border object)))))
         (loop
            for y from (+ 2 top-row-padding) by single-row-height
-           for row-fields  in (mapcar #'fields rows) do
+           for row-fields  in (map-rows object #'fields) do
              (let* ((histogram-data            (fields-histogram row-fields))
                     (length-histogram-data     (length histogram-data))
                     (histogram-visualized-data (safe-subseq histogram-data
@@ -106,9 +106,10 @@
                                         :selected-fg   bg)))
                      line-fields)))
       (let ((line-fields (make-tag-line-fields)))
-        (setf rows (make-rows line-fields
-                              selected-line-bg
-                              selected-line-fg))
+        (line-oriented-window:update-all-rows object
+                                              (make-rows line-fields
+                                                         selected-line-bg
+                                                         selected-line-fg))
         (when suggested-message-index
           (select-row object suggested-message-index))
         (when redraw
@@ -143,7 +144,7 @@
                          :croatoan-window   low-level-window))
     (refresh-config *tags-window*)
     (resync-rows-db *tags-window* :redraw nil)
-    (when (rows *tags-window*)
+    (when (not (line-oriented-window:rows-empty-p *tags-window*))
       (select-row *tags-window* 0))
     (draw *tags-window*)
     *tags-window*))

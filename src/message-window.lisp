@@ -86,22 +86,24 @@
   (declare (ignore object dt)))
 
 (defun draw-text (window)
-  (with-accessors ((rows               rows)
-                   (row-selected-index row-selected-index)) window
-    (let ((actual-rows (safe-subseq rows row-selected-index)))
-      (loop
-         for line in actual-rows
-         for y from  1  below (win-height-no-border window) do
-           (let ((text-line (normal-text line)))
-             (when (string-not-empty-p text-line)
-               (print-text window text-line 1 y)))))))
+  (with-accessors ((row-selected-index row-selected-index)) window
+    (let ((actual-rows (line-oriented-window:rows-safe-subseq window row-selected-index)))
+      (loop for line in actual-rows
+            for y from  1 below (win-height-no-border window)
+            do
+               (cond
+                 ((invisible-row-p line)
+                  (decf y))
+                 ((not (vspace-row-p line))
+                  (let ((text-line (normal-text line)))
+                    (print-text window text-line 1 y))))))))
 
 (defun draw-buffer-line-mark (window)
   (with-accessors ((rows                 rows)
                    (row-selected-index   row-selected-index)
                    (line-position-mark line-position-mark)) window
     (let* ((height     (1- (win-height-no-border window)))
-           (rows-count (- (length rows) height))
+           (rows-count (- (rows-length window) height))
            (fraction   (/ row-selected-index
                           (max 1 rows-count)))
            (mark-y   (1+ (truncate (* fraction height))))
@@ -113,7 +115,7 @@
     (win-clear object :redraw nil)
     (win-box object)
     (draw-text object)
-    (when (rows object)
+    (when (not (line-oriented-window:rows-empty-p object))
       (draw-buffer-line-mark object))
     (call-next-method)))
 
@@ -138,13 +140,26 @@
 
 (defgeneric text->rendered-lines-rows (window text))
 
-(defmethod text->rendered-lines-rows (window (text gemini-parser:pre-start))
+(defun make-render-vspace-row ()
   (make-instance 'line
                  :normal-text (make-tui-string "")))
 
-(defmethod text->rendered-lines-rows (window (text gemini-parser:pre-end))
+(defun vspace-row-p (row)
+  (string-empty-p (normal-text row)))
+
+(defun make-invisible-row ()
   (make-instance 'line
+                 :fields      (list :invisible t)
                  :normal-text (make-tui-string "")))
+
+(defun invisible-row-p (row)
+  (getf (fields row) :invisible))
+
+(defmethod text->rendered-lines-rows (window (text gemini-parser:pre-start))
+  (make-invisible-row))
+
+(defmethod text->rendered-lines-rows (window (text gemini-parser:pre-end))
+  (make-invisible-row))
 
 (defmethod text->rendered-lines-rows (window (text list))
   (flatten (loop for i in text
@@ -154,6 +169,17 @@
 (defmethod text->rendered-lines-rows (window (text complex-string))
   (make-instance 'line
                  :normal-text text))
+
+(defmethod update-all-rows :around ((object message-window) (new-rows sequence))
+  (let ((new-rows (remove-if #'invisible-row-p new-rows)))
+    (call-next-method object new-rows)))
+
+(defmethod append-new-rows :around ((object message-window) (new-rows sequence))
+  (let ((new-rows (loop for new-row in new-rows
+                        when (not (invisible-row-p new-row))
+                        collect
+                        new-row)))
+      (call-next-method object new-rows)))
 
 (defun colorize-lines (lines)
     (let ((color-re (swconf:color-regexps)))
@@ -185,8 +211,7 @@
                           (push fitted-line res))))
                (reverse res))))
     (if (string= text (format nil "~%"))
-        (make-instance 'line
-                       :normal-text (make-tui-string ""))
+        (make-render-vspace-row)
         (let* ((lines        (split-lines text))
                (fitted-lines (fit-lines lines))
                (new-rows     (colorize-lines fitted-lines)))
@@ -196,15 +221,14 @@
                   new-rows)))))
 
 (defmethod text->rendered-lines-rows (window (text null))
-  (make-instance 'line
-                 :normal-text ""))
+  (make-render-vspace-row))
 
 (defmethod prepare-for-rendering ((object message-window) &key (jump-to-first-row t))
   (with-accessors ((support-text support-text)) object
     (when hooks:*before-prepare-for-rendering-message*
       (hooks:run-hook 'hooks:*before-prepare-for-rendering-message* object))
-    (setf (rows object)
-          (text->rendered-lines-rows object support-text))
+    (update-all-rows object
+                     (text->rendered-lines-rows object support-text))
     (when jump-to-first-row
       (select-row object 0))
     object))
@@ -222,7 +246,7 @@
   (with-accessors ((rows                 rows)
                    (row-selected-index   row-selected-index)) win
     (let ((win-height (win-height-no-border win)))
-      (- (- (length rows)
+      (- (- (rows-length win)
             (- win-height 1))
          row-selected-index))))
 
@@ -230,7 +254,7 @@
   (with-accessors ((rows                 rows)
                    (row-selected-index   row-selected-index)) win
     (let* ((win-height (win-height-no-border win))
-           (rows-left  (- (length rows) row-selected-index)))
+           (rows-left  (- (rows-length win) row-selected-index)))
       (< rows-left
          win-height))))
 
@@ -264,7 +288,7 @@
   (with-accessors ((rows                 rows)
                    (row-selected-index   row-selected-index)) object
     (let ((actual-window-height (win-height-no-border object)))
-      (when (and (> (- (length rows)
+      (when (and (> (- (rows-length object)
                   row-selected-index)
                     actual-window-height)
                  (/= (row-move object actual-window-height)
@@ -277,21 +301,19 @@
     (draw object)))
 
 (defun first-line->string (window)
-  (with-accessors ((rows                 rows)
-                   (row-selected-index   row-selected-index)) window
-    (let ((complex (normal-text (elt rows row-selected-index))))
+  (with-accessors ((row-selected-index   row-selected-index)) window
+    (let ((complex (normal-text (rows-elt window row-selected-index))))
       (values (tui-string->chars-string complex)
               complex))))
 
 (defmethod search-regex ((object message-window) regex)
-  (with-accessors ((rows                 rows)
-                   (row-selected-index   row-selected-index)) object
-    (let ((line-found           (position-if (lambda (a)
-                                               (scan regex
-                                                     (tui-string->chars-string (normal-text a))))
-                                             rows
-                                             :start (min (1+ row-selected-index)
-                                                         (length rows))))
+  (with-accessors ((row-selected-index   row-selected-index)) object
+    (let ((line-found (rows-position-if object
+                                        (lambda (a)
+                                          (scan regex
+                                                (tui-string->chars-string (normal-text a))))
+                                        :start (min (1+ row-selected-index)
+                                                    (rows-length object))))
           (replacements-strings ()))
       (if line-found
           (progn

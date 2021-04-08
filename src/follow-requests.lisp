@@ -116,10 +116,10 @@
                          :keybindings     keybindings:*follow-requests-keymap*
                          :croatoan-window low-level-window))
     (refresh-config *follow-requests-window*)
-    (setf (rows *follow-requests-window*)
-          (make-rows usernames-follow-requests
-                     (bgcolor low-level-window)
-                     (fgcolor low-level-window)))
+    (line-oriented-window:update-all-rows *follow-requests-window*
+                                          (make-rows usernames-follow-requests
+                                                     (bgcolor low-level-window)
+                                                     (fgcolor low-level-window)))
     (setf (row-selected-index *follow-requests-window*) 0)
     *follow-requests-window*)))
 
@@ -127,9 +127,9 @@
   "Process  the accepted  or follow'  requests, the  accepted are  the
 requeste  that are not be erased from the window (see the class
 row-oriented-widget)"
-  (with-accessors ((all-accounts requests)
-                   (rows         rows)) specials:*follow-requests-window*
-    (let* ((accepted-usernames (mapcar #'normal-text rows))
+  (with-accessors ((all-accounts requests)) specials:*follow-requests-window*
+    (let* ((accepted-usernames (line-oriented-window:map-rows #'normal-text
+                                                              specials:*follow-requests-window*))
            (accepted-accounts  (remove-if-not (lambda (acc)
                                                 (find-if (lambda (a)
                                                            (string= a

@@ -79,8 +79,7 @@
             (db:username->id username))))))
 
 (defun maybe-crypt-message (send-message-window &key (notify-cant-crypt nil))
-  (with-accessors ((message-data sending-message:message-data)
-                   (rows         line-oriented-window:rows)) send-message-window
+  (with-accessors ((message-data sending-message:message-data)) send-message-window
     (with-accessors ((body       sending-message:body)
                      (subject    sending-message:subject)
                      (reply-to   sending-message:reply-to)

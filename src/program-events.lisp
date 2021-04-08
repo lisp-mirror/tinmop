@@ -673,10 +673,9 @@
                                           :normal-bg     bg
                                           :normal-fg     fg
                                           :selected-bg   fg
-                                          :selected-fg   bg)))
-      (setf (line-oriented-window:rows specials:*send-message-window*)
-            (append (line-oriented-window:rows specials:*send-message-window*)
-                    (list line)))
+                                          :selected-fg   bg))
+           (win            specials:*send-message-window*))
+      (line-oriented-window:append-new-rows win line)
       (line-oriented-window:unselect-all specials:*send-message-window*)
       (line-oriented-window:select-row   specials:*send-message-window* 0)
       (windows:draw specials:*send-message-window*))))
@@ -689,34 +688,35 @@
     :writer   use-ui-notification)))
 
 (defmethod process-event ((object send-message-event))
-  (with-accessors ((message-data sending-message:message-data)
-                   (rows         line-oriented-window:rows)) specials:*send-message-window*
-    (with-accessors ((body       sending-message:body)
-                     (subject    sending-message:subject)
-                     (reply-to   sending-message:reply-to)
-                     (mentions   sending-message:mentions)
-                     (visibility sending-message:visibility)) message-data
-      (let* ((attachments (mapcar #'line-oriented-window:normal-text rows)))
-        (hooks:run-hook 'hooks:*before-sending-message* object)
-        (msg-utils:maybe-crypt-message specials:*send-message-window*
-                                       :notify-cant-crypt (use-ui-notification-p object))
-        (let ((exceeding-characters (ui:message-exceeds-server-limit-p body)))
-          (if exceeding-characters
-              (ui:exceeding-characters-notify exceeding-characters)
-              (let ((actual-message-body (if (text-utils:string-not-empty-p mentions)
-                                             (format nil
-                                                     "~a~a~%~a"
-                                                     +mention-prefix+
-                                                     mentions
-                                                     body)
-                                             body)))
-                (client:send-status actual-message-body
-                                    reply-to
-                                    attachments
-                                    subject
-                                    (make-keyword (string-upcase visibility)))
-                (ui:notify (_ "Message sent."))
-                (ui:close-send-message-window))))))))
+  (let ((send-win specials:*send-message-window*))
+    (with-accessors ((message-data sending-message:message-data)) send-win
+      (with-accessors ((body       sending-message:body)
+                       (subject    sending-message:subject)
+                       (reply-to   sending-message:reply-to)
+                       (mentions   sending-message:mentions)
+                       (visibility sending-message:visibility)) message-data
+        (let* ((attachments (line-oriented-window:map-rows send-win
+                                                           #'line-oriented-window:normal-text)))
+          (hooks:run-hook 'hooks:*before-sending-message* object)
+          (msg-utils:maybe-crypt-message send-win
+                                         :notify-cant-crypt (use-ui-notification-p object))
+          (let ((exceeding-characters (ui:message-exceeds-server-limit-p body)))
+            (if exceeding-characters
+                (ui:exceeding-characters-notify exceeding-characters)
+                (let ((actual-message-body (if (text-utils:string-not-empty-p mentions)
+                                               (format nil
+                                                       "~a~a~%~a"
+                                                       +mention-prefix+
+                                                       mentions
+                                                       body)
+                                               body)))
+                  (client:send-status actual-message-body
+                                      reply-to
+                                      attachments
+                                      subject
+                                      (make-keyword (string-upcase visibility)))
+                  (ui:notify (_ "Message sent."))
+                  (ui:close-send-message-window)))))))))
 
 (defun find-user-id-from-exact-acct (username)
   (when-let ((remote-account-matching (api-client:search-user username :limit 1)))
@@ -1095,19 +1095,16 @@
          (window-metadata (message-window:metadata win)))
     (with-accessors ((rows message-window::rows)) win
       (let ((new-rows      (message-window:text->rendered-lines-rows win
-                                                                     ir-rows))
-            (reversed-rows (reverse rows)))
+                                                                     ir-rows)))
         (if append-text
             (progn
-              (loop for new-row in new-rows do
-                (push new-row reversed-rows))
+              (line-oriented-window:append-new-rows win new-rows)
               (gemini-viewer:append-metadata-link window-metadata links)
-              (gemini-viewer:append-metadata-source window-metadata source)
-              (setf rows (reverse reversed-rows)))
+              (gemini-viewer:append-metadata-source window-metadata source))
             (progn
               (setf (gemini-viewer:gemini-metadata-source-file window-metadata) source)
               (setf (gemini-viewer:gemini-metadata-links window-metadata) links)
-              (setf rows new-rows)))))))
+              (line-oriented-window:update-all-rows win new-rows)))))))
 
 (defmethod process-event ((object gemini-got-line-event))
   (with-accessors ((response       payload)
@@ -1288,7 +1285,7 @@
       (gemini-viewer:maybe-initialize-metadata specials:*message-window*)
       (refresh-gemini-message-window links
                                      gemini-page
-                                     (gemini-parser:sexp->text parsed theme)
+                                     (gemini-parser:sexp->text-rows parsed theme)
                                      nil)
       (setf (windows:keybindings specials:*message-window*)
             keybindings:*gemini-message-keymap*)

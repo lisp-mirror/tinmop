@@ -71,9 +71,10 @@
                                       :selected-fg   fg))
                      gemlogs)))
       (with-croatoan-window (croatoan-window object)
-        (setf rows (make-rows (db:gemini-all-subscriptions)
-                              selected-line-bg
-                              selected-line-fg))
+        (line-oriented-window:update-all-rows object
+                                              (make-rows (db:gemini-all-subscriptions)
+                                                         selected-line-bg
+                                                         selected-line-fg))
         (when suggested-message-index
           (select-row object suggested-message-index))
         (when redraw
@@ -92,7 +93,7 @@
                          :croatoan-window   low-level-window))
     (refresh-config  *gemini-subscription-window*)
     (resync-rows-db  *gemini-subscription-window* :redraw nil)
-    (when (rows  *gemini-subscription-window*)
+    (when (not (line-oriented-window:rows-empty-p *gemini-subscription-window*))
       (select-row  *gemini-subscription-window* 0))
     (draw  *gemini-subscription-window*)
      *gemini-subscription-window*))

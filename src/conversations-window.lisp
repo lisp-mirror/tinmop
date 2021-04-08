@@ -82,8 +82,7 @@
           object)))))
 
 (defmethod draw :before ((object conversations-window))
-  (with-accessors ((rows              rows)
-                   (single-row-height single-row-height)
+  (with-accessors ((single-row-height single-row-height)
                    (top-row-padding   top-row-padding)
                    (read-message-fg   read-message-fg)
                    (read-message-bg   read-message-bg)
@@ -93,7 +92,7 @@
     (with-croatoan-window (croatoan-window object)
       (loop
          for y from (+ 2 top-row-padding) by single-row-height
-         for row-fields  in (mapcar #'fields rows) do
+         for row-fields  in (line-oriented-window:map-rows object #'fields) do
            (let ((attributes-to-read (if (= (db:messages-to-read row-fields)
                                             0)
                                          (attribute-dim)
@@ -136,9 +135,10 @@ position indicated by this variable."
                      line-fields)))
       (let ((line-fields (db:all-conversation-stats)))
         (with-croatoan-window (croatoan-window object)
-          (setf rows (make-rows line-fields
-                                selected-line-bg
-                                selected-line-fg))
+          (line-oriented-window:update-all-rows object
+                                                (make-rows line-fields
+                                                           selected-line-bg
+                                                           selected-line-fg))
           (when suggested-message-index
             (select-row object suggested-message-index))
           (when redraw
@@ -156,7 +156,7 @@ position indicated by this variable."
                          :croatoan-window   low-level-window))
     (refresh-config *conversations-window*)
     (resync-rows-db *conversations-window* :redraw nil)
-    (when (rows *conversations-window*)
+    (when (not (line-oriented-window:rows-empty-p *conversations-window*))
       (select-row *conversations-window* 0))
     (draw *conversations-window*)
     *conversations-window*))

@@ -1801,7 +1801,7 @@
    :row-oriented-widget
    :single-row-height
    :top-row-padding
-   :rows
+   ;;:rows
    :row-selected-index
    :y-current-row
    :top-rows-slice
@@ -1815,6 +1815,17 @@
    :selected-row-fields
    :selected-row-delete
    :search-row
+   :update-all-rows
+   :append-new-rows
+   :map-rows
+   :rows-length
+   :rows-empty-p
+   :rows-remove-if
+   :rows-safe-subseq
+   :rows-elt
+   :rows-last-elt
+   :rows-first-elt
+   :rows-position-if
    :row-move
    :simple-line-navigation-window
    :selected-line-bg

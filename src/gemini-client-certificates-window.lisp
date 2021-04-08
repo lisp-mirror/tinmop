@@ -78,9 +78,10 @@
                                       :selected-fg   fg))
                      cache-rows)))
       (with-croatoan-window (croatoan-window object)
-        (setf rows (make-rows (db:find-tls-certificates-rows)
-                              selected-line-bg
-                              selected-line-fg))
+        (line-oriented-window:update-all-rows object
+                                              (make-rows (db:find-tls-certificates-rows)
+                                                         selected-line-bg
+                                                         selected-line-fg))
         (when suggested-message-index
           (handler-bind ((conditions:out-of-bounds
                           (lambda (e)
@@ -102,7 +103,7 @@
                          :croatoan-window   low-level-window))
     (refresh-config  *gemini-certificates-window*)
     (resync-rows-db  *gemini-certificates-window* :redraw nil)
-    (when (rows  *gemini-certificates-window*)
+    (when (not (line-oriented-window:rows-empty-p *gemini-certificates-window*))
       (select-row  *gemini-certificates-window* 0))
     (draw  *gemini-certificates-window*)
     *gemini-certificates-window*))

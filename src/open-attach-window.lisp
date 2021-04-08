@@ -73,9 +73,10 @@
       (let ((attach-names (db:all-attachments-urls-to-status status-id
                                                              :add-reblogged-urls t)))
         (with-croatoan-window (croatoan-window object)
-          (setf rows (make-rows attach-names
-                                selected-line-bg
-                                selected-line-fg))
+          (line-oriented-window:update-all-rows object
+                                                (make-rows attach-names
+                                                           selected-line-bg
+                                                           selected-line-fg))
           (when suggested-message-index
             (select-row object suggested-message-index))
           (when redraw
@@ -93,7 +94,7 @@
                          :croatoan-window   low-level-window))
     (refresh-config *open-attach-window*)
     (resync-rows-db *open-attach-window* :redraw nil)
-    (when (rows *open-attach-window*)
+    (when (not (line-oriented-window:rows-empty-p *open-attach-window*))
       (select-row *open-attach-window* 0))
     (draw *open-attach-window*)
     *open-attach-window*))

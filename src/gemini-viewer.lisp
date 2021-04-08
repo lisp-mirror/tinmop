@@ -732,9 +732,10 @@
                                         :selected-fg   bg)))
                      streams)))
       (with-croatoan-window (croatoan-window object)
-        (setf rows (make-rows *gemini-streams-db*
-                              selected-line-bg
-                              selected-line-fg))
+        (line-oriented-window:update-all-rows object
+                                              (make-rows *gemini-streams-db*
+                                                         selected-line-bg
+                                                         selected-line-fg))
         (when suggested-message-index
           (select-row object suggested-message-index))
         (when redraw
@@ -753,7 +754,7 @@
                          :croatoan-window   low-level-window))
     (refresh-config  *gemini-streams-window*)
     (resync-rows-db  *gemini-streams-window* :redraw nil)
-    (when (rows  *gemini-streams-window*)
+    (when (not (line-oriented-window:rows-empty-p *gemini-streams-window*))
       (select-row  *gemini-streams-window* 0))
     (draw  *gemini-streams-window*)
      *gemini-streams-window*))

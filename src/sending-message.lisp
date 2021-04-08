@@ -200,9 +200,9 @@
                          :croatoan-window low-level-window
                          :message-data    message-data))
     (refresh-config *send-message-window*)
-    (setf (rows *send-message-window*)
-          (make-rows (attachments message-data)
-                     (bgcolor low-level-window)
-                     (fgcolor low-level-window)))
+    (line-oriented-window:update-all-rows *send-message-window*
+                                          (make-rows (attachments message-data)
+                                                     (bgcolor low-level-window)
+                                                     (fgcolor low-level-window)))
     (setf (row-selected-index *send-message-window*) 0)
     *send-message-window*)))
