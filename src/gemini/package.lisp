@@ -66,6 +66,10 @@
    :bullet-prefix
    :pre-start
    :value
+   :pre-line
+   :group-id
+   :lines
+   :alt-text
    :pre-end
    :quoted-lines
    :lines

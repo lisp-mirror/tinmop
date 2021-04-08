@@ -17,7 +17,7 @@
 
 (in-package :gemini-parser)
 
-(defparameter *raw-mode* nil)
+(defparameter *raw-mode-data* nil)
 
 (define-constant +h1-prefix+           "#"   :test #'string=)
 
@@ -91,11 +91,14 @@
                                     (* (not cr-lf))
                                     cr-lf)
   (:function (lambda (a)
-               (let ((saved-raw-mode *raw-mode*))
-                 (setf *raw-mode* (not *raw-mode*))
+               (let ((saved-raw-mode *raw-mode-data*)
+                     (alt-text       (coerce (second a) 'string)))
+                 (if *raw-mode-data*
+                     (setf *raw-mode-data* nil)
+                     (setf *raw-mode-data* alt-text))
                  (if (not saved-raw-mode)
                      (list :pre
-                           (list (list :alt (coerce (second a) 'string))))
+                           (list (list :alt alt-text)))
                      (list :pre-end () ""))))))
 
 (defrule link-prefix (and "=>"
@@ -104,9 +107,7 @@
 
 (defrule text-line (and (+ (not cr-lf)) cr-lf)
   (:function (lambda (a)
-               (list (if *raw-mode*
-                         :as-is
-                         :text)
+               (list :text
                      nil
                      (coerce (first a) 'string)))))
 
@@ -323,29 +324,59 @@
     :initform nil
     :accessor viewport)))
 
-(defclass pre-start ()
+(defclass with-group-id ()
+  ((group-id
+    :initform nil
+    :initarg :group-id
+    :accessor group-id)))
+
+(defclass with-lines ()
+  ((lines
+    :initform ()
+    :initarg :lines
+    :accessor lines)))
+
+(defclass with-alt-text ()
   ((alt-text
     :initform nil
     :initarg :alt-text
     :accessor alt-text)))
 
-(defun make-pre-start (value)
-  (make-instance 'pre-start :alt-text value))
+(defclass pre-start (with-group-id with-alt-text) ())
+
+(defmethod print-object ((object pre-start) stream)
+  (print-unreadable-object (object stream :type t :identity t)
+    (format stream "gid: ~a alt ~a" (group-id object) (alt-text object))))
+
+(defun make-pre-start (alt-text group-id)
+  (make-instance 'pre-start :alt-text alt-text :group-id group-id))
 
 (defclass pre-end () ())
 
 (defun make-pre-end ()
   (make-instance 'pre-end))
 
-(defclass quoted-lines ()
-  ((lines
-    :initform ()
-    :initarg :lines
-    :accessor lines)))
+(defclass quoted-lines (with-lines) ())
 
 (defun make-quoted-lines (text-lines)
   (make-instance 'quoted-lines
                  :lines (split-lines text-lines)))
+
+(defclass pre-line (with-group-id with-lines with-alt-text) ())
+
+(defmethod print-object ((object pre-line) stream)
+  (print-unreadable-object (object stream :type t)
+    (format stream
+            "gid: ~a alt ~a lines ~a"
+            (group-id object)
+            (alt-text object)
+            (lines object))))
+
+(defun make-pre-line (lines group-id alt-text)
+  (make-instance 'pre-line
+                 :lines    lines
+                 :group-id group-id
+                 :alt-text alt-text))
 
 (defun sexp->text-rows (parsed-gemini theme)
   (labels ((header-prefix (prefix header)
@@ -380,16 +411,19 @@
                (make-quoted-lines (join-with-strings lines (format nil "~%")))))
            (pre-alt-text (node)
              (trim (html-utils:attribute-value (html-utils:find-attribute :alt node)))))
-    (let ((win-width (message-window:viewport-width (viewport theme))))
+    (let ((win-width    (message-window:viewport-width (viewport theme)))
+          (pre-group-id -1)
+          (pre-alt-text ""))
       (loop for node in parsed-gemini collect
         (cond
           ((null node)
            (format nil "~%"))
           ((html-utils:tag= :as-is node)
-           (let ((truncated-line (safe-subseq (text-value node) 0 (1- win-width)))
-                 (fg             (preformatted-fg theme)))
-             (tui:make-tui-string (format nil "~a" truncated-line)
-                                  :fgcolor fg)))
+           (let* ((truncated-line (safe-subseq (text-value node) 0 (1- win-width)))
+                  (fg             (preformatted-fg theme))
+                  (line           (tui:make-tui-string (format nil "~a" truncated-line)
+                                                      :fgcolor fg)))
+             (make-pre-line (list line) pre-group-id pre-alt-text)))
           ((html-utils:tag= :text node)
            (format nil "~a~%" (text-value node)))
           ((html-utils:tag= :h1 node)
@@ -410,7 +444,10 @@
            (fit-quote-lines (text-value node :trim nil)
                             win-width))
           ((html-utils:tag= :pre node)
-           (make-pre-start (pre-alt-text node)))
+           (let ((current-alt-text (pre-alt-text node)))
+             (incf pre-group-id)
+             (setf pre-alt-text current-alt-text)
+             (make-pre-start current-alt-text pre-group-id)))
           ((html-utils:tag= :pre-end node)
            (make-pre-end))
           ((html-utils:tag= :a node)
@@ -503,11 +540,13 @@
                             (split-lines data)))))
     (loop for line in lines
           collect
-          (let ((was-raw-mode *raw-mode*)
+          (let ((was-raw-mode *raw-mode-data*)
                 (parsed-line (parse 'gemini-file line :junk-allowed t)))
             (if was-raw-mode
-                (if *raw-mode*
-                    (html-utils:make-tag-node :as-is nil line)
+                (if *raw-mode-data*
+                    (html-utils:make-tag-node :as-is
+                                              (list (list :alt *raw-mode-data*))
+                                              line)
                     parsed-line)
                 parsed-line)))))
 

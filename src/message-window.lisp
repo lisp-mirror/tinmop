@@ -161,14 +161,22 @@
 (defmethod text->rendered-lines-rows (window (text gemini-parser:pre-end))
   (make-invisible-row))
 
+(defmethod text->rendered-lines-rows (window (text gemini-parser:pre-line))
+  (make-instance 'line
+                 :normal-text
+                 (reduce #'tui:cat-complex-string
+                         (text->rendered-lines-rows window (gemini-parser:lines text)))
+                 :fields      (list :alt-text        (gemini-parser:alt-text text)
+                                    :group-id        (gemini-parser:group-id text)
+                                    :original-object text)))
+
 (defmethod text->rendered-lines-rows (window (text list))
   (flatten (loop for i in text
                  collect
                  (text->rendered-lines-rows window i))))
 
 (defmethod text->rendered-lines-rows (window (text complex-string))
-  (make-instance 'line
-                 :normal-text text))
+  text)
 
 (defmethod update-all-rows :around ((object message-window) (new-rows sequence))
   (let ((new-rows (remove-if #'invisible-row-p new-rows)))
