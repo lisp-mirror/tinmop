@@ -121,7 +121,12 @@ etc.) happened"
   ;; (init-db)
   (db-utils:with-ready-database (:connect nil)
     (complete:initialize-complete-username-cache)
-    (modules:load-module +starting-init-file+)
+    (handler-case
+        (modules:load-module +starting-init-file+)
+      (error (e)
+        (croatoan:end-screen)
+        (format *error-output* "~a~%" e)
+        (os-utils:exit-program 1)))
     ;; init main window for first...
     (main-window:init)
     (keybindings-window:init)
@@ -141,11 +146,17 @@ etc.) happened"
     ;; now init the client
     (client:init)
     (client:authorize)
+    (when command-line:*module-file*
+      (handler-case
+          (modules:load-module command-line:*module-file*)
+        (error ()
+          (ui:notify (format nil
+                             (_ "Unable to load module ~a")
+                             command-line:*module-file*)
+                     :as-error t))))
     (if command-line:*gemini-url*
         (gemini-viewer:load-gemini-url command-line:*gemini-url*)
         (progn
-          (when command-line:*module-file*
-            (modules:load-module command-line:*module-file*))
           (let ((program-events:*process-events-immediately* t))
             (when command-line:*start-timeline*
               (change-timeline))
