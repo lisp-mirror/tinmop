@@ -242,8 +242,7 @@
                    (thread        thread)
                    (stream-status stream-status)
                    (download-iri  download-iri)) object
-    (setf thread
-          (bt:make-thread function))
+    (setf thread (bt:make-thread function))
     (setf start-time (db-utils:local-time-obj-now))
     (setf download-iri (gemini-parser:make-gemini-iri host
                                                       path
@@ -430,6 +429,7 @@
         (setf support-file (fs:temporary-file :extension extension)))
       (with-open-support-file (file-stream support-file)
         (labels ((%fill-buffer ()
+                   (declare (optimize (debug 0) (speed 3)))
                    (when (downloading-allowed-p wrapper-object)
                      (multiple-value-bind (buffer read-so-far)
                          (read-array download-stream +read-buffer-size+)
