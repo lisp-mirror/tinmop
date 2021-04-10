@@ -101,7 +101,7 @@
 
 (defun get-extension (file)
   (multiple-value-bind (matchedp res)
-      (cl-ppcre:scan-to-strings "(?i)[a-z0-9]\(\\.[^.]+)(\\?.+)$" file)
+      (cl-ppcre:scan-to-strings "(?i)[a-z0-9]\(\\.[^.?]+)(\\?.+)?$" file)
     (when matchedp
       (first-elt res))))
 
@@ -137,4 +137,4 @@
                   (progn
                     (db:cache-invalidate url)
                     (open-attachment url))
-                  (os-utils:open-resource-with-external-program url nil))))))))
+                  (os-utils:open-resource-with-external-program cached-file nil))))))))

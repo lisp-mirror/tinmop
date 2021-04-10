@@ -815,8 +815,8 @@
 
 (defun link-regex->program-to-use (link)
   (when-let ((found (find-if (lambda (a)
-                          (cl-ppcre:scan (re a) link))
-                        (config-all-link-open-program))))
+                               (cl-ppcre:scan (re a) link))
+                             (config-all-link-open-program))))
     (values (program-name found)
             (use-cache-p  found))))
 
