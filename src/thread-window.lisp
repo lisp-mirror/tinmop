@@ -814,11 +814,11 @@ db:renumber-timeline-message-index."
                 (actual-attachments (if (string= attachments reblogged-status-attachments)
                                         attachments
                                         (strcat reblogged-status-attachments attachments))))
-            (setf (message-window:support-text *message-window*)
-                  (strcat header
-                          actual-body
-                          poll-text
-                          actual-attachments))
+            (message-window:prepare-for-rendering *message-window*
+                                                  (strcat header
+                                                          actual-body
+                                                          poll-text
+                                                          actual-attachments))
             (db:mark-status-red-p timeline-type timeline-folder status-id)
             (resync-rows-db object :redraw t)
             (program-events:push-event refresh-event)

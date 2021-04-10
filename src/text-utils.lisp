@@ -143,11 +143,28 @@
 (defun join-with-strings* (junction &rest strings)
   (apply #'join-with-strings strings (list junction)))
 
+(defvar *blanks* '(#\Space #\Newline #\Backspace #\Tab
+                   #\Linefeed #\Page #\Return #\Rubout))
+
+(defgeneric trim-blanks (s))
+
+(defmethod trim-blanks ((s string))
+  (string-trim *blanks* s))
+
+(defmethod trim-blanks ((s null))
+  s)
+
 (defun split-words (text)
   (cl-ppcre:split "\\p{White_Space}" text))
 
 (defun split-lines (text)
-  (cl-ppcre:split "[\\n\\r]" text))
+  (let ((res ()))
+    (flex:with-input-from-sequence (stream (babel:string-to-octets text))
+      (loop for line-as-array = (misc:read-line-into-array stream)
+            while line-as-array do
+              (push (babel:octets-to-string line-as-array) res)))
+    (let ((*blanks* '(#\Newline)))
+      (reverse (mapcar #'trim-blanks res)))))
 
 (defun min-length-word (text)
      (loop for i in (split-words text)
@@ -236,17 +253,6 @@ Uses `test' to match strings (default #'string=)"
   (when (>= (length s)
             (length end))
     (funcall test s end :start1 (- (length s) (length end)))))
-
-(defvar *blanks* '(#\Space #\Newline #\Backspace #\Tab
-                   #\Linefeed #\Page #\Return #\Rubout))
-
-(defgeneric trim-blanks (s))
-
-(defmethod trim-blanks ((s string))
-  (string-trim *blanks* s))
-
-(defmethod trim-blanks ((s null))
-  s)
 
 (defun justify-monospaced-text (text &optional (chars-per-line 30))
   (if (null (split-words text))

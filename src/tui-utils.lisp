@@ -369,7 +369,6 @@ latter has a length equals to `total-size'"))
                    :fgcolor     fgcolor
                    :bgcolor     bgcolor))
 
-
 (defmethod colorized-line->tui-string ((line complex-string) &key &allow-other-keys)
   line)
 
@@ -379,6 +378,39 @@ latter has a length equals to `total-size'"))
             (cat-complex-string a b :color-attributes-contagion nil))
           line
           :initial-value (make-tui-string "")))
+
+(defgeneric apply-coloring (from to))
+
+(defmethod apply-coloring ((from complex-string) (to string))
+  (with-accessors ((complex-char-array-from complex-char-array)) from
+    (let* ((res            (make-tui-string to))
+           (length-diff    (- (length to)
+                              (text-length from)))
+           (last-char-from (last-elt complex-char-array-from))
+           (last-char-fg   (fgcolor last-char-from))
+           (last-char-bg   (bgcolor last-char-from))
+           (last-char-attr (attributes last-char-from)))
+      (with-accessors ((complex-char-array-to complex-char-array)) res
+      (loop
+        for from-char across complex-char-array-from
+        for to-char   across complex-char-array-to
+        do
+           (setf (attributes to-char)
+                 (attributes from-char))
+           (setf (fgcolor to-char)
+                 (fgcolor from-char))
+           (setf (bgcolor to-char)
+                 (bgcolor from-char)))
+      (when (> length-diff 0)
+        (loop for i from length-diff below (length to) do
+          (let ((char (elt complex-char-array-to i)))
+            (setf (attributes char)
+                  last-char-attr)
+            (setf (fgcolor char)
+                  last-char-fg)
+            (setf (bgcolor char)
+                  last-char-bg))))
+        res))))
 
 (defgeneric print-debug (object &optional stream))
 

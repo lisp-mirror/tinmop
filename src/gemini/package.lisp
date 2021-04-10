@@ -73,6 +73,7 @@
    :pre-end
    :quoted-lines
    :lines
+   :vertical-space
    :sexp->text-rows
    :sexp->text
    :parse-gemini-response-header

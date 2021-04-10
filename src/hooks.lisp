@@ -84,7 +84,7 @@ non-nil.")
   "Run this hooks just before  closing the database connection and the
   program")
 
-(defparameter *before-prepare-for-rendering-message* '()
+(defparameter *before-rendering-message-text* '()
   "Run   this    hooks   before    rendering   the   message    on   a
   message-window (the message window is passed as parameter")
 

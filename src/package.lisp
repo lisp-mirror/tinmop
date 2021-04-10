@@ -348,6 +348,7 @@
   (:export
    :+float-regexp+
    :+integer-regexp+
+   :*blanks*
    :uchar-length
    :utf8-encoded-p
    :clean-unprintable-chars
@@ -1201,6 +1202,7 @@
      :combine-attributes
      :colorize-line
      :colorized-line->tui-string
+     :apply-coloring
      :standard-error-notify-life
      :with-notify-errors
      :with-print-error-message
@@ -1506,7 +1508,7 @@
    :run-hook-until-success
    :*before-main-loop*
    :*before-quit*
-   :*before-prepare-for-rendering-message*
+   :*before-rendering-message-text*
    :*before-sending-message*
    :*skip-message-hook*
    :*after-saving-message*
@@ -1826,6 +1828,8 @@
    :rows-last-elt
    :rows-first-elt
    :rows-position-if
+   :rows->text-rows
+   :rows->text
    :row-move
    :simple-line-navigation-window
    :selected-line-bg
@@ -1926,14 +1930,14 @@
   (:shadowing-import-from :misc :random-elt :shuffle)
   (:export
    :message-window
-   :support-text
    :metadata
    :gemini-window-p
    :display-gemini-text-p
    :display-chat-p
+   :line-get-original-object
    :text->rendered-lines-rows
    :prepare-for-display-status-mode
-   :append-support-text
+   :prepare-for-rendering
    :scroll-down
    :scroll-up
    :scroll-end

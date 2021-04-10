@@ -20,11 +20,7 @@
                           row-oriented-widget
                           focus-marked-window
                           title-window)
-  ((support-text
-     :initform nil
-     :initarg  :support-text
-     :reader   support-text)
-   (line-position-mark
+  ((line-position-mark
     :initform (make-tui-string "0")
     :initarg  :line-position-mark
     :accessor line-position-mark)
@@ -49,13 +45,6 @@
                  (display-chat-p        window)))
     (setf (keybindings window)
           keybindings:*message-keymap*)))
-
-(defmethod (setf support-text) (new-text (object message-window))
-  (setf (slot-value object 'support-text) new-text)
-  (handler-bind ((conditions:out-of-bounds
-                  (lambda (e)
-                    (invoke-restart 'ignore-selecting-action e))))
-    (prepare-for-rendering object)))
 
 (defun refresh-line-mark-config (window)
   (multiple-value-bind (mark-value mark-fg mark-bg)
@@ -86,6 +75,8 @@
   (declare (ignore object dt)))
 
 (defun draw-text (window)
+  (when hooks:*before-rendering-message-text*
+    (hooks:run-hook 'hooks:*before-rendering-message-text* window))
   (with-accessors ((row-selected-index row-selected-index)) window
     (let ((actual-rows (line-oriented-window:rows-safe-subseq window row-selected-index)))
       (loop for line in actual-rows
@@ -119,10 +110,7 @@
       (draw-buffer-line-mark object))
     (call-next-method)))
 
-(defgeneric prepare-for-rendering (object &key (jump-to-first-row)))
-
-(defgeneric append-support-text (object text
-                                &key prepare-for-rendering jump-to-first-row))
+(defgeneric prepare-for-rendering (object text-data &key jump-to-first-row))
 
 (defgeneric scroll-down  (object &optional amount))
 
@@ -140,12 +128,26 @@
 
 (defgeneric text->rendered-lines-rows (window text))
 
-(defun make-render-vspace-row ()
-  (make-instance 'line
-                 :normal-text (make-tui-string "")))
+(defun line-add-original-object (line original-object)
+  (push original-object
+        (fields line))
+  (push :original-object
+        (fields line))
+  line)
+
+(defun line-get-original-object (line)
+  (getf (fields line) :original-object))
+
+(defun make-render-vspace-row (&optional (original-object
+                                          (make-instance 'gemini-parser:vertical-space)))
+  (let ((res (make-instance 'line
+                 :normal-text (make-tui-string (format nil "~%"))
+                 :fields      (list :vertical-space 1))))
+    (line-add-original-object res original-object)
+    res)) ; even if line-add-original-object returns the modified line explicit returns for clarity
 
 (defun vspace-row-p (row)
-  (string-empty-p (normal-text row)))
+  (getf (fields row) :vertical-space))
 
 (defun make-invisible-row ()
   (make-instance 'line
@@ -155,6 +157,9 @@
 (defun invisible-row-p (row)
   (getf (fields row) :invisible))
 
+(defmethod text->rendered-lines-rows (window (text gemini-parser:vertical-space))
+  (make-render-vspace-row text))
+
 (defmethod text->rendered-lines-rows (window (text gemini-parser:pre-start))
   (make-invisible-row))
 
@@ -162,13 +167,14 @@
   (make-invisible-row))
 
 (defmethod text->rendered-lines-rows (window (text gemini-parser:pre-line))
-  (make-instance 'line
-                 :normal-text
-                 (reduce #'tui:cat-complex-string
-                         (text->rendered-lines-rows window (gemini-parser:lines text)))
-                 :fields      (list :alt-text        (gemini-parser:alt-text text)
-                                    :group-id        (gemini-parser:group-id text)
-                                    :original-object text)))
+  (let ((res (make-instance 'line
+                            :normal-text
+                            (reduce #'tui:cat-complex-string
+                                    (text->rendered-lines-rows window (gemini-parser:lines text)))
+                            :fields      (list :alt-text        (gemini-parser:alt-text text)
+                                               :group-id        (gemini-parser:group-id text)))))
+    (line-add-original-object res text)
+    res)) ; even if line-add-original-object returns the modified line explicit returns for clarity
 
 (defmethod text->rendered-lines-rows (window (text list))
   (flatten (loop for i in text
@@ -177,26 +183,6 @@
 
 (defmethod text->rendered-lines-rows (window (text complex-string))
   text)
-
-(defmethod update-all-rows :around ((object message-window) (new-rows sequence))
-  (let ((new-rows (remove-if #'invisible-row-p new-rows)))
-    (call-next-method object new-rows)))
-
-(defmethod append-new-rows :around ((object message-window) (new-rows sequence))
-  (let ((new-rows (loop for new-row in new-rows
-                        when (not (invisible-row-p new-row))
-                        collect
-                        new-row)))
-      (call-next-method object new-rows)))
-
-(defun colorize-lines (lines)
-    (let ((color-re (swconf:color-regexps)))
-      (loop for line in lines
-            collect
-            (let ((res line))
-              (loop for re in color-re do
-                (setf res (colorize-line res re)))
-              (colorized-line->tui-string res)))))
 
 (defmethod text->rendered-lines-rows (window (text gemini-parser:quoted-lines))
   (let ((colorized-lines (colorize-lines (gemini-parser:lines text))))
@@ -209,46 +195,69 @@
   (labels ((fit-lines (lines)
              (let ((res ()))
                (loop for line in lines do
-                 (if (string-empty-p line)
-                     (push nil res)
-                     (loop
-                       for fitted-line
-                         in (flush-left-mono-text (split-words line)
-                                                  (win-width-no-border window))
-                       do
-                          (push fitted-line res))))
+                 (cond
+                   ((or (string-empty-p line)
+                        (string= line (format nil "~%")))
+                    (push (make-render-vspace-row) res))
+                   (t
+                    (loop for fitted-line
+                            in (flush-left-mono-text (split-words line)
+                                                     (win-width-no-border window))
+                          do
+                         (push fitted-line res)))))
                (reverse res))))
-    (if (string= text (format nil "~%"))
-        (make-render-vspace-row)
-        (let* ((lines        (split-lines text))
-               (fitted-lines (fit-lines lines))
-               (new-rows     (colorize-lines fitted-lines)))
-          (mapcar (lambda (text-line)
+    (let* ((lines        (split-lines text))
+           (fitted-lines (fit-lines lines))
+           (new-rows     (colorize-lines fitted-lines)))
+      (mapcar (lambda (text-line)
+                (if (typep text-line 'line)
+                    text-line
                     (make-instance 'line
-                                   :normal-text text-line))
-                  new-rows)))))
+                                   :normal-text text-line)))
+              new-rows))))
 
-(defmethod text->rendered-lines-rows (window (text null))
-  (make-render-vspace-row))
+;; (defmethod text->rendered-lines-rows (window (text null))
+;;   (make-render-vspace-row))
 
-(defmethod prepare-for-rendering ((object message-window) &key (jump-to-first-row t))
-  (with-accessors ((support-text support-text)) object
-    (when hooks:*before-prepare-for-rendering-message*
-      (hooks:run-hook 'hooks:*before-prepare-for-rendering-message* object))
-    (update-all-rows object
-                     (text->rendered-lines-rows object support-text))
-    (when jump-to-first-row
-      (select-row object 0))
-    object))
+(defmethod text->rendered-lines-rows (window (text line))
+  text)
 
-(defmethod append-support-text ((object message-window) text
-                               &key
-                                 (prepare-for-rendering nil)
-                                 (jump-to-first-row     nil))
-  (with-slots (support-text) object
-    (setf support-text (strcat support-text text))
-    (when prepare-for-rendering
-      (prepare-for-rendering object :jump-to-first-row jump-to-first-row))))
+(defmethod update-all-rows :around ((object message-window) (new-rows sequence))
+  (let ((actual-rows (remove-if #'invisible-row-p new-rows)))
+    (call-next-method object actual-rows)))
+
+(defmethod append-new-rows :around ((object message-window) (new-rows sequence))
+  (let ((new-rows (loop for new-row in new-rows
+                        when (not (invisible-row-p new-row))
+                        collect
+                        new-row)))
+      (call-next-method object new-rows)))
+
+(defgeneric colorize-lines (object))
+
+(defmethod colorize-lines ((object line))
+  object)
+
+(defmethod colorize-lines ((object complex-string))
+  (make-instance 'line :normal-text object))
+
+(defmethod colorize-lines ((object string))
+  (let ((color-re (swconf:color-regexps))
+        (res object))
+    (loop for re in color-re do
+      (setf res (colorize-line res re)))
+    (colorized-line->tui-string res)))
+
+(defmethod colorize-lines ((object list))
+  (loop for line in object
+        collect
+        (colorize-lines line)))
+
+(defmethod prepare-for-rendering ((object message-window) text-data &key (jump-to-first-row t))
+  (update-all-rows object (text->rendered-lines-rows object text-data))
+  (when jump-to-first-row
+    (select-row object 0))
+  object)
 
 (defun offset-to-move-end (win)
   (with-accessors ((rows                 rows)

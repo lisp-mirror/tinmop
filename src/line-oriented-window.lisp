@@ -71,7 +71,7 @@
   (:documentation "This class represents a single line in a row-oriented-widget"))
 
 (defmethod print-object ((object line) stream)
-  (format stream "line: ~s" (normal-text object)))
+  (format stream "line: ~s" (tui-string->chars-string (normal-text object))))
 
 (defclass row-oriented-widget ()
   ((rows
@@ -346,6 +346,16 @@ this exact quantity would go beyond the length or rows or zero."
                :start    start
                :end      end
                :key      key))
+
+(defun rows->text-rows (window &key (accessor-fn #'normal-text))
+  (let ((*blanks* '(#\Newline)))
+    (map-rows window
+              (lambda (a)
+                (trim-blanks (tui:tui-string->chars-string (funcall accessor-fn a)))))))
+
+(defun rows->text (window &key (accessor-fn #'normal-text))
+  (join-with-strings (rows->text-rows window :accessor-fn accessor-fn)
+                     (format nil "~%")))
 
 (defclass simple-line-navigation-window (wrapper-window row-oriented-widget border-window)
   ((selected-line-bg

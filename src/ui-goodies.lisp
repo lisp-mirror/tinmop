@@ -42,7 +42,7 @@
           (temporary-files-count (length fs:*temporary-files-created*)))
       (if (> temporary-files-count 0)
           (progn
-            (setf (message-window:support-text *message-window*) temporary-text)
+            (message-window:prepare-for-rendering *message-window* temporary-text)
             (windows:draw *message-window*)
             (ask-string-input #'on-input-complete
                               :prompt (format nil
@@ -1876,15 +1876,19 @@ gemini://gemini.circumlunar.space/docs/companion/subscription.gmi
                                   :payload url)))
         (push-event event)))))
 
+(defun send-to-pipe-on-input-complete (command data)
+  (when (and (string-not-empty-p command)
+             data)
+    (push-event (make-instance 'send-to-pipe-event
+                               :data    data
+                               :command command))
+    (info-message (format nil (_ "Command ~s completed") command))))
+
 (defun send-to-pipe ()
   "Send contents of window to a command"
   (flet ((on-input-complete (command)
-           (when (string-not-empty-p command)
-             (when-let ((data (message-window:support-text *message-window*)))
-               (push-event (make-instance 'send-to-pipe-event
-                                          :data    data
-                                          :command command))
-               (info-message (format nil (_ "Command ~s completed")))))))
+           (let ((data (line-oriented-window:rows->text *message-window*)))
+             (send-to-pipe-on-input-complete command data))))
     (ask-string-input #'on-input-complete
                       :prompt (format nil (_ "Send to command: ")))))
 
@@ -1893,10 +1897,6 @@ gemini://gemini.circumlunar.space/docs/companion/subscription.gmi
   (when-let* ((selected-message (line-oriented-window:selected-row-fields *thread-window*))
               (message          (db:row-message-rendered-text selected-message)))
     (flet ((on-input-complete (command)
-             (when (string-not-empty-p command)
-               (push-event (make-instance 'send-to-pipe-event
-                                          :data    message
-                                          :command command))
-               (notify (format nil (_ "Command ~s completed"))))))
+             (send-to-pipe-on-input-complete command message)))
       (ask-string-input #'on-input-complete
                         :prompt (format nil (_ "Send message to command: "))))))

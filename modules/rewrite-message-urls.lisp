@@ -16,7 +16,7 @@
 
 (in-package :modules)
 
-(defparameter *rewriting-link-rules* ()
+(defparameter *rewriting-link-rules* '()
   "Before  displaying  messages that  module  will  rewrites the  first
   element of each item of this list with the second
 
@@ -56,13 +56,28 @@ So the whole list is like: '((\"foo\" \"bar\") (\"old\" \"new\") ...)")
                               text
                               (cdr mapping)))
 
+(defun %rewriting-link-rewrite-row (links-mapping)
+  (lambda (row)
+    (let* ((original-type     (message-window:line-get-original-object row))
+           (original-string   (line-oriented-window:normal-text row))
+           (skipped-row-types (list 'gemini-parser:pre-line
+                                    'gemini-parser:vertical-space)))
+      (if (member original-type skipped-row-types)
+          row
+          (let* ((simple-string (tui:tui-string->chars-string original-string))
+                 (replaced-string simple-string))
+            (loop for mapping in links-mapping do
+              (setf replaced-string
+                    (rewriting-link-replace-mapping mapping replaced-string)))
+            replaced-string)))))
+
 (defun rewriting-link-message-hook-fn (message-window)
-  (with-accessors ((support-text message-window:support-text)) message-window
-    (let* ((all-links      (text-utils:collect-links support-text))
-           (links-mapping  (rewriting-link-messages-links-rules all-links)))
-      (loop for mapping in links-mapping do
-        (setf support-text
-              (rewriting-link-replace-mapping mapping support-text))))))
+  (let* ((map-fn        (%rewriting-link-rewrite-row *rewriting-link-rules*))
+         (replaced-rows (line-oriented-window:map-rows message-window
+                                                       map-fn))
+         (new-rows      (message-window:text->rendered-lines-rows message-window
+                                                                  replaced-rows)))
+    (line-oriented-window:update-all-rows message-window new-rows)))
 
 (defun rewriting-link-links-window-hook-fn (all-links)
   (let ((links-mapping  (rewriting-link-messages-links-rules all-links))
@@ -75,7 +90,7 @@ So the whole list is like: '((\"foo\" \"bar\") (\"old\" \"new\") ...)")
         (push mapped results)))
     (reverse results)))
 
-(hooks:add-hook 'hooks:*before-prepare-for-rendering-message*
+(hooks:add-hook 'hooks:*before-rendering-message-text*
                 #'rewriting-link-message-hook-fn)
 
 (hooks:add-hook 'hooks:*before-displaying-links-hook*

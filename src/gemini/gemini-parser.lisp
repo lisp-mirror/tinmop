@@ -378,6 +378,12 @@
                  :group-id group-id
                  :alt-text alt-text))
 
+(defclass vertical-space ()
+  ((size
+    :initform 1
+    :initarg  :size
+    :accessor size)))
+
 (defun sexp->text-rows (parsed-gemini theme)
   (labels ((header-prefix (prefix header)
              (strcat prefix header))
@@ -417,7 +423,7 @@
       (loop for node in parsed-gemini collect
         (cond
           ((null node)
-           (format nil "~%"))
+           (make-instance 'vertical-space)) ;(format nil "~%"))
           ((html-utils:tag= :as-is node)
            (let* ((truncated-line (safe-subseq (text-value node) 0 (1- win-width)))
                   (fg             (preformatted-fg theme))
