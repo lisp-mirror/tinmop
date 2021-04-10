@@ -62,7 +62,7 @@ So the whole list is like: '((\"foo\" \"bar\") (\"old\" \"new\") ...)")
            (original-string   (line-oriented-window:normal-text row))
            (skipped-row-types (list 'gemini-parser:pre-line
                                     'gemini-parser:vertical-space)))
-      (if (member original-type skipped-row-types)
+      (if (find-if (lambda (a) (typep original-type a)) skipped-row-types)
           row
           (let* ((simple-string (tui:tui-string->chars-string original-string))
                  (replaced-string simple-string))
