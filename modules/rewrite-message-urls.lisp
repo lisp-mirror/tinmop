@@ -58,7 +58,7 @@ So the whole list is like: '((\"foo\" \"bar\") (\"old\" \"new\") ...)")
 
 (defun %rewriting-link-rewrite-row (links-mapping)
   (lambda (row)
-    (let* ((original-type     (message-window:line-get-original-object row))
+    (let* ((original-type     (message-window:row-get-original-object row))
            (original-string   (line-oriented-window:normal-text row))
            (skipped-row-types (list 'gemini-parser:pre-line
                                     'gemini-parser:vertical-space)))

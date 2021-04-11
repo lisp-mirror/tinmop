@@ -83,6 +83,9 @@
             for y from  1 below (win-height-no-border window)
             do
                (cond
+                 ;; testing invisibility should  never returns true as
+                 ;; the method `row' is specialized on message-window
+                 ;; and always removes from the rows the invible ones.
                  ((invisible-row-p line)
                   (decf y))
                  ((not (vspace-row-p line))
@@ -128,14 +131,16 @@
 
 (defgeneric text->rendered-lines-rows (window text))
 
-(defun line-add-original-object (line original-object)
+(defgeneric colorize-lines (object))
+
+(defun row-add-original-object (line original-object)
   (push original-object
         (fields line))
   (push :original-object
         (fields line))
   line)
 
-(defun line-get-original-object (line)
+(defun row-get-original-object (line)
   (getf (fields line) :original-object))
 
 (defun make-render-vspace-row (&optional (original-object
@@ -143,28 +148,40 @@
   (let ((res (make-instance 'line
                  :normal-text (make-tui-string (format nil "~%"))
                  :fields      (list :vertical-space 1))))
-    (line-add-original-object res original-object)
-    res)) ; even if line-add-original-object returns the modified line explicit returns for clarity
+    (row-add-original-object res original-object)
+    res)) ; even if row-add-original-object returns the modified line explicit returns for clarity
 
 (defun vspace-row-p (row)
   (getf (fields row) :vertical-space))
 
-(defun make-invisible-row ()
-  (make-instance 'line
-                 :fields      (list :invisible t)
-                 :normal-text (make-tui-string "")))
+(defun make-invisible-row (original-object &optional (text ""))
+  (let ((res (make-instance 'line
+                            :fields      (list :invisible t)
+                            :normal-text (make-tui-string text))))
+    (row-add-original-object res original-object)
+    res)) ; even if row-add-original-object returns the modified line explicit returns for clarity
 
 (defun invisible-row-p (row)
   (getf (fields row) :invisible))
+
+(defun set-row-visible (row)
+  (with-accessors ((fields fields)) row
+    (when (not (invisible-row-p row))
+      (push t fields)
+      (push :invisible fields))
+    row))
+
+(defun set-row-invisible (row)
+  (setf (fields row) (remove-from-plist (fields row) :inivisible)))
 
 (defmethod text->rendered-lines-rows (window (text gemini-parser:vertical-space))
   (make-render-vspace-row text))
 
 (defmethod text->rendered-lines-rows (window (text gemini-parser:pre-start))
-  (make-invisible-row))
+  (make-invisible-row text (gemini-parser:alt-text text)))
 
 (defmethod text->rendered-lines-rows (window (text gemini-parser:pre-end))
-  (make-invisible-row))
+  (make-invisible-row text))
 
 (defmethod text->rendered-lines-rows (window (text gemini-parser:pre-line))
   (let ((res (make-instance 'line
@@ -173,8 +190,8 @@
                                     (text->rendered-lines-rows window (gemini-parser:lines text)))
                             :fields      (list :alt-text        (gemini-parser:alt-text text)
                                                :group-id        (gemini-parser:group-id text)))))
-    (line-add-original-object res text)
-    res)) ; even if line-add-original-object returns the modified line explicit returns for clarity
+    (row-add-original-object res text)
+    res)) ; even if row-add-original-object returns the modified line explicit returns for clarity
 
 (defmethod text->rendered-lines-rows (window (text list))
   (flatten (loop for i in text
@@ -216,24 +233,15 @@
                                    :normal-text text-line)))
               new-rows))))
 
-;; (defmethod text->rendered-lines-rows (window (text null))
-;;   (make-render-vspace-row))
+(defun remove-invisible-rows (rows)
+  (remove-if #'invisible-row-p rows))
 
 (defmethod text->rendered-lines-rows (window (text line))
   text)
 
-(defmethod update-all-rows :around ((object message-window) (new-rows sequence))
-  (let ((actual-rows (remove-if #'invisible-row-p new-rows)))
-    (call-next-method object actual-rows)))
-
-(defmethod append-new-rows :around ((object message-window) (new-rows sequence))
-  (let ((new-rows (loop for new-row in new-rows
-                        when (not (invisible-row-p new-row))
-                        collect
-                        new-row)))
-      (call-next-method object new-rows)))
-
-(defgeneric colorize-lines (object))
+(defmethod rows ((object message-window))
+   (with-slots (rows) object
+     (remove-invisible-rows rows)))
 
 (defmethod colorize-lines ((object line))
   object)

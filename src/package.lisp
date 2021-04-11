@@ -1803,7 +1803,7 @@
    :row-oriented-widget
    :single-row-height
    :top-row-padding
-   ;;:rows
+   :rows
    :row-selected-index
    :y-current-row
    :top-rows-slice
@@ -1934,7 +1934,10 @@
    :gemini-window-p
    :display-gemini-text-p
    :display-chat-p
-   :line-get-original-object
+   :row-get-original-object
+   :invisible-row-p
+   :set-row-visible
+   :set-row-invisible
    :text->rendered-lines-rows
    :prepare-for-display-status-mode
    :prepare-for-rendering
