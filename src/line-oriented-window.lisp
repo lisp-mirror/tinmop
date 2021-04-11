@@ -148,6 +148,28 @@
   The value is clamped at range [ 0, '(length (rows object)))' ).
   This function return the number of positions acually moved"))
 
+(defgeneric update-all-rows (object new-rows))
+
+(defgeneric append-new-rows (object new-rows))
+
+(defgeneric map-rows (object function &key &allow-other-keys))
+
+(defgeneric rows-length (object &key &allow-other-keys))
+
+(defgeneric rows-empty-p (object &key &allow-other-keys))
+
+(defgeneric rows-remove-if (object function &key &allow-other-keys))
+
+(defgeneric rows-safe-subseq (object start &key end &allow-other-keys))
+
+(defgeneric rows-elt (object index &key &allow-other-keys))
+
+(defgeneric rows-last-elt (object &key &allow-other-keys))
+
+(defgeneric rows-first-elt (object &key &allow-other-keys))
+
+(defgeneric rows-position-if (object predicate &key from-end start end key &allow-other-keys))
+
 (defmethod renderizable-rows-data ((object row-oriented-widget))
   "Cut from all the lines a slice that that fits into the widget"
   (with-accessors ((top-row-padding    top-row-padding)
@@ -279,12 +301,8 @@ this exact quantity would go beyond the length or rows or zero."
       (line-oriented-window:cleanup-after-search object)
       (ui:error-message (_ "Invalid regular expression")))))
 
-(defgeneric update-all-rows (object new-rows))
-
 (defmethod update-all-rows ((object row-oriented-widget) (new-rows sequence))
   (setf (rows object) new-rows))
-
-(defgeneric append-new-rows (object new-rows))
 
 (defmethod append-new-rows ((object row-oriented-widget) (new-rows sequence))
   (with-accessors ((rows rows)) object
@@ -293,50 +311,31 @@ this exact quantity would go beyond the length or rows or zero."
         (push new-row reversed-old-rows))
       (setf rows (reverse reversed-old-rows)))))
 
-(defgeneric map-rows (object function &key &allow-other-keys))
-
 (defmethod map-rows ((object row-oriented-widget) (function function)
                      &key &allow-other-keys)
   (mapcar function (rows object)))
 
-(defgeneric rows-length (object &key &allow-other-keys))
-
 (defmethod rows-length ((object row-oriented-widget) &key &allow-other-keys)
   (length (rows object)))
-
-
-(defgeneric rows-empty-p (object &key &allow-other-keys))
 
 (defmethod rows-empty-p ((object row-oriented-widget) &key &allow-other-keys)
   (not (rows object)))
 
-(defgeneric rows-remove-if (object function &key &allow-other-keys))
-
 (defmethod rows-remove-if ((object row-oriented-widget) (function function) &key &allow-other-keys)
   (remove-if function (rows object)))
-
-(defgeneric rows-safe-subseq (object start &key end &allow-other-keys))
 
 (defmethod rows-safe-subseq ((object row-oriented-widget) start
                              &key (end nil) &allow-other-keys)
   (safe-subseq (rows object) start end))
 
-(defgeneric rows-elt (object index &key &allow-other-keys))
-
 (defmethod rows-elt ((object row-oriented-widget) index &key &allow-other-keys)
   (elt (rows object) index))
-
-(defgeneric rows-last-elt (object &key &allow-other-keys))
 
 (defmethod rows-last-elt ((object row-oriented-widget) &key &allow-other-keys)
   (last-elt (rows object)))
 
-(defgeneric rows-first-elt (object &key &allow-other-keys))
-
 (defmethod rows-first-elt ((object row-oriented-widget) &key &allow-other-keys)
   (first-elt (rows object)))
-
-(defgeneric rows-position-if (object predicate &key from-end start end key &allow-other-keys))
 
 (defmethod rows-position-if ((object row-oriented-widget) (predicate function)
                              &key from-end start end key &allow-other-keys)
