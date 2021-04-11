@@ -16,6 +16,10 @@
 
 (in-package :message-window)
 
+(define-constant +row-invisible-field-key+      :invisible      :test #'eq)
+
+(define-constant +row-vertical-space-field-key+ :vertical-space :test #'eq)
+
 (defclass message-window (wrapper-window
                           row-oriented-widget
                           focus-marked-window
@@ -28,6 +32,28 @@
     :initform nil
     :initarg  :metadata
     :accessor metadata)))
+
+(defgeneric prepare-for-rendering (object text-data &key jump-to-first-row))
+
+(defgeneric scroll-down  (object &optional amount))
+
+(defgeneric scroll-up    (object &optional amount))
+
+(defgeneric scroll-end   (object))
+
+(defgeneric scroll-begin (object))
+
+(defgeneric scroll-next-page     (object))
+
+(defgeneric scroll-previous-page (object))
+
+(defgeneric search-regex (object regex))
+
+(defgeneric text->rendered-lines-rows (window text))
+
+(defgeneric colorize-lines (object))
+
+(defgeneric viewport-width (object))
 
 (defun gemini-window-p ()
   (gemini-viewer:gemini-metadata-p (message-window:metadata specials:*message-window*)))
@@ -86,9 +112,9 @@
                  ;; testing invisibility should  never returns true as
                  ;; the method `row' is specialized on message-window
                  ;; and always removes from the rows the invible ones.
-                 ((invisible-row-p line)
+                 ((row-invisible-p line)
                   (decf y))
-                 ((not (vspace-row-p line))
+                 ((not (row-vertical-space-p line))
                   (let ((text-line (normal-text line)))
                     (print-text window text-line 1 y))))))))
 
@@ -113,26 +139,6 @@
       (draw-buffer-line-mark object))
     (call-next-method)))
 
-(defgeneric prepare-for-rendering (object text-data &key jump-to-first-row))
-
-(defgeneric scroll-down  (object &optional amount))
-
-(defgeneric scroll-up    (object &optional amount))
-
-(defgeneric scroll-end   (object))
-
-(defgeneric scroll-begin (object))
-
-(defgeneric scroll-next-page     (object))
-
-(defgeneric scroll-previous-page (object))
-
-(defgeneric search-regex (object regex))
-
-(defgeneric text->rendered-lines-rows (window text))
-
-(defgeneric colorize-lines (object))
-
 (defun row-add-original-object (line original-object)
   (push original-object
         (fields line))
@@ -147,32 +153,102 @@
                                           (make-instance 'gemini-parser:vertical-space)))
   (let ((res (make-instance 'line
                  :normal-text (make-tui-string (format nil "~%"))
-                 :fields      (list :vertical-space 1))))
+                 :fields      (list +row-vertical-space-field-key+ 1))))
     (row-add-original-object res original-object)
     res)) ; even if row-add-original-object returns the modified line explicit returns for clarity
 
-(defun vspace-row-p (row)
-  (getf (fields row) :vertical-space))
+(defun row-vertical-space-p (row)
+  (getf (fields row) +row-vertical-space-field-key+))
 
 (defun make-invisible-row (original-object &optional (text ""))
   (let ((res (make-instance 'line
-                            :fields      (list :invisible t)
+                            :fields      (list +row-invisible-field-key+ t)
                             :normal-text (make-tui-string text))))
     (row-add-original-object res original-object)
     res)) ; even if row-add-original-object returns the modified line explicit returns for clarity
 
-(defun invisible-row-p (row)
-  (getf (fields row) :invisible))
+(defun row-pre-start-p (row)
+  (typep (row-get-original-object row)
+         'gemini-parser:pre-start))
 
-(defun set-row-visible (row)
+(defun row-preformatted-p (row)
+  (typep (row-get-original-object row)
+         'gemini-parser:pre-line))
+
+(defun row-invisible-p (row)
+  (getf (fields row) +row-invisible-field-key+))
+
+(defun row-visible-p (row)
+  (not (row-invisible-p row)))
+
+(defun row-set-invisible (row)
   (with-accessors ((fields fields)) row
-    (when (not (invisible-row-p row))
+    (when (not (row-invisible-p row))
       (push t fields)
-      (push :invisible fields))
+      (push +row-invisible-field-key+ fields))
     row))
 
-(defun set-row-invisible (row)
-  (setf (fields row) (remove-from-plist (fields row) :inivisible)))
+(defun row-set-visible (row)
+  (setf (fields row) (remove-from-plist (fields row) +row-invisible-field-key+))
+  row)
+
+(defmacro with-map-update-raw-rows ((window function) &body body)
+  (with-gensyms (new-rows)
+    `(let ((,new-rows (rows-map-raw ,window
+                                    ,function)))
+       ,@body
+       (update-all-rows ,window ,new-rows)
+       (draw ,window))))
+
+(defun row-hide-preformatted (message-window)
+  (with-map-update-raw-rows (message-window
+                             (lambda (a)
+                               (when (row-preformatted-p a)
+                                 (row-set-invisible a))
+                               a))))
+
+(defun row-show-pre-start (message-window)
+  (with-map-update-raw-rows (message-window
+                             (lambda (a)
+                               (when (row-pre-start-p a)
+                                 (row-set-visible a))
+                               a))))
+
+(defun row-show-preformatted (message-window)
+  (with-map-update-raw-rows (message-window
+                             (lambda (a)
+                               (when (row-preformatted-p a)
+                                 (row-set-visible a))
+                               a))))
+
+(defun row-hide-pre-start (message-window)
+  (with-map-update-raw-rows (message-window
+                             (lambda (a)
+                               (when (row-pre-start-p a)
+                                 (row-set-invisible a))
+                               a))))
+
+(let ((pre-visible-p t))
+
+  (defun set-default-preformatted-visibility (visibility)
+    (setf pre-visible-p visibility))
+
+  (defun get-default-preformatted-visibility ()
+    pre-visible-p)
+
+  (defun toggle-default-preformatted-visibility ()
+    (setf pre-visible-p (not pre-visible-p)))
+
+  (defun toggle-preformatted-block (message-window)
+    (if pre-visible-p
+        (progn
+          (row-hide-preformatted message-window)
+          (row-show-pre-start    message-window))
+        (progn
+          (row-show-preformatted message-window)
+          (row-hide-pre-start    message-window)))
+    (toggle-default-preformatted-visibility)
+    message-window))
 
 (defmethod text->rendered-lines-rows (window (text gemini-parser:vertical-space))
   (make-render-vspace-row text))
@@ -234,7 +310,7 @@
               new-rows))))
 
 (defun remove-invisible-rows (rows)
-  (remove-if #'invisible-row-p rows))
+  (remove-if #'row-invisible-p rows))
 
 (defmethod text->rendered-lines-rows (window (text line))
   text)
@@ -260,6 +336,9 @@
   (loop for line in object
         collect
         (colorize-lines line)))
+
+(defmethod viewport-width ((object message-window))
+  (windows:win-width-no-border object))
 
 (defmethod prepare-for-rendering ((object message-window) text-data &key (jump-to-first-row t))
   (update-all-rows object (text->rendered-lines-rows object text-data))
@@ -378,8 +457,3 @@
     (refresh-config *message-window*)
     (draw *message-window*)
     *message-window*))
-
-(defgeneric viewport-width (object))
-
-(defmethod viewport-width ((object message-window))
-  (windows:win-width-no-border object))

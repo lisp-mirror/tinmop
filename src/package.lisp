@@ -1820,6 +1820,7 @@
    :update-all-rows
    :append-new-rows
    :map-rows
+   :rows-map-raw
    :rows-length
    :rows-empty-p
    :rows-remove-if
@@ -1935,9 +1936,22 @@
    :display-gemini-text-p
    :display-chat-p
    :row-get-original-object
-   :invisible-row-p
-   :set-row-visible
-   :set-row-invisible
+   :viewport-width
+   :row-vertical-space-p
+   :row-preformatted-p
+   :row-invisible-p
+   :row-visible-p
+   :row-set-visible
+   :row-set-invisible
+   :row-hide-preformatted
+   :row-show-pre-start
+   :row-show-preformatted
+   :row-hide-pre-start
+   :set-default-preformatted-visibility
+   :get-default-preformatted-visibility
+   :pre-visible-p
+   :toggle-default-preformatted-visibility
+   :toggle-preformatted-block
    :text->rendered-lines-rows
    :prepare-for-display-status-mode
    :prepare-for-rendering
@@ -1948,8 +1962,8 @@
    :scroll-next-page
    :scroll-previous-page
    :search-regex
-   :init
-   :viewport-width))
+
+   :init))
 
 (defpackage :open-attach-window
   (:use
@@ -2334,6 +2348,7 @@
    :message-scroll-next-page
    :message-scroll-previous-page
    :message-search-regex
+   :message-toggle-preformatted-block
    :focus-to-message-window
    :focus-to-thread-window
    :focus-to-send-message-window

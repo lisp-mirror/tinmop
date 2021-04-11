@@ -360,6 +360,10 @@ Metadata includes:
              (push-event event))))
     (ask-string-input #'on-input-complete :prompt (_ "Search key: "))))
 
+(defun message-toggle-preformatted-block ()
+  "Toggles on/of preformatted block from text and shows alt text, if exists"
+  (message-window:toggle-preformatted-block *message-window*))
+
 (defun give-focus (win info-change-focus-message &rest windows-lose-focus)
   (setf (main-window:focused-window *main-window*)
         win)

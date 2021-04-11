@@ -56,13 +56,19 @@ So the whole list is like: '((\"foo\" \"bar\") (\"old\" \"new\") ...)")
                               text
                               (cdr mapping)))
 
+(defun skipped-row-p (row)
+  (let* ((original-type     (message-window:row-get-original-object row))
+         (skipped-row-types (list 'gemini-parser:pre-line
+                                  'gemini-parser:pre-start
+                                  'gemini-parser:pre-end
+                                  'gemini-parser:vertical-space)))
+    (or (message-window:row-invisible-p row)
+        (find-if (lambda (a) (typep original-type a)) skipped-row-types))))
+
 (defun %rewriting-link-rewrite-row (links-mapping)
   (lambda (row)
-    (let* ((original-type     (message-window:row-get-original-object row))
-           (original-string   (line-oriented-window:normal-text row))
-           (skipped-row-types (list 'gemini-parser:pre-line
-                                    'gemini-parser:vertical-space)))
-      (if (find-if (lambda (a) (typep original-type a)) skipped-row-types)
+    (let* ((original-string (line-oriented-window:normal-text row)))
+      (if (skipped-row-p row)
           row
           (let* ((simple-string (tui:tui-string->chars-string original-string))
                  (replaced-string simple-string))
@@ -73,8 +79,8 @@ So the whole list is like: '((\"foo\" \"bar\") (\"old\" \"new\") ...)")
 
 (defun rewriting-link-message-hook-fn (message-window)
   (let* ((map-fn        (%rewriting-link-rewrite-row *rewriting-link-rules*))
-         (replaced-rows (line-oriented-window:map-rows message-window
-                                                       map-fn))
+         (replaced-rows (line-oriented-window:rows-map-raw message-window
+                                                           map-fn))
          (new-rows      (message-window:text->rendered-lines-rows message-window
                                                                   replaced-rows)))
     (line-oriented-window:update-all-rows message-window new-rows)))

@@ -154,6 +154,8 @@
 
 (defgeneric map-rows (object function &key &allow-other-keys))
 
+(defgeneric rows-map-raw (object function &key &allow-other-keys))
+
 (defgeneric rows-length (object &key &allow-other-keys))
 
 (defgeneric rows-empty-p (object &key &allow-other-keys))
@@ -314,6 +316,10 @@ this exact quantity would go beyond the length or rows or zero."
 (defmethod map-rows ((object row-oriented-widget) (function function)
                      &key &allow-other-keys)
   (mapcar function (rows object)))
+
+(defmethod rows-map-raw ((object row-oriented-widget) (function function)
+                     &key &allow-other-keys)
+  (mapcar function (slot-value object 'rows)))
 
 (defmethod rows-length ((object row-oriented-widget) &key &allow-other-keys)
   (length (rows object)))

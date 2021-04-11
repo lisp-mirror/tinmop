@@ -398,7 +398,7 @@
                     (underline (build-string size underline-char)))
                (format nil"~a~%~a~%" text underline)))
            (trim (a)
-             (string-trim '(#\Newline #\Return) a))
+             (trim-blanks a))
            (text-value (node &key (trim t))
              (let ((text (first (html-utils:children node))))
                (if trim
