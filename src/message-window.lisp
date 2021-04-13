@@ -139,12 +139,19 @@
       (draw-buffer-line-mark object))
     (call-next-method)))
 
-(defun row-add-original-object (line original-object)
+(defgeneric row-add-original-object (lines original-object))
+
+(defmethod row-add-original-object ((lines line) original-object)
   (push original-object
-        (fields line))
+        (fields lines))
   (push :original-object
-        (fields line))
-  line)
+        (fields lines))
+  lines)
+
+(defmethod row-add-original-object ((lines list) original-object)
+  (mapcar (lambda (a) (row-add-original-object a original-object))
+          lines)
+  lines)
 
 (defun row-get-original-object (line)
   (getf (fields line) :original-object))
@@ -289,7 +296,7 @@
 
 (defgeneric collect-lines-from-ir (object))
 
-(defmethod  collect-lines-from-ir ((object gemini-parser:with-lines))
+(defmethod collect-lines-from-ir ((object gemini-parser:with-lines))
   (let ((colorized-lines (colorize-lines (gemini-parser:lines object))))
     (loop for i in colorized-lines
           collect
@@ -307,6 +314,14 @@
                                (row-add-group-id line group-id)))
                            lines)))
     res))
+
+(defmethod text->rendered-lines-rows (window (text gemini-parser:unordered-list-line))
+  (collect-lines-from-ir text))
+
+(defmethod text->rendered-lines-rows (window (text gemini-parser:link-line))
+  (let ((res (collect-lines-from-ir text)))
+    (row-add-original-object res text)
+    res)) ; even if row-add-original-object returns the modified line explicit returns for clarity
 
 (defmethod text->rendered-lines-rows (window (text string))
   (labels ((fit-lines (lines)

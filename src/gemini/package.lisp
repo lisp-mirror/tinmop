@@ -77,6 +77,8 @@
    :vertical-space
    :header-line
    :level
+   :unordered-list-line
+   :link-line
    :sexp->text-rows
    :sexp->text
    :parse-gemini-response-header

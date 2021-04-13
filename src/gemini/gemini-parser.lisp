@@ -396,11 +396,33 @@
                  :group-id gid
                  :level    level))
 
+(defclass unordered-list-line (with-lines) ())
+
+(defun make-unordered-list-line (text)
+  (make-instance 'unordered-list-line
+                 :lines    (list text)))
+
+(defclass link-line (with-lines)
+  ((link-name
+    :initarg  :link-name
+    :initform nil
+    :accessor link-name)
+   (link-value
+    :initarg  :link-value
+    :initform nil
+    :accessor link-value)))
+
+(defun make-link-line (text link-name link-value)
+  (make-instance 'link-line
+                 :lines      (list text)
+                 :link-name  link-name
+                 :link-value link-value))
+
 (defun sexp->text-rows (parsed-gemini theme)
   (let ((win-width    (message-window:viewport-width (viewport theme)))
         (pre-group-id    -1)
         (header-group-id -1)
-        (pre-alt-text ""))
+        (pre-alt-text    ""))
     (labels ((header-prefix (prefix header)
                (strcat prefix header))
              (header-prefix-h1 (header)
@@ -444,48 +466,51 @@
                      (cond
                        ((null node)
                         (make-instance 'vertical-space)) ;(format nil "~%"))
-              ((html-utils:tag= :as-is node)
-               (let* ((truncated-line (safe-subseq (text-value node) 0 (1- win-width)))
-                      (fg             (preformatted-fg theme))
-                      (line           (tui:make-tui-string (format nil "~a" truncated-line)
-                                                           :fgcolor fg)))
-                 (make-pre-line (list line) pre-group-id pre-alt-text)))
-              ((html-utils:tag= :text node)
-               (format nil "~a~%" (text-value node)))
-              ((html-utils:tag= :h1 node)
-               (make-header 1
-                            (header-prefix-h1 (text-value node))
-                            +h1-underline+))
-              ((html-utils:tag= :h2 node)
-               (make-header 2
-                            (header-prefix-h2 (text-value node))
-                            +h2-underline+))
-              ((html-utils:tag= :h3 node)
-               (make-header 3
-                            (header-prefix-h3 (text-value node))
-                            +h3-underline+))
-              ((html-utils:tag= :li node)
-               (format nil
-                       "~a ~a~%"
-                       (bullet-prefix theme)
-                       (text-value node)))
-              ((html-utils:tag= :quote node)
-               (fit-quote-lines (text-value node :trim nil)
-                                win-width))
-              ((html-utils:tag= :pre node)
-               (let ((current-alt-text (pre-alt-text node)))
-                 (incf pre-group-id)
-                 (setf pre-alt-text current-alt-text)
-                 (make-pre-start current-alt-text pre-group-id)))
-              ((html-utils:tag= :pre-end node)
-               (make-pre-end))
-              ((html-utils:tag= :a node)
-               (let ((link-name  (text-value node :trim nil))
-                     (link-value (html-utils:attribute-value (html-utils:find-attribute :href
-                                                                                        node))))
-                 (if link-name
-                     (linkify link-name link-value)
-                     (linkify link-value link-value))))))))
+                       ((html-utils:tag= :as-is node)
+                        (let* ((truncated-line (safe-subseq (text-value node) 0 (1- win-width)))
+                               (fg             (preformatted-fg theme))
+                               (line           (tui:make-tui-string (format nil "~a" truncated-line)
+                                                                    :fgcolor fg)))
+                          (make-pre-line (list line) pre-group-id pre-alt-text)))
+                       ((html-utils:tag= :text node)
+                        (format nil "~a~%" (text-value node)))
+                       ((html-utils:tag= :h1 node)
+                        (make-header 1
+                                     (header-prefix-h1 (text-value node))
+                                     +h1-underline+))
+                       ((html-utils:tag= :h2 node)
+                        (make-header 2
+                                     (header-prefix-h2 (text-value node))
+                                     +h2-underline+))
+                       ((html-utils:tag= :h3 node)
+                        (make-header 3
+                                     (header-prefix-h3 (text-value node))
+                                     +h3-underline+))
+                       ((html-utils:tag= :li node)
+                        (let ((text (format nil
+                                            "~a ~a"
+                                            (bullet-prefix theme)
+                                            (text-value node))))
+                          (make-unordered-list-line text)))
+                       ((html-utils:tag= :quote node)
+                        (fit-quote-lines (text-value node :trim nil)
+                                         win-width))
+                       ((html-utils:tag= :pre node)
+                        (let ((current-alt-text (pre-alt-text node)))
+                          (incf pre-group-id)
+                          (setf pre-alt-text current-alt-text)
+                          (make-pre-start current-alt-text pre-group-id)))
+                       ((html-utils:tag= :pre-end node)
+                        (make-pre-end))
+                       ((html-utils:tag= :a node)
+                        (let* ((link-name  (text-value node :trim nil))
+                               (link-value (html-utils:attribute-value
+                                            (html-utils:find-attribute :href
+                                                                       node)))
+                               (link-text  (if link-name
+                                               (linkify link-name  link-value)
+                                               (linkify link-value link-value))))
+                          (make-link-line link-text link-name link-value)))))))
       (flatten (build-rows)))))
 
 (defun sexp->text (parsed-gemini theme)
