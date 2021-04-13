@@ -64,6 +64,7 @@
    :h3-prefix
    :quote-prefix
    :bullet-prefix
+   :with-lines
    :pre-start
    :value
    :pre-line
@@ -74,6 +75,8 @@
    :quoted-lines
    :lines
    :vertical-space
+   :header-line
+   :level
    :sexp->text-rows
    :sexp->text
    :parse-gemini-response-header

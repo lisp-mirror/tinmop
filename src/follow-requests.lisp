@@ -128,8 +128,8 @@
 requeste  that are not be erased from the window (see the class
 row-oriented-widget)"
   (with-accessors ((all-accounts requests)) specials:*follow-requests-window*
-    (let* ((accepted-usernames (line-oriented-window:map-rows #'normal-text
-                                                              specials:*follow-requests-window*))
+    (let* ((accepted-usernames (line-oriented-window:map-rows specials:*follow-requests-window*
+                                                              #'normal-text))
            (accepted-accounts  (remove-if-not (lambda (acc)
                                                 (find-if (lambda (a)
                                                            (string= a

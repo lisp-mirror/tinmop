@@ -149,6 +149,16 @@
 (defun row-get-original-object (line)
   (getf (fields line) :original-object))
 
+(defun row-add-group-id (line group-id)
+  (push group-id
+        (fields line))
+  (push :group-id
+        (fields line))
+  line)
+
+(defun row-get-group-id (line)
+  (getf (fields line) :group-id))
+
 (defun make-render-vspace-row (&optional (original-object
                                           (make-instance 'gemini-parser:vertical-space)))
   (let ((res (make-instance 'line
@@ -277,12 +287,26 @@
 (defmethod text->rendered-lines-rows (window (text complex-string))
   text)
 
-(defmethod text->rendered-lines-rows (window (text gemini-parser:quoted-lines))
-  (let ((colorized-lines (colorize-lines (gemini-parser:lines text))))
+(defgeneric collect-lines-from-ir (object))
+
+(defmethod  collect-lines-from-ir ((object gemini-parser:with-lines))
+  (let ((colorized-lines (colorize-lines (gemini-parser:lines object))))
     (loop for i in colorized-lines
           collect
           (make-instance 'line
                          :normal-text i))))
+
+(defmethod text->rendered-lines-rows (window (text gemini-parser:quoted-lines))
+  (collect-lines-from-ir text))
+
+(defmethod text->rendered-lines-rows (window (text gemini-parser:header-line))
+  (let* ((group-id (gemini-parser:group-id text))
+         (lines    (collect-lines-from-ir text))
+         (res      (mapcar (lambda (a)
+                             (let ((line (row-add-original-object a text)))
+                               (row-add-group-id line group-id)))
+                           lines)))
+    res))
 
 (defmethod text->rendered-lines-rows (window (text string))
   (labels ((fit-lines (lines)
