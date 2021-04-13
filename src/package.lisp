@@ -387,7 +387,9 @@
    :percent-encode
    :percent-decode
    :percent-encoded-p
-   :maybe-percent-encode))
+   :maybe-percent-encode
+   :display-corrupting-utf8-p
+   :remove-corrupting-utf8-chars))
 
 (defpackage :html-utils
   (:use

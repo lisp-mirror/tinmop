@@ -115,7 +115,7 @@
                  ((row-invisible-p line)
                   (decf y))
                  ((not (row-vertical-space-p line))
-                  (let ((text-line (normal-text line)))
+                  (let ((text-line (remove-corrupting-utf8-chars (normal-text line))))
                     (print-text window text-line 1 y))))))))
 
 (defun draw-buffer-line-mark (window)

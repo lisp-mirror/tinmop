@@ -412,6 +412,12 @@ latter has a length equals to `total-size'"))
                   last-char-bg))))
         res))))
 
+(defmethod remove-corrupting-utf8-chars ((object complex-string))
+  (setf (complex-char-array object)
+        (remove-if (lambda (a) (display-corrupting-utf8-p (simple-char a)))
+                   (complex-char-array object)))
+  object)
+
 (defgeneric print-debug (object &optional stream))
 
 (defmethod print-debug ((object complex-char) &optional (stream *standard-output*))

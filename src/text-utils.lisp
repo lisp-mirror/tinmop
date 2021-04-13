@@ -716,3 +716,21 @@ printed in the box column by column; in the example above the results are:
   (if (percent-encoded-p data)
       data
       (percent-encode-allow-null data)))
+
+(defun display-corrupting-utf8-p (character)
+  (let ((character-code (char-code character)))
+    (or (= character-code #x200f)  ; #\RIGHT-TO-LEFT_MARK
+        (= character-code #x200e)  ; #\LEFT-TO-RIGHT_MARK
+        (= character-code #x00ad)  ; #\SOFT_HYPHEN
+        (= character-code #xfeff)  ; #\ZERO_WIDTH_NO-BREAK_SPACE
+        (<= #x2066
+            character-code         ; misc directional markers
+            #x2069)
+        (<= #x202a
+            character-code         ; misc directional markers: #3854
+            #x202e))))
+
+(defgeneric remove-corrupting-utf8-chars (object))
+
+(defmethod remove-corrupting-utf8-chars ((object sequence))
+  (remove-if #'display-corrupting-utf8-p object))
