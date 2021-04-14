@@ -1,4 +1,217 @@
-2021-03-28  cage <cage-dev@twistfold.it>
+2021-04-13 cage
+
+	* src/gemini/gemini-parser.lisp,
+	* src/gemini/package.lisp,
+	* src/message-window.lisp,
+	* src/package.lisp,
+	* src/tui-utils.lisp,
+        * LICENSES.org,
+        * src/follow-requests.lisp,
+        * src/text-utils.lisp,
+
+	- added 'remove-corrupting-utf8-chars' to clean up rendered text
+        from trouble characters.
+        -[gemtext] added metadata for list, header lines and link lines;
+        - fixed processing of follow requests.
+
+2021-04-11  cage
+
+	* modules/rewrite-message-urls.lisp,
+	* src/line-oriented-window.lisp,
+	* src/message-window.lisp,
+	* src/package.lisp,
+	* src/ui-goodies.lisp,
+        * etc/init.lisp,
+        * src/gemini/gemini-parser.lisp,
+        * src/message-window.lisp:
+
+	- [gemini] added feature to toggle preformatted block on/off;
+	- [gemini] trimmed alt-text; - reworded some functions;
+        - specialized message-window' to skip invisible rows.
+
+2021-04-10  cage
+
+	* modules/rewrite-message-urls.lisp,
+	* src/gemini-viewer.lisp,
+	* src/gemini/package.lisp,
+	* src/line-oriented-window.lisp,
+	* src/open-attach-window.lisp,
+	* src/package.lisp,
+	* src/program-events.lisp,
+	* src/software-configuration.lisp,
+	* src/thread-window.lisp,
+	* src/tui-utils.lisp,
+        * modules/rewrite-message-urls.lisp,
+        * src/gemini-viewer.lisp,
+        * src/gemini/gemini-parser.lisp,
+        * src/hooks.lisp,
+        * src/main.lisp,
+        * src/message-window.lisp,
+        * src/text-utils.lisp,
+        * src/ui-goodies.lisp:
+
+
+	- exit from the program,  without launching the debugger, when the
+	configuration module was not found  but notify a warning, instead,
+	if the module was not essential (like when loaded from the command
+	line using switch "-M");
+	- load a module even if loading an URL has been requested from the
+        command line;
+	- [gemini] ensured tail call when downloading a non-text file;
+        - fixed RE in 'open-attach-window:get-extension';
+	- fixed bug that prevented to open an attachment from cached file.
+	- rewritten rendering of text in  message window i got rid of slot
+	support-text in message-window, so that  class does not maintain a
+	state.
+	- changed behaviour of  split-line (split-line (format nil "~2%"))
+	; => ("" "") That is an empty line is returned as empty string and
+	not skipped Thanks to people  from IRC and cl-ppcre maintainer for
+	help!
+	- [breaking changes] changed 'hooks:*before-prepare-for-rendering-message* with
+        'hooks:*before-rendering-message-text*.
+
+021-04-08  cage
+
+	* src/conversations-window.lisp,
+	* src/gemini-subscription-window.lisp,
+	* src/gemini-viewer.lisp,
+	* src/gemini/package.lisp,
+	* src/message-rendering-utils.lisp,
+	* src/open-attach-window.lisp,
+	* src/package.lisp,
+	* src/sending-message.lisp,
+	* src/thread-window.lisp,
+	* src/ui-goodies.lisp,
+        * src/chats-list-window.lisp,
+        * src/follow-requests.lisp,
+        * src/gemini-client-certificates-window.lisp,
+        * src/gemini/gemini-parser.lisp,
+        * src/line-oriented-window.lisp,
+        * src/message-window.lisp,
+        * src/open-message-link-window.lisp,
+        * src/program-events.lisp,
+        * src/tags-window.lisp,
+
+	- [gemini] tag preformatted text lines with metadata (group-id and
+        alt text).
+	- discouraged use of slot 'rows' for 'row-oriented-widget', used API
+        instead.
+
+2021-04-07  cage
+
+        * src/program-events.lisp:
+
+	- [gemini] removed unused arg from 'refresh-gemini-message-window'.
+
+2021-04-06  cage
+
+        * src/line-oriented-window.lisp,
+	* src/message-window.lisp,
+        * src/open-message-link-window.lisp,
+	* src/package.lisp,
+        * src/program-events.lisp,
+	* src/ui-goodies.lisp:
+
+	- fixed searching in links or gemini pages: searching starts from
+        the first row.
+
+        - fixed search  in message window.  If more than  one occurrence of
+	the matched string was present (in the same line) drawing the last
+	will overwrite the others.
+
+2021-04-05  cage
+
+        * etc/default-theme.conf,
+        * modules/rewrite-message-urls.lisp,
+	* src/gemini/client.lisp,
+	* src/gemini/gemini-parser.lisp,
+        * src/gemini/gemini-parser.lisp,
+	* src/gemini/package.lisp,
+	* src/gemini-viewer.lisp,
+        * src/line-oriented-window.lisp,
+	* src/message-window.lisp,
+        * src/message-window.lisp,
+        * src/misc-utils.lisp,
+	* src/package.lisp,
+	* src/program-events.lisp,
+        * src/program-events.lisp,
+        * src/software-configuration.lisp,
+        * src/thread-window.lisp,
+	* src/tui-utils.lisp,
+	* src/ui-goodies.lisp:
+
+	- fixed search in message-window;
+
+	- there  was a lot  of problems related to  type of an  element of
+	'rows', they must be always a  complex string - moreover there was
+	an  incorrect positioning  of the  matching string  when character
+	with column width >1 was present before the string compatible with
+	the regex;
+
+	- changed 'source-text' to 'support-text'.
+
+        - removed debug message.
+
+        - fixed and simplified 'refresh-gemini-message-window', was always appending
+        contents.
+
+	- [gemini] fixed gemini text parser.
+
+	- [gemini] fixed rendering of quoted lines;
+
+	- [gemini] do not set, always append, source text when refreshing a
+        gemini window.
+
+	- [gemini] started coloring preformatted block.
+
+2021-04-03  cage
+
+	* src/complete.lisp,
+        * src/gemini/client.lisp,
+	* src/gemini/gemini-parser.lisp,
+	* src/gemini-viewer.lisp,
+        * src/main.lisp,
+	* src/message-window.lisp,
+	* src/open-message-link-window.lisp,
+	* src/package.lisp,
+	* src/program-events.lisp,
+        * src/program-events.lisp,
+	* src/ui-goodies.lisp:
+
+	- [gemini] improved rendering of quoted text.
+
+	- [gemini] percent encoded paths when exploring local file systems.
+
+	- fixed crash when 'contains-clsr'  is called This function called
+	cl-ppcre:create-scanner but  if the argument to  this function can
+	not  be interpreted  as  a  valid regex  (e.g  "["),  an error  was
+	signalled.
+
+	-  [gemini] fixed  bug that  prevented a  page to  be reloaded;  -
+	[gemini] use cache, if possible, when opening a gemini url.
+
+2021-04-01  cage
+
+        * src/filesystem-utils.lisp,
+	* src/iri-parser.lisp,
+        * src/tests/iri-tests.lisp,
+	* src/tests/uri-tests.lisp,
+        * src/uri-parser.lisp:
+        * etc/shared.conf,
+	* src/filesystem-utils.lisp,
+        * src/gemini-viewer.lisp,
+	* src/gemini/client.lisp,
+        * src/gemini/gemini-parser.lisp,
+	* src/gemini/package.lisp:
+
+	- fixed, again fs:dirp;
+	- fixed iri parser (parses correctly IRI like mailto:...).
+	- moved to an internal wrapping of 'mkstemp' to allow extensions in
+        filename;
+	- [gemini] rendering all stream with MIME type "text/*" with this
+        program.
+
+2021-03-28 cage
 
 	* etc/default-theme.conf:
 	* src/filesystem-utils.lisp,
@@ -26,7 +239,7 @@
 	- changed link color when printed in link windows;
         - cleaned a bit reults of 'prepend-pwd'.
 
-2021-03-27  cage <cage-dev@twistfold.it>
+2021-03-27
 
 	* src/filesystem-utils.lisp,
 	* src/gemini/client.lisp,
