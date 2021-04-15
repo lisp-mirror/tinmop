@@ -1,3 +1,44 @@
+* 2021-04-15 version 0.6.0
+
+  - New Features
+
+    - exploring  local file system  (using  '-o'  option and  rendering
+      gemtext files, of course!
+    - added  more option  for choosing  how  to open  gemini links  or
+      pleroma  attachments,  tinmop  or  an external  program  can  be
+      chosen, see the configuration file for examples;
+    - improved  rendering of  preformatted block  and quoted  lines of
+      gemtext
+    - [gemini] users can choose to  switch from showing alternate text
+      (if exists) instead  of a preformatted text  blocks (default key
+      for this feature is "t" when the message window got the focus);
+    - removed some  control characters that could  cause troubles when
+      rendering a text (thanks op and mutt people!)
+
+  - Bugfix
+    - fixed  incorrect  rendering of  matched  text  when searching  a
+      string in the message window;
+    - opening a module (option "-M") when "-o" (open a gemini address)
+      option is used works now;
+
+  - Improvements
+    - rendering of gemini  pages should be a bit  faster, prevents the
+      UI  from blocking  and should  not slow  down the  software when
+      opening long pages.
+    - added guix instruction for installing the software using guix;
+    - improved   error   messages   when  a   problem   with   missing
+      configuration files occurred.
+    - improved program's quitting time.
+    - fixed IRI  parsing (older  version failed to  parse "mailto:..."
+      IRIs.
+
+  - Breaking changes
+
+    - [pleroma]  using  new version  of  chats  API, this  makes  this
+      software incompatible with old version of pleroma server (< 2.3)
+    - changed    'hooks:*before-prepare-for-rendering-message*    with
+      'hooks:*before-rendering-message-text*.
+
 * 2021-03-03 version 0.5.9
 
   - Breaking changes
