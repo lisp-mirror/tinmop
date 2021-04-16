@@ -49,9 +49,9 @@
     ("http://a/b/c/d;p?q#f" .
      ("http" nil "a" nil "/b/c/d;p" "q" "f"))
     ("ldap://[2001:db8::7]/c=GB?objectClass?one" .
-     ("ldap" nil "[2001:db8::7]" nil "/c=GB" "objectClass?one" nil))
+     ("ldap" nil "2001:db8::7" nil "/c=GB" "objectClass?one" nil))
     ("http://[dead:beef::]:111/foo/" .
-     ("http" nil "[dead:beef::]" "111" "/foo/" nil nil))
+     ("http" nil "dead:beef::" "111" "/foo/" nil nil))
     ("//foo.bar:198/".
      (nil nil "foo.bar" "198" "/" nil nil))
     ("//fo°o.bar:198/baz.gmi?a=b&b=c#a-fragment".

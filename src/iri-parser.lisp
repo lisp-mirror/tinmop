@@ -125,7 +125,7 @@
 (defrule ip-literal  (and "["
                           (+ (not (or "[" "]")))
                           "]")
-  (:text t))
+  (:function (lambda (a) (text (second a)))))
 
 (defrule ipchar (or iunreserved-chars pct-encoded  sub-delims  ":"  "@")
   (:text t))
