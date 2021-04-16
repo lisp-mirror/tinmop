@@ -1,3 +1,18 @@
+2021-04-16  cage
+
+	* src/gemini/gemini-parser.lisp,
+	* src/iri-parser.lisp,
+	* src/package.lisp,
+	* src/tests/iri-tests.lisp,
+        * src/gemini/client.lisp,
+
+	- [gemini] allowed to connect to host using IP address instead of
+        hostname;
+	- fixed 'make-gemini-iri', was building wrong IRI with IP6 address
+        as host;
+	- trimmed square brackets from IP literal when parsing an IRI;
+	- [gemini] prevented trimming of preformatted gemtext line.
+
 2021-04-13 cage
 
 	* src/gemini/gemini-parser.lisp,
