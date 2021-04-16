@@ -247,8 +247,11 @@
          (actual-port (if port
                           (to-s port)
                           (to-s +gemini-default-port+)))
+         (actual-host (if (iri:ipv6-address-p host)
+                          (strcat "[" host "]")
+                          host))
          (iri (strcat scheme         "://"
-                      host            ":"
+                      actual-host    ":"
                       actual-port     "/"
                       actual-path)))
     (when query

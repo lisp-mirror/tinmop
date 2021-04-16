@@ -676,7 +676,9 @@
    :render-iri
    :make-iri
    :iri-parse
-   :absolute-url-p))
+   :absolute-url-p
+   :ipv4-address-p
+   :ipv6-address-p))
 
 (defpackage :x509
   (:use

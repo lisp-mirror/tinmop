@@ -335,3 +335,15 @@
 (defun absolute-url-p (url)
   (when-let ((iri (iri:iri-parse url :null-on-error t)))
     (not (null (uri:scheme iri)))))
+
+(defun ipv4-address-p (string)
+  (ignore-errors
+   (let ((bytes (mapcar #'parse-integer
+                        (cl-ppcre:split "\\."
+                                        string))))
+     (and (= (length bytes)
+             4)
+          (every (lambda (a) (<= 0 a 255)) bytes)))))
+
+(defun ipv6-address-p (string)
+  (cl-ppcre:scan ":" string))
