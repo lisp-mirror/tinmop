@@ -467,9 +467,12 @@
                        ((null node)
                         (make-instance 'vertical-space)) ;(format nil "~%"))
                        ((html-utils:tag= :as-is node)
-                        (let* ((truncated-line (safe-subseq (text-value node) 0 (1- win-width)))
+                        (let* ((line           (text-value node :trim nil))
+                               (truncated-line (safe-subseq line 0 (1- win-width)))
                                (fg             (preformatted-fg theme))
-                               (line           (tui:make-tui-string (format nil "~a" truncated-line)
+                               (line           (tui:make-tui-string (format nil
+                                                                            "~a"
+                                                                            truncated-line)
                                                                     :fgcolor fg)))
                           (make-pre-line (list line) pre-group-id pre-alt-text)))
                        ((html-utils:tag= :text node)
@@ -513,78 +516,6 @@
                           (make-link-line link-text link-name link-value)))))))
       (flatten (build-rows)))))
 
-(defun sexp->text (parsed-gemini theme)
-  (labels ((header-prefix (prefix header)
-             (strcat prefix header))
-           (header-prefix-h1 (header)
-             (header-prefix (h1-prefix theme) header))
-           (header-prefix-h2 (header)
-             (header-prefix (h2-prefix theme) header))
-           (header-prefix-h3 (header)
-             (header-prefix (h3-prefix theme) header))
-           (underlineize (stream text underline-char)
-             (let* ((size      (length text))
-                    (underline (build-string size underline-char)))
-               (format stream "~a~%~a~%" text underline)))
-           (trim (a)
-             (string-trim '(#\Newline #\Return) a))
-           (text-value (node &key (trim t))
-             (let ((text (first (html-utils:children node))))
-               (if trim
-                   (trim text)
-                   text)))
-           (linkify (link-name link-value)
-             (if (gemini-link-iri-p link-value)
-                 (format nil "~a~a~%" (link-prefix-gemini theme) link-name)
-                 (format nil "~a~a~%" (link-prefix-other  theme) link-name)))
-           (fit-quote-lines (line win-width)
-             (join-with-strings (mapcar (lambda (a) (strcat (quote-prefix theme) a))
-                                        (flush-left-mono-text (split-words line)
-                                                              (- win-width
-                                                                 (length (quote-prefix theme)))))
-                                (format nil "~%"))))
-    (let ((win-width (message-window:viewport-width (viewport theme))))
-      (with-output-to-string (stream)
-        (loop for node in parsed-gemini do
-          (cond
-            ((null node)
-             (format stream "~%"))
-            ((html-utils:tag= :as-is node)
-             (let ((truncated-line (safe-subseq (text-value node) 0 win-width)))
-               (format stream "~a~%" truncated-line)))
-            ((html-utils:tag= :text node)
-             (format stream "~a~%" (text-value node)))
-            ((html-utils:tag= :h1 node)
-             (underlineize stream
-                           (header-prefix-h1 (text-value node))
-                           +h1-underline+))
-            ((html-utils:tag= :h2 node)
-             (underlineize stream
-                           (header-prefix-h2 (text-value node))
-                           +h2-underline+))
-            ((html-utils:tag= :h3 node)
-             (underlineize stream
-                           (header-prefix-h3 (text-value node))
-                           +h3-underline+))
-            ((html-utils:tag= :li node)
-             (format stream
-                     "~a ~a~%"
-                     (bullet-prefix theme)
-                     (text-value node)))
-            ((html-utils:tag= :quote node)
-             (write-sequence (fit-quote-lines (text-value node :trim nil)
-                                              win-width)
-                             stream))
-            ;; ((html-utils:tag= :pre node)
-            ;;  (write-sequence (text-value node :trim nil) stream))
-            ((html-utils:tag= :a node)
-             (let ((link-name  (text-value node :trim nil))
-                   (link-value (html-utils:attribute-value (html-utils:find-attribute :href
-                                                                                      node))))
-               (if link-name
-                   (write-string (linkify link-name link-value)  stream)
-                   (write-string (linkify link-value link-value) stream))))))))))
-
 (defun parse-gemini-file (data)
   (let* ((lines (if (string= (format nil "~%") data)
                     (list (format nil "~%"))
@@ -597,9 +528,10 @@
                 (parsed-line (parse 'gemini-file line :junk-allowed t)))
             (if was-raw-mode
                 (if *raw-mode-data*
-                    (html-utils:make-tag-node :as-is
-                                              (list (list :alt *raw-mode-data*))
-                                              line)
+                    (let ((*blanks* '(#\Newline #\Linefeed #\Return)))
+                      (html-utils:make-tag-node :as-is
+                                                (list (list :alt *raw-mode-data*))
+                                                (trim-blanks line)))
                     parsed-line)
                 parsed-line)))))
 
