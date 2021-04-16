@@ -357,20 +357,20 @@
          (ctx (cl+ssl:make-context :verify-mode cl+ssl:+ssl-verify-none+)))
     (cl+ssl:with-global-context (ctx :auto-free-p t)
       (let* ((socket       (open-tls-socket host port))
-                  (stream       (usocket:socket-stream socket))
-                  (ssl-hostname (if (or (iri:ipv4-address-p host)
-                                        (iri:ipv6-address-p host))
-                                    nil
-                                    host))
-                  (ssl-stream   (cl+ssl:make-ssl-client-stream stream
-                                                               :certificate     client-certificate
-                                                               :key             certificate-key
-                                                               :external-format nil
-                                                               :unwrap-stream-p t
-                                                               :verify          nil
-                                                               :hostname        ssl-hostname))
-                  (request    (format nil "~a~a~a" iri #\return #\newline))
-                  (cert-hash  (crypto-shortcuts:sha512 (x509:dump-certificate ssl-stream))))
+             (stream       (usocket:socket-stream socket))
+             (ssl-hostname (if (or (iri:ipv4-address-p host)
+                                   (iri:ipv6-address-p host))
+                               nil
+                               host))
+             (ssl-stream   (cl+ssl:make-ssl-client-stream stream
+                                                          :certificate     client-certificate
+                                                          :key             certificate-key
+                                                          :external-format nil
+                                                          :unwrap-stream-p t
+                                                          :verify          nil
+                                                          :hostname        ssl-hostname))
+             (request    (format nil "~a~a~a" iri #\return #\newline))
+             (cert-hash  (crypto-shortcuts:sha512 (x509:dump-certificate ssl-stream))))
         (debug-gemini "sending request ~a" request)
         (if (not (db:tofu-passes-p host cert-hash))
             (error 'gemini-tofu-error :host host)

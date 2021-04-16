@@ -118,7 +118,9 @@
                  (setf res (strcat res (string (elt pivot-string prefix-count)))))
                (%advance ()
                  (loop for i in actual-strings do
-                      (when (not (cl-ppcre:scan (strcat "^" res) i))
+                   (when (not (cl-ppcre:scan (strcat "^"
+                                                     (cl-ppcre:quote-meta-chars res))
+                                             i))
                         (setf res (subseq res 0 (1- (length res))))
                         (return-from %advance nil)))
                  (when (< (1+ prefix-count)
