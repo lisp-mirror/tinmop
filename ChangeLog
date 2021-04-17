@@ -4,8 +4,11 @@
 	* src/iri-parser.lisp,
 	* src/package.lisp,
 	* src/tests/iri-tests.lisp,
-        * src/gemini/client.lisp,
+	* src/text-utils.lisp,
+        * src/gemini/client.lisp:
 
+	- quote meta characters when matching for RE, searching for a common
+        prefix from a bag of strings.
 	- [gemini] allowed to connect to host using IP address instead of
         hostname;
 	- fixed 'make-gemini-iri', was building wrong IRI with IP6 address

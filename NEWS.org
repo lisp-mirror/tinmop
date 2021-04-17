@@ -1,3 +1,10 @@
+* 2021-04-17 version 0.6.2
+
+  - Bugfix
+    - completing a command argument with strings that contains special
+      characters (like,  for example a  square bracket) no  more makes
+      the program crash.
+
 * 2021-04-16 version 0.6.1
 
   - Bugfix
