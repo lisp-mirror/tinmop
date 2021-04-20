@@ -294,21 +294,21 @@
 (defmethod text->rendered-lines-rows (window (text complex-string))
   text)
 
-(defgeneric collect-lines-from-ir (object))
+(defgeneric collect-lines-from-ir (object window))
 
-(defmethod collect-lines-from-ir ((object gemini-parser:with-lines))
-  (let ((colorized-lines (colorize-lines (gemini-parser:lines object))))
+(defmethod collect-lines-from-ir ((object gemini-parser:with-lines) (window message-window))
+  (let ((colorized-lines (colorize-lines (%fit-lines window (gemini-parser:lines object)))))
     (loop for i in colorized-lines
           collect
           (make-instance 'line
                          :normal-text i))))
 
 (defmethod text->rendered-lines-rows (window (text gemini-parser:quoted-lines))
-  (collect-lines-from-ir text))
+  (collect-lines-from-ir text window))
 
 (defmethod text->rendered-lines-rows (window (text gemini-parser:header-line))
   (let* ((group-id (gemini-parser:group-id text))
-         (lines    (collect-lines-from-ir text))
+         (lines    (collect-lines-from-ir text window))
          (res      (mapcar (lambda (a)
                              (let ((line (row-add-original-object a text)))
                                (row-add-group-id line group-id)))
@@ -316,37 +316,41 @@
     res))
 
 (defmethod text->rendered-lines-rows (window (text gemini-parser:unordered-list-line))
-  (collect-lines-from-ir text))
+  (collect-lines-from-ir text window))
 
 (defmethod text->rendered-lines-rows (window (text gemini-parser:link-line))
-  (let ((res (collect-lines-from-ir text)))
+  (let ((res (collect-lines-from-ir text window)))
     (row-add-original-object res text)
     res)) ; even if row-add-original-object returns the modified line explicit returns for clarity
 
+(defun %fit-text (window text)
+  (let ((lines (split-lines text)))
+    (%fit-lines window lines)))
+
+(defun %fit-lines (window lines)
+  (let ((res   ()))
+    (loop for line in lines do
+      (cond
+        ((or (string-empty-p line)
+             (string= line (format nil "~%")))
+         (push (make-render-vspace-row) res))
+        (t
+         (loop for fitted-line
+                 in (flush-left-mono-text (split-words line)
+                                          (win-width-no-border window))
+               do
+                  (push fitted-line res)))))
+    (reverse res)))
+
 (defmethod text->rendered-lines-rows (window (text string))
-  (labels ((fit-lines (lines)
-             (let ((res ()))
-               (loop for line in lines do
-                 (cond
-                   ((or (string-empty-p line)
-                        (string= line (format nil "~%")))
-                    (push (make-render-vspace-row) res))
-                   (t
-                    (loop for fitted-line
-                            in (flush-left-mono-text (split-words line)
-                                                     (win-width-no-border window))
-                          do
-                         (push fitted-line res)))))
-               (reverse res))))
-    (let* ((lines        (split-lines text))
-           (fitted-lines (fit-lines lines))
-           (new-rows     (colorize-lines fitted-lines)))
-      (mapcar (lambda (text-line)
-                (if (typep text-line 'line)
-                    text-line
-                    (make-instance 'line
-                                   :normal-text text-line)))
-              new-rows))))
+  (let* ((fitted-lines (%fit-text window text))
+         (new-rows     (colorize-lines fitted-lines)))
+    (mapcar (lambda (text-line)
+              (if (typep text-line 'line)
+                  text-line
+                  (make-instance 'line
+                                 :normal-text text-line)))
+            new-rows)))
 
 (defun remove-invisible-rows (rows)
   (remove-if #'row-invisible-p rows))
