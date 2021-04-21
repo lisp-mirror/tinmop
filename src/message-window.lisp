@@ -102,14 +102,15 @@
 
 (defun visible-rows (window)
   (with-accessors ((row-selected-index row-selected-index)) window
-    (let* ((start row-selected-index)
-           (end   (+ start
-                     (win-height-no-border window))))
-      (values (line-oriented-window:rows-safe-subseq window
-                                                     row-selected-index
-                                                     :end end)
+    (let* ((start  row-selected-index)
+           (end    (+ start
+                      (win-height-no-border window)))
+           (rows   (rows-safe-subseq window
+                                     row-selected-index
+                                     :end end)))
+      (values rows
               start
-              end))))
+              (length rows)))))
 
 (defun draw-text (window)
   (when hooks:*before-rendering-message-text*
