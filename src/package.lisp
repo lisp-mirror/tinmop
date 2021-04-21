@@ -1941,6 +1941,7 @@
    :display-chat-p
    :row-get-original-object
    :viewport-width
+   :visible-rows
    :row-vertical-space-p
    :row-preformatted-p
    :row-invisible-p

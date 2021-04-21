@@ -65,25 +65,30 @@ So the whole list is like: '((\"foo\" \"bar\") (\"old\" \"new\") ...)")
     (or (message-window:row-invisible-p row)
         (find-if (lambda (a) (typep original-type a)) skipped-row-types))))
 
-(defun %rewriting-link-rewrite-row (links-mapping)
-  (lambda (row)
-    (let* ((original-string (line-oriented-window:normal-text row)))
-      (if (skipped-row-p row)
-          row
-          (let* ((simple-string (tui:tui-string->chars-string original-string))
+(defun rewriting-link-rewrite-row (window index links-mapping)
+  (with-accessors ((rows line-oriented-window:rows)) window
+    (when rows
+      (let* ((row             (elt rows index))
+             (original-string (line-oriented-window:normal-text row)))
+        (when (not (skipped-row-p row))
+          (let* ((simple-string   (tui:tui-string->chars-string original-string))
                  (replaced-string simple-string))
             (loop for mapping in links-mapping do
               (setf replaced-string
                     (rewriting-link-replace-mapping mapping replaced-string)))
-            replaced-string)))))
+            (setf (line-oriented-window:normal-text row)
+                  (message-window::colorize-lines replaced-string))
+            (setf (elt rows index)
+                  (message-window:text->rendered-lines-rows window row))))))))
 
 (defun rewriting-link-message-hook-fn (message-window)
-  (let* ((map-fn        (%rewriting-link-rewrite-row *rewriting-link-rules*))
-         (replaced-rows (line-oriented-window:rows-map-raw message-window
-                                                           map-fn))
-         (new-rows      (message-window:text->rendered-lines-rows message-window
-                                                                  replaced-rows)))
-    (line-oriented-window:update-all-rows message-window new-rows)))
+  (multiple-value-bind (x start-visible-index end-visible-index)
+      (message-window:visible-rows message-window)
+    (declare (ignore x))
+    (loop for i from start-visible-index below end-visible-index do
+      (rewriting-link-rewrite-row message-window i *rewriting-link-rules*))
+    message-window))
+
 
 (defun rewriting-link-links-window-hook-fn (all-links)
   (let ((links-mapping  (rewriting-link-messages-links-rules all-links))

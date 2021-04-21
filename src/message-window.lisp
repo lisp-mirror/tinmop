@@ -100,13 +100,24 @@
 (defmethod calculate ((object message-window) dt)
   (declare (ignore object dt)))
 
+(defun visible-rows (window)
+  (with-accessors ((row-selected-index row-selected-index)) window
+    (let* ((start row-selected-index)
+           (end   (+ start
+                     (win-height-no-border window))))
+      (values (line-oriented-window:rows-safe-subseq window
+                                                     row-selected-index
+                                                     :end end)
+              start
+              end))))
+
 (defun draw-text (window)
   (when hooks:*before-rendering-message-text*
     (hooks:run-hook 'hooks:*before-rendering-message-text* window))
   (with-accessors ((row-selected-index row-selected-index)) window
-    (let ((actual-rows (line-oriented-window:rows-safe-subseq window row-selected-index)))
-      (loop for line in actual-rows
-            for y from  1 below (win-height-no-border window)
+    (let ((visible-rows (visible-rows window)))
+      (loop for line in visible-rows
+            for y from  1
             do
                (cond
                  ;; testing invisibility should  never returns true as
