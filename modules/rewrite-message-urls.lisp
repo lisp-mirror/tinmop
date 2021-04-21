@@ -56,7 +56,7 @@ So the whole list is like: '((\"foo\" \"bar\") (\"old\" \"new\") ...)")
                               text
                               (cdr mapping)))
 
-(defun skipped-row-p (row)
+(defun rewriting-link-skipped-row-p (row)
   (let* ((original-type     (message-window:row-get-original-object row))
          (skipped-row-types (list 'gemini-parser:pre-line
                                   'gemini-parser:pre-start
@@ -70,7 +70,7 @@ So the whole list is like: '((\"foo\" \"bar\") (\"old\" \"new\") ...)")
     (when rows
       (let* ((row             (elt rows index))
              (original-string (line-oriented-window:normal-text row)))
-        (when (not (skipped-row-p row))
+        (when (not (rewriting-link-skipped-row-p row))
           (let* ((simple-string   (tui:tui-string->chars-string original-string))
                  (replaced-string simple-string))
             (loop for mapping in links-mapping do
