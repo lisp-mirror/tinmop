@@ -267,12 +267,12 @@
         (text-utils:strcat home *directory-sep*)
         home)))
 
-(cffi:defcfun (ffi-mkstemp "mkstemp") :int (template :pointer))
+(cffi:defcfun (ffi-mkstemp "mkstemps") :int (template :pointer) (suffix-length :int))
 
 (defun %mkstemp (prefix suffix)
   (let ((template (text-utils:strcat prefix "XXXXXX" suffix)))
     (cffi:with-foreign-string (ptr-template template)
-      (ffi-mkstemp ptr-template)
+      (ffi-mkstemp ptr-template (length suffix))
       (cffi:foreign-string-to-lisp ptr-template))))
 
 (defparameter *temporary-files-created* ())
