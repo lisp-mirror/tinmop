@@ -19,6 +19,8 @@
 
 (defparameter *raw-mode-data* nil)
 
+(defparameter *omitted-port* +gemini-default-port+)
+
 (define-constant +h1-prefix+           "#"   :test #'string=)
 
 (define-constant +h2-prefix+           "##"  :test #'string=)
@@ -240,18 +242,29 @@
                                     (query    nil)
                                     (port     +gemini-default-port+)
                                     (fragment nil)
-                                    (scheme  +gemini-scheme+))
-  (let* ((actual-path (if (string-starts-with-p "/" path)
-                          (subseq path 1)
-                          path))
-         (actual-port (if port
-                          (to-s port)
-                          (to-s +gemini-default-port+)))
-         (actual-host (if (iri:ipv6-address-p host)
-                          (strcat "[" host "]")
-                          host))
+                                    (scheme  +gemini-scheme+)
+                                    (omit-default-port t)
+                                    (default-port *omitted-port*))
+  (let* ((actual-path           (if (string-starts-with-p "/" path)
+                                    (subseq path 1)
+                                    path))
+         (actual-port           (cond
+                                  ((and (not omit-default-port)
+                                        (null default-port))
+                                   (to-s +gemini-default-port+))
+                                  ((or (null default-port)
+                                       (= port *omitted-port*))
+                                   "")
+                                  (t
+                                   (to-s port))))
+         (domain-port-separator (if (string-not-empty-p actual-port)
+                                    ":"
+                                    ""))
+         (actual-host           (if (iri:ipv6-address-p host)
+                                    (strcat "[" host "]")
+                                    host))
          (iri (strcat scheme         "://"
-                      actual-host    ":"
+                      actual-host    domain-port-separator
                       actual-port     "/"
                       actual-path)))
     (when query
