@@ -695,19 +695,22 @@ printed in the box column by column; in the example above the results are:
     (percent-decode data)))
 
 (defun percent-encoded-p (string)
-  (loop for i in (coerce string 'list)
-        for ct from 0 do
-          (cond
-            ((char= i #\%)
-             (when (not (cl-ppcre:scan "(?i)^%[0123456789abcdef]{2}" string :start ct))
-               (return-from percent-encoded-p nil)))
-            ((or (percent:reservedp i)
-                 (char= i #\Space)
-                 (not (or (percent:alphap      (char-code i))
-                          (percent:digitp      (char-code i))
-                          (percent:unreservedp (char-code i)))))
-             (return-from percent-encoded-p nil))))
-  t)
+  (if (string-empty-p string)
+      nil
+      (progn
+        (loop for i in (coerce string 'list)
+              for ct from 0 do
+                (cond
+                  ((char= i #\%)
+                   (when (not (cl-ppcre:scan "(?i)^%[0123456789abcdef]{2}" string :start ct))
+                     (return-from percent-encoded-p nil)))
+                  ((or (percent:reservedp i)
+                       (char= i #\Space)
+                       (not (or (percent:alphap      (char-code i))
+                                (percent:digitp      (char-code i))
+                                (percent:unreservedp (char-code i)))))
+                   (return-from percent-encoded-p nil))))
+        t)))
 
 (defun percent-encode-allow-null (data)
   (when data

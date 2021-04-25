@@ -1018,6 +1018,8 @@
         (when give-focus-to-message-window-p
           (ui:focus-to-message-window))
         (cond
+          ((text-utils:string-empty-p url)
+           (ui:error-message (_ "Empty address")))
           ((gemini-client:absolute-gemini-url-p url)
            (gemini-viewer:request url :use-cached-file-if-exists use-cached-file-if-exists))
           ((fs:dirp local-path)
