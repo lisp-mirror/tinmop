@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tinmop 0.6.2\n"
 "Report-Msgid-Bugs-To: https://notabug.org/cage/tinmop/\n"
-"POT-Creation-Date: 2021-04-25 15:49+0200\n"
+"POT-Creation-Date: 2021-04-25 16:12+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -213,7 +213,7 @@ msgstr ""
 msgid "Generated certificates"
 msgstr ""
 
-#: src/gemini-subscription-window.lisp:50 src/program-events.lisp:1263
+#: src/gemini-subscription-window.lisp:50 src/program-events.lisp:1265
 msgid "No subtitle"
 msgstr ""
 
@@ -505,22 +505,26 @@ msgid_plural "Got ~a notifications"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/program-events.lisp:1030
+#: src/program-events.lisp:1022
+msgid "Empty address"
+msgstr ""
+
+#: src/program-events.lisp:1032
 #, lisp-format
 msgid "Index of local directory ~a~2%"
 msgstr ""
 
-#: src/program-events.lisp:1218
+#: src/program-events.lisp:1220
 #, lisp-format
 msgid "Unable to subscribe to ~s"
 msgstr ""
 
-#: src/program-events.lisp:1274
+#: src/program-events.lisp:1276
 #, lisp-format
 msgid "~a ~:[(not opened)~;(opened)~]~%"
 msgstr ""
 
-#: src/program-events.lisp:1399
+#: src/program-events.lisp:1401
 msgid "no label"
 msgstr ""
 
