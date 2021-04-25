@@ -49,7 +49,7 @@ dist_pkgdata_DATA    = scripts/welcome-bot.lisp           \
 
 dist_man1_MANS       = doc/tinmop.man
 
-$(PACKAGE): $(CONF_PATH_FILE)
+$(PACKAGE): $(CONF_PATH_FILE) src/*
 	$(LISP_COMPILER) \
 	--eval "(asdf:load-system '$(PACKAGE))" \
 	--eval "(in-package main)" \

@@ -1035,7 +1035,7 @@ uninstall-man: uninstall-man1
 .PRECIOUS: Makefile
 
 
-$(PACKAGE): $(CONF_PATH_FILE)
+$(PACKAGE): $(CONF_PATH_FILE) src/*
 	$(LISP_COMPILER) \
 	--eval "(asdf:load-system '$(PACKAGE))" \
 	--eval "(in-package main)" \
