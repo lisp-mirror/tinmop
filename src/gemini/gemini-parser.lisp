@@ -249,11 +249,10 @@
                                     (subseq path 1)
                                     path))
          (actual-port           (cond
-                                  ((and (not omit-default-port)
-                                        (null default-port))
-                                   (to-s +gemini-default-port+))
-                                  ((or (null default-port)
-                                       (= port *omitted-port*))
+                                  ((null port)
+                                   "")
+                                  ((and omit-default-port
+                                        (= port default-port))
                                    "")
                                   (t
                                    (to-s port))))
