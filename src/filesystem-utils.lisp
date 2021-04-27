@@ -102,7 +102,7 @@
 
 (defun get-extension (file)
   (multiple-value-bind (matchedp res)
-      (cl-ppcre:scan-to-strings "(?i)[a-z0-9]\(\\.[^.]+$\)" file)
+      (cl-ppcre:scan-to-strings "(?i)[a-z0-9]\(\\.[^.\/]+$\)" file)
     (when matchedp
       (first-elt res))))
 

@@ -99,9 +99,11 @@
     (draw *open-attach-window*)
     *open-attach-window*))
 
+;; Note  we  can   not  use  the  function  with  the   same  name  in
+;; filesystem-utils as the latter doen not check for query string
 (defun get-extension (file)
   (multiple-value-bind (matchedp res)
-      (cl-ppcre:scan-to-strings "(?i)[a-z0-9]\(\\.[^.?]+)(\\?.+)?$" file)
+      (cl-ppcre:scan-to-strings "(?i)[a-z0-9]\(\\.[^./?]+)(\\?.+)?$" file)
     (when matchedp
       (first-elt res))))
 
