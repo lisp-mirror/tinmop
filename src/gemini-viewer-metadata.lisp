@@ -37,7 +37,7 @@
                 source-file))
   object)
 
-(defun add-url-to-history (window url)
+(defun push-url-to-history (window url)
   (let* ((metadata   (message-window:metadata window))
          (history    (reverse (gemini-metadata-history metadata)))
          (last-entry (safe-last-elt (gemini-metadata-history metadata))))
@@ -46,6 +46,14 @@
       (setf (gemini-metadata-history metadata)
             (reverse (push url history))))
     window))
+
+(defun pop-url-from-history (window)
+  (with-accessors ((metadata message-window:metadata)) window
+    (let* ((history      (gemini-metadata-history metadata))
+           (new-history  (misc:safe-all-but-last-elt  history)))
+      (setf (gemini-metadata-history metadata)
+            new-history)
+      history)))
 
 (defun maybe-initialize-metadata (window)
   (when (not (gemini-metadata-p (message-window:metadata window)))

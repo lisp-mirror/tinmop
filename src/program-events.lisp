@@ -1052,7 +1052,7 @@
                   (ir         (gemini-parser:sexp->text-rows parsed
                                                              gemini-client:*gemini-page-theme*)))
              (gemini-viewer:maybe-initialize-metadata window)
-             (gemini-viewer:add-url-to-history window index-path)
+             (gemini-viewer:push-url-to-history window index-path)
              (refresh-gemini-message-window links raw-text ir nil)
              (windows:draw window)))
           (t
@@ -1067,7 +1067,7 @@
                   (ir-text   (gemini-parser:sexp->text-rows parsed
                                                             gemini-client:*gemini-page-theme*)))
              (gemini-viewer:maybe-initialize-metadata window)
-             (gemini-viewer:add-url-to-history window local-path)
+             (gemini-viewer:push-url-to-history window local-path)
              (refresh-gemini-message-window links file-string ir-text nil)
              (windows:draw window))))))))
 

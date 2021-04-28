@@ -2248,7 +2248,8 @@
    :copy-gemini-metadata
    :append-metadata-link
    :append-metadata-source
-   :add-url-to-history
+   :push-url-to-history
+   :pop-url-from-history
    :current-gemini-url
    :history-back
    :view-source

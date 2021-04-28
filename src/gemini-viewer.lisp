@@ -566,6 +566,7 @@
              (gemini-client:debug-gemini "response redirect to: ~s" meta)
              (flet ((on-input-complete (maybe-accepted)
                       (when (ui::boolean-input-accepted-p maybe-accepted)
+                        (pop-url-from-history specials:*message-window*)
                         (let ((new-url (gemini-client:build-redirect-iri meta
                                                                          parsed-iri)))
                           (db-utils:with-ready-database (:connect nil)
@@ -624,7 +625,7 @@
                   (if (find-db-stream-url actual-iri)
                       (progn
                         (gemini-client:debug-gemini  "caching found for ~a" actual-iri)
-                        (add-url-to-history specials:*message-window* actual-iri)
+                        (push-url-to-history specials:*message-window* actual-iri)
                         (db-entry-to-foreground actual-iri))
                       (progn
                         (gemini-client:debug-gemini "caching *not* found for ~a" actual-iri)
@@ -639,7 +640,7 @@
                                 (find-db-stream-url actual-iri)))
                   (when (null enqueue)
                     (ensure-just-one-stream-rendering))
-                  (add-url-to-history specials:*message-window* actual-iri)
+                  (push-url-to-history specials:*message-window* actual-iri)
                   (gemini-client:request-dispatch url gemini-client::dispatch-table)))))
       (gemini-client:gemini-tofu-error (e)
         (let ((host (gemini-client:host e)))
