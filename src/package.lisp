@@ -632,7 +632,8 @@
    :stack-pop
    :stack-find
    :stack-empty-p
-   :stack-remove
+   :stack-remove-element
+   :stack-select
    :stack-position
    :stack-raise-to-top
    :stack-empty-p
@@ -2468,7 +2469,11 @@
    :gemlog-refresh-all
    :gemlog-cancel-subscription
    :send-to-pipe
-   :send-message-to-pipe))
+   :send-message-to-pipe
+   :pass-focus-on-left
+   :pass-focus-on-right
+   :pass-focus-on-bottom
+   :pass-focus-on-top))
 
 (defpackage :scheduled-events
   (:use

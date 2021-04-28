@@ -38,7 +38,9 @@
 
 (defgeneric stack-pop (object))
 
-(defgeneric stack-remove (object val))
+(defgeneric stack-remove-element (object val))
+
+(defgeneric stack-select (object predicate))
 
 (defgeneric stack-find (object val))
 
@@ -79,14 +81,18 @@
 
 (defmethod stack-raise-to-top ((object stack) val)
   (with-accessors ((container container)) object
-    (stack-remove object val)
+    (stack-remove-element object val)
     (stack-push object val)))
 
-(defmethod stack-remove ((object stack) val)
+(defmethod stack-remove-element ((object stack) val)
   (with-accessors ((container container)) object
     (when-let ((val-position  (stack-position object val)))
       (setf container (misc:safe-delete@ container val-position)))
     object))
+
+(defmethod stack-select ((object stack) predicate)
+  (with-accessors ((container container)) object
+    (remove-if-not predicate container)))
 
 (defmacro do-stack-element ((element stack) &body body)
   `(loop for ,element in (reverse (container ,stack)) do

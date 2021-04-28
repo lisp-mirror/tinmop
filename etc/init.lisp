@@ -149,6 +149,14 @@
 
 (define-key "M-g s r"   #'gemlog-refresh-all)
 
+(define-key "M-right"   #'pass-focus-on-right)
+
+(define-key "M-left"    #'pass-focus-on-left)
+
+(define-key "M-down"    #'pass-focus-on-bottom)
+
+(define-key "M-up"      #'pass-focus-on-top)
+
 ;; focus
 
 (define-key "f1"        #'focus-to-tags-window)

@@ -141,7 +141,7 @@ height, position and so on)"
 
 (defun win-close (window)
   (with-croatoan-window (croatoan-window window)
-    (stack-remove *window-stack* window)
+    (stack-remove-element *window-stack* window)
     (close croatoan-window)))
 
 (defun win-raise-to-top (window)
