@@ -63,11 +63,9 @@
 
   The screen is subdivided in five window:
 
-  - tag window :: shows the tag users subscribed for and available
-  messages for each tag;
+  - tag window :: shows the tag users subscribed for and available messages for each tag;
 
-  - threads window :: for a given timeline and folder (see
-  [[Folders]]) show the discussions saved in user's local database;
+  - threads window :: for a given timeline and folder (see  [[Folders]]) show the discussions saved in user's local database;
 
   - conversations window :: show the /private/ conversations the user is having with others;
 
@@ -75,11 +73,13 @@
 
   - command window :: the window where the user instruct the software to perform commands
 
-  The main way to interact with the program is using the keyboard.
-  There is a contextual help that appears when the user input data
-  that provide hints about commands and a quick help window that can
-  be shown by hitting ~?~ (if this keybinding has not been
-  customized).
+  The main way to interact with the program is using the keyboard.  By
+  default you  can move  focus to each  window (except  command window
+  that can  not get focus  explicitly) using *'M-arrow key'*  (meta is
+  *ALT* on many  keyboards).  There is a contextual  help that appears
+  when the  user input data  that provide  hints about commands  and a
+  quick  help  window that  can  be  shown  by  hitting ~?~  (if  this
+  keybinding has not been customized).
 
 ** Folders
 
@@ -141,6 +141,9 @@
    semantics are located in your system wide configuration directory
    (usually ~/etc/tinmop/~), please check these files for more
    information, as they are extensively commented.
+
+   Is worth mentioning again that, without an user configuration file,
+   the program can be used as gemini client.
 
 ** Lisp program
 

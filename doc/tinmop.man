@@ -91,15 +91,11 @@ The screen is subdivided in five window:
 
 .TP
 \fBtag window\fP
-shows the tag users subscribed for and available
-.PP
-messages for each tag;
+shows the tag users subscribed for and available messages for each tag;
 
 .TP
 \fBthreads window\fP
-for a given timeline and folder (see
-.PP
-\fIFolders\fP) show the discussions saved in user's local database;
+for a given timeline and folder (see  \fIFolders\fP) show the discussions saved in user's local database;
 
 .TP
 \fBconversations window\fP
@@ -114,11 +110,13 @@ show the body of the message selected in the tag window or gemini page
 the window where the user instruct the software to perform commands
 
 .PP
-The main way to interact with the program is using the keyboard.
-There is a contextual help that appears when the user input data
-that provide hints about commands and a quick help window that can
-be shown by hitting \fC?\fP (if this keybinding has not been
-customized).
+The main way to interact with the program is using the keyboard.  By
+default you  can move  focus to each  window (except  command window
+that can  not get focus  explicitly) using \fB'M-arrow key'\fP  (meta is
+\fBALT\fP on many  keyboards).  There is a contextual  help that appears
+when the  user input data  that provide  hints about commands  and a
+quick  help  window that  can  be  shown  by  hitting \fC?\fP  (if  this
+keybinding has not been customized).
 
 .SS "Folders"
 .PP
@@ -191,6 +189,10 @@ If the program was installed correctly two other files with simple
 semantics are located in your system wide configuration directory
 (usually \fC/etc/tinmop/\fP), please check these files for more
 information, as they are extensively commented.
+
+.PP
+Is worth mentioning again that, without an user configuration file,
+the program can be used as gemini client.
 
 .SS "Lisp program"
 .PP
