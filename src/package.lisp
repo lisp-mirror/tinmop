@@ -2471,6 +2471,8 @@
    :gemlog-cancel-subscription
    :send-to-pipe
    :send-message-to-pipe
+   :tour-mode-link
+   :next-tour-link
    :pass-focus-on-left
    :pass-focus-on-right
    :pass-focus-on-bottom

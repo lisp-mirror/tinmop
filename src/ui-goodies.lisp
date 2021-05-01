@@ -1180,7 +1180,7 @@ authenticate this client on a gemini server."
   "Delete a gemini  certificate, this could makes all user data on the
 server unreachable as the server will not be able to identify the client.
 
-Of course  could be possible to generate a new identit (i.e. a new
+Of course  could be possible to generate a new identity (i.e. a new
 certificate).
 "
   (flet ((on-input-complete (answer)
@@ -1545,7 +1545,7 @@ certificate).
 (defun reset-timeline-pagination ()
   "Removes the pagination data for current timeline and folder
 
-For each timeline the software keep tracks of the oldest and newes toot fetched from the instance, This way we can expand the messages thread from the point we left after the latest update.
+For each timeline the software keep tracks of the oldest and newest toot fetched from the instance, This way we can expand the messages thread from the point we left after the latest update.
 
 This command will remove those limits so that we can just jump to the last messages posted on the instance and start expanding toots from there."
   (let* ((timeline (thread-window:timeline-type *thread-window*))
@@ -1569,7 +1569,7 @@ This command will remove those limits so that we can just jump to the last messa
                                           (>= idx 0))))
                                  choices-list))
                    (error-message
-                    (_ "Invalid choices, usa a space separated list of positive integers."))
+                    (_ "Invalid choices, use a space separated list of positive integers."))
                    (db-utils:with-ready-database (:connect nil)
                      (when-let* ((fields    (line-oriented-window:selected-row-fields
                                              *thread-window*))
@@ -1735,7 +1735,7 @@ mot recent updated to least recent"
 ;;;; gemini
 
 (defun gemini-open-url-prompt ()
-  "This is used when oppening gemini link too, see:
+  "This is used when opening gemini link too, see:
 open-message-link-window:open-message-link"
   (_ "Open Gemini url: "))
 
@@ -1861,3 +1861,36 @@ gemini://gemini.circumlunar.space/docs/companion/subscription.gmi
              (send-to-pipe-on-input-complete command message)))
       (ask-string-input #'on-input-complete
                         :prompt (format nil (_ "Send message to command: "))))))
+
+
+(let ((tour ()))
+  (defun tour-mode-link ()
+    "Enable   \"tour  mode\".   Ask  for   link  indices,   each  link
+    corresponding to the  index will be saved in a  special queue that
+    can be opened using `next-tour-link' in a last-in last-out way."
+    (when-let* ((rows (line-oriented-window:map-rows *open-message-link-window*
+                                                     #'identity)))
+      (flet ((on-input-complete (indices)
+               (when (string-not-empty-p indices)
+                   (let ((indices-list (mapcar
+                                        #'num:safe-parse-number
+                                        (split-words indices))))
+                     (loop for index in indices-list when index do
+                       (if (<= 0 index (length rows))
+                           (push (elt rows index)
+                                 tour)
+                           (notify (format nil (_ "Index ~a out of range") index)
+                                   :as-error t)))
+                     (info-message (_ "Tour saved"))))))
+        (ask-string-input #'on-input-complete
+                          :prompt (format nil (_ "link indices: "))))))
+
+  (defun next-tour-link ()
+    "Open the next link in the tour queue."
+    (let* ((queue (reverse tour))
+           (link  (first queue)))
+      (if (null queue)
+          (error-message (_ "Tour completed"))
+          (let ((url (line-oriented-window:normal-text link)))
+            (setf tour (reverse (rest queue)))
+            (open-message-link-window:open-message-link url nil))))))

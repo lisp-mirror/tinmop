@@ -163,9 +163,11 @@
       (with-croatoan-window (croatoan-window object)
         (loop
            for link in (safe-subseq links top-rows-slice bottom-rows-slice)
-           for y from (+ y-start top-row-padding) by single-row-height do
+           for y from (+ y-start top-row-padding) by single-row-height
+           for index from top-rows-slice
+           do
              (print-text object
-                         (gemini-parser:name link)
+                         (format nil "[~a] ~a" index (gemini-parser:name link))
                          1 y
                          :bgcolor (bgcolor croatoan-window)
                          :fgcolor (fgcolor croatoan-window)))))))

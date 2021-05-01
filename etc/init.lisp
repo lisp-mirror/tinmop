@@ -349,9 +349,13 @@
 
 (define-key "s"         #'gemini-subscribe-gemlog                    *gemini-message-keymap*)
 
-(define-key "t"         #'message-toggle-preformatted-block          *gemini-message-keymap*)
+(define-key "T"         #'message-toggle-preformatted-block          *gemini-message-keymap*)
+
+(define-key "t"         #'next-tour-link                             *gemini-message-keymap*)
 
 (define-key "|"         #'send-to-pipe                               *gemini-message-keymap*)
+
+
 
 ;; gemini stream window keymap
 
@@ -438,6 +442,10 @@
 (define-key "/"         #'search-link-window                            *open-message-link-keymap*)
 
 (define-key "N"         #'repeat-search                                 *open-message-link-keymap*)
+
+(define-key "t"         #'tour-mode-link                                 *open-message-link-keymap*)
+
+
 
 ;; chats list window
 
