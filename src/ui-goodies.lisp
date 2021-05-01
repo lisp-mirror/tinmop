@@ -1868,16 +1868,15 @@ gemini://gemini.circumlunar.space/docs/companion/subscription.gmi
     "Enable   \"tour  mode\".   Ask  for   link  indices,   each  link
     corresponding to the  index will be saved in a  special queue that
     can be opened using `next-tour-link' in a last-in last-out way."
-    (when-let* ((rows (line-oriented-window:map-rows *open-message-link-window*
-                                                     #'identity)))
+    (with-accessors ((links open-message-link-window::links)) *open-message-link-window*
       (flet ((on-input-complete (indices)
                (when (string-not-empty-p indices)
                    (let ((indices-list (mapcar
                                         #'num:safe-parse-number
                                         (split-words indices))))
                      (loop for index in indices-list when index do
-                       (if (<= 0 index (length rows))
-                           (push (elt rows index)
+                       (if (<= 0 index (length links))
+                           (push (elt links index)
                                  tour)
                            (notify (format nil (_ "Index ~a out of range") index)
                                    :as-error t)))
@@ -1891,6 +1890,11 @@ gemini://gemini.circumlunar.space/docs/companion/subscription.gmi
            (link  (first queue)))
       (if (null queue)
           (error-message (_ "Tour completed"))
-          (let ((url (line-oriented-window:normal-text link)))
+          (let ((url (gemini-parser:target link)))
             (setf tour (reverse (rest queue)))
-            (open-message-link-window:open-message-link url nil))))))
+            (open-message-link-window:open-message-link url nil)))))
+
+  (defun show-tour-links ()
+    "Show a link window with all the links in the tour queue"
+      (open-message-link-window:init-gemini-links tour)
+      (focus-to-open-message-link-window)))

@@ -2473,6 +2473,7 @@
    :send-message-to-pipe
    :tour-mode-link
    :next-tour-link
+   :show-tour-links
    :pass-focus-on-left
    :pass-focus-on-right
    :pass-focus-on-bottom
