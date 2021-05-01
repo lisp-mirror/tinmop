@@ -364,12 +364,11 @@ Metadata includes:
   "Toggles on/of preformatted block from text and shows alt text, if exists"
   (message-window:toggle-preformatted-block *message-window*))
 
-(defun give-focus (win info-change-focus-message &rest windows-lose-focus)
+(defun give-focus (win info-change-focus-message)
   (setf (main-window:focused-window *main-window*)
         win)
+  (remove-focus-to-all-windows)
   (setf (windows:in-focus win) t)
-  (loop for win in windows-lose-focus when win do
-       (setf (windows:in-focus win) nil))
   (windows:draw-all)
   (when info-change-focus-message
     (info-message info-change-focus-message +maximum-event-priority+)))
@@ -379,18 +378,100 @@ Metadata includes:
     (when (typep window 'main-window::focus-marked-window)
       (setf (windows:in-focus window) nil))))
 
+(defun pass-focus (all-adjacent-win-fn intersecting-fn sort-predicate)
+  (let* ((window                   (main-window:focused-window *main-window*))
+              (all-adjacent-win    (stack:stack-select windows::*window-stack*
+                                                       all-adjacent-win-fn))
+              (to-intersecting-win (remove-if-not intersecting-fn
+                                                  all-adjacent-win))
+              (intersect-sorted    (sort to-intersecting-win
+                                         sort-predicate)))
+    (setf intersect-sorted
+          (remove window intersect-sorted))
+    (setf intersect-sorted
+          (remove-if-not (lambda(a) (typep a 'main-window::focus-marked-window))
+                         intersect-sorted))
+    (when intersect-sorted
+      (remove-focus-to-all-windows)
+      (give-focus (first-elt intersect-sorted) nil))))
+
+(defun pass-focus-on-right ()
+  "Pass the focus on the window placed on the right of the window that
+current has focus"
+  (let* ((window    (main-window:focused-window *main-window*))
+         (x-focused (win-x window))
+         (y-focused (win-y window))
+         (w-focused (win-width window)))
+    (labels ((all-adjacent-fn (w)
+               (>= (win-x w)
+                   (+ x-focused
+                      w-focused)))
+             (intersect-fn (w)
+               (<= (win-y w)
+                   y-focused
+                   (+ (win-y w) (win-height w))))
+             (sort-predicate (a b)
+               (< (win-y a) (win-y b))))
+      (pass-focus #'all-adjacent-fn #'intersect-fn #'sort-predicate))))
+
+(defun pass-focus-on-left ()
+  "Pass the focus on the window placed on the left of the window that current has focus"
+  (let* ((window    (main-window:focused-window *main-window*))
+         (x-focused (win-x window))
+         (y-focused (win-y window)))
+    (labels ((all-adjacent-fn (w)
+               (< (win-x w)
+                   x-focused))
+             (intersect-fn (w)
+               (<= (win-y w)
+                   y-focused
+                   (+ (win-y w) (win-height w))))
+             (sort-predicate (a b)
+               (< (win-y a) (win-y b))))
+      (pass-focus #'all-adjacent-fn #'intersect-fn #'sort-predicate))))
+
+(defun pass-focus-on-bottom ()
+  "Pass the focus on the window placed below the window that current has focus"
+  (let* ((window    (main-window:focused-window *main-window*))
+         (x-focused (win-x window))
+         (y-focused (win-y window)))
+    (labels ((all-adjacent-fn (w)
+               (> (win-y w)
+                  y-focused))
+             (intersect-fn (w)
+               (<= (win-x w)
+                   x-focused
+                   (+ (win-x w) (win-width w))))
+             (sort-predicate (a b)
+               (> (win-x a) (win-x b))))
+      (pass-focus #'all-adjacent-fn #'intersect-fn #'sort-predicate))))
+
+(defun pass-focus-on-top ()
+  "Pass the focus on the window placed above the window that current has focus"
+  (let* ((window    (main-window:focused-window *main-window*))
+         (x-focused (win-x window))
+         (y-focused (win-y window)))
+    (labels ((all-adjacent-fn (w)
+               (< (win-y w)
+                  y-focused))
+             (intersect-fn (w)
+               (<= (win-x w)
+                   x-focused
+                   (+ (win-x w) (win-width w))))
+             (sort-predicate (a b)
+               (> (win-x a) (win-x b))))
+      (pass-focus #'all-adjacent-fn #'intersect-fn #'sort-predicate))))
+
 (defmacro gen-focus-to-window (function-suffix window-get-focus
                                &key
                                  (info-change-focus-message (_ "Focus changed"))
-                                 (windows-lose-focus nil)
                                  (documentation nil))
   `(defun ,(misc:format-fn-symbol t "focus-to-~a" function-suffix) (&key (print-message t))
      ,documentation
      (give-focus ,window-get-focus
                  (if print-message
                      ,info-change-focus-message
-                     nil)
-                 ,@windows-lose-focus)))
+                     nil))))
 
 (defun focus-to-thread-window (&key (print-message t))
   "move focus on thread window"
@@ -398,18 +479,7 @@ Metadata includes:
   (give-focus *thread-window*
               (if print-message
                   (_ "focus passed on threads window")
-                  nil)
-              *gemini-subscription-window*
-              *gemini-certificates-window*
-              *chats-list-window*
-              *gemini-streams-window*
-              *open-message-link-window*
-              *open-attach-window*
-              *conversations-window*
-              *tags-window*
-              *send-message-window*
-              *message-window*
-              *follow-requests-window*)
+                  nil))
   (when-window-shown (*chats-list-window*)
     (close-chats-list-window))
   (when-window-shown (*gemini-subscription-window*)
@@ -418,175 +488,57 @@ Metadata includes:
 (gen-focus-to-window message-window
                      *message-window*
                      :documentation      "Move focus on message window"
-                     :info-change-focus-message (_ "Focus passed on message window")
-                     :windows-lose-focus (*gemini-subscription-window*
-                                          *gemini-certificates-window*
-                                          *chats-list-window*
-                                          *gemini-streams-window*
-                                          *open-message-link-window*
-                                          *open-attach-window*
-                                          *conversations-window*
-                                          *tags-window*
-                                          *thread-window*
-                                          *send-message-window*
-                                          *follow-requests-window*))
+                     :info-change-focus-message (_ "Focus passed on message window"))
 
 (gen-focus-to-window send-message-window
                      *send-message-window*
                      :documentation      "Move focus on send message window"
-                     :info-change-focus-message (_ "Focus passed on send message window")
-                     :windows-lose-focus (*gemini-subscription-window*
-                                          *gemini-certificates-window*
-                                          *chats-list-window*
-                                          *gemini-streams-window*
-                                          *open-message-link-window*
-                                          *open-attach-window*
-                                          *conversations-window*
-                                          *tags-window*
-                                          *thread-window*
-                                          *message-window*
-                                          *follow-requests-window*))
+                     :info-change-focus-message (_ "Focus passed on send message window"))
 
 (gen-focus-to-window follow-requests-window
                      *follow-requests-window*
                      :documentation      "Move focus on follow requests window"
-                     :info-change-focus-message (_ "Focus passed on follow requests window")
-                     :windows-lose-focus (*gemini-subscription-window*
-                                          *gemini-certificates-window*
-                                          *chats-list-window*
-                                          *gemini-streams-window*
-                                          *open-message-link-window*
-                                          *open-attach-window*
-                                          *conversations-window*
-                                          *tags-window*
-                                          *thread-window*
-                                          *message-window*
-                                          *send-message-window*))
+                     :info-change-focus-message (_ "Focus passed on follow requests window"))
 
 (gen-focus-to-window tags-window
                      *tags-window*
                      :documentation      "Move focus on tags window"
-                     :info-change-focus-message (_ "Focus passed on tags window")
-                     :windows-lose-focus (*gemini-subscription-window*
-                                          *gemini-certificates-window*
-                                          *chats-list-window*
-                                          *gemini-streams-window*
-                                          *open-message-link-window*
-                                          *open-attach-window*
-                                          *conversations-window*
-                                          *follow-requests-window*
-                                          *thread-window*
-                                          *message-window*
-                                          *send-message-window*))
+                     :info-change-focus-message (_ "Focus passed on tags window"))
+
 (gen-focus-to-window conversations-window
                      *conversations-window*
                      :documentation      "Move focus on conversations window"
-                     :info-change-focus-message (_ "Focus passed on conversation window")
-                     :windows-lose-focus (*gemini-subscription-window*
-                                          *gemini-certificates-window*
-                                          *chats-list-window*
-                                          *gemini-streams-window*
-                                          *open-message-link-window*
-                                          *open-attach-window*
-                                          *tags-window*
-                                          *follow-requests-window*
-                                          *thread-window*
-                                          *message-window*
-                                          *send-message-window*))
+                     :info-change-focus-message (_ "Focus passed on conversation window"))
 
 (gen-focus-to-window open-attach-window
                      *open-attach-window*
                      :documentation      "Move focus on open-attach window"
-                     :info-change-focus-message (_ "Focus passed on attach window")
-                     :windows-lose-focus (*gemini-subscription-window*
-                                          *gemini-certificates-window*
-                                          *chats-list-window*
-                                          *gemini-streams-window*
-                                          *open-message-link-window*
-                                          *conversations-window*
-                                          *tags-window*
-                                          *follow-requests-window*
-                                          *thread-window*
-                                          *message-window*
-                                          *send-message-window*))
+                     :info-change-focus-message (_ "Focus passed on attach window"))
 
 (gen-focus-to-window open-message-link-window
                      *open-message-link-window*
                      :documentation      "Move focus on open-link window"
-                     :info-change-focus-message (_ "Focus passed on link window")
-                     :windows-lose-focus (*gemini-subscription-window*
-                                          *gemini-certificates-window*
-                                          *chats-list-window*
-                                          *gemini-streams-window*
-                                          *conversations-window*
-                                          *open-attach-window*
-                                          *tags-window*
-                                          *follow-requests-window*
-                                          *thread-window*
-                                          *message-window*
-                                          *send-message-window*))
+                     :info-change-focus-message (_ "Focus passed on link window"))
 
 (gen-focus-to-window open-gemini-stream-windows
                      *gemini-streams-window*
                      :documentation      "Move focus on open gemini streams window"
-                     :info-change-focus-message (_ "Focus passed on gemini-stream window")
-                     :windows-lose-focus (*gemini-subscription-window*
-                                          *gemini-certificates-window*
-                                          *chats-list-window*
-                                          *open-message-link-window*
-                                          *conversations-window*
-                                          *open-attach-window*
-                                          *tags-window*
-                                          *follow-requests-window*
-                                          *thread-window*
-                                          *message-window*
-                                          *send-message-window*))
+                     :info-change-focus-message (_ "Focus passed on gemini-stream window"))
 
 (gen-focus-to-window chats-list-window
                      *chats-list-window*
                      :documentation      "Move focus on chats list window"
-                     :info-change-focus-message (_ "Focus passed on chats list window")
-                     :windows-lose-focus (*gemini-subscription-window*
-                                          *gemini-certificates-window*
-                                          *gemini-streams-window*
-                                          *open-message-link-window*
-                                          *conversations-window*
-                                          *open-attach-window*
-                                          *tags-window*
-                                          *follow-requests-window*
-                                          *thread-window*
-                                          *message-window*
-                                          *send-message-window*))
+                     :info-change-focus-message (_ "Focus passed on chats list window"))
 
 (gen-focus-to-window open-gemini-certificates-window
                      *gemini-certificates-window*
                      :documentation      "Move focus on open-gemini certificates window"
-                     :info-change-focus-message (_ "Focus passed on TLS certificates window.")
-                     :windows-lose-focus (*gemini-subscription-window*
-                                          *chats-list-window*
-                                          *gemini-streams-window*
-                                          *conversations-window*
-                                          *open-attach-window*
-                                          *tags-window*
-                                          *follow-requests-window*
-                                          *thread-window*
-                                          *message-window*
-                                          *send-message-window*))
+                     :info-change-focus-message (_ "Focus passed on TLS certificates window."))
 
 (gen-focus-to-window open-gemini-subscription-window
                      *gemini-subscription-window*
                      :documentation      "Move focus on open-gemini certificates window"
-                     :info-change-focus-message (_ "Focus passed on gemlog subscriptions window.")
-                     :windows-lose-focus (*gemini-certificates-window*
-                                          *chats-list-window*
-                                          *gemini-streams-window*
-                                          *conversations-window*
-                                          *open-attach-window*
-                                          *tags-window*
-                                          *follow-requests-window*
-                                          *thread-window*
-                                          *message-window*
-                                          *send-message-window*))
+                     :info-change-focus-message (_ "Focus passed on gemlog subscriptions window."))
 
 (defun print-quick-help ()
   "Print a quick help"
@@ -1909,87 +1861,3 @@ gemini://gemini.circumlunar.space/docs/companion/subscription.gmi
              (send-to-pipe-on-input-complete command message)))
       (ask-string-input #'on-input-complete
                         :prompt (format nil (_ "Send message to command: "))))))
-
-(defun pass-focus (all-adjacent-win-fn intersecting-fn sort-predicate)
-  (let* ((window                   (main-window:focused-window *main-window*))
-              (all-adjacent-win    (stack:stack-select windows::*window-stack*
-                                                       all-adjacent-win-fn))
-              (to-intersecting-win (remove-if-not intersecting-fn
-                                                  all-adjacent-win))
-              (intersect-sorted    (sort to-intersecting-win
-                                         sort-predicate)))
-    (setf intersect-sorted
-          (remove window intersect-sorted))
-    (setf intersect-sorted
-          (remove-if-not (lambda(a) (typep a 'main-window::focus-marked-window))
-                         intersect-sorted))
-    (when intersect-sorted
-      (remove-focus-to-all-windows)
-      (give-focus (first-elt intersect-sorted) nil))))
-
-(defun pass-focus-on-right ()
-  "Pass the focus on the window placed on the right of the window that
-current has focus"
-  (let* ((window    (main-window:focused-window *main-window*))
-         (x-focused (win-x window))
-         (y-focused (win-y window))
-         (w-focused (win-width window)))
-    (labels ((all-adjacent-fn (w)
-               (>= (win-x w)
-                   (+ x-focused
-                      w-focused)))
-             (intersect-fn (w)
-               (<= (win-y w)
-                   y-focused
-                   (+ (win-y w) (win-height w))))
-             (sort-predicate (a b)
-               (< (win-y a) (win-y b))))
-      (pass-focus #'all-adjacent-fn #'intersect-fn #'sort-predicate))))
-
-(defun pass-focus-on-left ()
-  "Pass the focus on the window placed on the left of the window that current has focus"
-  (let* ((window    (main-window:focused-window *main-window*))
-         (x-focused (win-x window))
-         (y-focused (win-y window)))
-    (labels ((all-adjacent-fn (w)
-               (< (win-x w)
-                   x-focused))
-             (intersect-fn (w)
-               (<= (win-y w)
-                   y-focused
-                   (+ (win-y w) (win-height w))))
-             (sort-predicate (a b)
-               (< (win-y a) (win-y b))))
-      (pass-focus #'all-adjacent-fn #'intersect-fn #'sort-predicate))))
-
-(defun pass-focus-on-bottom ()
-  "Pass the focus on the window placed below the window that current has focus"
-  (let* ((window    (main-window:focused-window *main-window*))
-         (x-focused (win-x window))
-         (y-focused (win-y window)))
-    (labels ((all-adjacent-fn (w)
-               (> (win-y w)
-                  y-focused))
-             (intersect-fn (w)
-               (<= (win-x w)
-                   x-focused
-                   (+ (win-x w) (win-width w))))
-             (sort-predicate (a b)
-               (> (win-x a) (win-x b))))
-      (pass-focus #'all-adjacent-fn #'intersect-fn #'sort-predicate))))
-
-(defun pass-focus-on-top ()
-  "Pass the focus on the window placed above the window that current has focus"
-  (let* ((window    (main-window:focused-window *main-window*))
-         (x-focused (win-x window))
-         (y-focused (win-y window)))
-    (labels ((all-adjacent-fn (w)
-               (< (win-y w)
-                  y-focused))
-             (intersect-fn (w)
-               (<= (win-x w)
-                   x-focused
-                   (+ (win-x w) (win-width w))))
-             (sort-predicate (a b)
-               (> (win-x a) (win-x b))))
-      (pass-focus #'all-adjacent-fn #'intersect-fn #'sort-predicate))))
