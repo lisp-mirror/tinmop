@@ -133,6 +133,8 @@
 
 (defgeneric select-row (object index))
 
+(defgeneric select-first-row (object))
+
 (defgeneric selected-row (object))
 
 (defgeneric selected-row-fields (object))
@@ -217,6 +219,19 @@
         (declare (ignore e))
         (setf row-selected-index 0)))
     object))
+
+(defmethod select-first-row ((object row-oriented-widget))
+  (select-row object 0))
+
+(defun adjust-rows-select-first (window)
+  (select-first-row window))
+
+(defmethod adjust-selected-rows ((object row-oriented-widget) (strategy function))
+  (with-accessors ((row-selected-index row-selected-index)) object
+    (when (< (rows-length object)
+             row-selected-index)
+    (funcall strategy object)))
+  object)
 
 (defmethod selected-row ((object row-oriented-widget))
   "Return the current selected row"

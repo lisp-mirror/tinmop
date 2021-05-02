@@ -1816,6 +1816,9 @@
    :renderizable-rows-data
    :unselect-all
    :select-row
+   :select-first-row
+   :adjust-rows-select-first
+   :adjust-selected-rows
    :selected-row
    :ignore-selecting-action
    :set-default-index
