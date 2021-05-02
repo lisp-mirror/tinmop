@@ -1891,7 +1891,11 @@ gemini://gemini.circumlunar.space/docs/companion/subscription.gmi
   (defun tour-mode-link ()
     "Enable   \"tour  mode\".   Ask  for   link  indices,   each  link
     corresponding to the  index will be saved in a  special queue that
-    can be opened using `next-tour-link' in a last-in last-out way."
+    can be opened using `next-tour-link' in a last-in last-out way.
+
+    If user input is made by a single word only (i.e. a string with no
+    spaces),  the input  is used  as a  regular expression  to collect
+    matching links (matching name or URI)."
     (with-accessors ((links open-message-link-window::links)) *open-message-link-window*
       (ask-string-input (tour-mode-on-input-completed-clsr links)
                         :prompt (format nil (_ "link indices: ")))))
