@@ -1,3 +1,137 @@
+2021-05-02  cage
+
+	* README.org,
+	* README.txt,
+	* etc/init.lisp,
+	* po/it.po,
+	* po/tinmop.pot,
+	* src/message-window.lisp,
+	* src/ui-goodies.lisp,
+        * src/line-oriented-window.lisp,
+        * src/package.lisp:
+
+	- prevented out of bound condition when scrolling message-window's
+	contents.  When user  switched from a page to  another shorter the
+	scrolling position  was not restored, pointing  outside the actual
+	text line counts.  This prevent the correct rendering  of the page
+	(a  blank  page  is  shown  instead) and  crash  the  software  if
+	scrolling up.  Thanks op!
+        - [gemini] fixed order of links when showing tour-mode's queue
+        (thanks op!).
+        - [gemini] changed gemini search site.
+        - updated italian translation.
+        - improved docstring for tour-mode.
+        - [gemini] improved tour-mode, allow collect links by regex not only
+        by indices.
+
+2021-05-01  cage
+
+	* src/open-message-link-window.lisp,
+	* src/package.lisp,
+	* src/ui-goodies.lisp,
+        * etc/init.lisp,
+        * etc/init.lisp,
+        * src/package.lisp,
+        * src/ui-goodies.lisp:
+
+	- added a command to show the tour's queue.
+	- removed hardcoded list of windows that loose focus when focus is
+        changed.
+
+	- added tour mode to explore geminispace.
+
+2021-04-28  cage
+
+	* doc/man.org,
+	* doc/tinmop.man,
+	* src/filesystem-utils.lisp,
+	* src/gemini-viewer.lisp,
+	* src/open-attach-window.lisp,
+	* src/package.lisp,
+	* src/program-events.lisp,
+	* src/stack.lisp,
+	* src/ui-goodies.lisp,
+	* src/windows.lisp,
+        * etc/init.lisp,
+        * src/gemini-viewer-metadata.lisp,
+        * src/package.lisp:
+
+	-[gemini] removed loop when going back in history.  when follownig
+	a redirect both the original (the redirect) and the actual URI was
+	saved in the  history.  So if an user, after  followed a redirect,
+	tried to go  back would reach the same redirect,  this generated a
+	loop;
+
+         - updating documentation (mentioning navigation keys);
+
+        - implemented a new method to move focus between windows (using
+        'M-arrowkeys').
+
+2021-04-27  cage
+
+	* src/filesystem-utils.lisp,
+	* src/open-attach-window.lisp:
+
+	- fixed procedures that extract extension from a local path or an
+        URI.
+
+2021-04-26  cage
+
+        * src/gemini/gemini-parser.lisp:
+
+	- fixed 'make-gemini-iri', was crashing the program when 'port'
+        argument was null.
+
+2021-04-25  cage
+
+	* Makefile.am,
+	* Makefile.in,
+	* po/POTFILES.in,
+	* po/it.po,
+	* po/tinmop.pot,
+	* src/program-events.lisp,
+	* src/text-utils.lisp:
+
+	- updated italian translation.
+
+         - fixed text-utils:percent-encoded-p, an empty string is not
+        percent-encoded;
+
+	- raised a better error when an empty string is entered as a gemini
+        address;
+
+         - instructed Makefile to recompile the packkege if a source is
+        modified; - updated italian translation.
+
+2021-04-24  cage
+
+        * src/gemini/gemini-parser.lisp:
+
+	- [gemini] omitted default port when building URI.
+
+2021-04-23  cage
+
+        * src/filesystem-utils.lisp:
+
+	- used 'mkstemps' intead of 'mkstemp'  as the latter does not
+          supports suffix and the temporary keeps the same names.
+
+2021-04-21  cage
+
+        * modules/rewrite-message-urls.lisp,
+	* src/message-window.lisp,
+        * src/package.lisp:
+
+	- optimized module 'rewrite-message-urls.lisp'.
+	- fixed end position for 'visible-rows'
+
+2021-04-20  cage
+
+        * src/message-window.lisp:
+
+	- fixed  rendering of  text: all  text is  now rearranged  to fit
+          the window.
+
 2021-04-16  cage
 
 	* src/gemini/gemini-parser.lisp,
