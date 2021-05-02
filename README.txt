@@ -302,7 +302,7 @@ Table of Contents
   details.
 
   By default, pressing "!" will contact the remote service located at:
-  "gemini://houston.coder.town/search".
+  "gemini://geminispace.info/search".
 
 
 [quicklisp sources] <https://beta.quicklisp.org/quicklisp.lisp>

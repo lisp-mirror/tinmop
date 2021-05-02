@@ -230,7 +230,7 @@ manager of your distribution (~apt~, ~yum~ etc).
   details.
 
   By default, pressing "!" will contact the remote service located at:
-  "gemini://houston.coder.town/search".
+  "gemini://geminispace.info/search".
 
 * Contributing
 
