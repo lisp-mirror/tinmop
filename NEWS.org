@@ -1,3 +1,25 @@
+* 2021-05-02 version 0.7.0
+
+  - New feature
+    - added "tour mode" as explained here:
+
+      gemini://gemini.circumlunar.space/users/solderpunk/gemlog/gemini-client-navigation.gmi
+
+  - Bugfix
+    - [gemini]
+      - fixed crash  when opening a  gemini page longer than  one opened
+        before.  When user  switched from a page to  another shorter the
+        window scrolling position was not restored, pointing outside the
+        actual text line counts.
+      - Fixed  bug that  let users  stuck in  a loop  when going  back in
+        history to an URI with a redirect.
+      - fixed  bug when  creating temporary  file, name was not unique.
+      - fixed rendering of gemini page, there was problems wrapping text.
+
+   - Improvements
+     - [gemini]
+       - Switched to a new capsule when searching geminispace
+
 * 2021-04-17 version 0.6.2
 
   - Bugfix

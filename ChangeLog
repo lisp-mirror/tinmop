@@ -100,8 +100,10 @@
 	- raised a better error when an empty string is entered as a gemini
         address;
 
-         - instructed Makefile to recompile the packkege if a source is
-        modified; - updated italian translation.
+         - instructed Makefile to recompile the package if a source is
+        modified;
+
+	- updated italian translation.
 
 2021-04-24  cage
 
