@@ -1864,25 +1864,37 @@ gemini://gemini.circumlunar.space/docs/companion/subscription.gmi
 
 
 (let ((tour ()))
+
+  (defun tour-mode-on-input-completed-clsr (links)
+    (lambda (data)
+      (when (string-not-empty-p data)
+        (let ((words (split-words data)))
+          (if (> (length words) 1)
+              (let ((indices-list (mapcar
+                                   #'num:safe-parse-number
+                                   (split-words data))))
+                (loop for index in indices-list when index do
+                  (if (<= 0 index (length links))
+                      (push (elt links index)
+                            tour)
+                      (notify (format nil (_ "Index ~a out of range") index)
+                              :as-error t))))
+              (when-let ((scanner (create-scanner data)))
+                (loop for link in links do
+                  (when (or (scan scanner (gemini-parser:name link))
+                            (scan scanner (gemini-parser:target link)))
+                    (pushnew link tour :test (lambda (a b)
+                                               (string= (gemini-parser:target a)
+                                                        (gemini-parser:target b)))))))))
+        (info-message (_ "Tour saved")))))
+
   (defun tour-mode-link ()
     "Enable   \"tour  mode\".   Ask  for   link  indices,   each  link
     corresponding to the  index will be saved in a  special queue that
     can be opened using `next-tour-link' in a last-in last-out way."
     (with-accessors ((links open-message-link-window::links)) *open-message-link-window*
-      (flet ((on-input-complete (indices)
-               (when (string-not-empty-p indices)
-                   (let ((indices-list (mapcar
-                                        #'num:safe-parse-number
-                                        (split-words indices))))
-                     (loop for index in indices-list when index do
-                       (if (<= 0 index (length links))
-                           (push (elt links index)
-                                 tour)
-                           (notify (format nil (_ "Index ~a out of range") index)
-                                   :as-error t)))
-                     (info-message (_ "Tour saved"))))))
-        (ask-string-input #'on-input-complete
-                          :prompt (format nil (_ "link indices: "))))))
+      (ask-string-input (tour-mode-on-input-completed-clsr links)
+                        :prompt (format nil (_ "link indices: ")))))
 
   (defun next-tour-link ()
     "Open the next link in the tour queue."
@@ -1895,6 +1907,6 @@ gemini://gemini.circumlunar.space/docs/companion/subscription.gmi
             (open-message-link-window:open-message-link url nil)))))
 
   (defun show-tour-links ()
-    "Show a link window with all the links in the tour queue"
+    "Show a link window with all the links in the tour queue."
       (open-message-link-window:init-gemini-links tour)
       (focus-to-open-message-link-window)))
