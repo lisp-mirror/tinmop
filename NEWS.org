@@ -1,9 +1,12 @@
 * 2021-05-02 version 0.7.0
 
   - New feature
-    - added "tour mode" as explained here:
+    - added "tour mode" to save a "temporary bookmark" of links as explained here:
 
       gemini://gemini.circumlunar.space/users/solderpunk/gemlog/gemini-client-navigation.gmi
+
+      As an extension of the idea above  the command accepts space separated
+      list of link index or link ranges (e.g: "5-7 1 2").
 
   - Bugfix
     - [gemini]

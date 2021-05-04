@@ -1,3 +1,13 @@
+2021-05-04  cage
+
+	* src/tour-mode-parser.lisp,
+	* src/ui-goodies.lisp,
+        * src/package.lisp,
+        * tinmop.asd:
+
+	- [gemini] improved tour-mode  the command accepts space separated
+	list of link index or link ranges (e.g: "5-7 1 2").
+
 2021-05-02  cage
 
 	* README.org,
