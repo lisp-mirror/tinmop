@@ -681,6 +681,19 @@
    :ipv4-address-p
    :ipv6-address-p))
 
+(defpackage :tour-mode-parser
+  (:use
+   :cl
+   :alexandria
+   :esrap
+   :cl-ppcre
+   :text-utils)
+  (:export
+   :range-from
+   :range-to
+   :range-p
+   :parse-tour-mode))
+
 (defpackage :x509
   (:use
    :cl

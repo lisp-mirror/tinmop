@@ -74,6 +74,7 @@
                (:file "stack")
                (:file "uri-parser")
                (:file "iri-parser")
+               (:file "tour-mode-parser")
                (:file "x509-ffi")
                (:file "x509")
                (:file "api-pleroma-entities")

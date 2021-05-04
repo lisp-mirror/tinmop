@@ -1868,24 +1868,28 @@ gemini://gemini.circumlunar.space/docs/companion/subscription.gmi
   (defun tour-mode-on-input-completed-clsr (links)
     (lambda (data)
       (when (string-not-empty-p data)
-        (let ((words (split-words data)))
-          (if (> (length words) 1)
-              (let ((indices-list (mapcar
-                                   #'num:safe-parse-number
-                                   (split-words data))))
-                (loop for index in indices-list when index do
-                  (if (<= 0 index (length links))
-                      (push (elt links index)
-                            tour)
-                      (notify (format nil (_ "Index ~a out of range") index)
-                              :as-error t))))
+        (let ((parsed-tour (ignore-errors (tour-mode-parser:parse-tour-mode data))))
+          (if (not parsed-tour)
               (when-let ((scanner (create-scanner data)))
                 (loop for link in links do
                   (when (or (scan scanner (gemini-parser:name link))
                             (scan scanner (gemini-parser:target link)))
                     (pushnew link tour :test (lambda (a b)
                                                (string= (gemini-parser:target a)
-                                                        (gemini-parser:target b)))))))))
+                                                        (gemini-parser:target b)))))))
+              (let ((all-indices ()))
+                (loop for index in parsed-tour do
+                  (if (tour-mode-parser:range-p index)
+                      (let ((from (tour-mode-parser:range-from index))
+                            (to   (tour-mode-parser:range-to   index)))
+                        (loop for i from (min from to) to (max from to) do
+                          (pushnew i all-indices :test #'=)))
+                      (pushnew index all-indices :test #'=)))
+                (loop for index in (reverse all-indices) do
+                  (if (<= 0 index (length links))
+                      (push (elt links index) tour)
+                      (notify (format nil (_ "Index ~a out of range") index)
+                              :as-error t))))))
         (info-message (_ "Tour saved")))))
 
   (defun tour-mode-link ()
