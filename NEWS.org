@@ -5,8 +5,11 @@
 
       gemini://gemini.circumlunar.space/users/solderpunk/gemlog/gemini-client-navigation.gmi
 
-      As an extension of the idea above  the command accepts space separated
-      list of link index or link ranges (e.g: "5-7 1 2").
+      As  an extension  of the  idea above  the command  accepts space
+      separated list  of link index  or link  ranges (e.g: "5-7  1 2")
+      but, if a list of number  is not recognized by the software, the
+      input from user is used  as a regular expression matching either
+      the link name or the link URI.
 
   - Bugfix
     - [gemini]
