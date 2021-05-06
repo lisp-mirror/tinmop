@@ -1,4 +1,4 @@
-* 2021-05-02 version 0.7.0
+* 2021-05-06 version 0.7.0
 
   - New feature
     - added "tour mode" to save a "temporary bookmark" of links as explained here:
@@ -16,11 +16,16 @@
       - fixed crash  when opening a  gemini page longer than  one opened
         before.  When user  switched from a page to  another shorter the
         window scrolling position was not restored, pointing outside the
-        actual text line counts.
+        actual text line counts;
       - Fixed  bug that  let users  stuck in  a loop  when going  back in
-        history to an URI with a redirect.
-      - fixed  bug when  creating temporary  file, name was not unique.
-      - fixed rendering of gemini page, there was problems wrapping text.
+        history to an URI with a redirect;
+      - fixed bug when  creating temporary  file, name was not unique;
+      - fixed rendering of gemini page, there was problems wrapping text;
+      - fixed bug that prevented to open a local file using a tilde as
+        an alias for $HOME
+    - prevented a  crash when  a search was  started but  not actually
+      performed because of wrong input (i.e. empty input) and the user
+      tried to open the link window
 
    - Improvements
      - [gemini]

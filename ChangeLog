@@ -1,3 +1,18 @@
+2021-05-06  cage
+
+        * src/program-events.lisp:
+
+	- performed a cleanup of searching even if the search string is
+        empty or is not a valid regular expression.
+
+2021-05-06  cage
+
+        * src/package.lisp,
+	* src/program-events.lisp:
+
+	- [gemini] expand tilde when trying to open a local file or
+        directory.
+
 2021-05-04  cage
 
 	* src/tour-mode-parser.lisp,
