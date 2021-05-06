@@ -1282,6 +1282,7 @@
    :*complete-function*
    :shortest-candidate
    :directory-complete
+   :tilde-expand-string
    :folder-complete
    :timeline-complete-fn
    :ignored-username-complete

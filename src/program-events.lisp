@@ -1011,8 +1011,8 @@
                      (use-cached-file-if-exists      use-cached-file-if-exists)) object
       (let ((window     specials:*message-window*)
             (local-path (if (text-utils:percent-encoded-p url)
-                            (text-utils:percent-decode url)
-                            url)))
+                            (complete:tilde-expand-string (text-utils:percent-decode url))
+                            (complete:tilde-expand-string url))))
         (setf (windows:keybindings window)
               keybindings:*gemini-message-keymap*)
         (when give-focus-to-message-window-p
