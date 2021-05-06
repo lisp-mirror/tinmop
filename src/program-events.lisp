@@ -432,14 +432,16 @@
 (defclass search-regex-message-content-event (search-event) ())
 
 (defmethod process-event ((object search-regex-message-content-event))
-  (let ((regexp (payload object)))
-    (when (text-utils:string-not-empty-p regexp)
-      (handler-case
-          (let ((scanner (cl-ppcre:create-scanner regexp :case-insensitive-mode t))
-                (win     specials:*message-window*))
-            (message-window:search-regex win scanner))
-        (cl-ppcre:ppcre-syntax-error ()
-          (ui:error-message (_ "Invalid regular expression")))))))
+  (let ((regexp (payload object))
+        (win    specials:*message-window*))
+    (if (text-utils:string-not-empty-p regexp)
+        (handler-case
+            (let ((scanner (cl-ppcre:create-scanner regexp :case-insensitive-mode t)))
+              (message-window:search-regex win scanner))
+          (cl-ppcre:ppcre-syntax-error ()
+            (line-oriented-window:cleanup-after-search win)
+            (ui:error-message (_ "Invalid regular expression"))))
+        (line-oriented-window:cleanup-after-search win))))
 
 (defclass thread-search-event (search-event)
   ((search-direction
