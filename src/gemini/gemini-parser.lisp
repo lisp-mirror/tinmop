@@ -165,10 +165,12 @@
                                  (list (coerce (second a) 'string))))))
 
 (defrule quote-line (and quote-prefix
-                         text-line)
+                         (? text-line))
   (:function (lambda (a) (list (first a)
                                nil
-                               (tag-value (second a))))))
+                               (if (second a)
+                                   (tag-value (second a))
+                                   "")))))
 
 (defrule gemini-file (* (or h3
                             h2
@@ -467,11 +469,15 @@
                    (format nil "~a~a~%" (link-prefix-gemini theme) link-name)
                    (format nil "~a~a~%" (link-prefix-other  theme) link-name)))
              (fit-quote-lines (line win-width)
-               (let* ((justified (flush-left-mono-text (split-words line)
+               (let* ((words        (split-words line))
+                      (quote-prefix (quote-prefix theme))
+                      (justified    (flush-left-mono-text words
                                                        (- win-width
-                                                          (length (quote-prefix theme)))))
-                      (lines (mapcar (lambda (a) (strcat (quote-prefix theme) a))
-                                     justified)))
+                                                          (length quote-prefix))))
+                      (lines     (if justified
+                                     (mapcar (lambda (a) (strcat quote-prefix a))
+                                             justified)
+                                     quote-prefix)))
                  (make-quoted-lines (join-with-strings lines (format nil "~%")))))
              (pre-alt-text (node)
                (trim (html-utils:attribute-value (html-utils:find-attribute :alt node))))
