@@ -114,11 +114,13 @@ etc.) happened"
                      (invoke-restart 'res:create-empty-in-home))))
     (swconf:load-config-file swconf:+conf-filename+)))
 
+(defun shared-init ()
+  (load-configuration-files)
+  (init-db))
+
 (defun init ()
   "Initialize the program"
-  ;; (res:init)
-  ;; (load-configuration-files)
-  ;; (init-db)
+  (shared-init)
   (db-utils:with-ready-database (:connect nil)
     (complete:initialize-complete-username-cache)
     (handler-case
@@ -182,7 +184,7 @@ etc.) happened"
 (defun load-script-file ()
   "Load (execute) a lisp file used in requests of a command line switch"
   (setf program-events:*process-events-immediately* t)
-  (init-db)
+  (shared-init)
   (db-utils:with-ready-database (:connect nil)
     (client:init)
     (client:authorize)
@@ -192,8 +194,6 @@ etc.) happened"
   "The entry point function of the program"
   (init-i18n)
   (res:init)
-  (load-configuration-files)
-  (init-db)
   (command-line:manage-opts)
   (if command-line:*script-file*
       (load-script-file)

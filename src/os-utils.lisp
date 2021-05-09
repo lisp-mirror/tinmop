@@ -73,20 +73,37 @@
                 (values exe args))
               (values editor nil))))))
 
+(defun run-external-program (program args
+                             &key
+                               (wait t)
+                               search
+                               #-win32 pty
+                               input
+                               output
+                               (error :output))
+  (sb-ext:run-program program
+                      args
+                      :wait   wait
+                      :search search
+                      :pty    pty
+                      :input  input
+                      :output output
+                      :error  error))
+
 (defun open-with-editor (file)
   (multiple-value-bind (exe args)
       (external-editor)
     (let ((actual-args (if args
                            (text-utils:split-words args)
                            nil)))
-      (sb-ext:run-program exe
-                          (append actual-args
-                                  (list file))
-                          :search t
-                          :wait   t
-                          :input  t
-                          :output t
-                          :error  t))))
+      (run-external-program exe
+                            (append actual-args
+                                    (list file))
+                            :search t
+                            :wait   t
+                            :input  t
+                            :output t
+                            :error  t))))
 
 (defun exit-program (&optional (exit-code 0))
   (uiop:quit exit-code))
@@ -106,35 +123,35 @@
                                                "-keyout ~a -outform PEM -out ~a")
                             key-file
                             cert-file)))
-    (sb-ext:run-program +openssl-bin+
-                        (text-utils:split-words cmd-args)
-                        :output nil
-                        :error  :output)
+    (run-external-program +openssl-bin+
+                          (text-utils:split-words cmd-args)
+                          :output nil
+                          :error  :output)
     (values cert-file key-file)))
 
 (defun send-to-pipe (data program-and-args)
   (croatoan:end-screen)
   (with-input-from-string (stream data)
     (let ((command-line-splitted (text-utils:split-words program-and-args)))
-      (sb-ext:run-program (first command-line-splitted)
-                          (rest command-line-splitted)
-                          :search t
-                          :wait   t
-                          :input  stream
-                          :output t
-                          :error  t))))
+      (run-external-program (first command-line-splitted)
+                            (rest command-line-splitted)
+                            :search t
+                            :wait   t
+                            :input  stream
+                            :output t
+                            :error  t))))
 
 (defun open-link-with-program (program-and-args link)
   (let* ((command-line-splitted (text-utils:split-words program-and-args))
          (program               (first command-line-splitted))
          (args                  (append (rest command-line-splitted)
                                         (list link))))
-    (sb-ext:run-program program
-                        args
-                        :search t
-                        :wait nil
-                        :output nil
-                        :error  :output)))
+    (run-external-program program
+                          args
+                          :search t
+                          :wait nil
+                          :output nil
+                          :error  :output)))
 
 (defun open-resource-with-external-program (resource give-focus-to-message-window)
   (let ((program (swconf:link-regex->program-to-use resource)))
