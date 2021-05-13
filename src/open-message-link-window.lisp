@@ -177,21 +177,18 @@
       (with-accessors ((row-selected-index row-selected-index)) object
         (let* ((saved-selected-index row-selected-index)
                (scanner              (create-scanner regex :case-insensitive-mode t))
-               (position-header      (position-if (lambda (a)
-                                                    (scan scanner
-                                                          (gemini-parser:name a)))
-                                                  (safe-subseq (links object)
-                                                               (1+ row-selected-index)))))
+               (position-header     (position-if (lambda (a)
+                                                 (scan scanner
+                                                       (gemini-parser:name a)))
+                                                 (safe-subseq (links object)
+                                                              row-selected-index))))
           (call-next-method)    ; search in urls
-          (if position-header ; but if an header has been found, it wins
-              (progn
-                (unselect-all object)
-                (select-row object (+ 1 saved-selected-index position-header))
-                (when redraw
-                  (draw object)))
-              (line-oriented-window:cleanup-after-search object))))
+          (when position-header ; but if an header has been found, it wins
+            (unselect-all object)
+            (select-row object (+ saved-selected-index position-header))
+            (when redraw
+              (draw object)))))
     (error ()
-      (line-oriented-window:cleanup-after-search object)
       (ui:error-message (_ "Invalid regular expression")))))
 
 (defun init-gemini-links (links)

@@ -493,25 +493,20 @@ to the array"
 
 (defun safe-subseq (sequence start &optional (end nil))
   (when sequence
-    (restart-case
-        (if (and (< start 0)
-                 (< end 0))
-            (error 'conditions:out-of-bounds
-                   :seq sequence
-                   :idx end)
-            (let* ((actual-start (alexandria:clamp start
-                                                   0
-                                                   (length sequence)))
-                   (actual-end   (and end
-                                      (max actual-start
-                                           (min end
-                                                (length sequence))))))
-              (subseq sequence actual-start actual-end)))
-      (use-value (e) e)
-      (return-nil ()
-        nil)
-      (return-entire-sequence ()
-        sequence))))
+    (when (or (null start)
+              (< start 0))
+      (setf start 0))
+    (when (and (numberp end)
+               (> end  (length sequence)))
+      (setf end (length sequence)))
+    (let* ((actual-start (alexandria:clamp start
+                                           0
+                                           (length sequence)))
+           (actual-end   (and end
+                              (max actual-start
+                                   (min end
+                                        (length sequence))))))
+      (subseq sequence actual-start actual-end))))
 
 (defgeneric sequence-empty-p (a))
 

@@ -1858,9 +1858,7 @@
    :selected-line-bg
    :selected-line-fg
    :resync-rows-db
-   :make-blocking-list-dialog-window
-   :prepare-new-search
-   :cleanup-after-search))
+   :make-blocking-list-dialog-window))
 
 (defpackage :message-rendering-utils
   (:use

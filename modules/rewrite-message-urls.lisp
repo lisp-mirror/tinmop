@@ -89,7 +89,6 @@ So the whole list is like: '((\"foo\" \"bar\") (\"old\" \"new\") ...)")
       (rewriting-link-rewrite-row message-window i *rewriting-link-rules*))
     message-window))
 
-
 (defun rewriting-link-links-window-hook-fn (all-links)
   (let ((links-mapping  (rewriting-link-messages-links-rules all-links))
         (results        ()))

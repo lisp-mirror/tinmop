@@ -106,7 +106,7 @@
 
 (defun visible-rows (window)
   (with-accessors ((row-selected-index row-selected-index)) window
-    (let* ((start  row-selected-index)
+    (let* ((start  (max 0 row-selected-index))
            (end    (+ start
                       (win-height-no-border window)))
            (rows   (rows-safe-subseq window
@@ -477,35 +477,35 @@
                                         (lambda (a)
                                           (scan regex
                                                 (tui-string->chars-string (normal-text a))))
-                                        :start (min (1+ row-selected-index)
-                                                    (rows-length object))))
+                                        :start (clamp row-selected-index
+                                                      0
+                                                      (rows-length object))))
           (replacements-strings ()))
-      (if line-found
-          (progn
-            (row-move object (- line-found row-selected-index))
-            (draw object)
-            (multiple-value-bind (first-window-line-simple first-window-line-complex)
-                (first-line->string object)
-              (labels ((calc-highlight (&optional (start-scan 0))
-                         (multiple-value-bind (start end)
-                             (scan regex first-window-line-simple :start start-scan)
-                           (when start
-                             (let* ((mask   (make-tui-string (subseq first-window-line-simple
-                                                                     start end)
-                                                             :fgcolor (win-bgcolor object)
-                                                             :bgcolor (win-fgcolor object)))
-                                    (prefix (tui-string-subseq first-window-line-complex
-                                                               0
-                                                               start))
-                                    (new-prefix (cat-tui-string prefix mask)))
-                               (push new-prefix replacements-strings)
-                               (calc-highlight end)))))
-                       (highlight ()
-                         (loop for replacement in replacements-strings do
-                           (print-text object replacement 1 1))))
-                (calc-highlight)
-                (highlight))))
-          (line-oriented-window:cleanup-after-search object)))))
+      (when line-found
+        (progn
+          (row-move object (- line-found row-selected-index))
+          (draw object)
+          (multiple-value-bind (first-window-line-simple first-window-line-complex)
+              (first-line->string object)
+            (labels ((calc-highlight (&optional (start-scan 0))
+                       (multiple-value-bind (start end)
+                           (scan regex first-window-line-simple :start start-scan)
+                         (when start
+                           (let* ((mask   (make-tui-string (subseq first-window-line-simple
+                                                                   start end)
+                                                           :fgcolor (win-bgcolor object)
+                                                           :bgcolor (win-fgcolor object)))
+                                  (prefix (tui-string-subseq first-window-line-complex
+                                                             0
+                                                             start))
+                                  (new-prefix (cat-tui-string prefix mask)))
+                             (push new-prefix replacements-strings)
+                             (calc-highlight end)))))
+                     (highlight ()
+                       (loop for replacement in replacements-strings do
+                         (print-text object replacement 1 1))))
+              (calc-highlight)
+              (highlight))))))))
 
 (defun init ()
   (let* ((low-level-window (make-croatoan-window :enable-function-keys t)))
