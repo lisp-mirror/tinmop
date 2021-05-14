@@ -43,11 +43,11 @@ This function return the 'post-title' substring."
   (labels ((subtitle-p (nodes h2-pos)
              (when h2-pos
                (let ((res t))
-                 (loop for i from h2-pos downto 0 do
+                 (loop for i from (1- h2-pos) downto 0 do
                    (let ((node (elt nodes i)))
                      (when (and node
                                 (not (html-utils:tag= :h1
-                                                      (html-utils:children node))))
+                                                      node)))
                        (return-from subtitle-p nil))))
                  res))))
     (when-let* ((data   (slurp-gemini-url url))

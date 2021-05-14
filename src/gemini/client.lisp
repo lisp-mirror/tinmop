@@ -517,7 +517,9 @@ TODO: Add client certificate."
                        (vector-push-extend new-byte data))
                (close-ssl-socket socket)
                data)))
-    (with-request-dispatch-table ((:success  #'success-dispatch
-                                   :redirect #'redirect-dispatch)
-                                  :ignore-warning t)
-      (request-dispatch url dispatch-table))))
+    (if (absolute-gemini-url-p url)
+        (with-request-dispatch-table ((:success  #'success-dispatch
+                                       :redirect #'redirect-dispatch)
+                                      :ignore-warning t)
+          (request-dispatch url dispatch-table))
+        (fs:slurp-file url :convert-to-string nil))))
