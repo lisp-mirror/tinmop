@@ -1120,11 +1120,12 @@
                      (source               gemini-client:source)
                      (links                gemini-client:links)
                      (text-rendering-theme gemini-client:text-rendering-theme)) response
-      (when (and (gemini-viewer:downloading-allowed-p wrapper-object)
-                 (not (skip-rendering-p object)))
-        (let* ((win           specials:*message-window*)
-               (ir-line       (gemini-parser:sexp->text-rows parsed-file
-                                                        text-rendering-theme)))
+      (let* ((win     specials:*message-window*)
+             (ir-line (gemini-parser:sexp->text-rows parsed-file
+                                                     text-rendering-theme)))
+        (when (and (gemini-viewer:downloading-allowed-p wrapper-object)
+                   (not (skip-rendering-p object))
+                   (message-window:display-gemini-text-p win))
           (setf (windows:keybindings win)
                 keybindings:*gemini-message-keymap*)
           (refresh-gemini-message-window links source ir-line append-text)
