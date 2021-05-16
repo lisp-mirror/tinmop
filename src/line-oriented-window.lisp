@@ -307,7 +307,7 @@ this exact quantity would go beyond the length or rows or zero."
   (setf (rows object) new-rows))
 
 (defmethod append-new-rows ((object row-oriented-widget) (new-rows sequence))
-  (with-accessors ((rows rows)) object
+  (with-slots (rows) object
     (let ((reversed-old-rows (reverse rows)))
       (loop for new-row in new-rows do
         (push new-row reversed-old-rows))

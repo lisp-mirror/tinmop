@@ -39,6 +39,9 @@
    :+gemini-scheme+
    :+preformatted-prefix+
    :+max-header-level+
+   :*pre-group-id*
+   :*pre-alt-text*
+   :*header-group-id*
    :geminize-h1
    :geminize-h2
    :geminize-h3

@@ -352,59 +352,62 @@
                    (maybe-render-line preformat-wrapper-event)
                    (write-sequence preformat-line file-stream)))))
       (lambda ()
-        (when-let ((extension (fs:get-extension path)))
-          (setf support-file (fs:temporary-file :extension extension)))
-        (with-open-support-file (file-stream support-file character)
-          (let* ((url                    (gemini-parser:make-gemini-iri host
-                                                                        path
-                                                                        :query    query
-                                                                        :port     port
-                                                                        :fragment fragment))
-                 (url-header             (format nil "~a ~a~2%" favicon url))
-                 (parsed-url             (gemini-parser:parse-gemini-file url-header))
-                 (url-response           (gemini-client:make-gemini-file-response nil
-                                                                                  nil
-                                                                                  nil
-                                                                                  parsed-url
-                                                                                  nil
-                                                                                  ""
-                                                                                  nil))
-                 (url-event               (make-instance 'program-events:gemini-got-line-event
-                                                         :wrapper-object  wrapper-object
-                                                         :payload         url-response
-                                                         :append-text     nil)))
+        (let ((gemini-parser:*pre-group-id*    -1)
+              (gemini-parser:*header-group-id* -1)
+              (gemini-parser:*pre-alt-text*    ""))
+          (when-let ((extension (fs:get-extension path)))
+            (setf support-file (fs:temporary-file :extension extension)))
+          (with-open-support-file (file-stream support-file character)
+            (let* ((url                    (gemini-parser:make-gemini-iri host
+                                                                          path
+                                                                          :query    query
+                                                                          :port     port
+                                                                          :fragment fragment))
+                   (url-header             (format nil "~a ~a~2%" favicon url))
+                   (parsed-url             (gemini-parser:parse-gemini-file url-header))
+                   (url-response           (gemini-client:make-gemini-file-response nil
+                                                                                    nil
+                                                                                    nil
+                                                                                    parsed-url
+                                                                                    nil
+                                                                                    ""
+                                                                                    nil))
+                   (url-event               (make-instance 'program-events:gemini-got-line-event
+                                                           :wrapper-object  wrapper-object
+                                                           :payload         url-response
+                                                           :append-text     nil)))
 
-            (write-sequence url-header file-stream)
-            (increment-bytes-count wrapper-object url-header :convert-to-octects t)
-            (maybe-render-line url-event)
-            (maybe-render-preformat-wrapper file-stream wrapper-object)
-            (loop
-              named download-loop
-              for line-as-array = (read-line-into-array download-stream)
-              while line-as-array do
-                (gemini-client:debug-gemini "[stream] gemini file stream raw data line : ~a"
-                                            line-as-array)
-                (if (downloading-allowed-p wrapper-object)
-                    (let* ((line  (babel:octets-to-string line-as-array :errorp nil))
-                           (event (make-gemini-download-event line
-                                                              wrapper-object
-                                                              t)))
-                      (gemini-client:debug-gemini "[stream] gemini file stream got data line : ~a"
-                                                  line)
-                      (write-sequence line file-stream)
-                      (increment-bytes-count wrapper-object line :convert-to-octects t)
-                      (maybe-render-line event))
-                    (progn
-                      (return-from download-loop nil))))
-            (maybe-render-preformat-wrapper file-stream wrapper-object)
-            (if (not (downloading-allowed-p wrapper-object))
-                (ui:notify (_ "Gemini document downloading aborted"))
-                (progn
-                  (ui:notify (_ "Gemini document downloading completed"))
-                  (ui:open-gemini-toc)
-                  (setf (stream-status wrapper-object) :completed)))
-            ;; (allow-downloading wrapper-object)
-            (gemini-client:close-ssl-socket download-socket)))))))
+              (write-sequence url-header file-stream)
+              (increment-bytes-count wrapper-object url-header :convert-to-octects t)
+              (maybe-render-line url-event)
+              (maybe-render-preformat-wrapper file-stream wrapper-object)
+              (loop
+                named download-loop
+                for line-as-array = (read-line-into-array download-stream)
+                while line-as-array do
+                  (gemini-client:debug-gemini "[stream] gemini file stream raw data line : ~a"
+                                              line-as-array)
+                  (if (downloading-allowed-p wrapper-object)
+                      (let* ((line  (babel:octets-to-string line-as-array :errorp nil))
+                             (event (make-gemini-download-event line
+                                                                wrapper-object
+                                                                t)))
+                        (gemini-client:debug-gemini "[stream] gemini file stream got data line : ~a"
+                                                    line)
+                        (write-sequence line file-stream)
+                        (increment-bytes-count wrapper-object line :convert-to-octects t)
+                        (maybe-render-line event))
+                      (progn
+                        (return-from download-loop nil))))
+              (maybe-render-preformat-wrapper file-stream wrapper-object)
+              (if (not (downloading-allowed-p wrapper-object))
+                  (ui:notify (_ "Gemini document downloading aborted"))
+                  (progn
+                    (ui:notify (_ "Gemini document downloading completed"))
+                    (ui:open-gemini-toc)
+                    (setf (stream-status wrapper-object) :completed)))
+              ;; (allow-downloading wrapper-object)
+              (gemini-client:close-ssl-socket download-socket))))))))
 ;;        (fs:delete-file-if-exists support-file)))))
 
 (defun request-stream-other-document-thread (wrapper-object

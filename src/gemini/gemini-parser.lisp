@@ -19,6 +19,31 @@
 
 (defparameter *raw-mode-data* nil)
 
+(defparameter *pre-group-id* -1)
+
+(defparameter *parser-lock* (bt:make-recursive-lock))
+
+(defparameter *header-group-id* -1)
+
+(defparameter *pre-alt-text*    "")
+
+(defun-w-lock next-pre-group-id () *parser-lock*
+  (incf *pre-group-id*)
+  *pre-group-id*)
+
+(defun-w-lock pre-group-id () *parser-lock*
+  *pre-group-id*)
+
+(defun-w-lock next-header-group-id () *parser-lock*
+  (incf *header-group-id*)
+  *header-group-id*)
+
+(defun-w-lock set-pre-alt-text (text) *parser-lock*
+  (setf *pre-alt-text* text))
+
+(defun-w-lock current-pre-alt-text () *parser-lock*
+  *pre-alt-text*)
+
 (defparameter *omitted-port* +gemini-default-port+)
 
 (define-constant +h1-prefix+           "#"   :test #'string=)
@@ -438,10 +463,7 @@
                  :link-value link-value))
 
 (defun sexp->text-rows (parsed-gemini theme)
-  (let ((win-width       (message-window:viewport-width (viewport theme)))
-        (pre-group-id    -1)
-        (header-group-id -1)
-        (pre-alt-text    ""))
+  (let ((win-width (message-window:viewport-width (viewport theme))))
     (labels ((header-prefix (prefix header)
                (strcat prefix header))
              (header-prefix-h1 (header)
@@ -455,8 +477,8 @@
                       (underline (build-string size underline-char)))
                  underline))
              (make-header (level text underline-char)
-               (let ((underline (build-underline text underline-char)))
-                 (incf header-group-id)
+               (let ((underline (build-underline text underline-char))
+                     (header-group-id (next-header-group-id)))
                  (list (make-header-line text header-group-id level)
                        (make-header-line underline header-group-id level))))
              (trim (a)
@@ -497,7 +519,7 @@
                                                                             "~a"
                                                                             truncated-line)
                                                                     :fgcolor fg)))
-                          (make-pre-line (list line) pre-group-id pre-alt-text)))
+                          (make-pre-line (list line) (pre-group-id) (current-pre-alt-text))))
                        ((html-utils:tag= :text node)
                         (format nil "~a~%" (text-value node)))
                        ((html-utils:tag= :h1 node)
@@ -522,9 +544,9 @@
                         (fit-quote-lines (text-value node :trim nil)
                                          win-width))
                        ((html-utils:tag= :pre node)
-                        (let ((current-alt-text (pre-alt-text node)))
-                          (incf pre-group-id)
-                          (setf pre-alt-text current-alt-text)
+                        (let ((current-alt-text (pre-alt-text node))
+                              (pre-group-id     (next-pre-group-id)))
+                          (set-pre-alt-text current-alt-text)
                           (make-pre-start current-alt-text pre-group-id)))
                        ((html-utils:tag= :pre-end node)
                         (make-pre-end))
