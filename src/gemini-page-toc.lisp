@@ -84,7 +84,6 @@
     (setf *gemini-toc-window*
           (make-instance 'gemini-toc-window
                          :title             (_ "Table of contents")
-                         :single-row-height 1
                          :uses-border-p     t
                          :keybindings       keybindings:*gemini-toc-keymap*
                          :croatoan-window   low-level-window

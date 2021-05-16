@@ -1936,7 +1936,7 @@ gemini page the program is rendering."
   (trivial-line-oriented-window-move *gemini-toc-window* -1))
 
 (defun gemini-toc-scroll-down ()
-  (trivial-line-oriented-window-move *gemini-toc-window* 2))
+  (trivial-line-oriented-window-move *gemini-toc-window* 1))
 
 (defun gemini-toc-jump-to-entry ()
   (let* ((selected-row    (line-oriented-window:selected-row-fields *gemini-toc-window*))
