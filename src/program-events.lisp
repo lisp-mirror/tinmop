@@ -1002,13 +1002,18 @@
     :initform t
     :initarg :give-focus-to-message-window
     :reader  give-focus-to-message-window-p
-    :writer  (setf give-focus-to-message-window))))
+    :writer  (setf give-focus-to-message-window))
+   (enqueue
+    :initform nil
+    :initarg :enqueue
+    :accessor enqueue)))
 
 (defmethod process-event ((object gemini-request-event))
   (tui:with-notify-errors
     (with-accessors ((url                            url) ; if a local file *not* percent encoded
                      (give-focus-to-message-window-p give-focus-to-message-window-p)
-                     (use-cached-file-if-exists      use-cached-file-if-exists)) object
+                     (use-cached-file-if-exists      use-cached-file-if-exists)
+                     (enqueue                        enqueue)) object
       (let ((window     specials:*message-window*)
             (local-path (if (text-utils:percent-encoded-p url)
                             (complete:tilde-expand-string (text-utils:percent-decode url))
@@ -1021,7 +1026,9 @@
           ((text-utils:string-empty-p url)
            (ui:error-message (_ "Empty address")))
           ((gemini-client:absolute-gemini-url-p url)
-           (gemini-viewer:request url :use-cached-file-if-exists use-cached-file-if-exists))
+           (gemini-viewer:request url
+                                  :enqueue                   enqueue
+                                  :use-cached-file-if-exists use-cached-file-if-exists))
           ((fs:dirp local-path)
            (let* ((index-path (uri:normalize-path (fs:prepend-pwd local-path)))
                   (all-paths  (mapcar #'uri:normalize-path
@@ -1126,8 +1133,6 @@
         (when (and (gemini-viewer:downloading-allowed-p wrapper-object)
                    (not (skip-rendering-p object))
                    (message-window:display-gemini-text-p win))
-          (setf (windows:keybindings win)
-                keybindings:*gemini-message-keymap*)
           (refresh-gemini-message-window links source ir-line append-text)
           (windows:draw win))))))
 

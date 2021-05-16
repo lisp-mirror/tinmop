@@ -406,8 +406,8 @@
               (if (not (downloading-allowed-p wrapper-object))
                   (ui:notify (_ "Gemini document downloading aborted"))
                   (progn
-                    (ui:notify (_ "Gemini document downloading completed"))
                     (maybe-render-toc)
+                    (ui:notify (_ "Gemini document downloading completed"))
                     (setf (stream-status wrapper-object) :completed)))
               ;; (allow-downloading wrapper-object)
               (gemini-client:close-ssl-socket download-socket))))))))
@@ -770,7 +770,8 @@
 (defun load-gemini-url (url &key
                               (priority program-events:+standard-event-priority+)
                               (give-focus-to-message-window t)
-                              (use-cached-file-if-exists nil))
+                              (use-cached-file-if-exists nil)
+                              (enqueue                   nil))
   "Load `url', that  is a web resource or a  local file. This function
 can be  used only when  the event polling  is enabled (e.g.  from user
 command) otherwise  te actual code to  get the resource will  never be
@@ -779,5 +780,6 @@ executed."
                                :give-focus-to-message-window give-focus-to-message-window
                                :priority priority
                                :use-cached-file-if-exists use-cached-file-if-exists
-                               :url      url)))
+                               :enqueue                   enqueue
+                               :url                       url)))
     (program-events:push-event event)))
