@@ -546,9 +546,7 @@
                                  (loop for i from (- level 2 ) downto 0
                                        when (= (elt toc-number i) 0) do
                                          (setf (elt toc-number i) 1))
-                                 (list :header (regex-replace "^\\P{Letter}+"
-                                                              (first (gemini-parser:lines header))
-                                                              "")
+                                 (list :header (first (gemini-parser:lines header))
                                        :group-id gid
                                        :number   (subseq toc-number
                                                          0
