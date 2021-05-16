@@ -1131,53 +1131,6 @@
           (refresh-gemini-message-window links source ir-line append-text)
           (windows:draw win))))))
 
-;; (defclass gemini-compact-lines-event (program-event)
-;;   ((download-iri
-;;     :initform nil
-;;     :initarg  :download-iri
-;;     :accessor download-iri)))
-
-;; (defmethod process-event ((object gemini-compact-lines-event))
-;;   (with-accessors ((download-iri download-iri)) object
-;;     (let ((all-lines   "")
-;;           (all-links   ())
-;;           (all-source  "")
-;;           (append-text t))
-;;       (map-events (lambda (a)
-;;                     (with-accessors ((response       payload)
-;;                                      (wrapper-object wrapper-object)) a
-;;                       (with-accessors ((parsed-file          gemini-client:parsed-file)
-;;                                        (source               gemini-client:source)
-;;                                        (links                gemini-client:links)
-;;                                        (text-rendering-theme gemini-client:text-rendering-theme))
-;;                           response
-;;                         (when (and (typep a 'gemini-got-line-event)
-;;                                    (string= download-iri
-;;                                             (gemini-viewer:download-iri wrapper-object))
-;;                                    (gemini-viewer:downloading-allowed-p wrapper-object)
-;;                                    (not (skip-rendering-p a)))
-;;                           (let ((rendered-text (gemini-parser:sexp->text parsed-file
-;;                                                                          text-rendering-theme)))
-;;                             (when (null (append-text a))
-;;                               (setf append-text nil))
-;;                             (appendf all-links links)
-;;                             (setf all-source
-;;                                   (text-utils:strcat all-source source))
-;;                             (setf all-lines
-;;                                   (text-utils:strcat all-lines rendered-text))))))
-;;                     a))
-;;       (when (text-utils:string-not-empty-p all-lines)
-;;         (remove-event-if (lambda (a)
-;;                            (with-accessors ((wrapper-object wrapper-object)) a
-;;                              (and (typep a 'gemini-got-line-event)
-;;                                   (string= download-iri
-;;                                            (gemini-viewer:download-iri wrapper-object))))))
-;;         (let* ((win specials:*message-window*))
-;;           (setf (windows:keybindings win)
-;;                 keybindings:*gemini-message-keymap*)
-;;           (refresh-gemini-message-window all-links all-source all-lines append-text)
-;;           (windows:draw win))))))
-
 (defclass gemini-abort-downloading-event (program-event) ())
 
 (defmethod process-event ((object gemini-abort-downloading-event))
@@ -1300,6 +1253,36 @@
   (let ((all-subscribed-gemlogs (mapcar #'db:row-url (db:gemini-all-subscriptions))))
     (loop for subscription in all-subscribed-gemlogs do
       (gemini-subscription:refresh subscription))))
+
+(defclass gemini-toc-jump-to-section (program-event)
+  ((toc-win
+    :initform nil
+    :initarg  :toc-win
+    :accessor toc-win)
+   (message-win
+    :initform nil
+    :initarg  :message-win
+    :accessor message-win)
+   (gid-looking-for
+    :initform nil
+    :initarg  :gid-looking-for
+    :accessor gid-looking-for)))
+
+(defmethod process-event ((object gemini-toc-jump-to-section))
+  (with-accessors ((toc-win          toc-win)
+                   (message-win      message-win)
+                   (gid-looking-for  gid-looking-for)) object
+    (let* ((selected-row    (line-oriented-window:selected-row-fields toc-win))
+           (gid-looking-for (message-window:gemini-toc-group-id selected-row)))
+      (message-window:jump-to-group-id message-win gid-looking-for))))
+
+(defclass gemini-toc-open (program-event) ())
+
+(defmethod process-event ((object gemini-toc-open))
+  (let ((win specials:*message-window*))
+    (if (message-window:gemini-window-p* win)
+        (gemini-page-toc:open-toc-window win)
+        (ui:error-message (_ "TOC can be shown for gemini windows only.")))))
 
 ;;;; pleroma
 

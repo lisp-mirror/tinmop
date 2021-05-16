@@ -63,6 +63,8 @@
                                                (declare (ignore e))
                                                main-window-size))))
     (cond
+      ((= raw 1)
+       main-window-size)
       ((integerp raw)
        raw)
       (t

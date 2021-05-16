@@ -38,6 +38,7 @@
   (:export
    :+gemini-scheme+
    :+preformatted-prefix+
+   :+max-header-level+
    :geminize-h1
    :geminize-h2
    :geminize-h3

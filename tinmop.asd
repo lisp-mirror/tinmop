@@ -114,6 +114,7 @@
                (:file "open-message-link-window")
                (:file "gemini-client-certificates-window")
                (:file "gemini-subscription-window")
+               (:file "gemini-page-toc")
                (:file "command-window")
                (:file "sending-message")
                (:file "follow-requests")

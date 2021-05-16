@@ -351,13 +351,23 @@
 
 (define-key "p"         #'message-toggle-preformatted-block          *gemini-message-keymap*)
 
-(define-key "t"         #'next-tour-link                             *gemini-message-keymap*)
+(define-key "t t"       #'next-tour-link                             *gemini-message-keymap*)
+
+(define-key "t o"       #'open-gemini-toc                            *gemini-message-keymap*)
 
 (define-key "T"         #'show-tour-links                            *gemini-message-keymap*)
 
 (define-key "|"         #'send-to-pipe                               *gemini-message-keymap*)
 
+;; gemini page table of contents keymap
 
+(define-key "up"        #'gemini-toc-scroll-up                       *gemini-toc-keymap*)
+
+(define-key "down"      #'gemini-toc-scroll-down                     *gemini-toc-keymap*)
+
+(define-key "C-J"       #'gemini-toc-jump-to-entry                   *gemini-toc-keymap*)
+
+(define-key "q"         #'gemini-toc-close                           *gemini-toc-keymap*)
 
 ;; gemini stream window keymap
 

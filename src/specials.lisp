@@ -61,5 +61,8 @@
 (defparameter *gemini-subscription-window*      nil
   "The window that shows all the subscribed gemlogs.")
 
+(defparameter *gemini-toc-window*      nil
+  "The window that shows the table of contents of a gemini page.")
+
 (defparameter *chats-list-window*               nil
   "The window that shows all the chats.")

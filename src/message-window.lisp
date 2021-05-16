@@ -53,14 +53,21 @@
 
 (defgeneric search-regex (object regex))
 
+(defgeneric jump-to-group-id (object gid-looking-for))
+
 (defgeneric text->rendered-lines-rows (window text))
 
 (defgeneric colorize-lines (object))
 
 (defgeneric viewport-width (object))
 
+(defgeneric generate-toc (object))
+
+(defun gemini-window-p* (window)
+  (gemini-viewer:gemini-metadata-p (message-window:metadata window)))
+
 (defun gemini-window-p ()
-  (gemini-viewer:gemini-metadata-p (message-window:metadata specials:*message-window*)))
+  (gemini-window-p* specials:*message-window*))
 
 (defun display-gemini-text-p (window)
   (eq (keybindings window)
@@ -506,6 +513,68 @@
                          (print-text object replacement 1 1))))
               (calc-highlight)
               (highlight))))))))
+
+(defmethod jump-to-group-id ((object message-window) gid-looking-for)
+  (when-let ((line-found (rows-position-if object
+                                           (lambda (a)
+                                             (when-let ((header (row-get-original-object a)))
+                                               (when (typep header 'gemini-parser:header-line)
+                                                 (let ((gid (gemini-parser:group-id header)))
+                                                   (= gid gid-looking-for)))))
+                                           :start 0)))
+    (select-row object 0)
+    (row-move object line-found)
+    (draw object)))
+
+(defmethod generate-gemini-toc ((object message-window))
+  (let* ((toc-number    (make-list gemini-parser:+max-header-level+ :initial-element 0))
+         (current-gid   -1)
+         (all-headers   (remove-if-not (lambda (a)
+                                         (typep (row-get-original-object a)
+                                                'gemini-parser:header-line))
+                                       (rows object)))
+         (toc          (loop for row in all-headers
+                             collect
+                             (let* ((header (row-get-original-object row))
+                                    (level  (gemini-parser:level header))
+                                    (gid    (gemini-parser:group-id header)))
+                               (when (/= gid current-gid)
+                                 (setf current-gid gid)
+                                 (incf (elt toc-number (1- level)))
+                                 (loop for i from level below (length toc-number) do
+                                   (setf (elt toc-number i) 0))
+                                 (loop for i from (- level 2 ) downto 0
+                                       when (= (elt toc-number i) 0) do
+                                         (setf (elt toc-number i) 1))
+                                 (list :header (regex-replace "^\\P{Letter}+"
+                                                              (first (gemini-parser:lines header))
+                                                              "")
+                                       :group-id gid
+                                       :number   (subseq toc-number
+                                                         0
+                                                         level)))))))
+    (remove-if #'null toc)))
+
+(defun gemini-toc-header (fields)
+  (getf fields :header))
+
+(defun gemini-toc-max-number-length (toc)
+  (* 2
+     (num:find-max (mapcar (lambda (a) (length (getf a :number)))
+                           toc))))
+
+(defun gemini-toc-number (fields toc)
+  (let ((raw               (mapcar #'to-s (getf fields :number)))
+        (max-number-length (gemini-toc-max-number-length toc)))
+    (right-padding (join-with-strings raw ".")
+                   max-number-length
+                   :padding-char (swconf:gemini-toc-padding-char))))
+
+(defun gemini-toc-entry (fields toc)
+  (format nil "~a ~a" (gemini-toc-number fields toc) (gemini-toc-header fields)))
+
+(defun gemini-toc-group-id (fields)
+  (getf fields :group-id))
 
 (defun init ()
   (let* ((low-level-window (make-croatoan-window :enable-function-keys t)))

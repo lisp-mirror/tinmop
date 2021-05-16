@@ -401,6 +401,7 @@
                 (ui:notify (_ "Gemini document downloading aborted"))
                 (progn
                   (ui:notify (_ "Gemini document downloading completed"))
+                  (ui:open-gemini-toc)
                   (setf (stream-status wrapper-object) :completed)))
             ;; (allow-downloading wrapper-object)
             (gemini-client:close-ssl-socket download-socket)))))))

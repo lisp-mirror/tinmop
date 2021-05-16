@@ -35,6 +35,8 @@
 
 (define-constant +link-prefix+         "=>"  :test #'string=)
 
+(define-constant +max-header-level+    3     :test #'=)
+
 (defmacro gen-geminize-line (name prefix)
   `(defun ,(format-fn-symbol t "geminize-~a" name) (text)
      (strcat ,prefix text)))
@@ -436,7 +438,7 @@
                  :link-value link-value))
 
 (defun sexp->text-rows (parsed-gemini theme)
-  (let ((win-width    (message-window:viewport-width (viewport theme)))
+  (let ((win-width       (message-window:viewport-width (viewport theme)))
         (pre-group-id    -1)
         (header-group-id -1)
         (pre-alt-text    ""))

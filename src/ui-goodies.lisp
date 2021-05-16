@@ -538,6 +538,11 @@ current has focus"
                      :documentation      "Move focus on open-gemini certificates window"
                      :info-change-focus-message (_ "Focus passed on gemlog subscriptions window."))
 
+(gen-focus-to-window gemini-toc-window
+                     *gemini-toc-window*
+                     :documentation      "Move focus on gemini page table of contents window"
+                     :info-change-focus-message (_ "Focus passed on gemini toc window."))
+
 (defun print-quick-help ()
   "Print a quick help"
   (keybindings:print-help *main-window*))
@@ -1770,6 +1775,12 @@ open-message-link-window:open-message-link"
   (gemini-viewer:open-gemini-stream-window)
   (focus-to-open-gemini-stream-windows))
 
+(defun trivial-line-oriented-window-move (win amount)
+  (ignore-errors
+   (line-oriented-window:unselect-all win)
+   (line-oriented-window:row-move     win amount)
+   (draw win)))
+
 (defun gemini-streams-move (amount)
   (ignore-errors
     (line-oriented-window:unselect-all *gemini-streams-window*)
@@ -1915,3 +1926,25 @@ gemini://gemini.circumlunar.space/docs/companion/subscription.gmi
     "Show a link window with all the links in the tour queue."
       (open-message-link-window:init-gemini-links (reverse tour))
       (focus-to-open-message-link-window)))
+
+(defun open-gemini-toc ()
+  "Opend a windows that contains a  generated table of contents of the
+gemini page the program is rendering."
+  (push-event (make-instance 'gemini-toc-open)))
+
+(defun gemini-toc-scroll-up ()
+  (trivial-line-oriented-window-move *gemini-toc-window* -1))
+
+(defun gemini-toc-scroll-down ()
+  (trivial-line-oriented-window-move *gemini-toc-window* 2))
+
+(defun gemini-toc-jump-to-entry ()
+  (let* ((selected-row    (line-oriented-window:selected-row-fields *gemini-toc-window*))
+         (gid-looking-for (message-window:gemini-toc-group-id selected-row)))
+    (push-event (make-instance 'gemini-toc-jump-to-section
+                               :toc-win         *gemini-toc-window*
+                               :message-win     *message-window*
+                               :gid-looking-for gid-looking-for))))
+
+(defun gemini-toc-close ()
+  (close-window-and-return-to-message *gemini-toc-window*))

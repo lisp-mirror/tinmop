@@ -406,6 +406,7 @@
                    focus
                    prefix
                    postfix
+                   padding
                    value
                    scheme
                    link
@@ -450,6 +451,7 @@
                    chat-window
                    chats-list-window
                    gemini-subscription-window
+                   gemini-toc-window
                    attachment-header
                    max-numbers-allowed-attachments
                    max-message-length
@@ -615,12 +617,11 @@
                               +key-prefix+))
 
 (defun gemini-preformatted-fg ()
-  (or
-   (access-non-null-conf-value *software-configuration*
-                               +key-gemini+
-                               +key-preformatted-text+
-                               +key-foreground+)
-   :white))
+  (or (access-non-null-conf-value *software-configuration*
+                                  +key-gemini+
+                                  +key-preformatted-text+
+                                  +key-foreground+)
+      :white))
 
 (defun gemini-certificates-window-colors ()
   "return three color values"
@@ -636,6 +637,14 @@
                            +key-gemini-certificates-window+
                            +key-access-time+
                            +key-foreground+)))
+
+(defun gemini-toc-padding-char ()
+  (let ((padding-from-conf (access:accesses *software-configuration*
+                                            +key-gemini-toc-window+
+                                            +key-padding+)))
+    (if padding-from-conf
+        (elt padding-from-conf 0)
+        #\Space)))
 
 (defun signature-file-path ()
   "Returns the filepath of the signature file, the $HOME is prepended."

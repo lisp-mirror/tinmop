@@ -1065,6 +1065,7 @@
    :+key-chat-window+
    :+key-chats-list-window+
    :+key-gemini-subscription-window+
+   :+key-gemini-toc-window+
    :+key-favourite+
    :+key-sensitive+
    :+key-boosted+
@@ -1117,6 +1118,7 @@
    :gemini-bullet-prefix
    :gemini-preformatted-fg
    :gemini-certificates-window-colors
+   :gemini-toc-padding-char
    :signature-file-path
    :vote-vertical-bar
    :crypted-mark-value
@@ -1271,6 +1273,7 @@
    :*gemini-streams-window*
    :*gemini-certificates-window*
    :*gemini-subscription-window*
+   :*gemini-toc-window*
    :*chats-list-window*))
 
 (defpackage :complete
@@ -1399,6 +1402,8 @@
    :gemlog-cancel-subscription-event
    :gemlog-show-event
    :gemlog-refresh-all-event
+   :gemini-toc-jump-to-section
+   :gemini-toc-open
    :get-chat-messages-event
    :get-chats-event
    :chat-show-event
@@ -1562,6 +1567,7 @@
    :*chats-list-keymap*
    :*chat-message-keymap*
    :*gemlog-subscription-keymap*
+   :*gemini-toc-keymap*
    :define-key
    :init-keyboard-mapping
    :find-keymap-node
@@ -1952,6 +1958,7 @@
   (:export
    :message-window
    :metadata
+   :gemini-window-p*
    :gemini-window-p
    :display-gemini-text-p
    :display-chat-p
@@ -1983,7 +1990,10 @@
    :scroll-next-page
    :scroll-previous-page
    :search-regex
-
+   :jump-to-group-id
+   :generate-gemini-toc
+   :gemini-toc-entry
+   :gemini-toc-group-id
    :init))
 
 (defpackage :open-attach-window
@@ -2075,6 +2085,26 @@
   (:shadowing-import-from :misc :random-elt :shuffle)
   (:export
    :open-gemini-subscription-window))
+
+(defpackage :gemini-page-toc
+  (:use
+   :cl
+   :alexandria
+   :cl-ppcre
+   :access
+   :croatoan
+   :config
+   :constants
+   :text-utils
+   :misc
+   :mtree
+   :specials
+   :windows
+   :line-oriented-window
+   :tui-utils)
+  (:shadowing-import-from :misc :random-elt :shuffle)
+  (:export
+   :open-toc-window))
 
 (defpackage :command-window
   (:use
@@ -2489,6 +2519,11 @@
    :tour-mode-link
    :next-tour-link
    :show-tour-links
+   :open-gemini-toc
+   :gemini-toc-scroll-up
+   :gemini-toc-scroll-down
+   :gemini-toc-jump-to-entry
+   :gemini-toc-close
    :pass-focus-on-left
    :pass-focus-on-right
    :pass-focus-on-bottom
