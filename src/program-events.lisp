@@ -1279,10 +1279,16 @@
 (defclass gemini-toc-open (program-event) ())
 
 (defmethod process-event ((object gemini-toc-open))
-  (let ((win specials:*message-window*))
-    (if (message-window:gemini-window-p* win)
-        (gemini-page-toc:open-toc-window win)
-        (ui:error-message (_ "TOC can be shown for gemini windows only.")))))
+  (let ((message-win specials:*message-window*)
+        (toc-win     specials:*gemini-toc-window*))
+    (cond
+      ((not (message-window:gemini-window-p* message-win))
+       (ui:error-message (_ "TOC can be shown for gemini windows only.")))
+      ((and toc-win
+            (windows:win-shown-p toc-win))
+       (ui:error-message (_ "Window already active.")))
+      (t
+       (gemini-page-toc:open-toc-window message-win)))))
 
 ;;;; pleroma
 

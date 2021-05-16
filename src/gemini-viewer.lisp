@@ -343,6 +343,9 @@
     (labels ((maybe-render-line (line-event)
                (when (eq (stream-status wrapper-object) :rendering)
                  (program-events:push-event line-event)))
+             (maybe-render-toc ()
+               (when (eq (stream-status wrapper-object) :rendering)
+                 (ui:open-gemini-toc)))
              (maybe-render-preformat-wrapper (file-stream wrapper-object)
                (when (not gemini-format-p)
                  (let* ((preformat-line (format nil "~a~%" gemini-parser:+preformatted-prefix+))
@@ -404,7 +407,7 @@
                   (ui:notify (_ "Gemini document downloading aborted"))
                   (progn
                     (ui:notify (_ "Gemini document downloading completed"))
-                    (ui:open-gemini-toc)
+                    (maybe-render-toc)
                     (setf (stream-status wrapper-object) :completed)))
               ;; (allow-downloading wrapper-object)
               (gemini-client:close-ssl-socket download-socket))))))))
