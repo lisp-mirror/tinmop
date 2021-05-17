@@ -85,8 +85,9 @@
          (gemini-viewer:ensure-just-one-stream-rendering)
          (program-events:push-event event)
          (gemini-viewer:load-gemini-url url
-                                        :enqueue                   enqueue
-                                        :use-cached-file-if-exists t)))
+                                        :give-focus-to-message-window nil
+                                        :enqueue                      enqueue
+                                        :use-cached-file-if-exists    t)))
       ((fs:dirp decoded-path)
        (let ((program-events:*process-events-immediately* t)
              (event (make-instance 'program-events:gemini-push-behind-downloading-event
