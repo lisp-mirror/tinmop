@@ -77,6 +77,7 @@
         (when suggested-message-index
           (select-row object suggested-message-index))
         (when redraw
+          (win-clear object)
           (draw object))))))
 
 (defun open-toc-window (gemini-window)

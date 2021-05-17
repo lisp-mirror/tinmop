@@ -1291,7 +1291,7 @@
        (ui:error-message (_ "TOC can be shown for gemini windows only.")))
       ((and toc-win
             (windows:win-shown-p toc-win))
-       (ui:error-message (_ "Window already active.")))
+       (line-oriented-window:resync-rows-db toc-win :suggested-message-index 0))
       (t
        (gemini-page-toc:open-toc-window message-win)))))
 
