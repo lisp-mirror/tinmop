@@ -83,14 +83,19 @@
   (when-let* ((stream-object (find-db-stream-url iri)))
     (with-accessors ((support-file support-file)
                      (meta         meta)) stream-object
-      (if (gemini-client:mime-gemini-p meta)
-          (progn
-            (ensure-just-one-stream-rendering)
-            (force-rendering-of-cached-file stream-object)
-            (setf (stream-status stream-object) :completed)
-            (let ((toc-event (make-instance 'program-events:gemini-toc-open)))
-              (program-events:push-event toc-event)))
-          (os-utils:xdg-open support-file)))))
+      (cond
+        ((gemini-client:mime-gemini-p meta)
+         (ensure-just-one-stream-rendering)
+         (force-rendering-of-cached-file stream-object)
+         (setf (stream-status stream-object) :completed)
+         (let ((toc-event (make-instance 'program-events:gemini-toc-open)))
+           (program-events:push-event toc-event)))
+        ((gemini-client:text-file-stream-p meta)
+          (ensure-just-one-stream-rendering)
+         (force-rendering-of-cached-file stream-object)
+         (setf (stream-status stream-object) :completed))
+        (t
+         (os-utils:open-resource-with-external-program support-file t))))))
 
 (defclass gemini-stream ()
   ((download-thread-lock
