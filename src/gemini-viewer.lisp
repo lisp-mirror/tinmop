@@ -87,7 +87,9 @@
           (progn
             (ensure-just-one-stream-rendering)
             (force-rendering-of-cached-file stream-object)
-            (setf (stream-status stream-object) :completed))
+            (setf (stream-status stream-object) :completed)
+            (let ((toc-event (make-instance 'program-events:gemini-toc-open)))
+              (program-events:push-event toc-event)))
           (os-utils:xdg-open support-file)))))
 
 (defclass gemini-stream ()
