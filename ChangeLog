@@ -1,3 +1,115 @@
+2021-05-18  cage
+
+        * src/gemini-viewer.lisp:
+
+	- [gemini] ensured cached text file are opened with tinmop or user
+        defined programs.
+	- [gemini] refresh TOC when rendering a cached gemini file.
+
+2021-05-17  cage
+
+	* src/gemini-page-toc.lisp,
+	* src/program-events.lisp:
+        * src/open-message-link-window.lisp:
+        * src/gemini-viewer.lisp,
+	* src/open-message-link-window.lisp,
+        * src/program-events.lisp:
+
+	- [gemini] prevented moving focus to message window when opening a
+        link.
+        - [gemini] recycled TOC window between gemini pages.
+	- [gemini] fixed regression opening gemini link is possible again;
+	- prevented hiding of notifications by the gemini TOC window.
+
+2021-05-16  cage
+
+	* etc/init.lisp,
+	* src/gemini-page-toc.lisp,
+	* src/gemini-page-toc.lisp,
+	* src/gemini-viewer.lisp,
+	* src/gemini/gemini-parser.lisp,
+	* src/gemini/gemini-parser.lisp,
+	* src/keybindings.lisp,
+	* src/line-oriented-window.lisp,
+	* src/message-window.lisp,
+	* src/message-window.lisp,
+	* src/open-message-link-window.lisp,
+	* src/package.lisp,
+	* src/program-events.lisp,
+	* src/software-configuration.lisp,
+	* src/ui-goodies.lisp,
+	* src/ui-goodies.lisp,
+	* tinmop.asd,
+        * etc/default-theme.conf,
+        * src/gemini-viewer.lisp,
+        * src/gemini-viewer.lisp,
+        * src/gemini-viewer.lisp,
+        * src/gemini/package.lisp,
+        * src/gemini/package.lisp,
+        * src/main-window.lisp,
+        * src/program-events.lisp,
+        * src/program-events.lisp,
+        * src/specials.lisp:
+
+	- added a generated TOC for gemini files.
+	- [gemini] fixed regression opening gemini link is possible again;
+	- prevented hiding of notifications by the gemini TOC window.
+        - [gemini] removed removing of text from TOC entry.
+	- [gemini] fixed row moving in TOC window.
+	- [gemini] ensured TOC is rendered only for rendering stream.
+	- [gemini]  fixed  parser,  made  many  parser  state  variables
+        from function local to thread local;
+	- fixed 'line-oriented-widget:append-new-rows';  uses slots  instead
+        of accessors  as, for  example, message  window skips  invisible
+        lines when specialized (on message-window) method 'rows' is called.
+
+2021-05-15  cage
+
+        * src/program-events.lisp:
+
+	- prevented rendering gemini files in the message window when a toot
+        is shown.
+
+2021-05-14  cage
+
+        * src/gemini/client.lisp,
+	* src/gemini/subscription.lisp:
+
+	- [gemini] fixed parsing of gemlog pages. Subtitle was never
+        recognized even if actually present.
+
+2021-05-13  cage
+
+        * modules/rewrite-message-urls.lisp,
+	* src/line-oriented-window.lisp,
+        * src/message-window.lisp,
+	* src/misc-utils.lisp,
+        * src/open-message-link-window.lisp,
+	* src/package.lisp,
+        * src/program-events.lisp,
+	* src/ui-goodies.lisp:
+
+	- got rid of 'prepare-new-search' and 'cleanup-after-search';
+	- fixed misc:safe-subseq (subseq sequence -1)' does not signals an
+        error anymore.
+
+2021-05-09  cage
+
+        * etc/shared.conf,
+	* src/gemini/gemini-parser.lisp:
+
+	- [gemini] fixed parsing of quoted lines, an empty line can be part
+        of the quote.
+
+2021-05-09  cage
+
+        * src/main.lisp,
+	* src/os-utils.lisp:
+	- wrapped sb-ext:run-program;
+	- do not load configuration files if cli options '-h' or '-v' are
+        used.
+
+
 2021-05-06  cage
 
         * src/program-events.lisp:
