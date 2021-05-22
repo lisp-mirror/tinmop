@@ -399,6 +399,9 @@
                    root
                    width
                    height
+                   position
+                   x
+                   y
                    error
                    info
                    window
@@ -811,6 +814,19 @@
                                                        100))))
                    +key-notify-window+
                    +key-life+)
+
+(defun config-notify-window-geometry ()
+  (values (access:accesses  *software-configuration*
+                            +key-notify-window+
+                            +key-position+
+                            +key-x+)
+          (access:accesses  *software-configuration*
+                            +key-notify-window+
+                            +key-position+
+                            +key-y+)
+          (access:accesses  *software-configuration*
+                            +key-notify-window+
+                            +key-width+)))
 
 (gen-simple-access (notification-icon)
                    +key-thread-window+

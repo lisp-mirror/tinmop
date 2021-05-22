@@ -1148,6 +1148,7 @@
    :config-purge-history-days-offset
    :config-purge-cage-days-offset
    :config-notification-life
+   :config-notify-window-geometry
    :config-notification-icon
    :config-server-name
    :config-username

@@ -20,11 +20,11 @@
 (define-constant +notify-win-background-color+ '(:yellow :blue)
   :test #'equalp)
 
-(define-constant +notify-win-background+ (make-instance 'complex-char
-                                                        :simple-char #\Space
-                                                        :color-pair  +notify-win-background-color+
-                                                        :attributes  nil)
-  :test #'complex-char=)
+;; (define-constant +notify-win-background+ (make-instance 'complex-char
+;;                                                         :simple-char #\Space
+;;                                                         :color-pair  +notify-win-background-color+
+;;                                                         :attributes  nil)
+;;   :test #'complex-char=)
 
 (defclass notify-window (wrapper-window)
   ((life
@@ -92,18 +92,22 @@
     (refresh-config high-level-window)
     (when notify-error
       (force-error-colors high-level-window))
-    (let ((win-w (truncate (* 1/6 (win-width  *main-window*))))
-          (win-h (truncate (* 1/8 (win-height *main-window*)))))
-      (win-resize high-level-window win-w win-h)
-      ;; add-flush-left-text will expand window's height if needed
-      (add-flush-left-text high-level-window
-                           message 0
-                           :has-border-p t
-                           :attributes   (attribute-bold))
-      (win-raise-to-top high-level-window)
-      (win-move high-level-window 1 1)
-      (win-box high-level-window)
-      (when hidep
-        (win-hide high-level-window))
-      (mtree:add-child specials:*main-window* high-level-window)
-      high-level-window)))
+    (multiple-value-bind (x y w)
+        (swconf:config-notify-window-geometry)
+      (let ((win-w (main-window:parse-subwin-w w))
+            (win-h (truncate (* 1/8 (win-height *main-window*))))
+            (win-x (main-window:parse-subwin-w x))
+            (win-y (main-window:parse-subwin-h y)))
+        (win-resize high-level-window win-w win-h)
+        ;; add-flush-left-text will expand window's height if needed
+        (add-flush-left-text high-level-window
+                             message 0
+                             :has-border-p t
+                             :attributes   (attribute-bold))
+        (win-raise-to-top high-level-window)
+        (win-move high-level-window win-x win-y)
+        (win-box high-level-window)
+        (when hidep
+          (win-hide high-level-window))
+        (mtree:add-child specials:*main-window* high-level-window)
+        high-level-window))))

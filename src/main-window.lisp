@@ -65,10 +65,15 @@
     (cond
       ((= raw 1)
        main-window-size)
+      ((< raw 0)
+       (let ((fraction (abs (clamp raw -1.0 0.0))))
+         (truncate (- main-window-size
+                      (* fraction main-window-size)))))
       ((integerp raw)
        raw)
       (t
-       (truncate (* raw main-window-size))))))
+       (truncate (* (clamp raw 0.0 1.0)
+                     main-window-size))))))
 
 (defun parse-subwin-w (w-as-string)
   "Parse a window width, `w-as-string' a fraction of the main window width"
