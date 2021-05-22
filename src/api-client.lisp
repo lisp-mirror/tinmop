@@ -728,7 +728,9 @@ node-status-id is not a leaf)."
             (climb-fetch-statuses (reply-id status)
                                   (push status branch)))))))
 
-(defun make-id= (&optional (test #'string=))
+(defalias id= #'string=)
+
+(defun make-id= (&optional (test #'id=))
   "Returns a comparator function that checks for id equality"
   (lambda (a b) (funcall test (tooter:id a) (tooter:id b))))
 

@@ -113,10 +113,10 @@
     :initform db:+default-status-folder+
     :initarg  :timeline-folder
     :accessor timeline-folder)
-   (mentions-count
-    :initform 0
-    :initarg  :mentions-count
-    :accessor mentions-count)))
+   (mentions
+    :initform ()
+    :initarg  :mentions
+    :accessor mentions)))
 
 (defmacro lambda-ignore-args (args &body body)
   `(lambda (,@args)
@@ -182,13 +182,13 @@
         "")))
 
 (defun expand-mentions (window)
-  (with-accessors ((mentions-count mentions-count)) window
-    (if (> mentions-count 0)
+  (with-accessors ((mentions mentions)) window
+    (if mentions
         (with-tuify-results (window)
           (format nil
                   "~a(~a)"
                   (swconf:config-notification-icon)
-                  mentions-count))
+                  (length mentions)))
         "")))
 
 (defun default-expander ()
@@ -318,9 +318,9 @@
 
 (defgeneric search-previous-message-meta (object text-looking-for))
 
-(defgeneric increase-mentions-count (object &optional amount))
+(defgeneric add-mention (object mention))
 
-(defgeneric decrease-mentions-count (object &optional amount))
+(defgeneric remove-mention (object status-id))
 
 (defun message-root (tree)
   (mtree:root-node tree))
@@ -808,6 +808,12 @@ db:renumber-timeline-message-index."
           (attachments     (status-attachments->text reblogged-id)))
       (values body attachments))))
 
+(defun maybe-remove-mentions (window status-id)
+  (when-let ((exists-mention-p (db:single-status-exists-p status-id
+                                                          db:+home-timeline+
+                                                          db:+mentions-status-folder+)))
+    (remove-mention window status-id)))
+
 (defmethod open-message ((object thread-window))
   (with-accessors ((row-selected-index row-selected-index)
                    (rows               rows)
@@ -833,6 +839,7 @@ db:renumber-timeline-message-index."
                 (actual-attachments (if (string= attachments reblogged-status-attachments)
                                         attachments
                                         (strcat reblogged-status-attachments attachments))))
+            (maybe-remove-mentions object status-id)
             (message-window:prepare-for-rendering *message-window*
                                                   (strcat header
                                                           actual-body
@@ -957,18 +964,19 @@ db:renumber-timeline-message-index."
               (open-message object))
             (ui:info-message (_ "No others unread messages exist.")))))))
 
-(defmethod increase-mentions-count ((object thread-window) &optional amount)
-  (with-accessors ((mentions-count mentions-count)) object
-    (let ((old-count mentions-count))
-      (incf mentions-count amount)
-      (setf mentions-count (max 0 mentions-count))
-      (values object old-count))))
+(defmethod add-mention ((object thread-window) mention)
+  (with-accessors ((mentions mentions)) object
+    (let ((reversed (reverse mentions)))
+      (push mention reversed)
+      (setf mentions (reverse reversed)))))
 
-(defmethod decrease-mentions-count ((object thread-window) &optional amount)
-  (multiple-value-bind (x old-count)
-      (increase-mentions-count object (- amount))
-    (declare (ignore x))
-    (values object old-count)))
+(defmethod remove-mention ((object thread-window) status-id)
+  (with-accessors ((mentions mentions)) object
+    (setf mentions
+          (remove-if (lambda (mention) (api-client:id= (tooter:id (tooter:status mention))
+                                                       status-id))
+                     mentions))
+    object))
 
 (defgeneric marked-to-delete-p (object))
 

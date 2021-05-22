@@ -894,7 +894,8 @@
               (mentions-count (length mentions))
               (thread-window  specials:*thread-window*))
     (when command-line:*notify-mentions*
-      (thread-window:increase-mentions-count thread-window mentions-count)
+      (loop for mention in mentions do
+        (thread-window:add-mention thread-window mention))
       (ui:notify (format nil
                          (n_ "Got ~a notification"
                              "Got ~a notifications"

@@ -836,6 +836,7 @@
    :message-id->tree
    :message-from-timeline-folder-message-index
    :message-index->tree
+   :single-status-exists-p
    :find-status-id
    :find-message-id
    :data-id
@@ -1512,6 +1513,7 @@
    :get-notifications
    :delete-notification
    :sort-id<
+   :id=
    :all-mentions
    :update-mentions-folder
    :expand-status-thread
@@ -1931,8 +1933,8 @@
    :search-next-message-meta
    :search-previous-message-meta
    :search-next-unread
-   :increase-mentions-count
-   :decrease-mentions-count
+   :add-mention
+   :remove-mention
    :goto-message
    :goto-first-message
    :goto-last-message
