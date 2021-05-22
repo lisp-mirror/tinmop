@@ -150,7 +150,16 @@ This function perfom the latest of this actions."
                 (multiple-value-bind (matched query-string)
                     (cl-ppcre:scan-to-strings "code=\(.+\)" line)
                   (if matched
-                      (first (cl-ppcre:split "(&)|(\\p{White_Space})" (first-elt query-string)))
+                      (prog1
+                          (first (cl-ppcre:split "(&)|(\\p{White_Space})" (first-elt query-string)))
+                        (let ((*standard-output* stream)
+                              (endline (format nil "~C~C" #\return #\linefeed)))
+                          (format t "HTTP/1.1 200 OK~a" endline)
+                          (format t "Content-Type: text/html; charset=UTF-8~a" endline)
+                          (format t "Connection: close~a" endline)
+                          (format t "~a" endline)
+                          (format t "<p>~a</p>"
+                                  (_ "Tinmop has been successfully authorized, you can close this tab."))))
                       nil)))
            (usocket:socket-close client-socket)))
     (usocket:socket-close socket)))
