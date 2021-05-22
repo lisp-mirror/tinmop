@@ -129,19 +129,28 @@ parameter, returns nil if a socket can not be opened."
              (values server port)))))
   nil)
 
+(defparameter *http-auth-reply-headers*
+  '("HTTP/1.1 200 OK"
+    "Content-Type: text/html; charset=UTF-8"
+    "Connection: close"))
+
+(defun http-auth-reply-body-template ()
+  (_ "<!doctype html><html><head><meta charset=\"utf-8\"/></head><body><h1>~a has been successfully authorized, you can close this tab.</h1></body></html>"))
+
 (defun catch-auth-code (socket)
   "When an user authorize a client  to access mastodon the server send
 an http request to an arbitrary URI chosen by the user.
 
 This  URI contains  the authorization  code neede  to make  the client
-trusted by the server.  When  tinmop starts the authorization process
-opens a server  on the local machine and asks  the server to redirect
-the user's browser to an URI (which contains the autorization code on
-a query string) that points to  the local machine.  The server on the
-local machine  read the data  from the browser'srequeste and  get the
+trusted by the  server.  When tinmop starts  the authorization process
+opens a  server on the local  machine and asks the  server to redirect
+the user's browser to an URI  (which contains the autorization code on
+a query string)  that points to the local machine.   The server on the
+local machine  read the data  from the  browser's request and  get the
 authorization code.
 
-This function perfom the latest of this actions."
+This  function perfom  the  latest  of this  actions  and returns  the
+authorization code."
   (unwind-protect
        (let ((client-socket (usocket:socket-accept socket)))
          (unwind-protect
@@ -152,13 +161,10 @@ This function perfom the latest of this actions."
                   (when matched
                     (prog1
                         (first (cl-ppcre:split "(&)|(\\p{White_Space})" (first-elt query-string)))
-                      (let ((endline (format nil "~C~C" #\return #\linefeed)))
-                        (format stream "HTTP/1.1 200 OK~a" endline)
-                        (format stream "Content-Type: text/html; charset=UTF-8~a" endline)
-                        (format stream "Connection: close~a" endline)
-                        (format stream "~a" endline)
-                        (format stream "<p>~a</p>"
-                                (_ "Tinmop has been successfully authorized, you can close this tab.")))))))
+                      (let* ((endline (format nil "~C~C" #\return #\linefeed))
+                             (headers (join-with-strings *http-auth-reply-headers* endline)))
+                        (format stream "~a~a~a" headers endline endline)
+                        (format stream (http-auth-reply-body-template) +program-name+))))))
            (usocket:socket-close client-socket)))
     (usocket:socket-close socket)))
 

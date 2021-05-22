@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tinmop 0.0.1\n"
 "Report-Msgid-Bugs-To: https://notabug.org/cage/tinmop/\n"
-"POT-Creation-Date: 2021-05-22 12:55+0200\n"
-"PO-Revision-Date: 2021-05-22 12:57+0200\n"
+"POT-Creation-Date: 2021-05-22 14:02+0200\n"
+"PO-Revision-Date: 2021-05-22 14:04+0200\n"
 "Last-Translator: cage <cage@invalid.org>\n"
 "Language-Team: Italian\n"
 "Language: it\n"
@@ -26,11 +26,16 @@ msgstr "La finestra non sta mostrando un documento gemini"
 msgid "Please visit the address below."
 msgstr "Per favore visita l'indirizzo mostrato piu' sotto."
 
-#: src/api-client.lisp:162
-msgid "Tinmop has been successfully authorized, you can close this tab."
-msgstr "Tinmop è stato autorizzato con successo, puoi chiudere questo tab."
+#: src/api-client.lisp:138
+#, lisp-format
+msgid ""
+"<!doctype html><html><head><meta charset=\"utf-8\"/></head><body><h1>~a has "
+"been successfully authorized, you can close this tab.</h1></body></html>"
+msgstr ""
+"<!doctype html><html><head><meta charset=\"utf-8\"/></head><body><h1>~a è "
+"stato autorizzato con successo, puoi chiudere questo tab.</h1></body></html>"
 
-#: src/api-client.lisp:197
+#: src/api-client.lisp:201
 #, lisp-format
 msgid ""
 "Credential invalid. Try to remove ~a and restart the software to "
@@ -39,44 +44,44 @@ msgstr ""
 "Credenziali non più valide. Provare a rimuovere ~a e riavviare il programma "
 "per riautenticarsi."
 
-#: src/api-client.lisp:208
+#: src/api-client.lisp:212
 msgid "Save address"
 msgstr "Salva l'indirizzo"
 
-#: src/api-client.lisp:209
+#: src/api-client.lisp:213
 msgid "Open address"
 msgstr "Apri l'indirizzo"
 
-#: src/api-client.lisp:210 src/ui-goodies.lisp:160 src/ui-goodies.lisp:165
+#: src/api-client.lisp:214 src/ui-goodies.lisp:160 src/ui-goodies.lisp:165
 #: src/windows.lisp:532 src/windows.lisp:588
 msgid "Cancel"
 msgstr "Annulla"
 
-#: src/api-client.lisp:222
+#: src/api-client.lisp:226
 msgid "This client has been authorized"
 msgstr "Questo client è stato autorizzato."
 
-#: src/api-client.lisp:226
+#: src/api-client.lisp:230
 msgid "Got a generic error when registering client"
 msgstr "Errore generico provando a registare il client"
 
-#: src/api-client.lisp:228
+#: src/api-client.lisp:232
 #, lisp-format
 msgid "File ~a saved"
 msgstr "File ~a salvato"
 
-#: src/api-client.lisp:230
+#: src/api-client.lisp:234
 msgid "Please enter below the file where to save the address"
 msgstr "Inserisci piu' sotto il file dove salvare l'indirizzo"
 
-#: src/api-client.lisp:250
+#: src/api-client.lisp:254
 msgid ""
 "Error: was not able to create server socket to listen for authorization code"
 msgstr ""
 "Errore: non sono stato in grado di creare il socket per la cattura del "
 "codice di autorizzazione."
 
-#: src/api-client.lisp:787
+#: src/api-client.lisp:793
 #, lisp-format
 msgid "Initializing empty credentials file in ~a"
 msgstr "Inizializzo credenziali vuote (segnaposto) nel file ~a"
@@ -224,7 +229,7 @@ msgstr " data di ultimo accesso: "
 msgid "Generated certificates"
 msgstr "Certificati generati"
 
-#: src/gemini-subscription-window.lisp:50 src/program-events.lisp:1224
+#: src/gemini-subscription-window.lisp:50 src/program-events.lisp:1227
 msgid "No subtitle"
 msgstr "Nessun sottotitolo"
 
@@ -232,25 +237,25 @@ msgstr "Nessun sottotitolo"
 msgid "Subscribed gemlogs"
 msgstr "Abbonamenti ai gemlog"
 
-#: src/gemini-viewer.lisp:407
+#: src/gemini-viewer.lisp:414
 msgid "Gemini document downloading aborted"
 msgstr "Scaricamento del documento in formato gemini interrotto"
 
-#: src/gemini-viewer.lisp:410
+#: src/gemini-viewer.lisp:417
 msgid "Gemini document downloading completed"
 msgstr "Scaricamento del documento in formato gemini completato"
 
-#: src/gemini-viewer.lisp:568
+#: src/gemini-viewer.lisp:575
 #, lisp-format
 msgid "Server ~s asks: ~s "
 msgstr "Il server ~s chiede: ~s "
 
-#: src/gemini-viewer.lisp:588
+#: src/gemini-viewer.lisp:595
 #, lisp-format
 msgid "Redirects to ~s, follows redirect? [y/N] "
 msgstr "Seguire la redirezione a ~s? [s/N] "
 
-#: src/gemini-viewer.lisp:667
+#: src/gemini-viewer.lisp:674
 #, lisp-format
 msgid ""
 "Host ~s signature changed! This is a potential security risk! Ignore this "
@@ -259,27 +264,27 @@ msgstr ""
 "La firma dell'host ~s è cambiata! Questo è un potenziale problema di "
 "sicurezza! Proseguire? [s/N]"
 
-#: src/gemini-viewer.lisp:671 src/tui-utils.lisp:454 src/tui-utils.lisp:464
+#: src/gemini-viewer.lisp:678 src/tui-utils.lisp:454 src/tui-utils.lisp:464
 #, lisp-format
 msgid "Error: ~a"
 msgstr "Errore: ~a"
 
-#: src/gemini-viewer.lisp:679
+#: src/gemini-viewer.lisp:686
 #, lisp-format
 msgid "Error getting ~s: ~a"
 msgstr "Errore connettendomi a ~s: ~a"
 
-#: src/gemini-viewer.lisp:690
+#: src/gemini-viewer.lisp:697
 #, lisp-format
 msgid "Going back to: ~a"
 msgstr "Ritorno a: ~a"
 
-#: src/gemini-viewer.lisp:702
+#: src/gemini-viewer.lisp:709
 #, lisp-format
 msgid "Viewing source of: ~a"
 msgstr "Visualizzo il sorgente di: ~a"
 
-#: src/gemini-viewer.lisp:758
+#: src/gemini-viewer.lisp:765
 msgid "Current gemini streams"
 msgstr "Flussi di dati gemini attuali"
 
@@ -519,37 +524,37 @@ msgstr "Non trovo l'utente ~a"
 msgid "Downloaded new messages for tag ~a"
 msgstr "Scaricati nuovi messaggi per l'etichetta ~a."
 
-#: src/program-events.lisp:897
+#: src/program-events.lisp:900
 #, lisp-format
 msgid "Got ~a notification"
 msgid_plural "Got ~a notifications"
 msgstr[0] "Hai ~a notifica"
 msgstr[1] "Hai ~a notifiche"
 
-#: src/program-events.lisp:1027
+#: src/program-events.lisp:1030
 msgid "Empty address"
 msgstr "Indirizzo vuoto"
 
-#: src/program-events.lisp:1039
+#: src/program-events.lisp:1042
 #, lisp-format
 msgid "Index of local directory ~a~2%"
 msgstr "Indice della directory locale ~a~2~%"
 
-#: src/program-events.lisp:1179
+#: src/program-events.lisp:1182
 #, lisp-format
 msgid "Unable to subscribe to ~s"
 msgstr "Non posso abbonarmi a ~s: "
 
-#: src/program-events.lisp:1235
+#: src/program-events.lisp:1238
 #, lisp-format
 msgid "~a ~:[(not opened)~;(opened)~]~%"
 msgstr "~a ~:[(non aperto)~;(aperto)~]~%"
 
-#: src/program-events.lisp:1291
+#: src/program-events.lisp:1294
 msgid "TOC can be shown for gemini windows only."
-msgstr ""
+msgstr "L'indice può essere generato solo per le pagine gemini."
 
-#: src/program-events.lisp:1396
+#: src/program-events.lisp:1399
 msgid "no label"
 msgstr "nessuna etichetta"
 
@@ -591,22 +596,22 @@ msgstr "Menzioni: "
 msgid "Subject: "
 msgstr "Oggetto del messaggio: "
 
-#: src/software-configuration.lisp:533
+#: src/software-configuration.lisp:534
 #, lisp-format
 msgid "fatal error: The file ~a is empty"
 msgstr "errore fatale: il file ~a è vuoto."
 
-#: src/software-configuration.lisp:556
+#: src/software-configuration.lisp:557
 #, lisp-format
 msgid "The configuration (*.conf) file is missing the value for ~s"
 msgstr ""
 "Il file di configurazione (*.conf) manca del valore corrispondente a: ~s"
 
-#: src/software-configuration.lisp:568
+#: src/software-configuration.lisp:569
 msgid "(directory)"
 msgstr "(directory)"
 
-#: src/software-configuration.lisp:669
+#: src/software-configuration.lisp:670
 msgid "This message was crypted."
 msgstr "Questo messaggion era cifrato."
 
@@ -631,38 +636,38 @@ msgid "Unrecoverable error: ~a can not be fitted in a box of width ~a"
 msgstr ""
 "Errore non rimediabile: ~a non può adattarsi ad una scatola di larghezza ~a"
 
-#: src/thread-window.lisp:142
+#: src/thread-window.lisp:146
 msgid "no timeline selected"
 msgstr "Nessuna timeline selezionata"
 
-#: src/thread-window.lisp:150
+#: src/thread-window.lisp:154
 msgid "no folder selected"
 msgstr "Nessuna cartella selezionata"
 
-#: src/thread-window.lisp:407
+#: src/thread-window.lisp:426
 msgid "Missing subject"
 msgstr "Oggetto mancante"
 
-#: src/thread-window.lisp:753
+#: src/thread-window.lisp:772
 #, lisp-format
 msgid "No message with index ~a exists."
 msgstr "Nessun messaggio esiste alla posizione ~a."
 
-#: src/thread-window.lisp:883 src/thread-window.lisp:917
+#: src/thread-window.lisp:909 src/thread-window.lisp:943
 #, lisp-format
 msgid "No next message that contains ~s exists."
 msgstr "Nessun messaggio successivo che contenga ~s esiste."
 
-#: src/thread-window.lisp:889 src/thread-window.lisp:923
+#: src/thread-window.lisp:915 src/thread-window.lisp:949
 #, lisp-format
 msgid "No previous message that contains ~s exists."
 msgstr "Nessun messaggio precedente che contenga ~s esiste."
 
-#: src/thread-window.lisp:939
+#: src/thread-window.lisp:965
 msgid "No others unread messages exist."
 msgstr "Non ci sono altri messaggi non letti."
 
-#: src/thread-window.lisp:950
+#: src/thread-window.lisp:990
 msgid "Threads"
 msgstr "Discussioni"
 
@@ -782,9 +787,8 @@ msgid "Focus passed on gemlog subscriptions window."
 msgstr "Il focus è passato alla finestra degli abbonamenti ai gemlog."
 
 #: src/ui-goodies.lisp:544
-#, fuzzy
 msgid "Focus passed on gemini toc window."
-msgstr "Il focus è passato alla finestra dei flussi di dati gemini."
+msgstr "Il focus è passato all'indice della pagina gemini."
 
 #: src/ui-goodies.lisp:557
 msgid "Search for commands (regexp): "
@@ -1188,6 +1192,9 @@ msgstr "Tour completato"
 #: src/windows.lisp:538 src/windows.lisp:594
 msgid "OK"
 msgstr "OK"
+
+#~ msgid "Tinmop has been successfully authorized, you can close this tab."
+#~ msgstr "Tinmop è stato autorizzato con successo, puoi chiudere questo tab."
 
 #~ msgid "This is not a valid gemini address"
 #~ msgstr "Questo non è un indirizzo gemini valido"

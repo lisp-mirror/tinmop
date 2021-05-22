@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tinmop 0.7.0\n"
 "Report-Msgid-Bugs-To: https://notabug.org/cage/tinmop/\n"
-"POT-Creation-Date: 2021-05-22 12:55+0200\n"
+"POT-Creation-Date: 2021-05-22 14:02+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -26,53 +26,56 @@ msgstr ""
 msgid "Please visit the address below."
 msgstr ""
 
-#: src/api-client.lisp:162
-msgid "Tinmop has been successfully authorized, you can close this tab."
+#: src/api-client.lisp:138
+#, lisp-format
+msgid ""
+"<!doctype html><html><head><meta charset=\"utf-8\"/></head><body><h1>~a has "
+"been successfully authorized, you can close this tab.</h1></body></html>"
 msgstr ""
 
-#: src/api-client.lisp:197
+#: src/api-client.lisp:201
 #, lisp-format
 msgid ""
 "Credential invalid. Try to remove ~a and restart the software to "
 "authenticate again."
 msgstr ""
 
-#: src/api-client.lisp:208
+#: src/api-client.lisp:212
 msgid "Save address"
 msgstr ""
 
-#: src/api-client.lisp:209
+#: src/api-client.lisp:213
 msgid "Open address"
 msgstr ""
 
-#: src/api-client.lisp:210 src/ui-goodies.lisp:160 src/ui-goodies.lisp:165
+#: src/api-client.lisp:214 src/ui-goodies.lisp:160 src/ui-goodies.lisp:165
 #: src/windows.lisp:532 src/windows.lisp:588
 msgid "Cancel"
 msgstr ""
 
-#: src/api-client.lisp:222
+#: src/api-client.lisp:226
 msgid "This client has been authorized"
 msgstr ""
 
-#: src/api-client.lisp:226
+#: src/api-client.lisp:230
 msgid "Got a generic error when registering client"
 msgstr ""
 
-#: src/api-client.lisp:228
+#: src/api-client.lisp:232
 #, lisp-format
 msgid "File ~a saved"
 msgstr ""
 
-#: src/api-client.lisp:230
+#: src/api-client.lisp:234
 msgid "Please enter below the file where to save the address"
 msgstr ""
 
-#: src/api-client.lisp:250
+#: src/api-client.lisp:254
 msgid ""
 "Error: was not able to create server socket to listen for authorization code"
 msgstr ""
 
-#: src/api-client.lisp:787
+#: src/api-client.lisp:793
 #, lisp-format
 msgid "Initializing empty credentials file in ~a"
 msgstr ""
@@ -217,7 +220,7 @@ msgstr ""
 msgid "Generated certificates"
 msgstr ""
 
-#: src/gemini-subscription-window.lisp:50 src/program-events.lisp:1224
+#: src/gemini-subscription-window.lisp:50 src/program-events.lisp:1227
 msgid "No subtitle"
 msgstr ""
 
@@ -225,52 +228,52 @@ msgstr ""
 msgid "Subscribed gemlogs"
 msgstr ""
 
-#: src/gemini-viewer.lisp:407
+#: src/gemini-viewer.lisp:414
 msgid "Gemini document downloading aborted"
 msgstr ""
 
-#: src/gemini-viewer.lisp:410
+#: src/gemini-viewer.lisp:417
 msgid "Gemini document downloading completed"
 msgstr ""
 
-#: src/gemini-viewer.lisp:568
+#: src/gemini-viewer.lisp:575
 #, lisp-format
 msgid "Server ~s asks: ~s "
 msgstr ""
 
-#: src/gemini-viewer.lisp:588
+#: src/gemini-viewer.lisp:595
 #, lisp-format
 msgid "Redirects to ~s, follows redirect? [y/N] "
 msgstr ""
 
-#: src/gemini-viewer.lisp:667
+#: src/gemini-viewer.lisp:674
 #, lisp-format
 msgid ""
 "Host ~s signature changed! This is a potential security risk! Ignore this "
 "warning? [y/N] "
 msgstr ""
 
-#: src/gemini-viewer.lisp:671 src/tui-utils.lisp:454 src/tui-utils.lisp:464
+#: src/gemini-viewer.lisp:678 src/tui-utils.lisp:454 src/tui-utils.lisp:464
 #, lisp-format
 msgid "Error: ~a"
 msgstr ""
 
-#: src/gemini-viewer.lisp:679
+#: src/gemini-viewer.lisp:686
 #, lisp-format
 msgid "Error getting ~s: ~a"
 msgstr ""
 
-#: src/gemini-viewer.lisp:690
+#: src/gemini-viewer.lisp:697
 #, lisp-format
 msgid "Going back to: ~a"
 msgstr ""
 
-#: src/gemini-viewer.lisp:702
+#: src/gemini-viewer.lisp:709
 #, lisp-format
 msgid "Viewing source of: ~a"
 msgstr ""
 
-#: src/gemini-viewer.lisp:758
+#: src/gemini-viewer.lisp:765
 msgid "Current gemini streams"
 msgstr ""
 
@@ -502,37 +505,37 @@ msgstr ""
 msgid "Downloaded new messages for tag ~a"
 msgstr ""
 
-#: src/program-events.lisp:897
+#: src/program-events.lisp:900
 #, lisp-format
 msgid "Got ~a notification"
 msgid_plural "Got ~a notifications"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/program-events.lisp:1027
+#: src/program-events.lisp:1030
 msgid "Empty address"
 msgstr ""
 
-#: src/program-events.lisp:1039
+#: src/program-events.lisp:1042
 #, lisp-format
 msgid "Index of local directory ~a~2%"
 msgstr ""
 
-#: src/program-events.lisp:1179
+#: src/program-events.lisp:1182
 #, lisp-format
 msgid "Unable to subscribe to ~s"
 msgstr ""
 
-#: src/program-events.lisp:1235
+#: src/program-events.lisp:1238
 #, lisp-format
 msgid "~a ~:[(not opened)~;(opened)~]~%"
 msgstr ""
 
-#: src/program-events.lisp:1291
+#: src/program-events.lisp:1294
 msgid "TOC can be shown for gemini windows only."
 msgstr ""
 
-#: src/program-events.lisp:1396
+#: src/program-events.lisp:1399
 msgid "no label"
 msgstr ""
 
@@ -574,21 +577,21 @@ msgstr ""
 msgid "Subject: "
 msgstr ""
 
-#: src/software-configuration.lisp:533
+#: src/software-configuration.lisp:534
 #, lisp-format
 msgid "fatal error: The file ~a is empty"
 msgstr ""
 
-#: src/software-configuration.lisp:556
+#: src/software-configuration.lisp:557
 #, lisp-format
 msgid "The configuration (*.conf) file is missing the value for ~s"
 msgstr ""
 
-#: src/software-configuration.lisp:568
+#: src/software-configuration.lisp:569
 msgid "(directory)"
 msgstr ""
 
-#: src/software-configuration.lisp:669
+#: src/software-configuration.lisp:670
 msgid "This message was crypted."
 msgstr ""
 
@@ -611,38 +614,38 @@ msgstr ""
 msgid "Unrecoverable error: ~a can not be fitted in a box of width ~a"
 msgstr ""
 
-#: src/thread-window.lisp:142
+#: src/thread-window.lisp:146
 msgid "no timeline selected"
 msgstr ""
 
-#: src/thread-window.lisp:150
+#: src/thread-window.lisp:154
 msgid "no folder selected"
 msgstr ""
 
-#: src/thread-window.lisp:407
+#: src/thread-window.lisp:426
 msgid "Missing subject"
 msgstr ""
 
-#: src/thread-window.lisp:753
+#: src/thread-window.lisp:772
 #, lisp-format
 msgid "No message with index ~a exists."
 msgstr ""
 
-#: src/thread-window.lisp:883 src/thread-window.lisp:917
+#: src/thread-window.lisp:909 src/thread-window.lisp:943
 #, lisp-format
 msgid "No next message that contains ~s exists."
 msgstr ""
 
-#: src/thread-window.lisp:889 src/thread-window.lisp:923
+#: src/thread-window.lisp:915 src/thread-window.lisp:949
 #, lisp-format
 msgid "No previous message that contains ~s exists."
 msgstr ""
 
-#: src/thread-window.lisp:939
+#: src/thread-window.lisp:965
 msgid "No others unread messages exist."
 msgstr ""
 
-#: src/thread-window.lisp:950
+#: src/thread-window.lisp:990
 msgid "Threads"
 msgstr ""
 
