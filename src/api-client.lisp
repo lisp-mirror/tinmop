@@ -640,7 +640,7 @@ numerical indices identifying the option voting for"
 - max-id get notification until this id
 - min-id starts getting notification newer than this id
 - since-id cut the notifications starting from this id
-- limit gets a maimum of messages up to this value
+- limit gets a maximum of messages up to this value
 - exclude-types list types of modifications that will not be fetched."
   (tooter:notifications *client*
                         :max-id        max-id
@@ -653,7 +653,7 @@ numerical indices identifying the option voting for"
 (defun mentions (max-id &optional (excluded-types '(:follow :favourite :reblog)))
   "Get the  latest mentions, starting from `min-id` (pass nil to get
 the latest 15 mentions)."
-  (get-notifications :max-id max-id
+  (get-notifications :max-id        max-id
                      :exclude-types excluded-types))
 
 (defun-api-call delete-notification (notification-id)

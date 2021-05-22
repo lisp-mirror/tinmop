@@ -891,8 +891,10 @@
 
 (defmethod process-event ((object update-mentions-event))
   (when-let* ((mentions       (api-client:update-mentions-folder :delete-mentions-on-server t))
-              (mentions-count (length mentions)))
+              (mentions-count (length mentions))
+              (thread-window  specials:*thread-window*))
     (when command-line:*notify-mentions*
+      (thread-window:increase-mentions-count thread-window mentions-count)
       (ui:notify (format nil
                          (n_ "Got ~a notification"
                              "Got ~a notifications"

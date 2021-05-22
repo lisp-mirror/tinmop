@@ -1147,6 +1147,7 @@
    :config-purge-history-days-offset
    :config-purge-cage-days-offset
    :config-notification-life
+   :config-notification-icon
    :config-server-name
    :config-username
    :config-password-echo-character
@@ -1920,6 +1921,7 @@
    :thread-window
    :timeline-type
    :timeline-folder
+   :mentions-count
    :grow-tree-to-fit-window
    :fit-timeline-to-window
    :go-message-down
@@ -1929,6 +1931,8 @@
    :search-next-message-meta
    :search-previous-message-meta
    :search-next-unread
+   :increase-mentions-count
+   :decrease-mentions-count
    :goto-message
    :goto-first-message
    :goto-last-message

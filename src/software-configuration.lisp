@@ -436,6 +436,7 @@
                    input-dialog
                    help-dialog
                    notify-window
+                   notification-icon
                    life
                    quick-help
                    more-choices
@@ -810,6 +811,12 @@
                                                        100))))
                    +key-notify-window+
                    +key-life+)
+
+(gen-simple-access (notification-icon)
+                   +key-thread-window+
+                   +key-modeline+
+                   +key-notification-icon+
+                   +key-value+)
 
 (gen-simple-access (server-name)
                    +key-server+)

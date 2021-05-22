@@ -112,7 +112,11 @@
    (timeline-folder
     :initform db:+default-status-folder+
     :initarg  :timeline-folder
-    :accessor timeline-folder)))
+    :accessor timeline-folder)
+   (mentions-count
+    :initform 0
+    :initarg  :mentions-count
+    :accessor mentions-count)))
 
 (defmacro lambda-ignore-args (args &body body)
   `(lambda (,@args)
@@ -177,6 +181,16 @@
                                       :account-id nil)))
         "")))
 
+(defun expand-mentions (window)
+  (with-accessors ((mentions-count mentions-count)) window
+    (if (> mentions-count 0)
+        (with-tuify-results (window)
+          (format nil
+                  "~a(~a)"
+                  (swconf:config-notification-icon)
+                  mentions-count))
+        "")))
+
 (defun default-expander ()
   (list (cons "%" (lambda (w) (with-tuify-results (w) "%")))
         (cons "s" (lambda (w) (with-tuify-results (w) (swconf:config-server-name))))
@@ -185,7 +199,8 @@
         (cons "f" #'expand-folder-name)
         (cons "h" #'expand-message-hashtags)
         (cons "t" #'expand-total-messages)
-        (cons "r" #'expand-redp-messages)))
+        (cons "r" #'expand-redp-messages)
+        (cons "m" #'expand-mentions)))
 
 (defmethod initialize-instance :after ((object thread-window) &key &allow-other-keys)
   (with-accessors ((mapping-code->fn mapping-code->fn)) object
@@ -302,6 +317,10 @@
 (defgeneric search-next-unread (object))
 
 (defgeneric search-previous-message-meta (object text-looking-for))
+
+(defgeneric increase-mentions-count (object &optional amount))
+
+(defgeneric decrease-mentions-count (object &optional amount))
 
 (defun message-root (tree)
   (mtree:root-node tree))
@@ -937,6 +956,19 @@ db:renumber-timeline-message-index."
               (rebuild-lines object new-message-index)
               (open-message object))
             (ui:info-message (_ "No others unread messages exist.")))))))
+
+(defmethod increase-mentions-count ((object thread-window) &optional amount)
+  (with-accessors ((mentions-count mentions-count)) object
+    (let ((old-count mentions-count))
+      (incf mentions-count amount)
+      (setf mentions-count (max 0 mentions-count))
+      (values object old-count))))
+
+(defmethod decrease-mentions-count ((object thread-window) &optional amount)
+  (multiple-value-bind (x old-count)
+      (increase-mentions-count object (- amount))
+    (declare (ignore x))
+    (values object old-count)))
 
 (defgeneric marked-to-delete-p (object))
 

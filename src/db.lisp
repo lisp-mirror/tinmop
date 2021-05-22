@@ -1706,7 +1706,7 @@ returns an alist of (local-username . acct)."
     results))
 
 (defun mention-local->global-alist ()
-  "Returns an alist of all known acoounts as ('@'local-username . '@'acct)."
+  "Returns an alist of all known accounts as ('@'local-username . '@'acct)."
   (let* ((query (select (:username :acct) (from +table-account+)))
          (rows  (fetch-all-rows query)))
     (loop for row in rows collect
