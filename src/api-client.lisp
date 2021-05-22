@@ -143,13 +143,16 @@ authorization code.
 
 This function perfom the latest of this actions."
   (unwind-protect
-       (let* ((stream (usocket:socket-stream (usocket:socket-accept socket)))
-              (line (read-line stream)))
-         (multiple-value-bind (matched query-string)
-             (cl-ppcre:scan-to-strings "code=\(.+\)" line)
-           (if matched
-               (first (cl-ppcre:split "(&)|(\\p{White_Space})" (first-elt query-string)))
-               nil)))
+       (let ((client-socket (usocket:socket-accept socket)))
+         (unwind-protect
+              (let* ((stream (usocket:socket-stream client-socket))
+                     (line (read-line stream)))
+                (multiple-value-bind (matched query-string)
+                    (cl-ppcre:scan-to-strings "code=\(.+\)" line)
+                  (if matched
+                      (first (cl-ppcre:split "(&)|(\\p{White_Space})" (first-elt query-string)))
+                      nil)))
+           (usocket:socket-close client-socket)))
     (usocket:socket-close socket)))
 
 (defun make-redirect-url (port)
