@@ -1,3 +1,45 @@
+2021-05-23  cage
+
+        * etc/init.lisp:
+
+	- [gemini] reverted tour mode keys to old ones "t t" -> "t"
+
+	there is usually  no needs for explicitly open a  TOC gemini window
+	as it is opened automatically when the gemini stream is completed.
+
+2021-05-22  cage, Omar Polo
+
+	* AUTHORS,
+	* po/it.po,
+	* po/tinmop.pot,
+	* po/tinmop.pot,
+	* src/api-client.lisp,
+	* src/db.lisp,
+	* src/main-window.lisp,
+	* src/package.lisp,
+	* src/program-events.lisp,
+	* src/thread-window.lisp,
+        * etc/default-theme.conf,
+        * src/notify-window.lisp,
+        * src/package.lisp,
+        * src/software-configuration.lisp,
+        * src/thread-window.lisp:
+
+	- made geometry of notification window customizable (via
+        configuration file).
+         - made some stylistic changes to client's (pleroma) authorization
+        procedures.
+        - added AUTHORS file.
+	- [pleroma client authentication] (Omar Polo)
+	  - don't unnecessarily bind *output-stream* (o.p.)
+          - reply to the HTTP client before closing the
+            connection
+          - always close the client socket
+	-updated Italian translation (cage, Omar Polo)
+        - added mentions rendering in the thread window modeline.
+	- decrease mentions count on the modeline when a status that
+        contains a mention is opened.
+
 2021-05-18  cage
 
         * src/gemini-viewer.lisp:

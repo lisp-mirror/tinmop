@@ -1,6 +1,29 @@
+* 2021-05-23
+  - New features
+    - [gemini]
+      - Added a table of contents (TOC) window when a gemini stream is completed.
+        The TOC is auto-generated from header lines contained in the gemini text;
+
+    - the position and width of the notification window is now customizable by
+      users using configuration files.
+
+    - Bugfix
+      - [gemini]
+        - prevented rendering gemini files in the message window when a toot
+        is shown.
+        - fixed parsing of quoted lines, an empty line can be a valid quote.
+        - recognized gemlog's subtitle (if presents)
+
+    - Improvements
+      - When the  user try to authenticate  the program on a  server a
+        success message is returned on the browser (thanks op!).
+      - do not load configuration files if cli options '-h' or '-v' are
+        used.
+
+
 * 2021-05-06 version 0.7.0
 
-  - New feature
+  - New features
     - added "tour mode" to save a "temporary bookmark" of links as explained here:
 
       gemini://gemini.circumlunar.space/users/solderpunk/gemlog/gemini-client-navigation.gmi
