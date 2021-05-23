@@ -351,9 +351,9 @@
 
 (define-key "p"         #'message-toggle-preformatted-block          *gemini-message-keymap*)
 
-(define-key "t t"       #'next-tour-link                             *gemini-message-keymap*)
+(define-key "t"         #'next-tour-link                             *gemini-message-keymap*)
 
-(define-key "t o"       #'open-gemini-toc                            *gemini-message-keymap*)
+(define-key "O"         #'open-gemini-toc                            *gemini-message-keymap*)
 
 (define-key "T"         #'show-tour-links                            *gemini-message-keymap*)
 
