@@ -36,7 +36,7 @@ EXTRA_DIST           = config.rpath m4/ChangeLog  tinmop.asd README.org src \
 SUBDIRS              = po
 
 dist_doc_DATA        = README.org README.txt LICENSES.org CONTRIBUTING.org \
-                    doc/man.org doc/send-toot.lisp NEWS.org ChangeLog
+                    doc/man.org doc/send-toot.lisp NEWS.org ChangeLog AUTHORS
 
 confdir              = $(sysconfdir)/$(PACKAGE)
 

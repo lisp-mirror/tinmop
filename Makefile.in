@@ -216,8 +216,9 @@ CSCOPE = cscope
 DIST_SUBDIRS = $(SUBDIRS)
 am__DIST_COMMON = $(dist_man1_MANS) $(srcdir)/Makefile.in \
 	$(srcdir)/quick_quicklisp.sh.in \
-	$(top_srcdir)/src/config.lisp.in.in COPYING ChangeLog compile \
-	config.guess config.rpath config.sub install-sh missing
+	$(top_srcdir)/src/config.lisp.in.in AUTHORS COPYING ChangeLog \
+	compile config.guess config.rpath config.sub install-sh \
+	missing
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 distdir = $(PACKAGE)-$(VERSION)
 top_distdir = $(distdir)
@@ -395,7 +396,7 @@ EXTRA_DIST = config.rpath m4/ChangeLog  tinmop.asd README.org src \
 
 SUBDIRS = po
 dist_doc_DATA = README.org README.txt LICENSES.org CONTRIBUTING.org \
-                    doc/man.org doc/send-toot.lisp NEWS.org ChangeLog
+                    doc/man.org doc/send-toot.lisp NEWS.org ChangeLog AUTHORS
 
 confdir = $(sysconfdir)/$(PACKAGE)
 dist_conf_DATA = etc/init.lisp etc/default-theme.conf etc/shared.conf
