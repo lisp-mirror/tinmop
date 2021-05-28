@@ -63,8 +63,10 @@
   (let ((error-message
          (_ "No editor found, please configure the 'editor' directive in your configuration file"))
         (editor (or (swconf:external-editor)
-                    (getenv "VISUAL")
-                    (getenv "EDITOR")
+                    (and (text-utils:string-not-empty-p (getenv "VISUAL"))
+                         (getenv "VISUAL"))
+                    (and (text-utils:string-not-empty-p (getenv "EDITOR"))
+                         (getenv "EDITOR"))
                     "ed")))
     (if (null editor)
         (error error-message)
