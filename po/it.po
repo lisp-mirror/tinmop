@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tinmop 0.0.1\n"
 "Report-Msgid-Bugs-To: https://notabug.org/cage/tinmop/\n"
-"POT-Creation-Date: 2021-05-22 14:02+0200\n"
+"POT-Creation-Date: 2021-05-23 18:08+0200\n"
 "PO-Revision-Date: 2021-05-22 14:04+0200\n"
 "Last-Translator: cage <cage@invalid.org>\n"
 "Language-Team: Italian\n"
@@ -596,22 +596,22 @@ msgstr "Menzioni: "
 msgid "Subject: "
 msgstr "Oggetto del messaggio: "
 
-#: src/software-configuration.lisp:534
+#: src/software-configuration.lisp:537
 #, lisp-format
 msgid "fatal error: The file ~a is empty"
 msgstr "errore fatale: il file ~a è vuoto."
 
-#: src/software-configuration.lisp:557
+#: src/software-configuration.lisp:560
 #, lisp-format
 msgid "The configuration (*.conf) file is missing the value for ~s"
 msgstr ""
 "Il file di configurazione (*.conf) manca del valore corrispondente a: ~s"
 
-#: src/software-configuration.lisp:569
+#: src/software-configuration.lisp:572
 msgid "(directory)"
 msgstr "(directory)"
 
-#: src/software-configuration.lisp:670
+#: src/software-configuration.lisp:673
 msgid "This message was crypted."
 msgstr "Questo messaggion era cifrato."
 

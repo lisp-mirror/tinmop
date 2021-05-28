@@ -1,4 +1,4 @@
-* 2021-05-23
+* 2021-05-23 version 0.8.0
   - New features
     - [gemini]
       - Added a table of contents (TOC) window when a gemini stream is completed.
@@ -18,7 +18,11 @@
       - When the  user try to authenticate  the program on a  server a
         success message is returned on the browser (thanks op!).
       - do not load configuration files if cli options '-h' or '-v' are
-        used.
+        used;
+      - if no editor is specified in  the config file the program look
+        for  values  of environment  variables  EDITOR  or VISUAL  and
+        fallback to ed  if the variables are not setted  or have empty
+        value.
 
 
 * 2021-05-06 version 0.7.0

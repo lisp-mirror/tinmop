@@ -1,3 +1,12 @@
+2021-05-28 Omar Polo
+
+	* src/os-utils.lisp,
+	* src/software-configuration.lisp:
+
+	- looking for values of environment variables EDITOR and VISUAL if
+	the user did  not specified an editor in the  config file. If both
+	variables are empty use "ed".
+
 2021-05-23  cage
 
         * etc/init.lisp:
