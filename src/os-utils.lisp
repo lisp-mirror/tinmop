@@ -60,22 +60,18 @@
   (os-utils:getenv "PWD"))
 
 (defun external-editor ()
-  (let ((error-message
-         (_ "No editor found, please configure the 'editor' directive in your configuration file"))
-        (editor (or (swconf:external-editor)
-                    (and (text-utils:string-not-empty-p (getenv "VISUAL"))
-                         (getenv "VISUAL"))
-                    (and (text-utils:string-not-empty-p (getenv "EDITOR"))
-                         (getenv "EDITOR"))
-                    "ed")))
-    (if (null editor)
-        (error error-message)
-        (let ((space (cl-ppcre:scan "\\s" editor)))
-          (if space
-              (let ((exe  (subseq editor 0 space))
-                    (args (subseq editor (1+ space))))
-                (values exe args))
-              (values editor nil))))))
+  (let* ((editor (or (swconf:external-editor)
+                     (and (text-utils:string-not-empty-p (getenv "VISUAL"))
+                          (getenv "VISUAL"))
+                     (and (text-utils:string-not-empty-p (getenv "EDITOR"))
+                          (getenv "EDITOR"))
+                     "ed"))
+         (space (cl-ppcre:scan "\\s" editor)))
+    (if space
+        (let ((exe  (subseq editor 0 space))
+              (args (subseq editor (1+ space))))
+          (values exe args))
+        (values editor nil))))
 
 (defun run-external-program (program args
                              &key
