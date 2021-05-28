@@ -59,7 +59,8 @@
    :+folder-direct-message-prefix+
    :+folder-tag-prefix+
    :+mention-prefix+
-   :+cache-tls-certificate-type+))
+   :+cache-tls-certificate-type+
+   :+standard-editor+))
 
 (defpackage :conditions
   (:use :cl

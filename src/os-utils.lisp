@@ -65,7 +65,7 @@
                           (getenv "VISUAL"))
                      (and (text-utils:string-not-empty-p (getenv "EDITOR"))
                           (getenv "EDITOR"))
-                     "ed"))
+                     constants:+standard-editor+))
          (space (cl-ppcre:scan "\\s" editor)))
     (if space
         (let ((exe  (subseq editor 0 space))

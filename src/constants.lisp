@@ -86,3 +86,6 @@ For bug report please point your browser to:
 
 (define-constant +cache-tls-certificate-type+   "certificate" :test #'string=
                  :documentation "The cache type for TLS certificate")
+
+(define-constant +standard-editor+              "ed"          :test #'string=
+                 :documentation "Ed is the standard editor!")
