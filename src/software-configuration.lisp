@@ -1235,7 +1235,6 @@
                    #'signature-file-path
                    #'window-titles-ends
                    #'tags-new-message-mark
-                   #'external-editor
                    #'config-server-name
                    #'config-username
                    #'config-password-echo-character
