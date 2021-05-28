@@ -757,8 +757,8 @@
                             4))
 
 (defun external-editor ()
-  (access-non-null-conf-value *software-configuration*
-                              +key-editor+))
+  (access:access *software-configuration*
+                 +key-editor+))
 
 (defun color-regexps ()
   (access:accesses *software-configuration*
