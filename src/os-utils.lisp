@@ -63,7 +63,9 @@
   (let ((error-message
          (_ "No editor found, please configure the 'editor' directive in your configuration file"))
         (editor (or (swconf:external-editor)
-                    (getenv "EDITOR"))))
+                    (getenv "VISUAL")
+                    (getenv "EDITOR")
+                    "ed")))
     (if (null editor)
         (error error-message)
         (let ((space (cl-ppcre:scan "\\s" editor)))
