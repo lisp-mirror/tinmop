@@ -907,7 +907,8 @@ Force the checking for new message in the thread the selected message belong."
                                 :if-does-not-exist :error)
           (write-sequence body stream))
         (croatoan:end-screen)
-        (os-utils:open-with-editor temp-file)
+        (tui:with-notify-errors
+          (os-utils:open-with-editor temp-file))
         (setf body (fs:slurp-file temp-file))))))
 
 (defun close-send-message-window ()
@@ -1005,7 +1006,8 @@ Force the checking for new message in the thread the selected message belong."
                (add-signature temp-file)
                (let ((reference-open-file (get-universal-time)))
                  (croatoan:end-screen)
-                 (os-utils:open-with-editor temp-file)
+                 (tui:with-notify-errors
+                   (os-utils:open-with-editor temp-file))
                  (when (and (> (fs:file-size temp-file)
                                0)
                             (> (fs:get-stat-mtime temp-file)
