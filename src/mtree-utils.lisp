@@ -605,7 +605,7 @@
                             (cat-line " ")
                             (append-build-element (cons :d line-char)))
                         (loop repeat indent-step do
-                             (cat-line " ")))
+                             (cat-line "  ")))
                    (cond
                      ((rootp node)
                       (append-build-element (cons :data-root data)))
