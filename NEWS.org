@@ -12,18 +12,21 @@
         - prevented rendering gemini files in the message window when a toot
         is shown.
         - fixed parsing of quoted lines, an empty line can be a valid quote.
-        - recognized gemlog's subtitle (if presents)
+        - recognized gemlog's subtitle (if presents);
+        - if VISUAL  or EDITOR contains  invalid editor's path  and no
+          editor is specified in the configuration file print an error
+          instead of jump to the debugger.
 
     - Improvements
       - When the  user try to authenticate  the program on a  server a
         success message is returned on the browser (thanks op!).
-      - do not load configuration files if cli options '-h' or '-v' are
-        used;
+      - do not load  configuration files if command  line options '-h'
+        or '-v' are used;
       - if no editor is specified in  the config file the program look
         for  values  of environment  variables  EDITOR  or VISUAL  and
         fallback to ed  if the variables are not setted  or have empty
-        value.
-
+        value;
+      - improved appearance of the tree of available keybindings.
 
 * 2021-05-06 version 0.7.0
 

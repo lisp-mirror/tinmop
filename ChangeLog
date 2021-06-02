@@ -1,3 +1,17 @@
+2021-05-30  cage
+
+        * etc/default-theme.conf,
+	* src/mtree-utils.lisp:
+
+	- improved appearance of keybindigs tree.
+
+2021-05-29  cage
+
+        * src/ui-goodies.lisp:
+
+	- wrapped call to external editor to catch errors and print a
+        message.
+
 2021-05-28 Omar Polo
 
 	* src/os-utils.lisp,
