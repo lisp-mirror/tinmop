@@ -313,6 +313,9 @@ this exact quantity would go beyond the length or rows or zero."
         (push new-row reversed-old-rows))
       (setf rows (reverse reversed-old-rows)))))
 
+(defmethod append-new-rows ((object row-oriented-widget) (new-rows line))
+  (append-new-rows object (list new-rows)))
+
 (defmethod map-rows ((object row-oriented-widget) (function function)
                      &key &allow-other-keys)
   (mapcar function (rows object)))
