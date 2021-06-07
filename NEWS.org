@@ -1,3 +1,8 @@
+* 2021-05-23 version 0.8.1
+  - Bugfix
+    - fixed  a regression  that made  the program  crash when  adding an
+      attachment to a post.
+
 * 2021-05-23 version 0.8.0
   - New features
     - [gemini]

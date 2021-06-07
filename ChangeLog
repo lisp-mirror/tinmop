@@ -1,3 +1,10 @@
+2021-06-05  cage
+
+        * src/line-oriented-window.lisp:
+
+	- fixed a regression that made the program crash when adding an
+        attachment to a post.
+
 2021-05-30  cage
 
         * etc/default-theme.conf,
