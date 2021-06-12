@@ -256,11 +256,12 @@
     (let ((last-was-removed-p (= row-selected-index
                                  (1- (length rows)))))
       (setf rows (remove-if #'selectedp rows))
-      (when rows
-        (if last-was-removed-p
-            (select-row object (1- row-selected-index))
-            (select-row object row-selected-index)))))
-  object)
+      (if rows
+          (if last-was-removed-p
+              (select-row object (1- row-selected-index))
+              (select-row object row-selected-index))
+          (setf row-selected-index 0)))
+    object))
 
 (defmethod row-move ((object row-oriented-widget) amount)
   "Navigate the lines, move the  selected row by `amount', returns the

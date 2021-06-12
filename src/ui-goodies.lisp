@@ -1283,6 +1283,7 @@ certificate).
 
 (defun follow-request-delete ()
   (line-oriented-window:selected-row-delete *follow-requests-window*)
+  (win-clear *follow-requests-window*)
   (draw *follow-requests-window*))
 
 (defun start-follow-request-processing ()
