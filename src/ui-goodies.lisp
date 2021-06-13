@@ -1935,12 +1935,6 @@ gemini://gemini.circumlunar.space/docs/companion/subscription.gmi
 gemini page the program is rendering."
   (push-event (make-instance 'gemini-toc-open)))
 
-(defun gemini-toc-scroll-up ()
-  (trivial-line-oriented-window-move *gemini-toc-window* -1))
-
-(defun gemini-toc-scroll-down ()
-  (trivial-line-oriented-window-move *gemini-toc-window* 1))
-
 (defun gemini-toc-jump-to-entry ()
   (let* ((selected-row    (line-oriented-window:selected-row-fields *gemini-toc-window*))
          (gid-looking-for (message-window:gemini-toc-group-id selected-row)))
@@ -1948,6 +1942,14 @@ gemini page the program is rendering."
                                :toc-win         *gemini-toc-window*
                                :message-win     *message-window*
                                :gid-looking-for gid-looking-for))))
+
+(defun gemini-toc-scroll-up ()
+  (trivial-line-oriented-window-move *gemini-toc-window* -1)
+  (gemini-toc-jump-to-entry))
+
+(defun gemini-toc-scroll-down ()
+  (trivial-line-oriented-window-move *gemini-toc-window* 1)
+  (gemini-toc-jump-to-entry))
 
 (defun gemini-toc-close ()
   (close-window-and-return-to-message *gemini-toc-window*))
