@@ -349,43 +349,51 @@
    (recover-count
     :initform 0
     :initarg  :recover-count
-    :accessor recover-count)))
+    :accessor recover-count)
+   (force-saving-of-ignored-status
+    :initform nil
+    :initarg :force-saving-of-ignored-status
+    :reader  force-saving-of-ignored-status-p
+    :writer  (setf force-saving-of-ignored-status))))
 
 (defmethod process-event ((object save-timeline-in-db-event))
   "Update a timeline, save messages, performs topological sorts"
   (let ((statuses      (payload object))
         (ignored-count 0))
-    (with-accessors ((timeline-type timeline-type)
-                     (folder        folder)
-                     (min-id        min-id)
-                     (max-id        max-id)
-                     (kind          kind)
-                     (recover-count recover-count)) object
+    (with-accessors ((timeline-type                    timeline-type)
+                     (folder                           folder)
+                     (min-id                           min-id)
+                     (max-id                           max-id)
+                     (kind                             kind)
+                     (recover-count                    recover-count)
+                     (force-saving-of-ignored-status-p force-saving-of-ignored-status-p)) object
       #+debug-mode
       (let ((dump (with-output-to-string (stream)
                     (mapcar (lambda (toot) (tooter::present toot stream))
                             statuses))))
         (dbg "statuses ~a" dump))
       (loop for status in statuses do
-           (let ((account-id (tooter:id (tooter:account status)))
-                 (status-id  (tooter:id status))
-                 (skip-this-status nil))
-             (when (or (and (db:user-ignored-p account-id)
-                            (not (db:status-skipped-p status-id folder timeline-type)))
-                       (hooks:run-hook-until-success 'hooks:*skip-message-hook*
-                                                     status
-                                                     timeline-type
-                                                     folder
-                                                     kind
-                                                     (localp object)))
-               (db:add-to-status-skipped status-id folder timeline-type)
-               (setf skip-this-status t)
-               (incf ignored-count))
-             (when (not skip-this-status)
-               (db:update-db status
-                             :timeline       timeline-type
-                             :folder         folder
-                             :skip-ignored-p t))))
+        (let ((account-id (tooter:id (tooter:account status)))
+              (status-id  (tooter:id status))
+              (skip-this-status nil))
+          (when force-saving-of-ignored-status-p
+            (db:remove-from-status-ignored status-id folder timeline-type))
+          (when (or (and (db:user-ignored-p account-id)
+                         (not (db:status-skipped-p status-id folder timeline-type)))
+                    (hooks:run-hook-until-success 'hooks:*skip-message-hook*
+                                                  status
+                                                  timeline-type
+                                                  folder
+                                                  kind
+                                                  (localp object)))
+            (db:add-to-status-skipped status-id folder timeline-type)
+            (setf skip-this-status t)
+            (incf ignored-count))
+          (when (not skip-this-status)
+            (db:update-db status
+                          :timeline       timeline-type
+                          :folder         folder
+                          :skip-ignored-p t))))
       (db:renumber-timeline-message-index timeline-type
                                           folder
                                           :account-id nil)
@@ -906,13 +914,22 @@
   ((status-id
     :initform nil
     :initarg :status-id
-    :accessor status-id)))
+    :accessor status-id)
+   (force-saving-of-ignored-status
+    :initform nil
+    :initarg :force-saving-of-ignored-status
+    :reader  force-saving-of-ignored-status-p
+    :writer  (setf force-saving-of-ignored-status))))
 
 (defmethod process-event ((object expand-thread-event))
-  (with-accessors ((new-folder    new-folder)
-                   (new-timeline  new-timeline)
-                   (status-id     status-id)) object
-    (api-client:expand-status-thread status-id new-timeline new-folder)))
+  (with-accessors ((new-folder                       new-folder)
+                   (new-timeline                     new-timeline)
+                   (status-id                        status-id)
+                   (force-saving-of-ignored-status-p force-saving-of-ignored-status-p)) object
+    (api-client:expand-status-thread status-id
+                                     new-timeline
+                                     new-folder
+                                     force-saving-of-ignored-status-p)))
 
 (defclass report-status-event (program-event)
   ((status-id

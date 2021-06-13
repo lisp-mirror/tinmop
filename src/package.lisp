@@ -937,6 +937,8 @@
    :status-skipped-p
    :add-to-status-ignored
    :add-to-status-skipped
+   :remove-from-status-skipped
+   :remove-from-status-ignored
    :add-to-followers
    :remove-from-followers
    :forget-all-statuses-marked-deleted
@@ -2423,6 +2425,7 @@
    :update-current-timeline
    :update-current-timeline-backwards
    :refresh-thread
+   :refresh-thread-totally
    :refresh-tags
    :favourite-selected-status
    :unfavourite-selected-status

@@ -2506,6 +2506,18 @@ status has been downloaded from the net and ignored because belog to an ignored 
                           (:status-id :folder :timeline :created-at)
                           (status-id  folder  timeline  now))))))
 
+(defun remove-from-status-skipped (status-id folder timeline)
+  (query (make-delete +table-skipped-status+
+                      (:and (:= :status-id status-id)
+                            (:= :folder    folder)
+                            (:= :timeline  timeline)))))
+
+(defun remove-from-status-ignored (status-id folder timeline)
+  (query (make-delete +table-ignored-status+
+                      (:and (:= :status-id status-id)
+                            (:= :folder    folder)
+                            (:= :timeline  timeline)))))
+
 (defun add-to-followers (user-id)
   (with-db-current-timestamp (now)
     (query (make-insert +table-followed-user+

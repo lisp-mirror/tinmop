@@ -235,6 +235,8 @@
 
 (define-key "x"         #'refresh-thread                              *thread-keymap*)
 
+(define-key "X"         #'refresh-thread-totally                      *thread-keymap*)
+
 (define-key "v"         #'open-message-attach                         *thread-keymap*)
 
 (define-key "l"         #'open-message-link                           *thread-keymap*)

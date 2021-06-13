@@ -680,10 +680,7 @@ Starting from the oldest toot and going back."
                    (push-event refresh-event)))))))
     (%update-timeline-event #'update-payload)))
 
-(defun refresh-thread ()
-  "Check and download a thread
-
-Force the checking for new message in the thread the selected message belong."
+(defun expand-status-tree (force)
   (flet ((update ()
            (when-let* ((selected-message
                         (line-oriented-window:selected-row-fields *thread-window*))
@@ -691,6 +688,7 @@ Force the checking for new message in the thread the selected message belong."
                        (folder           (thread-window:timeline-folder *thread-window*))
                        (status-id        (actual-author-message-id selected-message))
                        (expand-event     (make-instance 'expand-thread-event
+                                                        :force-saving-of-ignored-status force
                                                         :new-folder   folder
                                                         :new-timeline timeline
                                                         :status-id    status-id))
@@ -699,6 +697,20 @@ Force the checking for new message in the thread the selected message belong."
              (push-event expand-event)
              (push-event refresh-event))))
     (notify-procedure #'update (_ "Expanding thread"))))
+
+(defun refresh-thread ()
+  "Check and download a thread
+
+Expand the post until all the reply and parents are downloaded."
+  (expand-status-tree nil))
+
+(defun refresh-thread-totally ()
+  "Check and download a thread
+
+Expand the post until all the reply and parents are downloaded.
+
+If some posts was deleted before, download them again."
+  (expand-status-tree t))
 
 (defun refresh-tags ()
   "Update messages for subscribed tags"

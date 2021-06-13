@@ -715,12 +715,14 @@ the latest 15 mentions)."
     (program-events:push-event event)
     all-mentions))
 
-(defun expand-status-thread (status-id timeline folder)
+(defun expand-status-thread (status-id timeline folder force-saving-of-ignored-status-p)
   (when-let* ((tree  (expand-status-tree status-id))
               (event (make-instance 'program-events:save-timeline-in-db-event
                                     :payload       tree
                                     :timeline-type timeline
-                                    :folder        folder)))
+                                    :folder        folder
+                                    :force-saving-of-ignored-status
+                                    force-saving-of-ignored-status-p)))
     (program-events:push-event event)
     tree))
 
