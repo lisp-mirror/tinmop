@@ -1,3 +1,33 @@
+2021-06-13  cage
+
+        * etc/init.lisp,
+	* src/api-client.lisp,
+	* src/db.lisp,
+        * src/package.lisp,
+	* src/program-events.lisp,
+	* src/ui-goodies.lisp:
+
+	- added feature: expand tree of posts fetching again even posts that
+        was deleted before;
+	- [gemini] allowed save in tour the selected link.
+
+	- [gemini] changed TOC callback: jump to page's section when
+        selecting TOC entry.
+
+2021-06-12  cage
+
+        * src/line-oriented-window.lisp,
+	* src/ui-goodies.lisp:
+
+	- fixed selected-row-delete
+	- redraw following request window when an entry is deleted.
+
+2021-06-09  cage
+
+        * quick_quicklisp.sh.in:
+
+	- fixed quick_quicklisp template file, was missing awk.
+
 2021-06-05  cage
 
         * src/line-oriented-window.lisp:
