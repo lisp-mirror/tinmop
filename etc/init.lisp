@@ -457,9 +457,9 @@
 
 (define-key "N"         #'repeat-search                                 *open-message-link-keymap*)
 
-(define-key "t"         #'tour-mode-link                                 *open-message-link-keymap*)
+(define-key "t"         #'tour-mode-link                                *open-message-link-keymap*)
 
-
+(define-key "T"         #'save-selected-message-in-tour                 *open-message-link-keymap*)
 
 ;; chats list window
 

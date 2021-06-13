@@ -2530,6 +2530,7 @@
    :tour-mode-link
    :next-tour-link
    :show-tour-links
+   :save-selected-message-in-tour
    :open-gemini-toc
    :gemini-toc-scroll-up
    :gemini-toc-scroll-down

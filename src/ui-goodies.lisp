@@ -1939,8 +1939,20 @@ gemini://gemini.circumlunar.space/docs/companion/subscription.gmi
 
   (defun show-tour-links ()
     "Show a link window with all the links in the tour queue."
-      (open-message-link-window:init-gemini-links (reverse tour))
-      (focus-to-open-message-link-window)))
+    (open-message-link-window:init-gemini-links (reverse tour))
+    (focus-to-open-message-link-window))
+
+  (defun save-selected-message-in-tour ()
+    "Save the selected link in the tour queue"
+    (ignore-errors
+     (let ((win *open-message-link-window*))
+       (with-accessors ((links open-message-link-window::links)) win
+         (when-let* ((selected-index (line-oriented-window:row-selected-index win))
+                     (selected-link  (elt links selected-index))
+                     (label          (or (gemini-parser:name   selected-link)
+                                         (gemini-parser:target selected-link))))
+           (push selected-link tour)
+           (info-message (format nil (_ "~s saved in tour") label))))))))
 
 (defun open-gemini-toc ()
   "Opend a windows that contains a  generated table of contents of the
