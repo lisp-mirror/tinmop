@@ -367,9 +367,13 @@
 
 (define-key "down"      #'gemini-toc-scroll-down                     *gemini-toc-keymap*)
 
-(define-key "C-J"       #'gemini-toc-jump-to-entry                   *gemini-toc-keymap*)
-
 (define-key "q"         #'gemini-toc-close                           *gemini-toc-keymap*)
+
+(define-key "p"         #'gemini-toc-scroll-down-page                *gemini-toc-keymap*)
+
+(define-key "C-J"       #'gemini-toc-scroll-down-page                *gemini-toc-keymap*)
+
+(define-key "n"         #'gemini-toc-scroll-up-page                  *gemini-toc-keymap*)
 
 ;; gemini stream window keymap
 

@@ -2559,6 +2559,8 @@
    :gemini-toc-scroll-down
    :gemini-toc-jump-to-entry
    :gemini-toc-close
+   :gemini-toc-scroll-down-page
+   :gemini-toc-scroll-up-page
    :pass-focus-on-left
    :pass-focus-on-right
    :pass-focus-on-bottom

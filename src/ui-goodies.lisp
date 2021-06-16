@@ -1977,3 +1977,9 @@ gemini page the program is rendering."
 
 (defun gemini-toc-close ()
   (close-window-and-return-to-message *gemini-toc-window*))
+
+(defun gemini-toc-scroll-down-page ()
+  (message-window:scroll-down *message-window*))
+
+(defun gemini-toc-scroll-up-page ()
+  (message-window:scroll-up *message-window*))
