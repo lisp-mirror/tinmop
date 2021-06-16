@@ -39,7 +39,7 @@
 
 (defpackage :constants
   (:use :cl
-        :alexandria
+   :alexandria
         :config)
   (:export
    :+help-about-message+
@@ -64,7 +64,7 @@
 
 (defpackage :conditions
   (:use :cl
-        :config)
+   :config)
   (:export
    :text-error
    :text
@@ -79,7 +79,7 @@
 
 (defpackage :num-utils
   (:use :cl
-        :constants)
+   :constants)
   (:nicknames :num)
   (:export
    :safe-parse-number
@@ -116,7 +116,7 @@
 
 (defpackage :misc-utils
   (:use :cl
-        :constants)
+   :constants)
   (:nicknames :misc)
   (:export
    :when-debug
@@ -414,11 +414,11 @@
 
 (defpackage :resources-utils
   (:use :cl
-        :cl-ppcre
+   :cl-ppcre
         :config
-        :constants
+   :constants
         :filesystem-utils
-        :text-utils)
+   :text-utils)
   (:nicknames :res)
   (:export
    :init
@@ -433,9 +433,9 @@
 
 (defpackage :crypto-utils
   (:use :cl
-        :alexandria
+   :alexandria
         :cl-ppcre
-        :config
+   :config
         :constants)
   (:export
    :crypto-text-p
@@ -445,9 +445,9 @@
 
 (defpackage :interfaces
   (:use :cl
-        :alexandria
+   :alexandria
         :constants
-        :misc)
+   :misc)
   (:shadowing-import-from :misc :random-elt :shuffle)
   (:export
    :clone
@@ -703,56 +703,56 @@
    :dump-certificate))
 
 (defpackage :db-utils
-    (:use
-     :cl
-     :alexandria
-     :cl-ppcre
-     :sxql
-     :local-time
-     :config
-     :constants
-     :text-utils)
-    (:export
-     :+characters-trouble-name+
-     :*connection*
-     :fetch
-     :fetch-all
-     :close-db
-     :connectedp
-     :with-db-transaction
-     :db-path
-     :quote-symbol
-     :init-connection
-     :with-ready-database
-     :with-disabled-foreign
-     :do-rows
-     :prepare-for-sql-like
-     :object-exists-in-db-p
-     :object-count-in-db
-     :query-low-level
-     :db-nil-p
-     :db-not-nil-p
-     :db-getf
-     :db-nil->lisp
-     :if-db-nil-else
-     :count-all
-     :query
-     :query->sql
-     :local-time-obj-now
-     :decode-date-string
-     :decode-datetime-string
-     :encode-datetime-string
-     :encoded-datetime-year
-     :make-insert
-     :make-delete
-     :make-update
-     :get-max-id
-     :get-min-id
-     :decode-blob
-     :rows->tsv
-     :table-exists-p
-     :prepare-for-db
-     :last-inserted-rowid))
+  (:use
+   :cl
+   :alexandria
+   :cl-ppcre
+   :sxql
+   :local-time
+   :config
+   :constants
+   :text-utils)
+  (:export
+   :+characters-trouble-name+
+   :*connection*
+   :fetch
+   :fetch-all
+   :close-db
+   :connectedp
+   :with-db-transaction
+   :db-path
+   :quote-symbol
+   :init-connection
+   :with-ready-database
+   :with-disabled-foreign
+   :do-rows
+   :prepare-for-sql-like
+   :object-exists-in-db-p
+   :object-count-in-db
+   :query-low-level
+   :db-nil-p
+   :db-not-nil-p
+   :db-getf
+   :db-nil->lisp
+   :if-db-nil-else
+   :count-all
+   :query
+   :query->sql
+   :local-time-obj-now
+   :decode-date-string
+   :decode-datetime-string
+   :encode-datetime-string
+   :encoded-datetime-year
+   :make-insert
+   :make-delete
+   :make-update
+   :get-max-id
+   :get-min-id
+   :decode-blob
+   :rows->tsv
+   :table-exists-p
+   :prepare-for-db
+   :last-inserted-rowid))
 
 (defpackage :db
   (:use
@@ -1182,58 +1182,59 @@
    :selected-foreground))
 
 (defpackage :tui-utils
-    (:use
-     :cl
-     :alexandria
-     :cl-ppcre
-     :local-time
-     :croatoan
-     :config
-     :constants
-     :interfaces
-     :text-utils)
-    (:nicknames :tui)
-    (:import-from :misc-utils :defalias)
-    (:export
-     :make-win-background
-     :make-croatoan-window
-     :make-blocking-croatoan-window
-     :make-screen
-     :make-tui-char
-     :make-tui-string
-     :tui-format
-     :decode-key-event
-     :colorize-tree-element
-     :colorize-tree-line
-     :text-length
-     :find-max-line-width
-     :ncat-complex-string
-     :to-tui-string
-     :cat-complex-string
-     :cat-tui-string
-     :tui-char->char
-     :tui-string->chars-string
-     :tui-string-subseq
-     :text-ellipsis
-     :right-pad-text
-     :text->tui-attribute
-     :assemble-attributes
-     :attribute-reverse
-     :attribute-bold
-     :attribute-underline
-     :attribute-italic
-     :attribute-blink
-     :attribute-dim
-     :attribute-invisible
-     :combine-attributes
-     :colorize-line
-     :colorized-line->tui-string
-     :apply-coloring
-     :standard-error-notify-life
-     :with-notify-errors
-     :with-print-error-message
-     :make-tui-char
-     :make-tui-string))
+  (:use
+   :cl
+   :alexandria
+   :cl-ppcre
+   :local-time
+   :croatoan
+   :config
+   :constants
+   :interfaces
+   :text-utils)
+  (:nicknames :tui)
+  (:import-from :misc-utils :defalias)
+  (:shadowing-import-from :text-utils :split-lines)
+  (:export
+   :make-win-background
+   :make-croatoan-window
+   :make-blocking-croatoan-window
+   :make-screen
+   :make-tui-char
+   :make-tui-string
+   :tui-format
+   :decode-key-event
+   :colorize-tree-element
+   :colorize-tree-line
+   :text-length
+   :find-max-line-width
+   :ncat-complex-string
+   :to-tui-string
+   :cat-complex-string
+   :cat-tui-string
+   :tui-char->char
+   :tui-string->chars-string
+   :tui-string-subseq
+   :text-ellipsis
+   :right-pad-text
+   :text->tui-attribute
+   :assemble-attributes
+   :attribute-reverse
+   :attribute-bold
+   :attribute-underline
+   :attribute-italic
+   :attribute-blink
+   :attribute-dim
+   :attribute-invisible
+   :combine-attributes
+   :colorize-line
+   :colorized-line->tui-string
+   :apply-coloring
+   :standard-error-notify-life
+   :with-notify-errors
+   :with-print-error-message
+   :make-tui-char
+   :make-tui-string))
 
 (defpackage :command-line
   (:use
@@ -1600,6 +1601,7 @@
    :tui-utils)
   (:shadowing-import-from :misc :random-elt :shuffle)
   (:shadowing-import-from :stack :stack :stack-push :stack-pop :stack-empty-p)
+  (:shadowing-import-from :text-utils :split-lines)
   (:export
    :key-config-holder
    :key-config
@@ -1682,6 +1684,7 @@
    :windows
    :tui-utils)
   (:shadowing-import-from :misc :random-elt :shuffle)
+  (:shadowing-import-from :text-utils :split-lines)
   (:export
    :notify-window
    :pending
@@ -1703,6 +1706,7 @@
    :windows
    :tui-utils)
   (:shadowing-import-from :misc :random-elt :shuffle)
+  (:shadowing-import-from :text-utils :split-lines)
   (:export
    :suggestions-window
    :paginated-info
@@ -1724,7 +1728,7 @@
    :specials
    :windows
    :suggestions-window)
-
+  (:shadowing-import-from :text-utils :split-lines)
   (:shadowing-import-from :misc :random-elt :shuffle)
   (:export
    :complete-window
@@ -1746,6 +1750,7 @@
    :windows
    :suggestions-window
    :tui-utils)
+  (:shadowing-import-from :text-utils :split-lines)
   (:shadowing-import-from :misc :random-elt :shuffle)
   (:export
    :keybindings-window
@@ -1817,6 +1822,7 @@
    :windows
    :modeline-window
    :tui-utils)
+  (:shadowing-import-from :text-utils :split-lines)
   (:shadowing-import-from :misc :random-elt :shuffle)
   (:import-from :keybindings-window :update-keybindings-tree)
   (:export
@@ -1886,6 +1892,7 @@
    :db-utils
    :db)
   (:nicknames :msg-utils)
+  (:shadowing-import-from :text-utils :split-lines)
   (:shadowing-import-from :misc :random-elt :shuffle)
   (:export
    :+temp-mention-prefix+
@@ -1920,6 +1927,7 @@
    :line-oriented-window
    :tui-utils
    :message-rendering-utils)
+  (:shadowing-import-from :text-utils :split-lines)
   (:shadowing-import-from :misc :random-elt :shuffle)
   (:import-from :keybindings-window :update-keybindings-tree)
   (:export
@@ -1964,6 +1972,7 @@
    :modeline-window
    :line-oriented-window
    :tui-utils)
+  (:shadowing-import-from :text-utils :split-lines)
   (:shadowing-import-from :misc :random-elt :shuffle)
   (:export
    :message-window
@@ -2022,6 +2031,7 @@
    :windows
    :line-oriented-window
    :tui-utils)
+  (:shadowing-import-from :text-utils :split-lines)
   (:shadowing-import-from :misc :random-elt :shuffle)
   (:export
    :open-attach-window
@@ -2047,6 +2057,7 @@
    :windows
    :line-oriented-window
    :tui-utils)
+  (:shadowing-import-from :text-utils :split-lines)
   (:shadowing-import-from :misc :random-elt :shuffle)
   (:export
    :open-message-link
@@ -2072,6 +2083,7 @@
    :windows
    :line-oriented-window
    :tui-utils)
+  (:shadowing-import-from :text-utils :split-lines)
   (:shadowing-import-from :misc :random-elt :shuffle)
   (:export
    :open-gemini-certificates-window))
@@ -2092,6 +2104,7 @@
    :windows
    :line-oriented-window
    :tui-utils)
+  (:shadowing-import-from :text-utils :split-lines)
   (:shadowing-import-from :misc :random-elt :shuffle)
   (:export
    :open-gemini-subscription-window))
@@ -2112,6 +2125,7 @@
    :windows
    :line-oriented-window
    :tui-utils)
+  (:shadowing-import-from :text-utils :split-lines)
   (:shadowing-import-from :misc :random-elt :shuffle)
   (:export
    :open-toc-window))
@@ -2132,6 +2146,7 @@
    :windows
    :point-tracker
    :tui-utils)
+  (:shadowing-import-from :text-utils :split-lines)
   (:shadowing-import-from :misc :random-elt :shuffle)
   (:import-from :keybindings-window :update-keybindings-tree)
   (:export
@@ -2167,6 +2182,7 @@
    :modeline-window
    :line-oriented-window
    :tui-utils)
+  (:shadowing-import-from :text-utils :split-lines)
   (:shadowing-import-from :misc :random-elt :shuffle)
   (:export
    :message-ready-to-send
@@ -2196,6 +2212,7 @@
    :windows
    :line-oriented-window
    :tui-utils)
+  (:shadowing-import-from :text-utils :split-lines)
   (:shadowing-import-from :misc :random-elt :shuffle)
   (:export
    :follow-requests-window
@@ -2218,6 +2235,7 @@
    :windows
    :line-oriented-window
    :tui-utils)
+  (:shadowing-import-from :text-utils :split-lines)
   (:shadowing-import-from :misc :random-elt :shuffle)
   (:export
    :tags-window
@@ -2240,6 +2258,7 @@
    :windows
    :line-oriented-window
    :tui-utils)
+  (:shadowing-import-from :text-utils :split-lines)
   (:shadowing-import-from :misc :random-elt :shuffle)
   (:export
    :conversations-window
@@ -2262,6 +2281,7 @@
    :windows
    :line-oriented-window
    :tui-utils)
+  (:shadowing-import-from :text-utils :split-lines)
   (:shadowing-import-from :misc :random-elt :shuffle)
   (:export
    :chats-list-window
@@ -2283,6 +2303,7 @@
    :windows
    :line-oriented-window
    :tui-utils)
+  (:shadowing-import-from :text-utils :split-lines)
   (:shadowing-import-from :misc :random-elt :shuffle)
   (:export
    :push-db-stream
@@ -2343,6 +2364,7 @@
    :specials
    :windows
    :tui-utils)
+  (:shadowing-import-from :text-utils :split-lines)
   (:shadowing-import-from :misc :random-elt :shuffle)
   (:export
    :focused-window
@@ -2368,6 +2390,7 @@
    :tui-utils
    :program-events)
   (:nicknames :ui)
+  (:shadowing-import-from :text-utils :split-lines)
   (:shadowing-import-from :misc :random-elt :shuffle)
   (:export
    :delete-message-status-marked-to-delete
@@ -2552,6 +2575,7 @@
    :misc-utils
    :text-utils
    :specials)
+  (:shadowing-import-from :text-utils :split-lines)
   (:shadowing-import-from :misc :random-elt :shuffle)
   (:export
    :refresh-refresh-all-chats-data
@@ -2602,4 +2626,5 @@
    :constants
    :text-utils
    :command-line)
+  (:shadowing-import-from :text-utils :split-lines)
   (:export))
