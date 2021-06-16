@@ -176,18 +176,23 @@
 
 (defmethod search-row ((object open-gemini-document-link-window) regex &key (redraw t))
   (handler-case
-      (with-accessors ((row-selected-index row-selected-index)) object
-        (let* ((saved-selected-index row-selected-index)
-               (scanner              (create-scanner regex :case-insensitive-mode t))
+      (with-accessors ((row-selected-index row-selected-index)
+                       (links              links)) object
+        (let* ((scanner             (create-scanner regex :case-insensitive-mode t))
+               (selected-link       (elt links row-selected-index))
+               (selected-text       (gemini-parser:name selected-link))
+               (actual-row-starting (if (scan scanner selected-text)
+                                        (1+ row-selected-index)
+                                        row-selected-index))
                (position-header     (position-if (lambda (a)
                                                  (scan scanner
                                                        (gemini-parser:name a)))
                                                  (safe-subseq (links object)
-                                                              row-selected-index))))
+                                                              actual-row-starting))))
           (call-next-method)    ; search in urls
           (when position-header ; but if an header has been found, it wins
             (unselect-all object)
-            (select-row object (+ saved-selected-index position-header))
+            (select-row object (+ actual-row-starting position-header))
             (when redraw
               (draw object)))))
     (error ()

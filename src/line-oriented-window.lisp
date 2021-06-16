@@ -289,15 +289,20 @@ this exact quantity would go beyond the length or rows or zero."
   (handler-case
       (with-accessors ((row-selected-index row-selected-index)) object
         (let* ((scanner        (create-scanner regex :case-insensitive-mode t))
+               (selected-row                 (selected-row object))
+               (selected-text                (normal-text selected-row))
+               (actual-row-starting          (if (scan scanner selected-text)
+                                                 (1+ row-selected-index)
+                                                 row-selected-index))
                (position-found (position-if (lambda (a)
                                               (if (selectedp a)
                                                   (scan scanner (selected-text a))
                                                   (scan scanner (normal-text   a))))
                                             (safe-subseq (rows object)
-                                                         row-selected-index))))
+                                                         actual-row-starting))))
           (when position-found
             (unselect-all object)
-            (select-row object (+ row-selected-index position-found))
+            (select-row object (+ actual-row-starting position-found))
             (when redraw
               (draw object))
             position-found)))
