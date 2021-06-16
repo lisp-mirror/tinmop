@@ -480,14 +480,20 @@
 
 (defmethod search-regex ((object message-window) regex)
   (with-accessors ((row-selected-index   row-selected-index)) object
-    (let ((line-found (rows-position-if object
-                                        (lambda (a)
-                                          (scan regex
-                                                (tui-string->chars-string (normal-text a))))
-                                        :start (clamp row-selected-index
-                                                      0
-                                                      (rows-length object))))
-          (replacements-strings ()))
+    (let* ((selected-row                 (selected-row object))
+           (selected-text                (normal-text selected-row))
+           (actual-row-starting          (if (scan regex
+                                                   (tui-string->chars-string selected-text))
+                                             (1+ row-selected-index)
+                                             row-selected-index))
+           (line-found (rows-position-if object
+                                         (lambda (a)
+                                           (scan regex
+                                                 (tui-string->chars-string (normal-text a))))
+                                         :start (clamp actual-row-starting
+                                                       0
+                                                       (rows-length object))))
+           (replacements-strings ()))
       (when line-found
         (progn
           (row-move object (- line-found row-selected-index))
