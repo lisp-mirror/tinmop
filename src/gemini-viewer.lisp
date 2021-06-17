@@ -73,6 +73,12 @@
                specials:*gemini-streams-window*)
       (line-oriented-window:resync-rows-db specials:*gemini-streams-window*))))
 
+(defun bury-download-stream ()
+  (let ((program-events:*process-events-immediately* t)
+        (event (make-instance 'program-events:gemini-push-behind-downloading-event
+                              :priority program-events:+maximum-event-priority+)))
+    (program-events:push-event event)))
+
 (defun force-rendering-of-cached-file (stream-object)
   ;; this is more than a mere setter
   ;; and is 'eql' specialized on rendering

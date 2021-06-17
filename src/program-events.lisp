@@ -1046,6 +1046,8 @@
           ((text-utils:string-empty-p url)
            (ui:error-message (_ "Empty address")))
           ((gemini-client:absolute-gemini-url-p url)
+           (gemini-viewer:bury-download-stream)
+           (gemini-viewer:ensure-just-one-stream-rendering)
            (gemini-viewer:request url
                                   :enqueue                   enqueue
                                   :use-cached-file-if-exists use-cached-file-if-exists))
@@ -1078,6 +1080,7 @@
                                                          :comes-from-local-file t))
                   (ir         (gemini-parser:sexp->text-rows parsed
                                                              gemini-client:*gemini-page-theme*)))
+             (gemini-viewer:bury-download-stream)
              (gemini-viewer:maybe-initialize-metadata window)
              (gemini-viewer:push-url-to-history window index-path)
              (refresh-gemini-message-window links raw-text ir nil)

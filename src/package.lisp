@@ -2313,6 +2313,7 @@
    :find-db-stream-url
    :ensure-just-one-stream-rendering
    :abort-download-stream
+   :bury-download-stream
    :db-entry-to-foreground
    :gemini-metadata-p
    :maybe-initialize-metadata
