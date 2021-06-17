@@ -331,7 +331,8 @@ height, position and so on)"
   (refresh-config *conversations-window*)
   (refresh-config *command-window*)
   (refresh-config *send-message-window*)
-  (refresh-config *chats-list-window*))
+  (refresh-config *chats-list-window*)
+  (refresh-config *gemini-toc-window*))
 
 (defun cursor-show ()
   (setf (cursor-visible-p (croatoan-window *main-window*)) t))
