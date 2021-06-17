@@ -785,8 +785,8 @@ command) otherwise  te actual code to  get the resource will  never be
 executed."
   (let* ((event (make-instance 'program-events:gemini-request-event
                                :give-focus-to-message-window give-focus-to-message-window
-                               :priority priority
-                               :use-cached-file-if-exists use-cached-file-if-exists
-                               :enqueue                   enqueue
-                               :url                       url)))
+                               :priority                     priority
+                               :use-cached-file-if-exists    use-cached-file-if-exists
+                               :enqueue                      enqueue
+                               :url                          url)))
     (program-events:push-event event)))
