@@ -75,7 +75,10 @@
                                                          selected-line-bg
                                                          selected-line-fg))
         (when suggested-message-index
-          (select-row object suggested-message-index))
+          (handler-bind ((conditions:out-of-bounds
+                           (lambda (e)
+                             (invoke-restart 'line-oriented-window:ignore-selecting-action e))))
+            (select-row object suggested-message-index)))
         (when redraw
           (win-clear object)
           (draw object))))))
