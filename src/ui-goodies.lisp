@@ -282,7 +282,8 @@ Metadata includes:
 
 (defun repeat-search ()
   "Repeat the last search performed"
-  (push-event (make-instance 'search-next-event)))
+  (push-event (make-instance 'search-next-event
+                             :priority +maximum-event-priority+)))
 
 (defun thread-open-selected-message ()
   "Open selected message"
@@ -354,7 +355,8 @@ Metadata includes:
   "Search regular expression in message"
   (flet ((on-input-complete (regex)
            (let ((event (make-instance 'search-regex-message-content-event
-                                       :payload regex)))
+                                       :priority +maximum-event-priority+
+                                       :payload  regex)))
              (push-event event))))
     (ask-string-input #'on-input-complete :prompt (_ "Search key: "))))
 
