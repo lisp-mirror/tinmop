@@ -208,11 +208,11 @@
   (make-string (max 0 (- total-size (length str)))
                :initial-element padding-char))
 
-(defun ellipsize (string len &key (truncate-string "..."))
+(defun ellipsize (string len &key (truncate-string "…"))
   "If 'string''s length is bigger  than 'len', cut the last characters
   out.  Also replaces the last n  characters (where n is the length of
   'truncate-string')     of     the      shortened     string     with
-  'truncate-string'. It  defaults to  \"...\", but can  be nil  or the
+  'truncate-string'. It  defaults to  \"…\", but can  be nil  or the
   empty string."
   (let ((string-len (length string)))
     (cond

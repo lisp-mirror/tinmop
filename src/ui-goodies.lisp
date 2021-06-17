@@ -1607,7 +1607,7 @@ This command will remove those limits so that we can just jump to the last messa
                             (format nil
                                     (_ "Invalid choices, index choice out of range (max ~a).")
                                     (1- (length options))))
-                           (with-blocking-notify-procedure ((_ "Voting... ")
+                           (with-blocking-notify-procedure ((_ "Voting… ")
                                                             (_ "Choice sent."))
                              (push-event event)))))))))
     (when-let* ((fields (line-oriented-window:selected-row-fields

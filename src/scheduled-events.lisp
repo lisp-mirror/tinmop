@@ -44,7 +44,7 @@
   (ui:gemlog-refresh-all))
 
 (gen-scheduler-function (purge-gemlog-entries +purge-gemlog-entries+)
-  (ui:notify (_ "Removing old gemlog posts..."))
+  (ui:notify (_ "Removing old gemlog posts…"))
   (db:purge-seen-gemlog-entries)
   (ui:notify (_ "Removed")))
 

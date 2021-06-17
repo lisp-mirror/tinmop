@@ -191,13 +191,13 @@ as argument `complex-string'."
   (:documentation "If `object''s length is bigger  than `len', cut the last characters
   out.  Also replaces the last n  characters (where n is the length of
   `truncate-string')     of     the      shortened     string     with
-  `truncate-string'. It  defaults to  \"...\", but can  be nil  or the
+  `truncate-string'. It  defaults to  \"…\", but can  be nil  or the
   empty string."))
 
-(defmethod text-ellipsis ((object string) len &key (truncate-string "..."))
+(defmethod text-ellipsis ((object string) len &key (truncate-string "…"))
   (ellipsize object len :truncate-string truncate-string))
 
-(defmethod text-ellipsis ((object complex-string) len &key (truncate-string "..."))
+(defmethod text-ellipsis ((object complex-string) len &key (truncate-string "…"))
   (croatoan:text-ellipsize object len :truncate-string truncate-string))
 
 (defgeneric right-pad-text (object total-size &key padding-char)
