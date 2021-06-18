@@ -661,7 +661,10 @@
                   (when (null enqueue)
                     (ensure-just-one-stream-rendering))
                   (push-url-to-history specials:*message-window* actual-iri)
-                  (gemini-client:request-dispatch url gemini-client::dispatch-table)))))
+                  (gemini-client:request-dispatch url
+                                                  gemini-client::dispatch-table
+                                                  :certificate     certificate
+                                                  :certificate-key certificate-key)))))
       (gemini-client:gemini-tofu-error (e)
         (ui:ask-input-on-tofu-error e
                                     (lambda ()
