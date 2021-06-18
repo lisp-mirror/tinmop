@@ -86,15 +86,5 @@ be subscribed before (see: 'gemini-subscription:subcribe'"
                                        date
                                        nil))))))
     (gemini-client:gemini-tofu-error (e)
-      (let ((host (gemini-client:host e)))
-        (flet ((on-input-complete (maybe-accepted)
-                 (when (ui::boolean-input-accepted-p maybe-accepted)
-                   (db-utils:with-ready-database (:connect nil)
-                     (db:tofu-delete host)
-                     (refresh url)))))
-          (ui:ask-string-input #'on-input-complete
-                               :prompt
-                               (format nil
-                                       (_ "Host ~s signature changed! This is a potential security risk! Ignore this warning? [y/N] ")
-                                       host)
-                               :priority program-events:+standard-event-priority+))))))
+      (with-ask-input-on-tofu-error (e)
+        (refresh url)))))

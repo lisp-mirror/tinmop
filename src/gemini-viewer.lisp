@@ -663,23 +663,13 @@
                   (push-url-to-history specials:*message-window* actual-iri)
                   (gemini-client:request-dispatch url gemini-client::dispatch-table)))))
       (gemini-client:gemini-tofu-error (e)
-        (let ((host (gemini-client:host e)))
-          (flet ((on-input-complete (maybe-accepted)
-                   (when (ui::boolean-input-accepted-p maybe-accepted)
-                     (db-utils:with-ready-database (:connect nil)
-                       (db:tofu-delete host)
-                       (request url
-                                :enqueue         enqueue
-                                :certificate     certificate
-                                :certificate-key certificate-key
-                                :do-nothing-if-exists-in-db
-                                do-nothing-if-exists-in-db)))))
-            (ui:ask-string-input #'on-input-complete
-                                 :prompt
-                                 (format nil
-                                         (_ "Host ~s signature changed! This is a potential security risk! Ignore this warning? [y/N] ")
-                                         host)
-                                 :priority program-events:+standard-event-priority+))))
+        (gemini-client:with-ask-input-on-tofu-error (e)
+          (request url
+                   :enqueue         enqueue
+                   :certificate     certificate
+                   :certificate-key certificate-key
+                   :do-nothing-if-exists-in-db
+                   do-nothing-if-exists-in-db)))
       (conditions:not-implemented-error (e)
         (ui:notify (format nil (_ "Error: ~a") e)
                    :as-error t))
