@@ -67,20 +67,34 @@ This function return the 'post-title' substring."
 (defun refresh (url)
   "Refresh gemlog entries that can be  found at 'url'. The gemlog must
 be subscribed before (see: 'gemini-subscription:subcribe'"
-  (when-let* ((data       (slurp-gemini-url url))
-              (page       (babel:octets-to-string data))
-              (parsed     (parse-gemini-file page))
-              (gemlog-iri (iri:iri-parse url)))
-    (let ((links (remove-if-not (lambda (a) (link-post-timestamp-p (name a)))
-                                (sexp->links parsed
-                                             (uri:host gemlog-iri)
-                                             (uri:port gemlog-iri)
-                                             (uri:path gemlog-iri)))))
-      (loop for link in links do
-        (when (not (db:find-gemlog-entry (to-s (target link))))
-          (let ((date (link-post-timestamp (name link))))
-            (db:add-gemlog-entries (to-s gemlog-iri)
-                                   (target link)
-                                   (link-post-title (name link))
-                                   date
-                                   nil)))))))
+  (handler-case
+      (when-let* ((data       (slurp-gemini-url url))
+                  (page       (babel:octets-to-string data))
+                  (parsed     (parse-gemini-file page))
+                  (gemlog-iri (iri:iri-parse url)))
+        (let ((links (remove-if-not (lambda (a) (link-post-timestamp-p (name a)))
+                                    (sexp->links parsed
+                                                 (uri:host gemlog-iri)
+                                                 (uri:port gemlog-iri)
+                                                 (uri:path gemlog-iri)))))
+          (loop for link in links do
+            (when (not (db:find-gemlog-entry (to-s (target link))))
+              (let ((date (link-post-timestamp (name link))))
+                (db:add-gemlog-entries (to-s gemlog-iri)
+                                       (target link)
+                                       (link-post-title (name link))
+                                       date
+                                       nil))))))
+    (gemini-client:gemini-tofu-error (e)
+      (let ((host (gemini-client:host e)))
+        (flet ((on-input-complete (maybe-accepted)
+                 (when (ui::boolean-input-accepted-p maybe-accepted)
+                   (db-utils:with-ready-database (:connect nil)
+                     (db:tofu-delete host)
+                     (refresh url)))))
+          (ui:ask-string-input #'on-input-complete
+                               :prompt
+                               (format nil
+                                       (_ "Host ~s signature changed! This is a potential security risk! Ignore this warning? [y/N] ")
+                                       host)
+                               :priority program-events:+standard-event-priority+))))))
