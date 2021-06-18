@@ -663,13 +663,14 @@
                   (push-url-to-history specials:*message-window* actual-iri)
                   (gemini-client:request-dispatch url gemini-client::dispatch-table)))))
       (gemini-client:gemini-tofu-error (e)
-        (gemini-client:with-ask-input-on-tofu-error (e)
-          (request url
-                   :enqueue         enqueue
-                   :certificate     certificate
-                   :certificate-key certificate-key
-                   :do-nothing-if-exists-in-db
-                   do-nothing-if-exists-in-db)))
+        (ui:ask-input-on-tofu-error e
+                                    (lambda ()
+                                      (request url
+                                               :enqueue         enqueue
+                                               :certificate     certificate
+                                               :certificate-key certificate-key
+                                               :do-nothing-if-exists-in-db
+                                               do-nothing-if-exists-in-db))))
       (conditions:not-implemented-error (e)
         (ui:notify (format nil (_ "Error: ~a") e)
                    :as-error t))

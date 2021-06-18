@@ -86,5 +86,4 @@ be subscribed before (see: 'gemini-subscription:subcribe'"
                                        date
                                        nil))))))
     (gemini-client:gemini-tofu-error (e)
-      (with-ask-input-on-tofu-error (e)
-        (refresh url)))))
+      (ui:ask-input-on-tofu-error e (lambda () (refresh url))))))

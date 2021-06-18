@@ -147,8 +147,7 @@
    :with-request-dispatch-table
    :fetch-cached-certificate
    :build-redirect-iri
-   :slurp-gemini-url
-   :with-ask-input-on-tofu-error))
+   :slurp-gemini-url))
 
 (defpackage :gemini-subscription
   (:use

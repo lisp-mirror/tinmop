@@ -1985,3 +1985,17 @@ gemini page the program is rendering."
 
 (defun gemini-toc-scroll-up-page ()
   (message-window:scroll-up *message-window*))
+
+(defun ask-input-on-tofu-error (condition fn)
+  (let ((host (gemini-client:host condition)))
+    (flet ((on-input-complete (maybe-accepted)
+             (when (ui::boolean-input-accepted-p maybe-accepted)
+               (db-utils:with-ready-database (:connect nil)
+                 (db:tofu-delete host)
+                 (funcall fn)))))
+      (ui:ask-string-input #'on-input-complete
+                           :prompt
+                           (format nil
+                                   (_ "Host ~s signature changed! This is a potential security risk! Ignore this warning? [y/N] ")
+                                   host)
+                           :priority program-events:+standard-event-priority+))))

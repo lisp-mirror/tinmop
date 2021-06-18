@@ -2565,7 +2565,8 @@
    :pass-focus-on-left
    :pass-focus-on-right
    :pass-focus-on-bottom
-   :pass-focus-on-top))
+   :pass-focus-on-top
+   :ask-input-on-tofu-error))
 
 (defpackage :scheduled-events
   (:use

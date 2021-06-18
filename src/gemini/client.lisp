@@ -523,18 +523,3 @@ TODO: Add client certificate."
                                       :ignore-warning t)
           (request-dispatch url dispatch-table))
         (fs:slurp-file url :convert-to-string nil))))
-
-(defmacro with-ask-input-on-tofu-error ((condition) &body body)
-  (with-gensyms (host)
-    `(let ((,host (gemini-client:host ,condition)))
-        (flet ((on-input-complete (maybe-accepted)
-                 (when (ui::boolean-input-accepted-p maybe-accepted)
-                   (db-utils:with-ready-database (:connect nil)
-                     (db:tofu-delete ,host)
-                     ,@body))))
-          (ui:ask-string-input #'on-input-complete
-                               :prompt
-                               (format nil
-                                       (_ "Host ~s signature changed! This is a potential security risk! Ignore this warning? [y/N] ")
-                                       ,host)
-                               :priority program-events:+standard-event-priority+)))))
