@@ -1157,7 +1157,12 @@
                    (not (skip-rendering-p object))
                    (message-window:display-gemini-text-p win))
           (refresh-gemini-message-window links source ir-line append-text)
-          (windows:draw win))))))
+          (multiple-value-bind (x start length)
+              (message-window:visible-rows win)
+            (declare (ignore x))
+            (when (< (+ start length)
+                     (windows:win-height-no-border win))
+              (windows:draw win))))))))
 
 (defclass gemini-abort-downloading-event (program-event) ())
 
