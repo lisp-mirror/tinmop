@@ -727,8 +727,12 @@
                   (ui:close-send-message-window)))))))))
 
 (defun find-user-id-from-exact-acct (username)
-  (when-let ((remote-account-matching (api-client:search-user username :limit 1)))
-    (tooter:id (first-elt remote-account-matching))))
+  (when-let* ((remote-accounts-matching (api-client:search-user username :limit 100))
+              (matched-account          (find-if (lambda (a)
+                                                   (string= (tooter:account-name a)
+                                                            username))
+                                                 remote-accounts-matching)))
+    (tooter:id matched-account)))
 
 (defmacro with-process-follower ((username user-id
                                   &optional (local-complete-username-fn #'db:all-unfollowed-usernames))
