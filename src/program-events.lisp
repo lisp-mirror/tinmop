@@ -732,7 +732,8 @@
                                                    (string= (tooter:account-name a)
                                                             username))
                                                  remote-accounts-matching)))
-    (tooter:id matched-account)))
+    (values (tooter:id matched-account)
+            username)))
 
 (defmacro with-process-follower ((username user-id
                                   &optional (local-complete-username-fn #'db:all-unfollowed-usernames))

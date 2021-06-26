@@ -472,9 +472,9 @@ database."
                       :spoiler-text subject
                       :visibility   visibility))
 
-(defun-api-call search-user (username &key (limit 1))
+(defun-api-call search-user (username &key (limit 1) (resolve nil))
   "Find user identified by username"
-  (tooter:search-accounts *client* username :limit limit))
+  (tooter:search-accounts *client* username :limit limit :resolve resolve))
 
 (defun-api-call follow-user (user-id)
   "Follow user identified by user-id"

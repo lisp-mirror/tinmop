@@ -84,6 +84,11 @@
                (:file "emoji-shortcodes")
                (:file "software-configuration")
                (:file "tui-utils")
+               (:module 9p-client
+                        :components ((:file "package")
+                                     (:file "message-types")
+                                     (:file "conditions")
+                                     (:file "client")))
                (:module gemini
                         :components ((:file "package")
                                      (:file "gemini-constants")
