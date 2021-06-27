@@ -301,6 +301,10 @@
 
 (define-key "down"      #'message-scroll-down                         *message-keymap*)
 
+(define-key "left"      #'message-scroll-left                         *message-keymap*)
+
+(define-key "right"     #'message-scroll-right                        *message-keymap*)
+
 (define-key "C-J"       #'message-scroll-down                         *message-keymap*)
 
 (define-key "home"      #'message-scroll-begin                        *message-keymap*)
@@ -322,6 +326,10 @@
 (define-key "up"        #'message-scroll-up                          *gemini-message-keymap*)
 
 (define-key "down"      #'message-scroll-down                        *gemini-message-keymap*)
+
+(define-key "left"      #'message-scroll-left                        *gemini-message-keymap*)
+
+(define-key "right"     #'message-scroll-right                       *gemini-message-keymap*)
 
 (define-key "C-J"       #'message-scroll-down                        *gemini-message-keymap*)
 

@@ -35,13 +35,21 @@
    (adjust-rows-strategy
     :initform #'adjust-rows-select-first
     :initarg  :adjust-rows-strategy
-    :accessor adjust-rows-strategy)))
+    :accessor adjust-rows-strategy)
+   (text-starting-column
+    :initform 0
+    :initarg  :text-starting-column
+    :accessor text-starting-column)))
 
 (defgeneric prepare-for-rendering (object text-data &key jump-to-first-row))
 
 (defgeneric scroll-down  (object &optional amount))
 
 (defgeneric scroll-up    (object &optional amount))
+
+(defgeneric scroll-left  (object &optional amount))
+
+(defgeneric scroll-right (object &optional amount))
 
 (defgeneric scroll-end   (object))
 
@@ -126,20 +134,41 @@
 (defun draw-text (window)
   (when hooks:*before-rendering-message-text*
     (hooks:run-hook 'hooks:*before-rendering-message-text* window))
-  (with-accessors ((row-selected-index row-selected-index)) window
-    (let ((visible-rows (visible-rows window)))
+  (with-accessors ((row-selected-index   row-selected-index)
+                   (text-starting-column text-starting-column)) window
+    (let ((visible-rows (visible-rows window))
+          (window-width (win-width-no-border window)))
       (loop for line in visible-rows
             for y from  1
             do
                (cond
                  ;; testing invisibility should  never returns true as
-                 ;; the method `row' is specialized on message-window
-                 ;; and always removes from the rows the invible ones.
+                 ;; the method `row'  is specialized on message-window
+                 ;; and  always removes  from the  rows the  invisible
+                 ;; ones.
                  ((row-invisible-p line)
                   (decf y))
                  ((not (row-vertical-space-p line))
-                  (let ((text-line (remove-corrupting-utf8-chars (normal-text line))))
-                    (print-text window text-line 1 y))))))))
+                  (let* ((text-line         (remove-corrupting-utf8-chars (normal-text line)))
+                         (text-length       (text-length text-line))
+                         (truncate-at       (- window-width
+                                               text-length
+                                               text-starting-column))
+                         (truncatep         (< truncate-at 0))
+                         (actual-text-line  (cond
+                                              ((>= text-starting-column text-length)
+                                               "")
+                                              (truncatep
+                                               (tui-string-subseq text-line
+                                                                  text-starting-column
+                                                                  (min text-length
+                                                                       (+ window-width
+                                                                          text-starting-column))))
+                                              (t
+                                               (tui-string-subseq text-line
+                                                                  text-starting-column
+                                                                  nil)))))
+                    (print-text window actual-text-line 1 y))))))))
 
 (defun draw-buffer-line-mark (window)
   (with-accessors ((rows                 rows)
@@ -439,6 +468,17 @@
 (defmethod scroll-up   ((object message-window) &optional (amount 1))
   (when (/= (row-move object (- amount))
             0)
+    (draw object)))
+
+(defmethod scroll-left ((object message-window) &optional (amount 1))
+  (with-accessors ((text-starting-column text-starting-column)) object
+    (when (> text-starting-column 0)
+      (decf text-starting-column amount)
+      (draw object))))
+
+(defmethod scroll-right  ((object message-window) &optional (amount 1))
+  (with-accessors ((text-starting-column text-starting-column)) object
+    (incf text-starting-column amount)
     (draw object)))
 
 (defmethod scroll-end ((object message-window))

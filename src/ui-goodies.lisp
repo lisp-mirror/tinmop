@@ -339,6 +339,12 @@ Metadata includes:
 (defun message-scroll-down ()
   (message-window:scroll-down *message-window*))
 
+(defun message-scroll-left ()
+  (message-window:scroll-left *message-window*))
+
+(defun message-scroll-right ()
+  (message-window:scroll-right *message-window*))
+
 (defun message-scroll-begin ()
   (message-window:scroll-begin *message-window*))
 

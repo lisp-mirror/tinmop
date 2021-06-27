@@ -2005,6 +2005,8 @@
    :scroll-down
    :scroll-up
    :scroll-end
+   :scroll-left
+   :scroll-right
    :scroll-begin
    :scroll-next-page
    :scroll-previous-page
@@ -2429,6 +2431,8 @@
    :unsubscribe-to-hash
    :message-scroll-up
    :message-scroll-down
+   :message-scroll-left
+   :message-scroll-right
    :message-scroll-begin
    :message-scroll-end
    :message-scroll-next-page
