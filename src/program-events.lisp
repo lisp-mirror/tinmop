@@ -1164,8 +1164,9 @@
           (multiple-value-bind (x start length)
               (message-window:visible-rows win)
             (declare (ignore x))
-            (when (< (+ start length)
-                     (windows:win-height-no-border win))
+            (when (or (not append-text)
+                      (< (+ start length)
+                         (windows:win-height-no-border win)))
               (windows:draw win))))))))
 
 (defclass gemini-abort-downloading-event (program-event) ())
