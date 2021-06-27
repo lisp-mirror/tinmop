@@ -136,8 +136,9 @@
     (hooks:run-hook 'hooks:*before-rendering-message-text* window))
   (with-accessors ((row-selected-index   row-selected-index)
                    (text-starting-column text-starting-column)) window
-    (let ((visible-rows (visible-rows window))
-          (window-width (win-width-no-border window)))
+    (let ((visible-rows                       (visible-rows window))
+          (window-width                       (win-width-no-border window))
+          (content-available-on-the-left-mark (swconf:left-arrow)))
       (loop for line in visible-rows
             for y from  1
             do
@@ -157,7 +158,7 @@
                          (truncatep         (< truncate-at 0))
                          (actual-text-line  (cond
                                               ((>= text-starting-column text-length)
-                                               "")
+                                               content-available-on-the-left-mark)
                                               (truncatep
                                                (tui-string-subseq text-line
                                                                   text-starting-column

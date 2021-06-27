@@ -480,6 +480,7 @@
                    tree
                    branch
                    arrow
+                   left-arrow
                    data
                    data-leaf
                    leaf
@@ -920,6 +921,9 @@
                                                           +key-message+
                                                           +key-attribute+))))
 
+(defun left-arrow ()
+  (access-non-null-conf-value *software-configuration*
+                              +key-left-arrow+))
 
 (defun tree-config-colors (tree-win-holder)
   (values (access:accesses *software-configuration*
