@@ -157,6 +157,8 @@
                                                text-starting-column))
                          (truncatep         (< truncate-at 0))
                          (actual-text-line  (cond
+                                              ((= text-length 0)
+                                               "")
                                               ((>= text-starting-column text-length)
                                                content-available-on-the-left-mark)
                                               (truncatep
