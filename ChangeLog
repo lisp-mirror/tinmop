@@ -1,3 +1,118 @@
+2021-06-28  cage
+
+        * src/gemini/gemini-parser.lisp,
+	* src/message-window.lisp:
+
+	-[gemini] removed preformatted line truncate;
+
+	- [gemini] colored the alt text as the preformatted line (when
+        shown).
+
+2021-06-27  cage
+
+        * src/message-window.lisp:
+
+	- do not show marks for empty lines.
+
+2021-06-27  cage
+
+        * etc/default-theme.conf,
+	* src/message-window.lisp,
+        * src/package.lisp,
+	* src/software-configuration.lisp:
+
+	- marked that  there is  content on  the left  in message  window
+          when scrolling horizontally.
+
+2021-06-27  cage
+
+        * src/program-events.lisp:
+
+	- [gemini] forced redraw of the window when rendering a new gemini
+        stream.
+
+2021-06-27  cage
+
+        * etc/init.lisp,
+	* src/message-window.lisp,
+	* src/package.lisp,
+        * src/ui-goodies.lisp:
+
+	- truncated long lines in message window and allowed horizontal
+        scrolling.
+
+2021-06-25  cage
+
+        * src/program-events.lisp:
+
+	- fixed find-user-id-from-exact-acct, was returning a wrong user id.
+
+2021-06-20  cage
+
+        * src/program-events.lisp:
+
+	- [gemini] prevented repainting of the message-window if not needed
+        when streaming gemini text from the net.
+
+2021-06-18  cage
+
+        * src/gemini-viewer.lisp:
+	* src/gemini/subscription.lisp:
+
+	- [gemini] ensured the certificate is sent when performing a request;
+        - [gemini] prevented crash when a gemlog changed certificate and
+        post's list is refreshed.
+
+2021-06-17  cage
+
+        * po/Makevars,
+	* po/it.po,
+	* po/tinmop.pot:
+        * src/scheduled-events.lisp,
+	* src/text-utils.lisp,
+	* src/tui-utils.lisp,
+	* src/ui-goodies.lisp,
+        * src/gemini-viewer.lisp,
+	* src/open-message-link-window.lisp,
+        * src/package.lisp,
+	* src/program-events.lisp:
+        * src/windows.lisp:
+	* src/gemini-page-toc.lisp:
+
+	- prevented  crash when  closing program while  a gemini  page is
+	rendering.
+	- updated Italian translation.
+        - changed three dots with ellipsis.
+	-  [gemini] ensured  we have  not to  wait a  stream is  completed
+	before opening a new one.
+	- ensured windows are cleared when terminal is resized.
+	- rearrange TOC window on resize.
+	- increased priority for message window text searching event.
+
+2021-06-16  cage
+
+	* etc/shared.conf,
+	* src/line-oriented-window.lisp,
+	* src/message-window.lisp,
+	* src/open-message-link-window.lisp,
+	* src/package.lisp,
+	* src/package.lisp,
+	* src/ui-goodies.lisp,
+        * etc/init.lisp:
+
+	- [gemini] allowed scrolling of a gemini page when focus is on the
+	TOC.  - fixed  regression: searching in links window  does not get
+	stuck at the first occurrence.
+
+	- fixed regression:  searching in the message window  does not get
+	stuck at the first occurrence.
+
+        - shadowed 'split-lines' from croatoan.
+
+	- fixed regex for opening some  files with tinmop (example: Open a
+	gemini file  with tinmop  only if  a local  file or  served trough
+	gemini protocol.
+
 2021-06-13  cage
 
         * etc/init.lisp,
