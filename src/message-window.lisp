@@ -237,7 +237,9 @@
 (defun make-invisible-row (original-object &optional (text ""))
   (let ((res (make-instance 'line
                             :fields      (list +row-invisible-field-key+ t)
-                            :normal-text (make-tui-string text))))
+                            :normal-text (if (typep text 'croatoan:complex-string)
+                                             text
+                                             (make-tui-string text)))))
     (row-add-original-object res original-object)
     res)) ; even if row-add-original-object returns the modified line explicit returns for clarity
 

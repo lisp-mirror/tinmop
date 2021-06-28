@@ -392,8 +392,10 @@
   (print-unreadable-object (object stream :type t :identity t)
     (format stream "gid: ~a alt ~a" (group-id object) (alt-text object))))
 
-(defun make-pre-start (alt-text group-id)
-  (make-instance 'pre-start :alt-text alt-text :group-id group-id))
+(defun make-pre-start (alt-text group-id fg)
+  (make-instance 'pre-start
+                 :alt-text (tui:make-tui-string alt-text :fgcolor fg)
+                 :group-id group-id))
 
 (defclass pre-end () ())
 
@@ -513,13 +515,14 @@
                         (make-instance 'vertical-space)) ;(format nil "~%"))
                        ((html-utils:tag= :as-is node)
                         (let* ((line           (text-value node :trim nil))
-                               (truncated-line (safe-subseq line 0 (1- win-width)))
                                (fg             (preformatted-fg theme))
                                (line           (tui:make-tui-string (format nil
                                                                             "~a"
-                                                                            truncated-line)
+                                                                            line)
                                                                     :fgcolor fg)))
-                          (make-pre-line (list line) (pre-group-id) (current-pre-alt-text))))
+                          (make-pre-line (list line)
+                                         (pre-group-id)
+                                         (current-pre-alt-text))))
                        ((html-utils:tag= :text node)
                         (format nil "~a~%" (text-value node)))
                        ((html-utils:tag= :h1 node)
@@ -545,9 +548,10 @@
                                          win-width))
                        ((html-utils:tag= :pre node)
                         (let ((current-alt-text (pre-alt-text node))
-                              (pre-group-id     (next-pre-group-id)))
+                              (pre-group-id     (next-pre-group-id))
+                              (fg               (preformatted-fg theme)))
                           (set-pre-alt-text current-alt-text)
-                          (make-pre-start current-alt-text pre-group-id)))
+                          (make-pre-start current-alt-text pre-group-id fg)))
                        ((html-utils:tag= :pre-end node)
                         (make-pre-end))
                        ((html-utils:tag= :a node)
