@@ -101,8 +101,7 @@
         * etc/init.lisp:
 
 	- [gemini] allowed scrolling of a gemini page when focus is on the
-	TOC.  - fixed  regression: searching in links window  does not get
-	stuck at the first occurrence.
+	TOC.
 
 	- fixed regression:  searching in the message window  does not get
 	stuck at the first occurrence.

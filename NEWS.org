@@ -1,3 +1,23 @@
+* 2021-06-29 version 0.8.3
+  - New features
+    - when showing posts or gemini pages the window's text can be scrolled horizontally;
+  - Bugfix
+    - [gemini]  Server asking  for  a certificate  no  more makes  the
+      program stuck in a loop;
+    - fixed quick_quicklisp.dh.in (was missing awk);
+    - prevented a crash when a subscribed gemlog changed its certificate;
+    - fixed resizing of windows when the terminal is window resized;
+    - following a user should no more fails with a database error;
+    - attaching a file to a post no more lead to a crash;
+    - fixed text searching procedures in message links window.
+  - Improvements
+    - [gemini] alternative text is rendered with the same color as the
+      preformatted text it is referring to;
+    - a gemini page can be scrolled even if the focus in on the TOC;
+    - selecting  an  item  in  the  TOC will  move  the  page  to  the
+      corresponding section;
+    - improved appearance of keybindings tree.
+
 * 2021-05-23 version 0.8.1
   - Bugfix
     - fixed  a regression  that made  the program  crash when  adding an
