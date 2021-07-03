@@ -171,12 +171,14 @@ etc.) happened"
           (when command-line:*check-follow-requests*
             (ui:start-follow-request-processing))))))
 
-(defun run ()
+(defun run (draw-welcome-string)
   (windows:with-croatoan-window (croatoan-window specials:*main-window*)
     (setf (frame-rate croatoan-window) +fps+)
     (db-utils:with-ready-database (:connect nil)
       (unwind-protect
            (progn
+             (when draw-welcome-string
+               (ui:show-welcome-window))
              (hooks:run-hooks 'hooks:*before-main-loop*)
              (run-event-loop croatoan-window))
         (end-screen)))))
@@ -192,14 +194,15 @@ etc.) happened"
 
 (defun main ()
   "The entry point function of the program"
-  (init-i18n)
-  (res:init)
-  (command-line:manage-opts)
-  (if command-line:*script-file*
-      (load-script-file)
-      (let ((croatoan::*debugger-hook* #'(lambda (c h)
-                                           (declare (ignore h))
-                                           (end-screen)
-                                           (print c))))
-        (init)
-        (run))))
+  (let ((first-time-starting (not (db-utils:db-file-exists-p))))
+    (init-i18n)
+    (res:init)
+    (command-line:manage-opts)
+    (if command-line:*script-file*
+        (load-script-file)
+        (let ((croatoan::*debugger-hook* #'(lambda (c h)
+                                             (declare (ignore h))
+                                             (end-screen)
+                                             (print c))))
+          (init)
+          (run first-time-starting)))))

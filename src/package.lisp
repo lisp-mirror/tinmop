@@ -43,6 +43,7 @@
         :config)
   (:export
    :+help-about-message+
+   :+welcome-message+
    :+http-code-ok+
    :+mime-type-jpg+
    :+mime-type-png+
@@ -722,6 +723,7 @@
    :with-db-transaction
    :db-path
    :quote-symbol
+   :db-file-exists-p
    :init-connection
    :with-ready-database
    :with-disabled-foreign
@@ -2514,6 +2516,7 @@
    :crypto-export-key
    :crypto-generate-key
    :show-about-window
+   :show-welcome-window
    :reset-timeline-pagination
    :poll-vote
    :refresh-chats

@@ -41,6 +41,44 @@ For bug report please point your browser to:
             +issue-tracker+)
   :test #'string=)
 
+(define-constant +welcome-message+
+  (format nil
+ "
+                        _______
+                       /_  __(_)___  ____ ___  ____  ____
+                        / / / / __ \\/ __ `__ \\/ __ \\/ __ \\
+                       / / / / / / / / / / / / /_/ / /_/ /
+                      /_/ /_/_/ /_/_/ /_/ /_/\\____/ .___/
+                                                 /_/
+
+
+Welcome to ~a! A gemini and pleroma client.
+
+- for available keychords (sequence of keys to fire a command) help type '?';
+
+- for searching in the help type: 'C-h a' (control and 'h' keys toghether, then 'a');
+  [if this keychords  does not works, ask to your system administrator]
+
+- documentation is available in man format. Type 'man tinmop' at shell's prompt;
+
+- for general information about this program (including license) type 'C-a';
+
+- if you need more help or for bug report: ~a
+  (collaborations are welcome too!).
+
+Enjoy!
+
+This program is  distributed in the hope that it  will be useful, but
+WITHOUT  ANY   WARRANTY;  without   even  the  implied   warranty  of
+MERCHANTABILITY or  FITNESS FOR  A PARTICULAR  PURPOSE.  See  the GNU
+General Public License for more details."
+          (if (string= +program-name+ "tinmop")
+              "tinmop"
+              (format nil "~a (original name: \"tinmop\")" +program-name+))
+          +issue-tracker+)
+
+  :test #'string=)
+
 (define-constant +http-code-ok+               200             :test #'=)
 
 (define-constant +mime-type-jpg+                "image/jpeg"  :test #'string=)

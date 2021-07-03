@@ -193,17 +193,17 @@ be either `:keybinding' or `:string'.  the former for key command the latter for
                     :bgcolor point-bg)))))
 
 (defmethod draw ((object command-window))
-  (with-accessors ((command-line              command-line)
-                   (commands-separator        commands-separator)
-                   (error-message-bg          error-message-bg)
-                   (error-message-fg          error-message-fg)
-                   (error-message-attributes  error-message-attributes)
-                   (error-message             error-message)
-                   (info-message-bg           info-message-bg)
-                   (info-message-fg           info-message-fg)
-                   (info-message              info-message)
-                   (info-message-attributes   info-message-attributes)
-                   (suggestions-win           suggestions-win)) object
+  (with-accessors ((command-line             command-line)
+                   (commands-separator       commands-separator)
+                   (error-message-bg         error-message-bg)
+                   (error-message-fg         error-message-fg)
+                   (error-message-attributes error-message-attributes)
+                   (error-message            error-message)
+                   (info-message-bg          info-message-bg)
+                   (info-message-fg          info-message-fg)
+                   (info-message             info-message)
+                   (info-message-attributes  info-message-attributes)
+                   (suggestions-win          suggestions-win)) object
     (when suggestions-win
       (draw suggestions-win))
     (win-clear object :redraw nil)

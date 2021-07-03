@@ -1567,6 +1567,19 @@ certificate).
                                           lines
                                           bg
                                           fg)))
+
+(defun show-welcome-window ()
+  "Show an informative window about this program"
+  (let ((lines (text-utils:split-lines +welcome-message+))
+        (bg    (swconf:win-bg swconf:+key-help-dialog+))
+        (fg    (swconf:win-fg swconf:+key-help-dialog+)))
+    (windows:make-blocking-message-dialog *main-window*
+                                          nil
+                                          (_ "Welcome")
+                                          lines
+                                          bg
+                                          fg)))
+
 (defun reset-timeline-pagination ()
   "Removes the pagination data for current timeline and folder
 

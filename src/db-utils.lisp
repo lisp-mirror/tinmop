@@ -233,9 +233,12 @@ example:
                                      "/"
                                      +db-file+)))
 
+(defun db-file-exists-p ()
+  (fs:file-exists-p (db-path)))
+
 (defun init-connection ()
   "Initialize a db connection (and create db file if does not exists)"
-  (when (not (fs:file-exists-p (db-path)))
+  (when (not (db-file-exists-p))
     (fs:create-file (db-path)))
   (setf *connection* (sqlite:connect (db-path))))
 
