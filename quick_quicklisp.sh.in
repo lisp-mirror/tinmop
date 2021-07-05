@@ -39,8 +39,20 @@ NORMAL_TEXT="\033[0m"
 
 VERIFY_OK_RES=2
 
+CROATOAN_GIT_URL=https://github.com/McParen/croatoan.git
+
+CROATOAN_DIR="$QUICKLISP_INSTALL_DIR"/local-projects/croatoan/;
+
 echo_bold () {
     echo -e "${BOLD_TEXT}${1}${NORMAL_TEXT}";
+}
+
+check_croatoan (){
+    if [ -d $CROATOAN_DIR ]; then
+        echo 0;
+    else
+        echo 1;
+    fi
 }
 
 check_quicklisp () {
@@ -125,6 +137,16 @@ install_dependency () {
      --eval "(sb-ext:quit)";
 }
 
+install_croatoan () {
+    installedp=$(check_croatoan);
+    if [ $installedp -eq 0 ]; then
+        cd $CROATOAN_DIR && @GIT@ pull
+    else
+        cd $QUICKLISP_INSTALL_DIR/local-projects/ && @GIT@ clone $CROATOAN_GIT_URL
+    fi
+}
+
+
 quicklisp_installed_p=$(check_quicklisp);
 
 if [ $quicklisp_installed_p -eq 0 ]; then
@@ -135,4 +157,8 @@ else
     install_dependency;
 fi
 
-echo_bold "Finished."
+echo_bold "installing croatoan from git repository...";
+
+install_croatoan;
+
+echo_bold "Finished.";

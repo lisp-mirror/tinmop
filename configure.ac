@@ -70,6 +70,13 @@ if test "$OPENSSL" = "no" ; then
    exit 1;
 fi
 
+AC_PATH_PROGS([GIT],[git],[no])
+
+if test "$GIT" = "no" ; then
+   AC_MSG_ERROR([Can not find git executable.])
+   exit 1;
+fi
+
 AC_PROG_MKDIR_P
 
 dnl check sbcl version
