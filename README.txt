@@ -186,7 +186,7 @@ Table of Contents
      └────
 
   3. the script `quick-quicklisp.sh' will download and install the
-     library manager and the library on your home dir.
+     library manager and the libraries on your home dir.
 
      ┌────
      │ $ ./quick_quicklisp.sh
@@ -196,7 +196,9 @@ Table of Contents
      this case just load the [dependencies] using the client installed
      on your computer.
 
-  4. clone in `$HOME/quicklisp/local-projects/' the latest version of
+  4. optional step if you did not ran `quick-quicklisp.sh'.
+
+     Clone in `$HOME/quicklisp/local-projects/' the latest version of
      croatoan, a library to wrap the ncurses TUI library.
 
      This step is temporary as this version will get into quicklisp

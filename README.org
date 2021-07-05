@@ -96,7 +96,6 @@ manager of your distribution (~apt~, ~yum~ etc).
      # apt-get install libssl-dev
      #+END_SRC
 
-
 * Install
 
 ** Using guix
@@ -115,7 +114,6 @@ manager of your distribution (~apt~, ~yum~ etc).
 
    or using a shell script [[https://guix.gnu.org/manual/en/guix.html#Binary-Installation][as explained in the guix manual]].
 
-
 ** From source
   1. optional step needed only if  you have not already the configure script,
      you will need ~autotools~ for that.
@@ -131,7 +129,7 @@ manager of your distribution (~apt~, ~yum~ etc).
      #+END_SRC
 
   3. the script ~quick-quicklisp.sh~ will download and install the library manager and the
-     library on your home dir.
+     libraries on your home dir.
 
      #+BEGIN_SRC sh
      $ ./quick_quicklisp.sh
@@ -141,7 +139,9 @@ manager of your distribution (~apt~, ~yum~ etc).
      this case just  load the [[Dependency][dependencies]]
      using  the client installed on your computer.
 
-  4. clone  in ~$HOME/quicklisp/local-projects/~ the latest  version of
+  4. optional step if you did not ran ~quick-quicklisp.sh~.
+
+     Clone  in ~$HOME/quicklisp/local-projects/~ the latest  version of
      croatoan, a library to wrap the ncurses TUI library.
 
      This step is temporary as this version will get into quicklisp eventually.
