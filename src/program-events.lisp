@@ -1127,7 +1127,7 @@
     :writer   (setf skip-rendering))))
 
 (defun refresh-gemini-message-window (links source ir-rows append-text)
-  (let* ((win specials:*message-window*)
+  (let* ((win             specials:*message-window*)
          (window-metadata (message-window:metadata win)))
     (with-accessors ((rows message-window::rows)) win
       (let ((new-rows      (message-window:text->rendered-lines-rows win

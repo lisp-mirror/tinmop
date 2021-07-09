@@ -366,7 +366,15 @@
                                                                              wrapper-object
                                                                              t)))
                    (maybe-render-line preformat-wrapper-event)
-                   (write-sequence preformat-line file-stream)))))
+                   (write-sequence preformat-line file-stream))))
+             (array->string (array remove-bom)
+               (let ((res (babel:octets-to-string array :errorp nil)))
+                 (if (and (string-not-empty-p res)
+                          remove-bom
+                          (char= (first-elt res)
+                                 #\ZERO_WIDTH_NO-BREAK_SPACE))
+                     (subseq res 1)
+                     res))))
       (lambda ()
         (let ((gemini-parser:*pre-group-id*    -1)
               (gemini-parser:*header-group-id* -1)
@@ -399,12 +407,15 @@
               (maybe-render-preformat-wrapper file-stream wrapper-object)
               (loop
                 named download-loop
+                for ct from 0
                 for line-as-array = (read-line-into-array download-stream)
                 while line-as-array do
                   (gemini-client:debug-gemini "[stream] gemini file stream raw data line : ~a"
                                               line-as-array)
                   (if (downloading-allowed-p wrapper-object)
-                      (let* ((line  (babel:octets-to-string line-as-array :errorp nil))
+                      (let* ((line  (if (= ct 0)
+                                        (array->string line-as-array t)
+                                        (array->string line-as-array nil)))
                              (event (make-gemini-download-event line
                                                                 wrapper-object
                                                                 t)))
