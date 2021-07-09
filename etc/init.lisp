@@ -225,6 +225,8 @@
 
 (define-key "n"         #'thread-search-next-unread-message           *thread-keymap*)
 
+(define-key "C-I"       #'thread-search-next-unread-message           *thread-keymap*)
+
 (define-key "home"      #'thread-goto-first-message                   *thread-keymap*)
 
 (define-key "end"       #'thread-goto-last-message                    *thread-keymap*)
