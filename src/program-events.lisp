@@ -727,7 +727,9 @@
                   (ui:close-send-message-window)))))))))
 
 (defun find-user-id-from-exact-acct (username)
-  (when-let* ((remote-accounts-matching (api-client:search-user username :limit 100))
+  (when-let* ((remote-accounts-matching (api-client:search-user username
+                                                                :limit   100
+                                                                :resolve   t))
               (matched-account          (find-if (lambda (a)
                                                    (string= (tooter:account-name a)
                                                             username))

@@ -157,11 +157,11 @@ height, position and so on)"
 
 (defun win-x (win)
   (with-croatoan-window (inner-window win)
-    (second (window-position inner-window))))
+    (second (widget-position inner-window))))
 
 (defun win-y (win)
   (with-croatoan-window (inner-window win)
-    (first (window-position inner-window))))
+    (first (widget-position inner-window))))
 
 (defmacro with-window-width ((win w) &body body)
   `(let ((,w (win-width  ,win)))

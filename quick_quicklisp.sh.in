@@ -43,7 +43,7 @@ CROATOAN_GIT_URL=https://github.com/McParen/croatoan.git
 
 CROATOAN_DIR="$QUICKLISP_INSTALL_DIR"/local-projects/croatoan/;
 
-CROATOAN_COMMIT=a577951d8dd607f828d6efb3290b4e8ac9f1e654
+CROATOAN_COMMIT=2f37560e95928c41f599b4d7795aeb2723e95cdd
 
 echo_bold () {
     echo -e "${BOLD_TEXT}${1}${NORMAL_TEXT}";
