@@ -1111,6 +1111,7 @@
    :perform-missing-value-check
    :load-config-file
    :external-editor
+   :gemini-downloading
    :gemini-default-favicon
    :directory-symbol
    :gemini-fetch-favicon-p
@@ -1986,6 +1987,7 @@
    :display-chat-p
    :row-get-original-object
    :viewport-width
+   :draw-downloading-animation
    :visible-rows
    :row-vertical-space-p
    :row-preformatted-p

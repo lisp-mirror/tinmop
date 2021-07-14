@@ -196,6 +196,23 @@
         (draw-buffer-line-mark object))
       (call-next-method))))
 
+(let ((index     0)
+      (frames   -1)
+      (slowness 30))
+  (declare (fixnum index frames slowness))
+  (defun draw-downloading-animation (window)
+    (declare (optimize (debug 0) (speed 2)))
+    (let* ((animation-frames (swconf:gemini-downloading))
+           (max              (length (the list animation-frames))))
+      (print-text window
+                  (elt animation-frames index)
+                  0 0
+                  :attributes (attribute-bold))
+      (incf frames)
+      (when (= (rem frames slowness)
+               0)
+        (setf index (rem (1+ index) max))))))
+
 (defgeneric row-add-original-object (lines original-object))
 
 (defmethod row-add-original-object ((lines line) original-object)

@@ -400,6 +400,7 @@
                    width
                    height
                    position
+                   downloading
                    x
                    y
                    error
@@ -561,6 +562,12 @@
                           (_ "The configuration (*.conf) file is missing the value for ~s")
                           (access-key->user-directive keys))))
         value)))
+
+(defun gemini-downloading ()
+  (let ((animation (access-non-null-conf-value *software-configuration*
+                                               +key-gemini+
+                                               +key-downloading+)))
+    (text-utils:split-words animation)))
 
 (defun gemini-default-favicon ()
   (access-non-null-conf-value *software-configuration*
