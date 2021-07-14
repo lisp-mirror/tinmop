@@ -1,3 +1,82 @@
+2021-07-10  cage
+
+	* src/program-events.lisp,
+	* src/windows.lisp,
+        * quick_quicklisp.sh.in,
+        * src/9p-client/client.lisp:
+
+	- changed croatoan's 'window-position' to 'widget-position';
+	- updated version  of  croatoan  known to  works  with tinmop  in
+	  building script;
+	- [9p] added 'open-path' and 'slurp-file'.
+
+2021-06-26  cage
+
+	* src/9p-client/conditions.lisp,
+	* src/9p-client/package.lisp,
+	* src/program-events.lisp,
+	* tinmop.asd,
+        * src/9p-client/client.lisp,
+        * src/9p-client/message-types.lisp,
+        * src/api-client.lisp:
+
+	- implemented a minimal 9p client.
+
+2021-07-09  cage
+
+	* src/program-events.lisp,
+        * etc/init.lisp,
+        * src/gemini-viewer.lisp:
+
+	- used TAB to move to next unread message;
+	- remved the BOM from a gemini text stream.
+
+2021-07-06  cage
+
+        * quick_quicklisp.sh.in:
+
+	- pinned the commit of croatoan.
+
+2021-07-05  cage
+
+        * README.org,
+	* README.txt:
+
+	- updated README.org (new building instructions).
+
+2021-07-05  cage
+
+	* README.org,
+	* README.txt,
+	* configure,
+	* configure.ac,
+        * Makefile.in,
+        * quick_quicklisp.sh.in:
+
+	- updated building script to fetch croatoan from git.
+
+2021-07-03  cage
+
+	* src/command-window.lisp,
+	* src/db-utils.lisp,
+	* src/main.lisp,
+	* src/ui-goodies.lisp,
+        * etc/default-theme.conf,
+        * src/constants.lisp,
+        * src/package.lisp:
+
+	- added a welcome window.
+
+2021-06-29  cage
+
+	* NEWS.org:
+	* configure.ac,
+	* tinmop.asd,
+        * configure,
+
+	- updated building scripts.
+        - mentioned changelog in NEWS file.
+
 2021-06-28  cage
 
         * src/gemini/gemini-parser.lisp,
