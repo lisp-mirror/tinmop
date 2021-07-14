@@ -401,6 +401,7 @@
                    height
                    position
                    downloading
+                   animation
                    x
                    y
                    error
@@ -563,10 +564,11 @@
                           (access-key->user-directive keys))))
         value)))
 
-(defun gemini-downloading ()
+(defun gemini-downloading-animation ()
   (let ((animation (access-non-null-conf-value *software-configuration*
                                                +key-gemini+
-                                               +key-downloading+)))
+                                               +key-downloading+
+                                               +key-animation+)))
     (text-utils:split-words animation)))
 
 (defun gemini-default-favicon ()
@@ -1235,6 +1237,7 @@
 
 (defun trivial-configuration-missing-value-check ()
   (loop for fn in (list
+                   #'gemini-downloading-animation
                    #'gemini-default-favicon
                    #'gemini-link-prefix-to-gemini
                    #'gemini-link-prefix-to-other

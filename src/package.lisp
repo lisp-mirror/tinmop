@@ -1111,7 +1111,7 @@
    :perform-missing-value-check
    :load-config-file
    :external-editor
-   :gemini-downloading
+   :gemini-downloading-animation
    :gemini-default-favicon
    :directory-symbol
    :gemini-fetch-favicon-p
