@@ -3,6 +3,13 @@
 (defun codepoint->int (string)
   (parse-integer string :radix 16))
 
+(defun split-fields (line)
+  (cl-ppcre:split ";" line))
+
+(defun valid-line-p (line)
+  (and (string-not-empty-p line)
+       (not (cl-ppcre:scan "^#" line))))
+
 (defun extract-codepoints-sequences (stream)
   "Extract shotcodes from the file:
    https://raw.githubusercontent.com/node-unicode/node-unicode-data/master/data/11.0.0-emoji-sequences.txt"
@@ -10,9 +17,8 @@
            (read-line stream nil nil)))
     (let ((res ()))
       (loop for line = (readline) while line do
-        (when (and (string-not-empty-p line)
-                   (not (cl-ppcre:scan "^#" line)))
-          (alexandria:when-let* ((fields            (cl-ppcre:split ";" line))
+        (when (valid-line-p line)
+          (alexandria:when-let* ((fields            (split-fields line))
                                  (codepoints-fields (split-words (alexandria:first-elt fields)))
                                  (codepoints        (mapcar (lambda (a) (code-char (codepoint->int a)))
                                                             codepoints-fields)))
@@ -1166,9 +1172,8 @@
            (read-line stream nil nil)))
     (let ((res ()))
       (loop for line = (readline) while line do
-        (when (and (string-not-empty-p line)
-                   (not (cl-ppcre:scan "^#" line)))
-          (alexandria:when-let* ((fields            (cl-ppcre:split ";" line))
+        (when (valid-line-p line)
+          (alexandria:when-let* ((fields            (split-fields line))
                                  (codepoints-fields (split-words (alexandria:first-elt fields)))
                                  (codepoints-ranges (mapcar (lambda (a) (codepoint->int a))
                                                             (cl-ppcre:split "\\.\\."
