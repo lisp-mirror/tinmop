@@ -125,7 +125,7 @@
 ;; (define "C-x a e"       #'bar)
 
 (defun gemini-search ()
- (gemini-viewer:request "gemini://geminispace.info/search"))
+ (gemini-viewer:load-gemini-url "gemini://geminispace.info/search"))
 
 ;; global keymap
 
