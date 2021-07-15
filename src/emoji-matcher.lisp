@@ -61,7 +61,7 @@
 ;;;; expansion of (gen-matcher-sequences)
 
 (defun emoji-sequences-p (chars)
-  (find-if (lambda (a) (match-codepoint-p chars a))
+  (member-if (lambda (a) (match-codepoint-p chars a))
            '((#\U1F9DD #\EMOJI_MODIFIER_FITZPATRICK_TYPE-6)
              (#\U1F9DD #\EMOJI_MODIFIER_FITZPATRICK_TYPE-5)
              (#\U1F9DD #\EMOJI_MODIFIER_FITZPATRICK_TYPE-4)
@@ -1817,7 +1817,7 @@
 ;;;; expansion of (gen-matcher-zwj-sequences)
 
 (defun emoji-zwj-sequences-p (chars)
-  (find-if (lambda (a) (match-codepoint-p chars a))
+  (member-if (lambda (a) (match-codepoint-p chars a))
            '((#\U1F9D1 #\ZERO_WIDTH_JOINER #\CHRISTMAS_TREE)
              (#\FACE_WITHOUT_MOUTH #\ZERO_WIDTH_JOINER #\FOG
               #\VARIATION_SELECTOR-16)
@@ -4749,5 +4749,8 @@
 (defgeneric emojip (codepoints-chars))
 
 (defmethod emojip ((codepoints-chars list))
-  (or (emoji-zwj-sequences-p codepoints-chars)
-      (emoji-sequences-p     codepoints-chars)))
+  (first (or (emoji-zwj-sequences-p codepoints-chars)
+             (emoji-sequences-p     codepoints-chars))))
+
+(defun starts-with-emoji-p (codepoints-chars)
+  (emojip codepoints-chars))

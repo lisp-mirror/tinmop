@@ -392,7 +392,8 @@
    :maybe-percent-encode
    :display-corrupting-utf8-p
    :remove-corrupting-utf8-chars
-   :emojip))
+   :emojip
+   :starts-with-emoji-p))
 
 (defpackage :html-utils
   (:use

@@ -341,12 +341,10 @@
                         (response-body (gemini-client:slurp-gemini-url favicon-url))
                         (favicon-list  (coerce (babel:octets-to-string response-body :errorp t)
                                                'list))
-                        (non-emoji-pos (position-if (lambda (a) (not (emojip (list a))))
-                                                    favicon-list))
-                        (favicon       (if non-emoji-pos
-                                           (coerce (subseq favicon-list 0 non-emoji-pos)
-                                                   'string)
-                                           (coerce favicon-list 'string))))
+                        (emoji         (starts-with-emoji-p favicon-list))
+                        (favicon       (if emoji
+                                           (coerce emoji 'string)
+                                           (swconf:gemini-default-favicon))))
                    (setf cache (acons host favicon cache))
                    (fetch-favicon parsed-url)))
                 (swconf:gemini-default-favicon)))))))
