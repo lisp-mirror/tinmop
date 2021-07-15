@@ -1359,20 +1359,22 @@
 (defmethod process-event ((object get-chats-event))
   (with-accessors ((chat-id        chat-id)
                    (min-message-id min-message-id)) object
-    (let ((chats (api-pleroma:get-chats)))
-      (dolist (chat chats)
-        (db:update-db chat)))))
+    (tui:with-notify-errors
+      (let ((chats (api-pleroma:get-chats)))
+        (dolist (chat chats)
+          (db:update-db chat))))))
 
 (defclass update-all-chat-messages-event (program-event) ())
 
 (defmethod process-event ((object update-all-chat-messages-event))
-  (let ((all-chats (db:all-chats)))
-    (dolist (chat all-chats)
-      (let* ((chat-id (db:row-id chat))
-             (min-id  (db:last-chat-message-id chat-id)))
-        (process-event (make-instance 'program-events:get-chat-messages-event
-                                      :chat-id        chat-id
-                                      :min-message-id min-id))))))
+  (tui:with-notify-errors
+    (let ((all-chats (db:all-chats)))
+      (dolist (chat all-chats)
+        (let* ((chat-id (db:row-id chat))
+               (min-id  (db:last-chat-message-id chat-id)))
+          (process-event (make-instance 'program-events:get-chat-messages-event
+                                        :chat-id        chat-id
+                                        :min-message-id min-id)))))))
 
 (defclass chat-show-event (program-event)
   ((chat

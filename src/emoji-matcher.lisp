@@ -14,8 +14,7 @@
   (every #'char= a b))
 
 (defun extract-codepoints (stream)
-  "Extract shotcodes from the file:
-  https://raw.githubusercontent.com/node-unicode/node-unicode-data/master/data/11.0.0-emoji.txt"
+  "Extract shotcodes from the emoji table file"
   (flet ((readline ()
            (read-line stream nil nil)))
     (let ((res ()))
@@ -46,17 +45,12 @@
 (defmacro gen-matcher-sequences ()
   `(defun emoji-sequences-p (chars)
      (find-if (lambda (a) (match-codepoint-p chars a))
-              ',(extract-emojis-codepoints "https://raw.githubusercontent.com/node-unicode/node-unicode-data/master/data/13.0.0-emoji-sequences.txt"))))
+              ',(extract-emojis-codepoints "https://unicode.org/Public/emoji/13.1/emoji-sequences.txt"))))
 
 (defmacro gen-matcher-zwj-sequences ()
   `(defun emoji-zwj-sequences-p (chars)
      (find-if (lambda (a) (match-codepoint-p chars a))
-              ',(extract-emojis-codepoints "https://raw.githubusercontent.com/node-unicode/node-unicode-data/master/data/13.0.0-emoji-zwj-sequences.txt"))))
-
-(defmacro gen-matcher ()
-  `(defun emoji-simple-p (chars)
-     (find-if (lambda (a) (match-codepoint-p chars a))
-              ',(extract-emojis-codepoints "https://raw.githubusercontent.com/node-unicode/node-unicode-data/master/data/13.0.0-emoji.txt"))))
+              ',(extract-emojis-codepoints "https://unicode.org/Public/emoji/13.1/emoji-zwj-sequences.txt"))))
 
 ;;;; expansion of (gen-matcher-sequences)
 
