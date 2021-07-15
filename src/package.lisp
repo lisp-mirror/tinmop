@@ -393,7 +393,7 @@
    :display-corrupting-utf8-p
    :remove-corrupting-utf8-chars
    :emojip
-   :starts-with-emoji-p))
+   :starting-emoji))
 
 (defpackage :html-utils
   (:use

@@ -341,7 +341,7 @@
                         (response-body (gemini-client:slurp-gemini-url favicon-url))
                         (favicon-list  (coerce (babel:octets-to-string response-body :errorp t)
                                                'list))
-                        (emoji         (starts-with-emoji-p favicon-list))
+                        (emoji         (starting-emoji favicon-list))
                         (favicon       (if emoji
                                            (coerce emoji 'string)
                                            (swconf:gemini-default-favicon))))

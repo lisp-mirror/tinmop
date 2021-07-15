@@ -4752,5 +4752,5 @@
   (first (or (emoji-zwj-sequences-p codepoints-chars)
              (emoji-sequences-p     codepoints-chars))))
 
-(defun starts-with-emoji-p (codepoints-chars)
+(defun starting-emoji (codepoints-chars)
   (emojip codepoints-chars))
