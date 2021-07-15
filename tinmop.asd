@@ -62,6 +62,8 @@
                (:file "filesystem-utils")
                (:file "os-utils")
                (:file "text-utils")
+               (:file "emoji-matcher")
+               (:file "emoji-shortcodes")
                (:file "html-utils")
                (:file "crypto-utils")
                (:file "resources-utils")
@@ -81,7 +83,6 @@
                (:file "db-utils")
                (:file "db")
                (:file "date-formatter")
-               (:file "emoji-shortcodes")
                (:file "software-configuration")
                (:file "tui-utils")
                (:module 9p-client

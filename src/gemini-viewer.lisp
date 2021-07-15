@@ -339,9 +339,14 @@
                                                                       "/favicon.txt"
                                                                       :port port))
                         (response-body (gemini-client:slurp-gemini-url favicon-url))
-                        (favicon (misc:safe-subseq (babel:octets-to-string response-body
-                                                                           :errorp t)
-                                                   0 1)))
+                        (favicon-list  (coerce (babel:octets-to-string response-body :errorp t)
+                                               'list))
+                        (non-emoji-pos (position-if (lambda (a) (not (emojip (list a))))
+                                                    favicon-list))
+                        (favicon       (if non-emoji-pos
+                                           (coerce (subseq favicon-list 0 non-emoji-pos)
+                                                   'string)
+                                           (coerce favicon-list 'string))))
                    (setf cache (acons host favicon cache))
                    (fetch-favicon parsed-url)))
                 (swconf:gemini-default-favicon)))))))
