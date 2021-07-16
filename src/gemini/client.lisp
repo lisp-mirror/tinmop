@@ -465,11 +465,34 @@
 (defun text-file-stream-p (meta)
   (mime-text-p meta))
 
+(defun tls-cert-find (request-iri)
+  (when-let* ((all-rows           (db:find-tls-certificates-rows))
+              (parsed-request-iri (iri:iri-parse request-iri :null-on-error t)))
+    (multiple-value-bind (request-iri request-host request-path request-query request-port
+                          request-fragment request-scheme)
+        (gemini-client:displace-iri parsed-request-iri)
+      (declare (ignore request-iri request-query request-fragment))
+      (loop for row in all-rows do
+        (let ((id (db:row-id row)))
+          (multiple-value-bind (iri host path query port fragment scheme)
+              (gemini-client:displace-iri (iri:iri-parse (db:row-cache-key row)))
+            (declare (ignore iri query fragment))
+            (when (and (string= request-host   host)
+                     (string= request-scheme   scheme)
+                     (=       request-port     port)
+                     (text-utils:string-starts-with-p (gemini-parser:path-last-dir path)
+                                                      request-path))
+              (return-from tls-cert-find
+                (values (strcat (os-utils:cached-file-path (to-s id))
+                                fs:*directory-sep* os-utils:+ssl-cert-name+)
+                        (strcat (os-utils:cached-file-path (to-s id))
+                                fs:*directory-sep* os-utils:+ssl-key-name+))))))))))
+
 (defun fetch-cached-certificate (url)
   (let ((certificate nil)
         (key         nil))
     (multiple-value-bind (certificate-cache key-cache)
-        (db:ssl-cert-find url)
+        (tls-cert-find url)
       (if (and certificate-cache
                key-cache)
           (setf certificate certificate-cache

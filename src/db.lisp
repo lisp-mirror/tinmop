@@ -2908,21 +2908,8 @@ than `days-in-the-past' days (default: `(swconf:config-purge-cache-days-offset)'
 (defun tofu-delete (host)
   (query (delete-from +table-gemini-tofu-cert+ (where (:= :host host)))))
 
-(defun ssl-cert-find (url)
-  (when-let* ((text-looking-for (strcat url "%"))
-              (query            (select :*
-                                  (from +table-cache+)
-                                  (where (:and (:like :key text-looking-for)
-                                               (:= :type +cache-tls-certificate-type+)))))
-              (in-cache         (fetch-single query))
-              (id               (getf in-cache :id)))
-    (values (strcat (os-utils:cached-file-path (to-s id))
-                    fs:*directory-sep* os-utils:+ssl-cert-name+)
-            (strcat (os-utils:cached-file-path (to-s id))
-                    fs:*directory-sep* os-utils:+ssl-key-name+))))
-
-(defun find-tls-certificates-rows (&optional (url ""))
-  (when-let* ((text-looking-for (strcat url "%"))
+(defun find-tls-certificates-rows (&optional (url-like ""))
+  (when-let* ((text-looking-for (prepare-for-sql-like url-like))
               (query            (select :*
                                   (from +table-cache+)
                                   (where (:and (:like :key text-looking-for)

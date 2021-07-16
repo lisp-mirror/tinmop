@@ -53,6 +53,7 @@
    :gemini-link
    :target
    :name
+   :path-last-dir
    :gemini-response
    :status-code
    :meta

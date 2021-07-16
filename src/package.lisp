@@ -990,7 +990,6 @@
    :cache-expired-p
    :tofu-passes-p
    :tofu-delete
-   :ssl-cert-find
    :find-tls-certificates-rows
    :gemini-subscribe-url
    :gemini-find-subscription
