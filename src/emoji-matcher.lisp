@@ -4746,5 +4746,10 @@
   (first (or (emoji-zwj-sequences-p codepoints-chars)
              (emoji-sequences-p     codepoints-chars))))
 
-(defun starting-emoji (codepoints-chars)
-  (emojip codepoints-chars))
+(defgeneric starting-emoji (object))
+
+(defmethod starting-emoji ((object list))
+  (emojip object))
+
+(defmethod starting-emoji ((object string))
+  (emojip (coerce object 'list)))
