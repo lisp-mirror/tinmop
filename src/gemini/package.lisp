@@ -84,6 +84,7 @@
    :level
    :unordered-list-line
    :link-line
+   :link-text
    :sexp->text-rows
    :sexp->text
    :parse-gemini-response-header

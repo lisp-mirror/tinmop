@@ -370,9 +370,10 @@
 (defmethod text->rendered-lines-rows (window (text complex-string))
   text)
 
-(defgeneric collect-lines-from-ir (object window))
+(defgeneric collect-lines-from-ir (object window &key &allow-other-keys))
 
-(defmethod collect-lines-from-ir ((object gemini-parser:with-lines) (window message-window))
+(defmethod collect-lines-from-ir ((object gemini-parser:with-lines) (window message-window)
+                                  &key &allow-other-keys)
   (let ((colorized-lines (colorize-lines (%fit-lines window (gemini-parser:lines object)))))
     (loop for i in colorized-lines
           collect
@@ -395,7 +396,7 @@
   (collect-lines-from-ir text window))
 
 (defmethod text->rendered-lines-rows (window (text gemini-parser:link-line))
-  (let ((res (collect-lines-from-ir text window)))
+  (let ((res (make-instance 'line :normal-text (gemini-parser:link-text text))))
     (row-add-original-object res text)
     res)) ; even if row-add-original-object returns the modified line explicit returns for clarity
 

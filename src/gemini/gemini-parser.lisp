@@ -339,6 +339,18 @@
     :initarg  :link-prefix-other
     :initform "^ "
     :accessor link-prefix-other)
+   (link-bg
+    :initarg  :link-bg
+    :initform :red
+    :accessor link-bg)
+   (link-fg
+    :initarg  :link-fg
+    :initform :yellow
+    :accessor link-fg)
+   (link-attributes
+    :initarg  :link-attributes
+    :initform (tui:attribute-underline)
+    :accessor link-attributes)
    (h1-prefix
     :initarg  :h1-prefix
     :initform "+ "
@@ -448,8 +460,12 @@
   (make-instance 'unordered-list-line
                  :lines    (list text)))
 
-(defclass link-line (with-lines)
-  ((link-name
+(defclass link-line ()
+  ((link-text
+    :initarg  :link-text
+    :initform nil
+    :accessor link-text)
+   (link-name
     :initarg  :link-name
     :initform nil
     :accessor link-name)
@@ -458,9 +474,9 @@
     :initform nil
     :accessor link-value)))
 
-(defun make-link-line (text link-name link-value)
+(defun make-link-line (link-text link-name link-value)
   (make-instance 'link-line
-                 :lines      (list text)
+                 :link-text  link-text
                  :link-name  link-name
                  :link-value link-value))
 
@@ -491,11 +507,21 @@
                      (trim text)
                      text)))
              (linkify (link-name link-value)
-               (if (gemini-link-iri-p link-value)
-                   (if (text-utils:starting-emoji link-name)
-                       (format nil "~a~%" link-name)
-                       (format nil "~a~a~%" (link-prefix-gemini theme) link-name))
-                   (format nil "~a~a~%" (link-prefix-other  theme) link-name)))
+               (let ((raw-link-text (if (gemini-link-iri-p link-value)
+                                        (if (text-utils:starting-emoji link-name)
+                                            (format nil "~a" link-name)
+                                            (format nil
+                                                    "~a~a"
+                                                    (link-prefix-gemini theme)
+                                                    link-name))
+                                        (format nil
+                                                "~a~a"
+                                                (link-prefix-other  theme)
+                                                link-name))))
+                 (tui:make-tui-string raw-link-text
+                                      :attributes (link-attributes theme)
+                                      :fgcolor    (link-fg         theme)
+                                      :bgcolor    (link-bg         theme))))
              (fit-quote-lines (line win-width)
                (let* ((words        (split-words line))
                       (quote-prefix (quote-prefix theme))

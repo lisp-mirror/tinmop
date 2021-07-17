@@ -183,16 +183,21 @@
 
 (defun init-default-gemini-theme (viewport)
   (setf *gemini-page-theme*
-        (make-instance 'gemini-parser:gemini-page-theme
-                       :viewport           viewport
-                       :link-prefix-other  (swconf:gemini-link-prefix-to-other)
-                       :link-prefix-gemini (swconf:gemini-link-prefix-to-gemini)
-                       :quote-prefix       (swconf:gemini-quote-prefix)
-                       :h1-prefix          (swconf:gemini-h1-prefix)
-                       :h2-prefix          (swconf:gemini-h2-prefix)
-                       :h3-prefix          (swconf:gemini-h3-prefix)
-                       :bullet-prefix      (swconf:gemini-bullet-prefix)
-                       :preformatted-fg    (swconf:gemini-preformatted-fg))))
+        (multiple-value-bind (link-bg link-fg link-attributes)
+            (swconf:gemini-link-colors)
+          (make-instance 'gemini-parser:gemini-page-theme
+                         :viewport           viewport
+                         :link-prefix-other  (swconf:gemini-link-prefix-to-other)
+                         :link-prefix-gemini (swconf:gemini-link-prefix-to-gemini)
+                         :link-bg            link-bg
+                         :link-fg            link-fg
+                         :link-attributes    link-attributes
+                         :quote-prefix       (swconf:gemini-quote-prefix)
+                         :h1-prefix          (swconf:gemini-h1-prefix)
+                         :h2-prefix          (swconf:gemini-h2-prefix)
+                         :h3-prefix          (swconf:gemini-h3-prefix)
+                         :bullet-prefix      (swconf:gemini-bullet-prefix)
+                         :preformatted-fg    (swconf:gemini-preformatted-fg)))))
 
 (defclass gemini-file-response ()
   ((status-code

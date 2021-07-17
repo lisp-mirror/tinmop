@@ -588,6 +588,20 @@
                                  +key-favicon+)))
     (db-utils:db-not-nil-p fetchp)))
 
+(defun gemini-link-colors ()
+  (values (access:accesses *software-configuration*
+                           +key-gemini+
+                           +key-link+
+                           +key-background+)
+          (access:accesses *software-configuration*
+                           +key-gemini+
+                           +key-link+
+                           +key-foreground+)
+          (tui-utils:text->tui-attribute (access:accesses *software-configuration*
+                                                          +key-gemini+
+                                                          +key-link+
+                                                          +key-attribute+))))
+
 (defun gemini-link-prefix (scheme)
   (access-non-null-conf-value *software-configuration*
                               +key-gemini+

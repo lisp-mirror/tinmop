@@ -77,7 +77,7 @@ So the whole list is like: '((\"foo\" \"bar\") (\"old\" \"new\") ...)")
               (setf replaced-string
                     (rewriting-link-replace-mapping mapping replaced-string)))
             (setf (line-oriented-window:normal-text row)
-                  (message-window::colorize-lines replaced-string))
+                  (tui:apply-coloring original-string replaced-string))
             (setf (elt rows index)
                   (message-window:text->rendered-lines-rows window row))))))))
 

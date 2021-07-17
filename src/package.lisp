@@ -1116,6 +1116,7 @@
    :gemini-default-favicon
    :directory-symbol
    :gemini-fetch-favicon-p
+   :gemini-link-colors
    :gemini-link-prefix-to-gemini
    :gemini-link-prefix-to-other
    :gemini-quote-prefix

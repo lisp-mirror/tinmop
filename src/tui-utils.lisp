@@ -391,25 +391,25 @@ latter has a length equals to `total-size'"))
            (last-char-bg   (bgcolor last-char-from))
            (last-char-attr (attributes last-char-from)))
       (with-accessors ((complex-char-array-to complex-char-array)) res
-      (loop
-        for from-char across complex-char-array-from
-        for to-char   across complex-char-array-to
-        do
-           (setf (attributes to-char)
-                 (attributes from-char))
-           (setf (fgcolor to-char)
-                 (fgcolor from-char))
-           (setf (bgcolor to-char)
-                 (bgcolor from-char)))
-      (when (> length-diff 0)
-        (loop for i from length-diff below (length to) do
-          (let ((char (elt complex-char-array-to i)))
-            (setf (attributes char)
-                  last-char-attr)
-            (setf (fgcolor char)
-                  last-char-fg)
-            (setf (bgcolor char)
-                  last-char-bg))))
+        (loop
+          for from-char across complex-char-array-from
+          for to-char   across complex-char-array-to
+          do
+             (setf (attributes to-char)
+                   (attributes from-char))
+             (setf (fgcolor to-char)
+                   (fgcolor from-char))
+             (setf (bgcolor to-char)
+                   (bgcolor from-char)))
+        (when (> length-diff 0)
+          (loop for i from length-diff below (length to) do
+            (let ((char (elt complex-char-array-to i)))
+              (setf (attributes char)
+                    last-char-attr)
+              (setf (fgcolor char)
+                    last-char-fg)
+              (setf (bgcolor char)
+                    last-char-bg))))
         res))))
 
 (defmethod remove-corrupting-utf8-chars ((object complex-string))
@@ -440,7 +440,7 @@ latter has a length equals to `total-size'"))
 (defmethod print-debug ((object complex-string) &optional (stream *standard-output*))
   (print-unreadable-object (object stream :type t :identity nil)
     (loop for i across (complex-char-array object) do
-         (print-debug i))))
+         (print-debug i stream))))
 
 (defun standard-error-notify-life ()
   (* (swconf:config-notification-life) 5))
