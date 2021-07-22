@@ -198,7 +198,7 @@
 
 (let ((index     0)
       (frames   -1)
-      (slowness 30))
+      (slowness 15))
   (declare (fixnum index frames slowness))
   (defun draw-downloading-animation (window)
     (declare (optimize (debug 0) (speed 2)))
