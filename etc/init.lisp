@@ -419,6 +419,10 @@
 
 (define-key "d"         #'gemlog-cancel-subscription                 *gemlog-subscription-keymap*)
 
+(define-key "l"         #'open-message-link                          *gemlog-subscription-keymap*)
+
+
+
 ;; tags keymap
 
 (define-key "up"        #'tag-go-up                                   *tags-keymap*)

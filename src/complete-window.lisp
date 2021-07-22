@@ -101,7 +101,8 @@
         (let ((columns            (elt paginated-info          current-page))
               (indices-matched    (elt paginated-info-matched  current-page))
               (matched-attributes (combine-attributes (attribute-bold)
-                                                      (attribute-underline))))
+                                                      (attribute-underline)
+                                                      (attribute-reverse))))
           (loop
             for column in columns
             for column-indices in indices-matched
