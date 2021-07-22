@@ -554,7 +554,12 @@ printed in the box column by column; in the example above the results are:
              (multiple-value-bind (columns rest-index)
                  (box-fit-as-much-lines-columns lines box-width
                                                 box-height
-                                                :spaces-between spaces-between)
+                                                :spaces-between spaces-between
+                                                :pad-right-fn
+                                                (lambda (a max-width)
+                                                  (right-padding a (+ max-width
+                                                                      spaces-between)))
+                                                :pad-left-fn #'identity)
                (if rest-index
                    (append (list columns)
                            (box-fit-multiple-column (subseq lines rest-index)

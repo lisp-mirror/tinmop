@@ -30,13 +30,13 @@
   (let* ((lines   (list "1121"
                         "234"
                         "567"))
-         (batches (box-fit-multiple-column lines 8 2)))
+         (batches (box-fit-multiple-column lines 9 2)))
     batches))
 
 (deftest column-fit (text-utils-suite)
   (assert-true
       (tree-equal (column-fit)
-                  '((("1121" "234 ") (" 567" "    ")))
+                  '((("1121 " "234  ") ("567 " "    ")))
                   :test #'string=)))
 
 (deftest column-fit-annotated (text-utils-suite)
