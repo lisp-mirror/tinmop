@@ -181,13 +181,31 @@ list af all possible candidtae for completion."
 
 (with-simple-complete conversation-folder db:all-conversation-folders)
 
+(defun uri-matcher (scanner bag &optional (accum-strings '()) (accum-indices '()))
+  (if (null bag)
+      (values accum-strings accum-indices)
+      (let ((tested (first bag)))
+        (multiple-value-bind (start end)
+            (cl-ppcre:scan scanner tested)
+          (if start
+              (uri-matcher scanner
+                           (rest bag)
+                           (push tested accum-strings)
+                           (push (loop for i from start below end collect i)
+                                 accum-indices))
+              (uri-matcher scanner (rest bag) accum-strings accum-indices))))))
+
 (defun make-complete-gemini-iri-fn (prompt)
   (lambda (hint)
-    (when-let ((matched (remove-if-not (contains-clsr hint)
-                                       (remove-duplicates (funcall #'db:history-prompt->values
-                                                                   prompt)
-                                                          :test #'string=))))
-      (values matched (reduce-to-common-prefix matched)))))
+    (when-let ((bag (remove-duplicates (funcall #'db:history-prompt->values
+                                                prompt)
+                                       :test #'string=)))
+      (multiple-value-bind (matched-strings indices)
+          (uri-matcher (cl-ppcre:create-scanner hint) bag)
+        (when matched-strings
+          (values matched-strings
+                  (reduce-to-common-prefix matched-strings)
+                  indices))))))
 
 (defun complete-chat-message (hint)
   (append (username-complete hint)

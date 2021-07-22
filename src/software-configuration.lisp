@@ -564,6 +564,15 @@
                           (access-key->user-directive keys))))
         value)))
 
+(defun suggestion-window-selected-item-colors ()
+  (values (access-non-null-conf-value *software-configuration*
+                                               +key-suggestions-window+
+                                               +key-selected+
+                                               +key-background+)
+          (access-non-null-conf-value *software-configuration*
+                                               +key-suggestions-window+
+                                               +key-selected+
+                                               +key-foreground+)))
 (defun gemini-downloading-animation ()
   (let ((animation (access-non-null-conf-value *software-configuration*
                                                +key-gemini+

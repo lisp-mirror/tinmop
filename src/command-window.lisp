@@ -370,7 +370,7 @@ be either `:keybinding' or `:string'.  the former for key command the latter for
   (setf (error-message object) nil))
 
 (defun move-suggestion-page (win offset)
-  "Paginate win (suggestion window) by offset, will not go past the numer of pages."
+  "Paginate win (suggestion window) by offset, will not go past the number of pages."
   (with-accessors ((suggestions-win suggestions-win)) win
     (when suggestions-win
       (with-accessors ((current-page   suggestions-window:current-page)
@@ -385,6 +385,57 @@ be either `:keybinding' or `:string'.  the former for key command the latter for
 
 (defun move-suggestion-page-right (win)
   (move-suggestion-page win 1))
+
+(defun select-suggestion (win offset)
+  "Paginate win (suggestion window) by offset, will not go past the number of pages."
+  (with-accessors ((suggestions-win suggestions-win)) win
+    (when suggestions-win
+      (with-accessors ((current-page   suggestions-window:current-page)
+                       (paginated-info suggestions-window:paginated-info)
+                       (selected-item-row-index    complete-window:selected-item-row-index)
+                       (selected-item-column-index complete-window:selected-item-column-index))
+          suggestions-win
+        (incf selected-item-row-index offset)
+        (let* ((columns       (elt paginated-info current-page))
+               (columns-count (length columns))
+               (column        (elt columns selected-item-column-index))
+               (rows-count    (length column)))
+          (cond
+            ((< selected-item-row-index 0)
+             (decf selected-item-column-index)
+             (when (< selected-item-column-index 0)
+               (setf selected-item-column-index
+                     (1- (length columns))))
+             (let* ((previous-column      (elt columns selected-item-column-index))
+                    (previous-column-size (length previous-column)))
+               (setf selected-item-row-index (1- previous-column-size))))
+            ((>= selected-item-row-index rows-count)
+             (setf selected-item-row-index complete-window:+starting-item-index+)
+             (setf selected-item-column-index
+                   (+ complete-window:+starting-item-index+
+                      (rem (1+ selected-item-column-index) columns-count))))))))))
+
+(defun select-suggestion-next (win)
+  (select-suggestion win -1))
+
+(defun select-suggestion-previous (win)
+  (select-suggestion win 1))
+
+(defun insert-selected-suggestion (win)
+  (with-accessors ((suggestions-win suggestions-win)
+                   (command-line    command-line)) win
+    (when suggestions-win
+      (with-accessors ((current-page   suggestions-window:current-page)
+                       (paginated-info suggestions-window:paginated-info)
+                       (selected-item-row-index    complete-window::selected-item-row-index)
+                       (selected-item-column-index complete-window::selected-item-column-index))
+          suggestions-win
+        (let* ((columns     (elt paginated-info current-page))
+               (column      (elt columns selected-item-column-index))
+               (suggestion  (trim-blanks (elt column  selected-item-row-index))))
+          (setf command-line suggestion)
+          (move-point-to-end win command-line)
+          (win-hide suggestions-win))))))
 
 (defun fire-user-input-event (win)
   "Generates an event to notify that  the user inserted an input on the
@@ -423,10 +474,16 @@ command line."
              (set-history-most-recent command-window prompt)))
       (remove-messages command-window)
       (cond
-        ((eq :control-left event)
+        ((eq :alt-left event)
          (move-suggestion-page-left command-window))
-        ((eq :control-right event)
+        ((eq :alt-right event)
          (move-suggestion-page-right command-window))
+        ((eq :alt-up event)
+         (select-suggestion-next command-window))
+        ((eq :alt-down event)
+         (select-suggestion-previous command-window))
+        ((eq :alt-i event)
+         (insert-selected-suggestion command-window))
         ((eq :backspace event)
          (setf command-line (delete-at-point command-window command-line :direction :left))
          (show-candidate-completion command-window))

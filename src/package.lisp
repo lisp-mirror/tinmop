@@ -1113,6 +1113,7 @@
    :load-config-file
    :external-editor
    :gemini-downloading-animation
+   :suggestion-window-selected-item-colors
    :gemini-default-favicon
    :directory-symbol
    :gemini-fetch-favicon-p
@@ -1240,7 +1241,8 @@
    :with-notify-errors
    :with-print-error-message
    :make-tui-char
-   :make-tui-string))
+   :make-tui-string
+   :apply-attributes))
 
 (defpackage :command-line
   (:use
@@ -1737,7 +1739,10 @@
   (:shadowing-import-from :text-utils :split-lines)
   (:shadowing-import-from :misc :random-elt :shuffle)
   (:export
+   :+starting-item-index+
    :complete-window
+   :selected-item-row-index
+   :selected-item-column-index
    :init))
 
 (defpackage :keybindings-window

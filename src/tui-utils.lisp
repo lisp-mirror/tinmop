@@ -412,6 +412,28 @@ latter has a length equals to `total-size'"))
                     last-char-bg))))
         res))))
 
+(defgeneric apply-attributes (object index attributes))
+
+(defmethod apply-attributes ((object complex-string) (index fixnum) attributes)
+  (let ((char (elt (complex-char-array object) index)))
+    (setf (attributes char) attributes)
+    object))
+
+(defmethod apply-attributes ((object string) (index fixnum) attributes)
+  (apply-attributes (make-tui-string object) index attributes))
+
+(defmethod apply-attributes ((object string) (index list) attributes)
+  (apply-attributes (make-tui-string object) index attributes))
+
+(defmethod apply-attributes ((object complex-string) (index list) attributes)
+  (if (null index)
+      object
+      (let ((partial (apply-attributes object (first index) attributes)))
+        (apply-attributes partial (rest index) attributes))))
+
+(defmethod apply-attributes (object (index null) attributes)
+  object)
+
 (defmethod remove-corrupting-utf8-chars ((object complex-string))
   (setf (complex-char-array object)
         (remove-if (lambda (a) (display-corrupting-utf8-p (simple-char a)))

@@ -16,48 +16,118 @@
 
 (in-package :complete-window)
 
+(define-constant +starting-item-index+ 0)
+
 (defclass complete-window (suggestions-window)
-  ()
+  ((selected-item-row-index
+    :initform +starting-item-index+
+    :accessor selected-item-row-index)
+   (selected-item-column-index
+    :initform +starting-item-index+
+    :accessor selected-item-column-index)
+   (pagination-info-matched
+    :initform nil
+    :initarg  :paginated-info-matched
+    :accessor paginated-info-matched)
+   (foreground-selected-item
+    :initform nil
+    :initarg  :foreground-selected-item
+    :accessor foreground-selected-item)
+   (background-selected-item
+    :initform nil
+    :initarg  :background-selected-item
+    :accessor background-selected-item))
   (:documentation "A  window to shows  the possible completion  for an
   user input"))
 
 (defmethod calculate ((object complete-window) dt)
   (declare (ignore object dt)))
 
+(defmethod refresh-config :after ((object complete-window))
+  (with-accessors ((foreground-selected-item foreground-selected-item)
+                   (background-selected-item background-selected-item)) object
+    (multiple-value-bind (bg fg)
+        (swconf:suggestion-window-selected-item-colors)
+      (setf foreground-selected-item fg
+            background-selected-item bg)
+      object)))
+
 (defmethod update-suggestions ((object complete-window) hint &key &allow-other-keys)
   "List  the   possible  expansion   of  `hint'  using   the  function
 `complete:*complete-function*'."
-  (with-accessors ((paginated-info paginated-info)) object
-    (multiple-value-bind (candidates common-prefix)
-        (funcall complete:*complete-function* hint)
-      (when candidates
-        (when-let ((batches (text-utils:box-fit-multiple-column candidates
-                                                                (- (win-width  object) 2)
-                                                                (- (win-height object)
-                                                                   +box-height-diff+))))
-          (setf paginated-info batches)
-          (values candidates common-prefix))))))
+  (flet ((partitions (template data)
+           (when data
+             (let ((ct 0))
+               (loop for page in template
+                     collect
+                     (loop for column in page
+                           collect
+                           (loop for row in column
+                                 collect
+                                 (prog1
+                                     (elt data ct)
+                                   (incf ct)))))))))
+    (with-accessors ((paginated-info         paginated-info)
+                     (paginated-info-matched paginated-info-matched)) object
+      (multiple-value-bind (candidates common-prefix underline-char-indices)
+          (funcall complete:*complete-function* hint)
+        (when candidates
+          (let* ((batches (text-utils:box-fit-multiple-column candidates
+                                                              (- (win-width  object) 2)
+                                                              (- (win-height object)
+                                                                 +box-height-diff+)))
+                 (padding-size  (- (length candidates)
+                                   (length underline-char-indices)))
+                 (padding (when (> padding-size 0)
+                            (make-list padding-size :initial-element nil)))
+                 (underline-batch (partitions batches (append underline-char-indices padding))))
+            (setf paginated-info batches)
+            (setf paginated-info-matched underline-batch)
+            (values candidates common-prefix underline-batch)))))))
 
 (defmethod draw :after ((object complete-window))
-  (with-accessors ((keybindings-tree keybindings-tree)
-                   (paginated-info   paginated-info)
-                   (current-page     current-page)) object
+  (with-accessors ((keybindings-tree           keybindings-tree)
+                   (paginated-info             paginated-info)
+                   (paginated-info-matched     paginated-info-matched)
+                   (current-page               current-page)
+                   (selected-item-row-index    selected-item-row-index)
+                   (selected-item-column-index selected-item-column-index)
+                   (foreground-selected-item   foreground-selected-item)
+                   (background-selected-item   background-selected-item)) object
     (when-window-shown (object)
       (win-clear object :redraw nil)
       (win-box   object)
       (when paginated-info
-        (loop
-           for column in (elt paginated-info current-page)
-           with column-count = 1
-           do
-             (let ((column-size (length (first column))))
-               (loop
-                  for row in column
-                  with row-count = 1 do
-                    (print-text object row column-count row-count)
-                    (incf row-count))
-               (incf column-count column-size)))
-        (draw-pagination-info object))
+        (let ((columns            (elt paginated-info          current-page))
+              (indices-matched    (elt paginated-info-matched  current-page))
+              (matched-attributes (combine-attributes (attribute-bold)
+                                                      (attribute-underline))))
+          (loop
+            for column in columns
+            for column-indices in indices-matched
+            for column-count from 0
+            with column-offset = 1
+            do
+               (let ((column-size (length (first column))))
+                 (loop
+                   for row in column
+                   for indices-row-underlined in column-indices
+                   with row-count = 1 do
+                     (let ((text (if (and (= row-count    (1+ selected-item-row-index))
+                                          (= column-count selected-item-column-index))
+                                     (make-tui-string row
+                                                      :fgcolor foreground-selected-item
+                                                      :bgcolor background-selected-item)
+                                     (make-tui-string row))))
+                       (print-text object
+                                     (apply-attributes text
+                                                       indices-row-underlined
+                                                       matched-attributes)
+                                     column-offset
+                                     row-count))
+                     (incf row-count))
+                 (incf column-offset column-size)))
+          (draw-pagination-info object)))
       (win-refresh object))))
 
 (defun init ()
