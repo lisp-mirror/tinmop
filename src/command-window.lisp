@@ -467,7 +467,8 @@ command line."
                    (info-message     info-message)
                    (prompt           prompt)
                    (history-position history-position)
-                   (suggestions-win  suggestions-win)) command-window
+                   (suggestions-win  suggestions-win)
+                   (point-position   point-position)) command-window
     (flet ((set-history (new-id new-input)
              (when (and new-id
                         new-input)
@@ -478,6 +479,8 @@ command line."
              (set-history-most-recent command-window prompt)))
       (remove-messages command-window)
       (cond
+        ((string= (decode-key-event event) "^K")
+         (setf command-line (safe-subseq command-line 0 (no-prompt-point-pos command-window))))
         ((eq :alt-left event)
          (move-suggestion-page-left command-window))
         ((eq :alt-right event)
