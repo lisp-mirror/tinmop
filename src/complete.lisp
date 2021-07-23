@@ -199,13 +199,13 @@ list af all possible candidtae for completion."
   (let ((strings  '())
         (indices  '())
         (ordering ()))
-    (loop for candidate in bag when (< (length template)
-                                       (length candidate))
+    (loop for candidate in bag when (<= (length template)
+                                        (length candidate))
           do
              (when-let ((indices-matched (cl-i18n-utils:fuzzy-match template candidate
                                                                     :similarity-match     5
                                                                     :similarity-mismatch -5
-                                                                    :penalty-weight       1 )))
+                                                                    :penalty-weight       1)))
                (push candidate strings)
                (push indices-matched indices)))
     (setf ordering (loop for i from 0 below (length strings) collect i))

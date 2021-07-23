@@ -128,7 +128,9 @@
                    (advance-res)
                    (%advance))))
         (%advance)
-        res))))
+        (if (= prefix-count 0)
+            nil
+            res)))))
 
 (defgeneric join-with-strings (object junction))
 
