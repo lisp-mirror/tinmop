@@ -1743,6 +1743,7 @@
    :complete-window
    :selected-item-row-index
    :selected-item-column-index
+   :reset-selected-item
    :init))
 
 (defpackage :keybindings-window

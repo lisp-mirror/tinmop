@@ -244,7 +244,7 @@ be either `:keybinding' or `:string'.  the former for key command the latter for
 (defgeneric remove-messages (object))
 
 (defun manage-command-event (command-window event)
-  "Intercept UI events in keybindg mode"
+  "Intercept UI events in keybindig mode"
   (with-accessors ((command-line    command-line)
                    (suggestions-win suggestions-win)) command-window
     ;; some envents should by intercepted by command window
@@ -283,7 +283,7 @@ be either `:keybinding' or `:string'.  the former for key command the latter for
                                                      :tree *global-keymap*))))))
 
 (defmethod enqueue-command ((object command-window) command decode-key-p)
-  "Enqueue and  process, if possibl,e `command` object, if decode-key
+  "Enqueue and  process, if possible `command` object, if decode-key
   is not null decode key to something more human readable."
   (with-accessors ((command-line    command-line)
                    (info-message    info-message)
@@ -514,8 +514,9 @@ command line."
            ((char= #\Tab event)
             (insert-selected-suggestion command-window))
            (t
-            (when (null suggestions-win)
-              (setf suggestions-win (complete-window:init)))
+            (if (null suggestions-win)
+                (setf suggestions-win (complete-window:init))
+                (complete-window:reset-selected-item suggestions-win))
             (win-show suggestions-win)
             (setf command-line
                   (insert-at-point command-window event command-line))

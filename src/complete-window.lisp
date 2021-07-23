@@ -40,6 +40,11 @@
   (:documentation "A  window to shows  the possible completion  for an
   user input"))
 
+(defun reset-selected-item (complete-win)
+  (setf (selected-item-column-index complete-win) +starting-item-index+
+        (selected-item-row-index    complete-win) +starting-item-index+)
+  complete-win)
+
 (defmethod calculate ((object complete-window) dt)
   (declare (ignore object dt)))
 
