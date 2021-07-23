@@ -370,7 +370,7 @@
              (ssl-stream   (cl+ssl:make-ssl-client-stream stream
                                                           :certificate     client-certificate
                                                           :key             certificate-key
-                                                          :external-format nil
+                                                          :external-format nil ; unsigned byte 8
                                                           :unwrap-stream-p t
                                                           :verify          nil
                                                           :hostname        ssl-hostname))

@@ -181,19 +181,54 @@ list af all possible candidtae for completion."
 
 (with-simple-complete conversation-folder db:all-conversation-folders)
 
-(defun uri-matcher (scanner bag &optional (accum-strings '()) (accum-indices '()))
+(defun uri-matcher* (scanner bag &optional (accum-strings '()) (accum-indices '()))
   (if (null bag)
       (values accum-strings accum-indices)
       (let ((tested (first bag)))
         (multiple-value-bind (start end)
             (cl-ppcre:scan scanner tested)
           (if start
-              (uri-matcher scanner
+              (uri-matcher* scanner
                            (rest bag)
                            (push tested accum-strings)
                            (push (loop for i from start below end collect i)
                                  accum-indices))
-              (uri-matcher scanner (rest bag) accum-strings accum-indices))))))
+              (uri-matcher* scanner (rest bag) accum-strings accum-indices))))))
+
+(defun uri-matcher (template bag)
+  (let ((strings  '())
+        (indices  '())
+        (ordering ()))
+    (loop for candidate in bag when (< (length template)
+                                       (length candidate))
+          do
+             (when-let ((indices-matched (cl-i18n-utils:fuzzy-match template candidate
+                                                                    :similarity-match     5
+                                                                    :similarity-mismatch -5
+                                                                    :penalty-weight       1 )))
+               (push candidate strings)
+               (push indices-matched indices)))
+    (setf ordering (loop for i from 0 below (length strings) collect i))
+    (setf ordering (sort ordering
+                         (lambda (a b)
+                           (let* ((indices-a   (elt indices a))
+                                  (indices-b   (elt indices b))
+                                  (length-a    (length indices-a))
+                                  (length-b    (length indices-b))
+                                  (nulls-a     (count-if #'null indices-a))
+                                  (nulls-b     (count-if #'null indices-b))
+                                  (non-nulls-a (- length-a nulls-a))
+                                  (non-nulls-b (- length-b nulls-b)))
+                             (cond
+                               ((= length-a length-b)
+                                (< nulls-a nulls-b))
+                               ((= non-nulls-a non-nulls-b)
+                                (> length-a length-b))
+                               (t
+                                (> non-nulls-a non-nulls-b)))))))
+    (setf strings (loop for i in ordering collect (elt strings i)))
+    (setf indices (loop for i in ordering collect (elt indices i)))
+    (values strings indices)))
 
 (defun make-complete-gemini-iri-fn (prompt)
   (lambda (hint)
@@ -201,7 +236,7 @@ list af all possible candidtae for completion."
                                                 prompt)
                                        :test #'string=)))
       (multiple-value-bind (matched-strings indices)
-          (uri-matcher (cl-ppcre:create-scanner hint) bag)
+          (uri-matcher hint bag)
         (when matched-strings
           (values matched-strings
                   (reduce-to-common-prefix matched-strings)
