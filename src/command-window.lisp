@@ -244,7 +244,7 @@ be either `:keybinding' or `:string'.  the former for key command the latter for
 (defgeneric remove-messages (object))
 
 (defun manage-command-event (command-window event)
-  "Intercept UI events in keybindig mode"
+  "Intercept UI events in keybinding mode"
   (with-accessors ((command-line    command-line)
                    (suggestions-win suggestions-win)) command-window
     ;; some envents should by intercepted by command window

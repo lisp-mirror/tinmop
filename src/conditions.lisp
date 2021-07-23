@@ -94,7 +94,7 @@
   (:report (lambda (condition stream)
              (format stream "~s" (command condition))))
   (:documentation "Condition signalled when a command the user inputed
-  was not found in keybindigs tree."))
+  was not found in keybindings tree."))
 
 (defmacro with-default-on-error ((default) &body body)
   "Well i think it is the same as `ignore-error'"
