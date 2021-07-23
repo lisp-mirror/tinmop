@@ -416,10 +416,10 @@ be either `:keybinding' or `:string'.  the former for key command the latter for
                       (rem (1+ selected-item-column-index) columns-count))))))))))
 
 (defun select-suggestion-next (win)
-  (select-suggestion win -1))
+  (select-suggestion win 1))
 
 (defun select-suggestion-previous (win)
-  (select-suggestion win 1))
+  (select-suggestion win -1))
 
 (defun insert-selected-suggestion (win)
   (with-accessors ((suggestions-win suggestions-win)
@@ -433,8 +433,13 @@ be either `:keybinding' or `:string'.  the former for key command the latter for
         (let* ((columns     (elt paginated-info current-page))
                (column      (elt columns selected-item-column-index))
                (suggestion  (trim-blanks (elt column  selected-item-row-index))))
-          (setf command-line suggestion)
-          (move-point-to-end win command-line))))))
+          (if (string= command-line suggestion)
+              (progn
+                (select-suggestion-next win)
+                (insert-selected-suggestion win))
+              (progn
+                (setf command-line suggestion)
+                (move-point-to-end win command-line))))))))
 
 (defun fire-user-input-event (win)
   "Generates an event to notify that  the user inserted an input on the
@@ -493,13 +498,13 @@ command line."
          (move-point-to-start command-window))
         ((eq :up event)
          (if (win-shown-p suggestions-win)
-             (select-suggestion-next command-window)
+             (select-suggestion-previous command-window)
              (multiple-value-bind (new-id new-input)
                  (db:previous-in-history history-position prompt)
                (set-history new-id new-input))))
         ((eq :down event)
          (if (win-shown-p suggestions-win)
-             (select-suggestion-previous command-window)
+             (select-suggestion-next command-window)
              (multiple-value-bind (new-id new-input)
                  (db:next-in-history history-position prompt)
                (set-history new-id new-input))))
