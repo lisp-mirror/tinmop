@@ -19,8 +19,11 @@
 
 (defparameter *gemini-db-streams-lock* (bt:make-recursive-lock))
 
-(define-constant +read-buffer-size+ 1024
+(define-constant +read-buffer-size+ 2048
   :documentation "Chunk's size of the buffer when reading non gemini contents from stream")
+
+(define-constant +buffer-minimum-size-to-open+ 4096
+  :documentation "Minimum size of the saved contents (non gemini text) before attempt to opening with an user defined program: see configuration directive 'use program foo *no wait*'")
 
 (defparameter *gemini-streams-db* ())
 
@@ -462,25 +465,42 @@
       (when-let ((extension (fs:get-extension path)))
         (setf support-file (fs:temporary-file :extension extension)))
       (with-open-support-file (file-stream support-file)
-        (labels ((%fill-buffer ()
+        (let ((partial-content-not-opened t))
+        (labels ((download-completed-p (buffer read-so-far)
+                   (< read-so-far (length buffer)))
+                 (opening-partial-contents-p (read-so-far)
+                   (> read-so-far +buffer-minimum-size-to-open+))
+                 (%fill-buffer ()
                    (declare (optimize (debug 0) (speed 3)))
                    (when (downloading-allowed-p wrapper-object)
-                     (multiple-value-bind (buffer read-so-far)
-                         (read-array download-stream +read-buffer-size+)
-                       (declare ((vector (unsigned-byte 8)) buffer))
-                       (declare (fixnum read-so-far))
-                       (increment-bytes-count wrapper-object read-so-far)
-                       (if (< read-so-far (length buffer))
-                           (progn
-                             (write-sequence buffer file-stream :start 0 :end read-so-far)
-                             (force-output file-stream)
-                             (setf (stream-status wrapper-object) :completed)
-                             (gemini-client:close-ssl-socket socket)
-                             (os-utils:open-resource-with-external-program support-file nil))
-                           (progn
-                             (write-sequence buffer file-stream)
-                             (%fill-buffer)))))))
-          (%fill-buffer))))))
+                     (multiple-value-bind (program-exists y wait-for-download)
+                         (swconf:link-regex->program-to-use support-file)
+                       (declare (ignore y))
+                       (multiple-value-bind (buffer read-so-far)
+                           (read-array download-stream +read-buffer-size+)
+                         (declare ((vector (unsigned-byte 8)) buffer))
+                         (declare (fixnum read-so-far))
+                         (increment-bytes-count wrapper-object read-so-far)
+                         (if (download-completed-p buffer read-so-far)
+                             (progn
+                               (write-sequence buffer file-stream :start 0 :end read-so-far)
+                               (force-output file-stream)
+                               (setf (stream-status wrapper-object) :completed)
+                               (gemini-client:close-ssl-socket socket)
+                               (when wait-for-download
+                                 (os-utils:open-resource-with-external-program support-file
+                                                                               nil)))
+                             (progn
+                               (write-sequence buffer file-stream)
+                               (when (and partial-content-not-opened
+                                          program-exists
+                                          (not wait-for-download)
+                                          (opening-partial-contents-p (octect-count wrapper-object)))
+                                 (setf partial-content-not-opened nil)
+                                 (os-utils:open-resource-with-external-program support-file
+                                                                               nil))
+                               (%fill-buffer))))))))
+          (%fill-buffer)))))))
 
 (defun request-success-dispatched-clrs (enqueue)
   (lambda (status code-description meta response socket iri parsed-iri)

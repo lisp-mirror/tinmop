@@ -29,7 +29,7 @@
 ;;                         COMMENT*
 ;; SERVER-ASSIGN         := SERVER-KEY BLANKS ASSIGN BLANKS GENERIC-VALUE BLANKS
 ;; USERNAME-ASSIGN       := USERNAME-KEY BLANKS WITH BLANKS GENERIC-VALUE BLANKS
-;; OPEN-LINK-HELPER      := OPEN-LINK-HELPER-KEY BLANKS ASSIGN BLANKS REGEXP PROGRAM-NAME BLANKS USE-CACHE
+;; OPEN-LINK-HELPER      := OPEN-LINK-HELPER-KEY BLANKS ASSIGN BLANKS REGEXP PROGRAM-NAME BLANKS USE-CACHE? NOWAIT?
 ;; GENERIC-ASSIGN        := (and key blanks assign blanks
 ;;                           (or quoted-string
 ;;                               hexcolor
@@ -44,6 +44,9 @@
 ;; FILEPATH              := QUOTED-STRING
 ;; PROGRAM-NAME          := QUOTED-STRING
 ;; USE-CACHE             := USE BLANKS CACHE
+;; NOWAIT                := NO BLANKS WAIT
+;; NO                    := "no"
+;; WAIT                  := "wait"
 ;; CACHE                 := "cache"
 ;; USE                   := "use"
 ;; SERVER-KEY            := "server"
@@ -294,7 +297,12 @@
     :initform t
     :initarg  :use-cache
     :reader   use-cache-p
-    :writer   (setf use-cache)))
+    :writer   (setf use-cache))
+   (wait
+    :initform t
+    :initarg  :wait
+    :reader   waitp
+    :writer   (setf wait)))
   (:documentation "When a gemini link matches `re' try to open it with 'program-name'"))
 
 (defmethod print-object ((object open-link-helper) stream)
@@ -304,13 +312,14 @@
                      (use-cache-p  use-cache-p)) object
       (format stream "re: ~s program: ~s use cache? ~a" re program-name use-cache-p))))
 
-(defun make-open-link-helper (re program-name use-cache)
+(defun make-open-link-helper (re program-name use-cache &key (wait t))
   (assert (stringp program-name))
   (assert (stringp re))
   (make-instance 'open-link-helper
                  :re           re
                  :program-name program-name
-                 :use-cache    use-cache))
+                 :use-cache    use-cache
+                 :wait         wait))
 
 (defrule use "use"
   (:text t))
@@ -318,7 +327,17 @@
 (defrule cache "cache"
   (:text t))
 
-(defrule use-cache (and use blanks cache))
+(defrule no "no"
+  (:text t))
+
+(defrule wait "wait"
+  (:text t))
+
+(defrule use-cache (and use blanks cache)
+  (:constant t))
+
+(defrule no-wait (and no blanks wait)
+  (:constant t))
 
 (defrule open-link-helper
     (and open-link-helper-key
@@ -330,11 +349,15 @@
          regexp ; 6 program to use
          blanks
          (? (and use-cache ; 8 use cache?
+                 blanks))
+         (? (and no-wait ; 9 wait download?
                  blanks)))
   (:function (lambda (args)
                (list :open-link-helper
-                     (make-open-link-helper (elt args 2) (elt args 6) (elt args 8))))))
-
+                     (make-open-link-helper (elt args 2)
+                                            (elt args 6)
+                                            (elt args 8)
+                                            :wait (not (elt args 9)))))))
 (defrule filepath quoted-string)
 
 (defparameter *already-included-files* ())
@@ -883,7 +906,8 @@
                                (cl-ppcre:scan (re a) link))
                              (config-all-link-open-program))))
     (values (program-name found)
-            (use-cache-p  found))))
+            (use-cache-p  found)
+            (waitp        found))))
 
 (defun use-tinmop-as-external-program-p (program)
   (cl-ppcre:scan "(^me$)|(^internal$)|(tinmop)" program))
