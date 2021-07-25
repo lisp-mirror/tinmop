@@ -467,6 +467,8 @@
                    (when (downloading-allowed-p wrapper-object)
                      (multiple-value-bind (buffer read-so-far)
                          (read-array download-stream +read-buffer-size+)
+                       (declare ((vector (unsigned-byte 8)) buffer))
+                       (declare (fixnum read-so-far))
                        (increment-bytes-count wrapper-object read-so-far)
                        (if (< read-so-far (length buffer))
                            (progn

@@ -239,7 +239,14 @@ list af all possible candidtae for completion."
           (uri-matcher hint bag)
         (when matched-strings
           (values matched-strings
-                  (reduce-to-common-prefix matched-strings)
+                  nil             ;for fuzzy search common prefix does
+                                  ;not  makes  sense; note  also  that
+                                  ;setting  this  to  nil  will  force
+                                  ;selecting   the   first   item   in
+                                  ;'complete-window'             (see:
+                                  ;complete-at-point               and
+                                  ;insert-selected-suggestion),
+
                   indices))))))
 
 (defun complete-chat-message (hint)

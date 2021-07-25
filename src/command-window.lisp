@@ -335,13 +335,13 @@ be either `:keybinding' or `:string'.  the former for key command the latter for
         (suggestions-window:update-suggestions suggestions-win
                                                command-line)
       (if candidates
-          (progn
-            (when (length= candidates 1)
-              (win-hide suggestions-win))
-            (if common-prefix
+          (if (null common-prefix)
+              (insert-selected-suggestion object)
+              (progn
+                (when (length= candidates 1)
+                  (win-hide suggestions-win))
                 (setf command-line common-prefix)
-                (setf command-line (complete:shortest-candidate candidates)))
-            (move-point-to-end object command-line))
+                (move-point-to-end object command-line)))
           (win-hide suggestions-win))))
   object)
 
@@ -520,7 +520,7 @@ command line."
             (move-point-to-start command-window)
             (set-keybinding-mode command-window))
            ((char= #\Tab event)
-            (insert-selected-suggestion command-window))
+            (complete-at-point command-window))
            (t
             (if (null suggestions-win)
                 (setf suggestions-win (complete-window:init))
