@@ -77,8 +77,10 @@
 
 (defun parse-subwin-w (w-as-string)
   "Parse a window width, `w-as-string' a fraction of the main window width"
+  (declare (sb-ext:muffle-conditions sb-ext:compiler-note))
   (parse-subwin-size w-as-string (win-width *main-window*)))
 
 (defun parse-subwin-h (h-as-string)
   "Parse a window height, `h-as-string' a fraction of the main window height"
+  (declare (sb-ext:muffle-conditions sb-ext:compiler-note))
   (parse-subwin-size h-as-string (win-height *main-window*)))

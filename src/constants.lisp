@@ -16,6 +16,12 @@
 
 (in-package :constants)
 
+(defun actual-program-name ()
+  (declare (sb-ext:muffle-conditions sb-ext:compiler-note))
+  (if (string= +program-name+ "tinmop")
+      "tinmop"
+      (format nil "~a (original name: \"tinmop\")" +program-name+)))
+
 (define-constant +help-about-message+
     (format nil
             "~a
@@ -37,7 +43,7 @@ along with this program.
 For bug report please point your browser to:
 
 ~a"
-            +program-name+
+            (actual-program-name)
             +issue-tracker+)
   :test #'string=)
 
@@ -72,9 +78,7 @@ This program is  distributed in the hope that it  will be useful, but
 WITHOUT  ANY   WARRANTY;  without   even  the  implied   warranty  of
 MERCHANTABILITY or  FITNESS FOR  A PARTICULAR  PURPOSE.  See  the GNU
 General Public License for more details."
-          (if (string= +program-name+ "tinmop")
-              "tinmop"
-              (format nil "~a (original name: \"tinmop\")" +program-name+))
+          (actual-program-name)
           +issue-tracker+)
 
   :test #'string=)
