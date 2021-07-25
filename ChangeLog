@@ -1,3 +1,110 @@
+2021-07-23  cage
+
+	* src/command-window.lisp,
+	* src/complete-window.lisp,
+	* src/complete.lisp,
+	* src/conditions.lisp,
+	* src/gemini/client.lisp,
+	* src/package.lisp,
+	* src/text-utils.lisp:
+
+	- implemented cut line from point (using "^K") in command window;
+        - fixed typo;
+	- [gemini] added moving selected uri from suggestion window using
+	  Tab key;
+	- resetted selected item position when a 'suggestion-window' is
+	  shown;
+	- changed  the way the  input is completed, complete  with current
+	selected item in suggestion window;
+        - [gemini] used fuzzy matching when looking for URI in history.
+
+2021-07-22  cage
+
+	* etc/default-theme.conf,
+	* etc/default-theme.conf,
+	* etc/init.lisp,
+	* etc/init.lisp,
+	* src/command-window.lisp,
+	* src/complete-window.lisp,
+	* src/complete-window.lisp,
+	* src/complete.lisp,
+	* src/message-window.lisp,
+	* src/package.lisp,
+	* src/software-configuration.lisp,
+	* src/tests/text-utils-tests.lisp,
+	* src/text-utils.lisp,
+	* src/tui-utils.lisp:
+
+	- removed empty lines;
+	- [gemini] changed streaming animation;
+	-  [gemini] allowed  open  gemini links  from gemlog  subscription
+	window;
+	- highlighted a mit more matched characters in 'suggestion-window';
+	- fixed padding when fitting suggestions into 'suggestion-win'.
+	-  allowed  selecting  a   suggestion  from  suggestion-window;  -
+	highlighted matching characters in suggestion window.
+
+2021-07-17  cage
+
+	* etc/default-theme.conf,
+	* etc/shared.conf,
+	* modules/rewrite-message-urls.lisp,
+	* src/gemini/client.lisp,
+	* src/gemini/gemini-parser.lisp,
+	* src/gemini/package.lisp,
+	* src/message-window.lisp,
+	* src/package.lisp,
+	* src/software-configuration.lisp,
+	* src/tui-utils.lisp:
+
+	- [gemini] removed link prefix for link labels that starts with an
+	emoji;
+	- [gemini] removed  splitting of long link labels;  - fixed output
+	stream of 'print-debug'.
+
+
+2021-07-16  cage
+
+	* src/db.lisp,
+	* src/emoji-matcher.lisp,
+	* src/gemini/client.lisp,
+	* src/gemini/gemini-parser.lisp,
+	* src/gemini/package.lisp,
+	* src/package.lisp:
+
+	- [gemini fixed validity check for client certificate (thanks op!);
+	- removed link prefix if link line starts with an emoji.
+
+2021-07-15  cage
+
+	* etc/init.lisp,
+	* src/emoji-matcher.lisp,
+	* src/gemini-viewer.lisp,
+	* src/package.lisp,
+	* src/program-events.lisp,
+        * LICENSES.org;
+
+	- [gemini] fixed missing rendering of search query results.
+	- made clear source and license of the emojis;
+	- fixed docstring (thanks op!);
+	- prevented a crash when refresh of chats hits a network error.
+	- added 'emojip'.
+	- added 'starts-with-emoji-p'.
+	- renamed 'starts-with-emoji-p' to 'starting-emoji'.
+
+2021-07-14  cage
+
+	* etc/default-theme.conf,
+	* src/9p-client/client.lisp,
+	* src/message-window.lisp,
+	* src/package.lisp,
+	* src/program-events.lisp,
+	* src/software-configuration.lisp:
+
+	- [gemini] added a visual hint while a gemini page is streaming contents;
+	- [9p] changed default for opening to 'read';
+	- [9p] added an example using 'stat'.
+
 2021-07-10  cage
 
 	* src/program-events.lisp,
