@@ -1,3 +1,22 @@
+2021-07-25  cage
+
+	* src/complete.lisp,
+	* src/constants.lisp,
+	* src/gemini-viewer.lisp,
+	* src/gemini-viewer.lisp,
+	* src/main-window.lisp,
+        * ChangeLog,
+        * etc/shared.conf,
+        * src/command-window.lisp,
+        * src/software-configuration.lisp:
+
+	- suppressed printing of three notes;
+	- [gemini] added "no wait" directive when downloading non gemini
+          text format from gemini: allow opening file before it is downloaded completely;
+	- revert to old completion method for non URI;
+	- added type declaration to remove optimization note;
+	- updated Changelog.
+
 2021-07-23  cage
 
 	* src/command-window.lisp,
@@ -35,13 +54,13 @@
 	* src/text-utils.lisp,
 	* src/tui-utils.lisp:
 
-	- removed empty lines;
+	- removed empty lines in sources;
 	- [gemini] changed streaming animation;
-	-  [gemini] allowed  open  gemini links  from gemlog  subscription
+	- [gemini] allowed  open  gemini links  from gemlog  subscription
 	window;
-	- highlighted a mit more matched characters in 'suggestion-window';
+	- highlighted a bit more matched characters in 'suggestion-window';
 	- fixed padding when fitting suggestions into 'suggestion-win'.
-	-  allowed  selecting  a   suggestion  from  suggestion-window;  -
+	- allowed  selecting  a   suggestion  from  suggestion-window;  -
 	highlighted matching characters in suggestion window.
 
 2021-07-17  cage
@@ -59,8 +78,8 @@
 
 	- [gemini] removed link prefix for link labels that starts with an
 	emoji;
-	- [gemini] removed  splitting of long link labels;  - fixed output
-	stream of 'print-debug'.
+	- [gemini] removed  splitting of long link labels;
+	- fixed output	stream of 'print-debug'.
 
 
 2021-07-16  cage
@@ -136,7 +155,7 @@
         * src/gemini-viewer.lisp:
 
 	- used TAB to move to next unread message;
-	- remved the BOM from a gemini text stream.
+	- remvod the BOM from a gemini text stream.
 
 2021-07-06  cage
 

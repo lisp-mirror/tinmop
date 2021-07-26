@@ -16,11 +16,12 @@
 
 (in-package :constants)
 
-(defun actual-program-name ()
-  (declare (sb-ext:muffle-conditions sb-ext:compiler-note))
-  (if (string= +program-name+ "tinmop")
-      "tinmop"
-      (format nil "~a (original name: \"tinmop\")" +program-name+)))
+(eval-when (:compile-toplevel :load-toplevel :execute)
+  (defun actual-program-name ()
+    (declare (sb-ext:muffle-conditions sb-ext:compiler-note))
+    (if (string= +program-name+ "tinmop")
+        "tinmop"
+        (format nil "~a (original name: \"tinmop\")" +program-name+))))
 
 (define-constant +help-about-message+
     (format nil
