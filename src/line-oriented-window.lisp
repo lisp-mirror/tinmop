@@ -226,11 +226,20 @@
 (defun adjust-rows-select-first (window)
   (select-first-row window))
 
+(defun adjust-rows-select-last (window)
+  (with-accessors ((rows rows)) window
+    (when rows
+      (let ((height (win-height-no-border window)))
+        (when (not (< (rows-length window) height))
+          (select-row window (- (rows-length window)
+                                height))))))
+  window)
+
 (defmethod adjust-selected-rows ((object row-oriented-widget) (strategy function))
   (with-accessors ((row-selected-index row-selected-index)) object
-    (when (< (rows-length object)
-             row-selected-index)
-    (funcall strategy object)))
+    (when (< row-selected-index
+             (rows-length object))
+      (funcall strategy object)))
   object)
 
 (defmethod selected-row ((object row-oriented-widget))

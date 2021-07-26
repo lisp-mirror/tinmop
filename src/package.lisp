@@ -1863,6 +1863,7 @@
    :select-row
    :select-first-row
    :adjust-rows-select-first
+   :adjust-rows-select-last
    :adjust-selected-rows
    :selected-row
    :ignore-selecting-action
@@ -1989,6 +1990,7 @@
   (:export
    :message-window
    :metadata
+   :adjust-rows-strategy
    :gemini-window-p*
    :gemini-window-p
    :display-gemini-text-p
@@ -1996,6 +1998,7 @@
    :row-get-original-object
    :viewport-width
    :draw-downloading-animation
+   :adjust-selected-rows
    :visible-rows
    :row-vertical-space-p
    :row-preformatted-p

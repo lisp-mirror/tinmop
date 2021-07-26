@@ -186,15 +186,13 @@
       (print-text window line-position-mark mark-x mark-y))))
 
 (defmethod draw ((object message-window))
-  (with-accessors ((adjust-rows-strategy adjust-rows-strategy)) object
-    (when-window-shown (object)
-      (adjust-selected-rows object adjust-rows-strategy)
-      (win-clear object :redraw nil)
-      (win-box object)
-      (draw-text object)
-      (when (not (line-oriented-window:rows-empty-p object))
-        (draw-buffer-line-mark object))
-      (call-next-method))))
+  (when-window-shown (object)
+    (win-clear object :redraw nil)
+    (win-box object)
+    (draw-text object)
+    (when (not (line-oriented-window:rows-empty-p object))
+      (draw-buffer-line-mark object))
+    (call-next-method)))
 
 (let ((index     0)
       (frames   -1)
