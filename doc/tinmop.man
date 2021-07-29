@@ -118,6 +118,43 @@ when the  user input data  that provide  hints about commands  and a
 quick  help  window that  can  be  shown  by  hitting \fC?\fP  (if  this
 keybinding has not been customized).
 
+.SS "Command window keys"
+.PP
+The command  window has  a few hardcoded  command keys  to interact
+with it:
+
+.IP \(em 4
+the \fIleft\fP and \fIright\fP arrow keys move the cursor;
+.IP \(em 4
+the key \fIhome\fP and \fIend\fP move the cursor to the start and end of
+the input respectively;
+.IP \(em 4
+\fIcanc\fP and  \fIbackspace\fP delete  the next and  previous character
+respectively;
+.IP \(em 4
+the \fInew line\fP (often called \fIenter\fP  key) send the input to the
+program;
+.IP \(em 4
+\fIC-k\fP (that is:  "press 'control' and while pressed  press 'k')
+\fIkills\fP (deletes) the text from the  cursor position to the end of
+the input previously typed;
+.IP \(em 4
+press \fIM-left\fP and  \fIM-right\fP (left alt and left  or right arrow
+together)  to  browse  pages  of  the  suggestion  window;  the
+suggestion window  is a  window that  holds a  previously inputted
+data that are compatible with the string the user is typing into
+the command window;
+.IP \(em 4
+if suggestions are  gemini URI press \fITAB\fP to  input the current
+selected  suggestion   (press  tab  again  to   input  the  next
+suggestion and so on), otherwise pressing \fITAB\fP will complete the
+input with the common prefix of the suggestion window's items;
+.IP \(em 4
+if suggestion window  is \fBnot\fP rendered, pressing  \fIup\fP and \fIdown\fP
+arrow keys will cycle through input  history, if there is not a
+suggestion window rendered pressing  \fIup\fP and \fIdown\fP will scroll
+on suggestions.
+
 .SS "Folders"
 .PP
 A folder is an object to groups messages for each timeline an
