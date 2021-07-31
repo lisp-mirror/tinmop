@@ -139,16 +139,14 @@ program;
 \fIkills\fP (deletes) the text from the  cursor position to the end of
 the input previously typed;
 .IP \(em 4
-press \fIM-left\fP and  \fIM-right\fP (left alt and left  or right arrow
-together)  to  browse  pages  of  the  suggestion  window;  the
-suggestion window  is a  window that  holds a  previously inputted
+press \fIM-left\fP and  \fIM-right\fP (\fIleft alt\fP and  \fIleft\fP or \fIright\fP
+arrow together)  to browse pages  of the suggestion  window; the
+suggestion window is  a window that holds  a previously inputted
 data that are compatible with the string the user is typing into
 the command window;
 .IP \(em 4
 if suggestions are  gemini URI press \fITAB\fP to  input the current
-selected  suggestion   (press  tab  again  to   input  the  next
-suggestion and so on), otherwise pressing \fITAB\fP will complete the
-input with the common prefix of the suggestion window's items;
+selected  suggestion;
 .IP \(em 4
 if suggestion window  is \fBnot\fP rendered, pressing  \fIup\fP and \fIdown\fP
 arrow keys will cycle through input  history, if there is not a

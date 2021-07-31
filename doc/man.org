@@ -96,15 +96,13 @@
     - /C-k/ (that is:  "press 'control' and while pressed  press 'k')
       /kills/ (deletes) the text from the  cursor position to the end of
       the input previously typed;
-    - press /M-left/ and  /M-right/ (left alt and left  or right arrow
-      together)  to  browse  pages  of  the  suggestion  window;  the
-      suggestion window  is a  window that  holds a  previously inputted
+    - press /M-left/ and  /M-right/ (/left alt/ and  /left/ or /right/
+      arrow together)  to browse pages  of the suggestion  window; the
+      suggestion window is  a window that holds  a previously inputted
       data that are compatible with the string the user is typing into
       the command window;
     - if suggestions are  gemini URI press /TAB/ to  input the current
-      selected  suggestion   (press  tab  again  to   input  the  next
-      suggestion and so on), otherwise pressing /TAB/ will complete the
-      input with the common prefix of the suggestion window's items;
+      selected  suggestion;
     - if suggestion window  is *not* rendered, pressing  /up/ and /down/
       arrow keys will cycle through input  history, if there is not a
       suggestion window rendered pressing  /up/ and /down/ will scroll
