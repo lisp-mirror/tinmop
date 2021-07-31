@@ -24,7 +24,7 @@
 
 (defrule range-delimter #\-)
 
-(defrule list-delimiter #\Space)
+(defrule list-delimiter (+ (or #\Space #\,)))
 
 (defrule number (and digit (* digit))
   (:text t)
