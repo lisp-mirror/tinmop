@@ -527,6 +527,7 @@
                    directory-symbol
                    fetch
                    update
+                   close-after-select
                    password-echo-character
                    color-re
                    ignore-user-re
@@ -594,6 +595,12 @@
                           (_ "The configuration (*.conf) file is missing the value for ~s")
                           (access-key->user-directive keys))))
         value)))
+
+(defun close-link-window-after-select-p ()
+  (let ((value (access:accesses *software-configuration*
+                                +key-open-message-link-window+
+                                +key-close-after-select+)))
+    (not (false-value-p value))))
 
 (defun suggestion-window-selected-item-colors ()
   (values (access-non-null-conf-value *software-configuration*

@@ -1113,6 +1113,7 @@
    :load-config-file
    :external-editor
    :gemini-downloading-animation
+   :close-link-window-after-select-p
    :suggestion-window-selected-item-colors
    :gemini-default-favicon
    :gemini-update-gemlog-at-start-p

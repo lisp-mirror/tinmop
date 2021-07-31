@@ -75,6 +75,9 @@
   (let* ((parsed       (iri:iri-parse url))
          (scheme       (uri:scheme parsed))
          (decoded-path (percent-decode url)))
+    (when (and (not enqueue)
+               (swconf:close-link-window-after-select-p))
+      (ui:close-open-message-link-window))
     (cond
       ((string= gemini-constants:+gemini-scheme+ scheme)
        (db:insert-in-history (ui:gemini-open-url-prompt) url)
