@@ -224,7 +224,8 @@
   (select-row object 0))
 
 (defun adjust-rows-select-first (window)
-  (select-first-row window))
+  (when (rows window)
+    (select-first-row window)))
 
 (defun adjust-rows-select-last (window)
   (with-accessors ((rows rows)) window

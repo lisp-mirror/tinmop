@@ -1143,6 +1143,8 @@
             (progn
               (setf (gemini-viewer:gemini-metadata-source-file window-metadata) source)
               (setf (gemini-viewer:gemini-metadata-links window-metadata) links)
+              (funcall (message-window:adjust-rows-strategy win)
+                       win)
               (line-oriented-window:update-all-rows win new-rows)))))))
 
 (defmethod process-event ((object gemini-got-line-event))
