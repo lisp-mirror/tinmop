@@ -336,12 +336,16 @@ be either `:keybinding' or `:string'.  the former for key command the latter for
                                                command-line)
       (if candidates
           (if (null common-prefix)
-              (insert-selected-suggestion object)
+              (progn
+                (insert-selected-suggestion object)
+                (suggestions-window:update-suggestions suggestions-win
+                                                       command-line)
+                (reset-selected-suggestion-index object)
+                (setf (suggestions-window:current-page suggestions-win) 0))
               (progn
                 (when (length= candidates 1)
                   (win-hide suggestions-win))
-                (setf command-line common-prefix)
-                (move-point-to-end object command-line)))
+                (insert-selected-suggestion object)))
           (win-hide suggestions-win))))
   object)
 
@@ -421,25 +425,32 @@ be either `:keybinding' or `:string'.  the former for key command the latter for
 (defun select-suggestion-previous (win)
   (select-suggestion win -1))
 
-(defun insert-selected-suggestion (win)
-  (with-accessors ((suggestions-win suggestions-win)
-                   (command-line    command-line)) win
+(defun suggested-selection (win)
+  (with-accessors ((suggestions-win suggestions-win)) win
     (when suggestions-win
       (with-accessors ((current-page   suggestions-window:current-page)
                        (paginated-info suggestions-window:paginated-info)
                        (selected-item-row-index    complete-window::selected-item-row-index)
                        (selected-item-column-index complete-window::selected-item-column-index))
           suggestions-win
-        (let* ((columns     (elt paginated-info current-page))
-               (column      (elt columns selected-item-column-index))
-               (suggestion  (trim-blanks (elt column  selected-item-row-index))))
-          (if (string= command-line suggestion)
-              (progn
-                (select-suggestion-next win)
-                (insert-selected-suggestion win))
-              (progn
-                (setf command-line suggestion)
-                (move-point-to-end win command-line))))))))
+        (when-let* ((columns     (elt paginated-info current-page))
+                    (column      (elt columns selected-item-column-index))
+                    (suggestion  (trim-blanks (elt column  selected-item-row-index))))
+          suggestion)))))
+
+(defun reset-selected-suggestion-index (win)
+  (with-accessors ((suggestions-win suggestions-win)) win
+    (complete-window:reset-selected-item suggestions-win))
+  win)
+
+(defun insert-selected-suggestion (win)
+  (with-accessors ((suggestions-win suggestions-win)
+                   (command-line    command-line)) win
+    (when suggestions-win
+      (let ((suggestion (suggested-selection win)))
+        (setf command-line suggestion)
+        (move-point-to-end win command-line))))
+  win)
 
 (defun fire-user-input-event (win)
   "Generates an event to notify that  the user inserted an input on the
