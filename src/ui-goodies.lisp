@@ -1256,8 +1256,7 @@ certificate).
       (program-events:push-event event))))
 
 (defun gemlog-refresh-all ()
-  (with-blocking-notify-procedure ((_ "updating gemlog's subscriptions"))
-    (program-events:push-event (make-instance 'program-events:gemlog-refresh-all-event))))
+  (program-events:push-event (make-instance 'program-events:gemlog-refresh-all-event)))
 
 (defun prompt-for-username (prompt complete-function event
                             notify-starting-message

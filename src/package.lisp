@@ -1115,6 +1115,7 @@
    :gemini-downloading-animation
    :suggestion-window-selected-item-colors
    :gemini-default-favicon
+   :gemini-update-gemlog-at-start-p
    :directory-symbol
    :gemini-fetch-favicon-p
    :gemini-link-colors

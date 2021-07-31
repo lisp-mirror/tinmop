@@ -34,6 +34,13 @@
      (when (triggedp ticks ,frequency)
        ,@body-if-triggered)))
 
+(defmacro gen-at-boot-function (name &body body)
+  `(let ((triggedp nil))
+     (defun ,(format-fn-symbol t "~a" name) ()
+       (when (null triggedp)
+         (setf triggedp t)
+         ,@body))))
+
 (gen-scheduler-function (refresh-all-chats-data
                          +refresh-all-chats-data-frequency+)
   (ui:notify (_ "Updating all chats."))
@@ -56,8 +63,17 @@
                                      :chat (message-window:metadata *message-window*))))
       (program-events:push-event show-event))))
 
+(gen-at-boot-function purge-history
+  (db:purge-history))
+
+(gen-at-boot-function refresh-gemlog-posts
+  (when (swconf:gemini-update-gemlog-at-start-p)
+    (ui:gemlog-refresh-all)))
+
 (defun run-scheduled-events (ticks)
   (refresh-all-chats-messages ticks)
   (refresh-all-chats-data ticks)
   (refresh-gemlog-subscriptions ticks)
-  (purge-gemlog-entries ticks))
+  (purge-gemlog-entries ticks)
+  (purge-history)
+  (refresh-gemlog-posts))

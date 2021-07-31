@@ -72,8 +72,7 @@ etc.) happened"
 
 (defun init-db ()
   "Initialize the database"
-  (db-utils:with-ready-database (:connect t)
-    (db:purge-history)))
+  (db-utils:with-ready-database (:connect t)))
 
 (defun change-folder ()
   "Change folder, used in requests of a command line switch"

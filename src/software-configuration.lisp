@@ -98,6 +98,8 @@
 
 (define-constant +field-separator+       :field-separator        :test #'eq)
 
+(define-constant +false-values+          '("no" "false")         :test #'equalp)
+
 (defrule blank (or #\space #\Newline #\Tab)
   (:constant nil))
 
@@ -501,6 +503,7 @@
                    command-window
                    command-separator
                    gemini
+                   gemlog
                    favicon
                    tree
                    branch
@@ -523,6 +526,7 @@
                    unread
                    directory-symbol
                    fetch
+                   update
                    password-echo-character
                    color-re
                    ignore-user-re
@@ -576,6 +580,10 @@
 
 ;;;; interface
 
+(defun false-value-p (v)
+  (or (null v)
+      (member v +false-values+ :test #'string=)))
+
 (defun access-key->user-directive (key)
   (join-with-strings (mapcar #'string-downcase key) "."))
 
@@ -607,6 +615,13 @@
   (access-non-null-conf-value *software-configuration*
                               +key-gemini+
                               +key-favicon+))
+
+(defun gemini-update-gemlog-at-start-p ()
+  (let ((value (access:accesses *software-configuration*
+                                +key-start+
+                                +key-update+
+                                +key-gemlog+)))
+    (not (false-value-p value))))
 
 (defun directory-symbol ()
   (or (access:accesses *software-configuration*

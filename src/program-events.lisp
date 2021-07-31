@@ -1293,8 +1293,17 @@
 
 (defmethod process-event ((object gemlog-refresh-all-event))
   (let ((all-subscribed-gemlogs (mapcar #'db:row-url (db:gemini-all-subscriptions))))
-    (loop for subscription in all-subscribed-gemlogs do
-      (gemini-subscription:refresh subscription))))
+    (mapcar (lambda (subscription)
+              (let* ((payload (lambda ()
+                                (ui:notify (format nil
+                                                   (_ "updating gemlog ~a")
+                                                   subscription))
+                                (gemini-subscription:refresh subscription)))
+                     (event (make-instance 'function-event
+                                           :payload  payload
+                                           :priority +minimum-event-priority+)))
+                (push-event event)))
+            all-subscribed-gemlogs)))
 
 (defclass gemini-toc-jump-to-section (program-event)
   ((toc-win
