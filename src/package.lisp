@@ -2589,7 +2589,8 @@
    :pass-focus-on-right
    :pass-focus-on-bottom
    :pass-focus-on-top
-   :ask-input-on-tofu-error))
+   :ask-input-on-tofu-error
+   :import-gemini-certificate))
 
 (defpackage :scheduled-events
   (:use

@@ -2017,3 +2017,58 @@ gemini page the program is rendering."
                                    (_ "Host ~s signature changed! This is a potential security risk! Ignore this warning? [y/N] ")
                                    host)
                            :priority program-events:+standard-event-priority+))))
+
+(defun import-gemini-certificate ()
+  "Import a TLS certificate, not generated from tinmop, to authenticate this client."
+  (let ((cert-file      nil)
+        (cert-key-file  nil))
+    (labels ((file-valid-p (path)
+               (cond
+                 ((string-empty-p path)
+                  (ui:notify (_ "Empty path") :as-error t)
+                  nil)
+                 ((not (fs:file-exists-p path))
+                  (error-message (format nil (_ "No such file ~s") path))
+                  nil)
+                 ((= (fs:file-size path) 0)
+                  (error-message (format nil (_ "File ~s is empty") path))
+                  nil)
+                 (t :file-valid)))
+             (on-cert-path-input-complete (cert-path)
+               (when (file-valid-p cert-path)
+                 (setf cert-file cert-path)
+                 (ui:ask-string-input #'on-cert-key-path-input-complete
+                                      :prompt (format nil (_ "Insert certificate key file: "))
+                                      :complete-fn #'complete:directory-complete)))
+             (on-cert-key-path-input-complete (key-path)
+               (let ((prompt-history (gemini-open-url-prompt))
+                     (prompt         (_ "Insert the gemini IRI where where credential are valid: ")))
+                 (when (file-valid-p key-path)
+                   (setf cert-key-file key-path)
+                   (ui:ask-string-input #'on-valid-uri-complete
+                                        :prompt prompt
+                                        :complete-fn
+                                        (complete:make-complete-gemini-iri-fn prompt-history)))))
+             (on-valid-uri-complete (uri)
+               (db-utils:with-ready-database (:connect nil)
+                 (if (gemini-parser:gemini-iri-p uri)
+                     (let* ((id             (to-s (db:cache-put uri +cache-tls-certificate-type+)))
+                            (cert-filename  (fs:path-last-element cert-file))
+                            (key-filename   (fs:path-last-element cert-key-file))
+                            (cache-dir      (os-utils:cached-file-path id))
+                            (cert-out-path  (strcat cache-dir
+                                                    fs:*directory-sep*
+                                                    cert-filename))
+                            (key-out-path  (strcat cache-dir
+                                                   fs:*directory-sep*
+                                                   key-filename)))
+                       (fs:make-directory cache-dir)
+                       (fs:copy-a-file cert-file cert-out-path :overwrite t)
+                       (fs:copy-a-file cert-key-file key-out-path :overwrite t)
+                       (info-message (format nil (_ "Certificate imported for ~s") uri)))
+                     (error-message (format nil
+                                            (_ "~s is not a valid gemini address")
+                                            uri))))))
+      (ui:ask-string-input #'on-cert-path-input-complete
+                           :prompt (format nil (_ "Insert certificate file: "))
+                           :complete-fn #'complete:directory-complete))))
