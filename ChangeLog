@@ -1,3 +1,77 @@
+2021-08-03  cage
+
+	* src/package.lisp,
+	* src/ui-goodies.lisp,
+        * etc/init.lisp:
+
+	- [gemini] added a procedure to import tls certificates.
+
+2021-07-31  cage
+
+	* doc/tinmop.man,
+	* src/command-window.lisp,
+	* src/main.lisp,
+	* src/open-message-link-window.lisp,
+	* src/package.lisp,
+	* src/program-events.lisp,
+	* src/scheduled-events.lisp,
+	* src/software-configuration.lisp,
+	* src/ui-goodies.lisp,
+        * doc/man.org,
+        * etc/shared.conf,
+        * etc/shared.conf,
+        * src/line-oriented-window.lisp,
+        * src/package.lisp,
+        * src/program-events.lisp,
+        * src/software-configuration.lisp,
+        * src/tour-mode-parser.lisp:
+
+	- added a configuration directive to update subscription to gemlogs
+        at starts;
+	- added  scheduled events  when program starts;
+	- made  update to  gemlog  less   blocking;
+	- increased  default   history  purging	  threshold;
+	- prevented out of bound condition when scrolling message-window's
+	  contents (this was actually a regression);
+	- added a configuration directive to close the link window after a
+        link has been selected;
+	-  relaxed a  bit the  tour  mode indices  parser (allow  multiple
+	consecutive separator and comma as separator);
+	- made less confusing complete command line.
+	- fixed manpage.
+
+2021-07-29  cage
+
+	* doc/man.org,
+        * doc/tinmop.man:
+
+	- updated manpage, explained command line keys;
+	- updated manpage in man format.
+
+2021-07-26  cage
+
+	* ChangeLog,
+	* src/constants.lisp,
+	* src/line-oriented-window.lisp,
+	* src/message-window.lisp,
+	* src/package.lisp,
+        * src/9p-client/client.lisp:
+
+	- wrapped function in '(eval-when..'.  - updated/fixed Changelog.
+	- added client.lisp
+	- added adjust-strategy-last to show text in message-window;
+	- removed call to 'adjust-selected-rows' when redrawing
+          message-window;
+	- fixed 'adjust-selected-rows', was never actually called.
+
+2021-07-26  cage
+
+
+
+2021-07-26  cage
+
+
+
 2021-07-25  cage
 
 	* src/complete.lisp,

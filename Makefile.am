@@ -30,22 +30,22 @@ CONF_PATH_FILE_IN_IN = src/config.lisp.in.in
 BUILT_SOURCES        = $(CONF_PATH_FILE)
 
 EXTRA_DIST           = config.rpath m4/ChangeLog  tinmop.asd README.org src \
-                    LICENSES.org COPYING etc/shared.conf etc/default-theme.conf \
-                    etc/init.lisp compare_version.awk
+LICENSES.org COPYING etc/shared.conf etc/default-theme.conf \
+etc/init.lisp compare_version.awk
 
 SUBDIRS              = po
 
-dist_doc_DATA        = README.org README.txt LICENSES.org CONTRIBUTING.org \
-                    doc/man.org doc/send-toot.lisp NEWS.org ChangeLog AUTHORS
+nobase_dist_doc_DATA        = README.org README.txt LICENSES.org CONTRIBUTING.org \
+doc/man.org doc/send-toot.lisp NEWS.org ChangeLog AUTHORS
 
 confdir              = $(sysconfdir)/$(PACKAGE)
 
 dist_conf_DATA       = etc/init.lisp etc/default-theme.conf etc/shared.conf
 
-dist_pkgdata_DATA    = scripts/welcome-bot.lisp           \
-                       modules/next-previous-open.lisp    \
-                       modules/share-gemini-link.lisp     \
-		       modules/rewrite-message-urls.lisp
+nobase_dist_pkgdata_DATA    = scripts/welcome-bot.lisp  \
+modules/next-previous-open.lisp    \
+modules/share-gemini-link.lisp     \
+modules/rewrite-message-urls.lisp
 
 dist_man1_MANS       = doc/tinmop.man
 
