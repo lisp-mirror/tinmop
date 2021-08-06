@@ -151,6 +151,8 @@
 
 (define-key "M-g c i"   #'import-gemini-certificate)
 
+(define-key "M-g c s"   #'gemini-open-certificates-window)
+
 (define-key "M-right"   #'pass-focus-on-right)
 
 (define-key "M-left"    #'pass-focus-on-left)
