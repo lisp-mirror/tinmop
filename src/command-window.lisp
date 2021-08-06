@@ -498,9 +498,13 @@ command line."
          (move-suggestion-page-right command-window))
         ((eq :backspace event)
          (setf command-line (delete-at-point command-window command-line :direction :left))
+         (when 'hooks:*after-char-to-command-window*
+           (hooks:run-hook 'hooks:*after-delete-char-from-command-window* command-window))
          (show-candidate-completion command-window))
         ((eq :dc event)
          (setf command-line (delete-at-point command-window command-line :direction :right))
+         (when 'hooks:*after-char-to-command-window*
+           (hooks:run-hook 'hooks:*after-delete-char-from-command-window* command-window))
          (show-candidate-completion command-window))
         ((eq :left event)
          (move-point-left command-window))
@@ -525,6 +529,9 @@ command line."
         ((characterp event)
          (cond
            ((char= #\Newline event)
+            (when 'hooks:*before-fire-string-event-command-window*
+              (hooks:run-hook 'hooks:*before-fire-string-event-command-window*
+                              command-window))
             (insert-in-history prompt command-line)
             (fire-user-input-event command-window)
             (setf command-line nil)

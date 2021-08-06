@@ -32,23 +32,49 @@ will replace 'foo' with 'bar'.
 
 So the whole list is like: '((\"foo\" \"bar\") (\"old\" \"new\") ...)")
 
-(defun abbrev-re (abbrev)
+
+(defun expand-abbrev-abbrev-re (abbrev)
   (first abbrev))
 
-(defun abbrev-replace (abbrev)
+(defun expand-abbrev-abbrev-replace (abbrev)
   (second abbrev))
+
+(defparameter *expand-abbrev-actual-rewriting-rules*
+  (mapcar (lambda (a) (list (create-scanner (expand-abbrev-abbrev-re a))
+                            (expand-abbrev-abbrev-replace a)))
+          *expand-abbrev-rewriting-rules*))
+
+(defparameter *expand-abbrev-stop-rewrite* nil)
 
 (defun expand-abbrev-command-hook-fn (command-window)
   (let ((expanded (command-window:command-line command-window)))
-    (loop for expansion in *expand-abbrev-rewriting-rules*
-          when (scan (abbrev-re expansion) expanded)
-            do
-               (setf expanded (regex-replace (abbrev-re expansion)
-                                             expanded
-                                             (abbrev-replace expansion))))
-    (setf (command-window:command-line command-window) expanded)
-    (point-tracker:move-point-to-end command-window expanded))
+    (when (null *expand-abbrev-stop-rewrite*)
+      (if (scan "^\\\\." expanded)
+          (progn
+            (setf *expand-abbrev-stop-rewrite* t)
+            (setf expanded (subseq expanded 1)))
+          (loop for expansion in *expand-abbrev-actual-rewriting-rules*
+                when (scan (expand-abbrev-abbrev-re expansion) expanded)
+                  do
+                     (setf expanded (regex-replace (expand-abbrev-abbrev-re expansion)
+                                                   expanded
+                                                   (expand-abbrev-abbrev-replace expansion)))))
+      (setf (command-window:command-line command-window) expanded)
+      (point-tracker:move-point-to-end command-window expanded)))
   command-window)
+
+(defun expand-abbrev-command-fire-hook (x)
+  (declare (ignore x))
+  (setf *expand-abbrev-stop-rewrite* nil))
+
+(defun expand-abbrev-command-delete-hook (x)
+  (expand-abbrev-command-fire-hook x))
 
 (hooks:add-hook 'hooks:*after-char-to-command-window*
                 #'expand-abbrev-command-hook-fn)
+
+(hooks:add-hook 'hooks:*before-fire-string-event-command-window*
+                #'expand-abbrev-command-fire-hook)
+
+(hooks:add-hook 'hooks:*after-delete-char-from-command-window*
+                #'expand-abbrev-command-delete-hook)

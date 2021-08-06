@@ -111,3 +111,9 @@ open the links")
 
 (defparameter *after-char-to-command-window* '()
   "Run this hooks after a character has been typed by the user on the command window.")
+
+(defparameter *before-fire-string-event-command-window* '()
+  "Run this hooks before sending user input to the program (command window only).")
+
+(defparameter *after-delete-char-from-command-window* '()
+  "Run this hooks after deleting a character from the input of the command-window.")
