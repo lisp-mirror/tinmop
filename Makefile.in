@@ -116,9 +116,8 @@ am__aclocal_m4_deps = $(top_srcdir)/m4/gettext.m4 \
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 DIST_COMMON = $(srcdir)/Makefile.am $(top_srcdir)/configure \
-	$(am__configure_deps) $(dist_conf_DATA) \
-	$(nobase_dist_doc_DATA) $(nobase_dist_pkgdata_DATA) \
-	$(am__DIST_COMMON)
+	$(am__configure_deps) $(dist_conf_DATA) $(dist_doc_DATA) \
+	$(dist_pkgdata_DATA) $(am__DIST_COMMON)
 am__CONFIG_DISTCLEAN_FILES = config.status config.cache config.log \
  configure.lineno config.status.lineno
 mkinstalldirs = $(install_sh) -d
@@ -185,8 +184,7 @@ am__can_run_installinfo = \
 man1dir = $(mandir)/man1
 NROFF = nroff
 MANS = $(dist_man1_MANS)
-DATA = $(dist_conf_DATA) $(nobase_dist_doc_DATA) \
-	$(nobase_dist_pkgdata_DATA)
+DATA = $(dist_conf_DATA) $(dist_doc_DATA) $(dist_pkgdata_DATA)
 RECURSIVE_CLEAN_TARGETS = mostlyclean-recursive clean-recursive	\
   distclean-recursive maintainer-clean-recursive
 am__recursive_targets = \
@@ -398,12 +396,12 @@ LICENSES.org COPYING etc/shared.conf etc/default-theme.conf \
 etc/init.lisp compare_version.awk
 
 SUBDIRS = po
-nobase_dist_doc_DATA = README.org README.txt LICENSES.org CONTRIBUTING.org \
+dist_doc_DATA = README.org README.txt LICENSES.org CONTRIBUTING.org \
 doc/man.org doc/send-toot.lisp NEWS.org ChangeLog AUTHORS
 
 confdir = $(sysconfdir)/$(PACKAGE)
 dist_conf_DATA = etc/init.lisp etc/default-theme.conf etc/shared.conf
-nobase_dist_pkgdata_DATA = scripts/welcome-bot.lisp  \
+dist_pkgdata_DATA = scripts/welcome-bot.lisp  \
 modules/next-previous-open.lisp    \
 modules/share-gemini-link.lisp     \
 modules/rewrite-message-urls.lisp
@@ -547,53 +545,47 @@ uninstall-dist_confDATA:
 	@list='$(dist_conf_DATA)'; test -n "$(confdir)" || list=; \
 	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
 	dir='$(DESTDIR)$(confdir)'; $(am__uninstall_files_from_dir)
-install-nobase_dist_docDATA: $(nobase_dist_doc_DATA)
+install-dist_docDATA: $(dist_doc_DATA)
 	@$(NORMAL_INSTALL)
-	@list='$(nobase_dist_doc_DATA)'; test -n "$(docdir)" || list=; \
+	@list='$(dist_doc_DATA)'; test -n "$(docdir)" || list=; \
 	if test -n "$$list"; then \
 	  echo " $(MKDIR_P) '$(DESTDIR)$(docdir)'"; \
 	  $(MKDIR_P) "$(DESTDIR)$(docdir)" || exit 1; \
 	fi; \
-	$(am__nobase_list) | while read dir files; do \
-	  xfiles=; for file in $$files; do \
-	    if test -f "$$file"; then xfiles="$$xfiles $$file"; \
-	    else xfiles="$$xfiles $(srcdir)/$$file"; fi; done; \
-	  test -z "$$xfiles" || { \
-	    test "x$$dir" = x. || { \
-	      echo " $(MKDIR_P) '$(DESTDIR)$(docdir)/$$dir'"; \
-	      $(MKDIR_P) "$(DESTDIR)$(docdir)/$$dir"; }; \
-	    echo " $(INSTALL_DATA) $$xfiles '$(DESTDIR)$(docdir)/$$dir'"; \
-	    $(INSTALL_DATA) $$xfiles "$(DESTDIR)$(docdir)/$$dir" || exit $$?; }; \
+	for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  echo "$$d$$p"; \
+	done | $(am__base_list) | \
+	while read files; do \
+	  echo " $(INSTALL_DATA) $$files '$(DESTDIR)$(docdir)'"; \
+	  $(INSTALL_DATA) $$files "$(DESTDIR)$(docdir)" || exit $$?; \
 	done
 
-uninstall-nobase_dist_docDATA:
+uninstall-dist_docDATA:
 	@$(NORMAL_UNINSTALL)
-	@list='$(nobase_dist_doc_DATA)'; test -n "$(docdir)" || list=; \
-	$(am__nobase_strip_setup); files=`$(am__nobase_strip)`; \
+	@list='$(dist_doc_DATA)'; test -n "$(docdir)" || list=; \
+	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
 	dir='$(DESTDIR)$(docdir)'; $(am__uninstall_files_from_dir)
-install-nobase_dist_pkgdataDATA: $(nobase_dist_pkgdata_DATA)
+install-dist_pkgdataDATA: $(dist_pkgdata_DATA)
 	@$(NORMAL_INSTALL)
-	@list='$(nobase_dist_pkgdata_DATA)'; test -n "$(pkgdatadir)" || list=; \
+	@list='$(dist_pkgdata_DATA)'; test -n "$(pkgdatadir)" || list=; \
 	if test -n "$$list"; then \
 	  echo " $(MKDIR_P) '$(DESTDIR)$(pkgdatadir)'"; \
 	  $(MKDIR_P) "$(DESTDIR)$(pkgdatadir)" || exit 1; \
 	fi; \
-	$(am__nobase_list) | while read dir files; do \
-	  xfiles=; for file in $$files; do \
-	    if test -f "$$file"; then xfiles="$$xfiles $$file"; \
-	    else xfiles="$$xfiles $(srcdir)/$$file"; fi; done; \
-	  test -z "$$xfiles" || { \
-	    test "x$$dir" = x. || { \
-	      echo " $(MKDIR_P) '$(DESTDIR)$(pkgdatadir)/$$dir'"; \
-	      $(MKDIR_P) "$(DESTDIR)$(pkgdatadir)/$$dir"; }; \
-	    echo " $(INSTALL_DATA) $$xfiles '$(DESTDIR)$(pkgdatadir)/$$dir'"; \
-	    $(INSTALL_DATA) $$xfiles "$(DESTDIR)$(pkgdatadir)/$$dir" || exit $$?; }; \
+	for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  echo "$$d$$p"; \
+	done | $(am__base_list) | \
+	while read files; do \
+	  echo " $(INSTALL_DATA) $$files '$(DESTDIR)$(pkgdatadir)'"; \
+	  $(INSTALL_DATA) $$files "$(DESTDIR)$(pkgdatadir)" || exit $$?; \
 	done
 
-uninstall-nobase_dist_pkgdataDATA:
+uninstall-dist_pkgdataDATA:
 	@$(NORMAL_UNINSTALL)
-	@list='$(nobase_dist_pkgdata_DATA)'; test -n "$(pkgdatadir)" || list=; \
-	$(am__nobase_strip_setup); files=`$(am__nobase_strip)`; \
+	@list='$(dist_pkgdata_DATA)'; test -n "$(pkgdatadir)" || list=; \
+	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
 	dir='$(DESTDIR)$(pkgdatadir)'; $(am__uninstall_files_from_dir)
 
 # This directory's subdirectories are mostly independent; you can cd
@@ -966,8 +958,8 @@ info: info-recursive
 
 info-am:
 
-install-data-am: install-dist_confDATA install-man \
-	install-nobase_dist_docDATA install-nobase_dist_pkgdataDATA
+install-data-am: install-dist_confDATA install-dist_docDATA \
+	install-dist_pkgdataDATA install-man
 
 install-dvi: install-dvi-recursive
 
@@ -1014,8 +1006,8 @@ ps: ps-recursive
 ps-am:
 
 uninstall-am: uninstall-binSCRIPTS uninstall-dist_confDATA \
-	uninstall-man uninstall-nobase_dist_docDATA \
-	uninstall-nobase_dist_pkgdataDATA
+	uninstall-dist_docDATA uninstall-dist_pkgdataDATA \
+	uninstall-man
 
 uninstall-man: uninstall-man1
 
@@ -1030,18 +1022,17 @@ uninstall-man: uninstall-man1
 	distclean-tags distcleancheck distdir distuninstallcheck dvi \
 	dvi-am html html-am info info-am install install-am \
 	install-binSCRIPTS install-data install-data-am \
-	install-dist_confDATA install-dvi install-dvi-am install-exec \
-	install-exec-am install-html install-html-am install-info \
-	install-info-am install-man install-man1 \
-	install-nobase_dist_docDATA install-nobase_dist_pkgdataDATA \
+	install-dist_confDATA install-dist_docDATA \
+	install-dist_pkgdataDATA install-dvi install-dvi-am \
+	install-exec install-exec-am install-html install-html-am \
+	install-info install-info-am install-man install-man1 \
 	install-pdf install-pdf-am install-ps install-ps-am \
 	install-strip installcheck installcheck-am installdirs \
 	installdirs-am maintainer-clean maintainer-clean-generic \
 	mostlyclean mostlyclean-generic pdf pdf-am ps ps-am tags \
 	tags-am uninstall uninstall-am uninstall-binSCRIPTS \
-	uninstall-dist_confDATA uninstall-man uninstall-man1 \
-	uninstall-nobase_dist_docDATA \
-	uninstall-nobase_dist_pkgdataDATA
+	uninstall-dist_confDATA uninstall-dist_docDATA \
+	uninstall-dist_pkgdataDATA uninstall-man uninstall-man1
 
 .PRECIOUS: Makefile
 

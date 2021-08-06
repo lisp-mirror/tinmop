@@ -45,7 +45,8 @@ dist_conf_DATA       = etc/init.lisp etc/default-theme.conf etc/shared.conf
 dist_pkgdata_DATA    = scripts/welcome-bot.lisp  \
 modules/next-previous-open.lisp    \
 modules/share-gemini-link.lisp     \
-modules/rewrite-message-urls.lisp
+modules/rewrite-message-urls.lisp \
+modules/expand-abbrev-command-window.lisp
 
 dist_man1_MANS       = doc/tinmop.man
 
