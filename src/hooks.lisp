@@ -108,3 +108,6 @@ Each function takes 1 parameter: the database row for the saved status.")
 (defparameter *before-displaying-links-hook* '()
   "Run this hooks before sending the list of URLs to the window that allow the user to
 open the links")
+
+(defparameter *after-char-to-command-window* '()
+  "Run this hooks after a character has been typed by the user on the command window.")

@@ -1554,7 +1554,8 @@
    :*before-sending-message*
    :*skip-message-hook*
    :*after-saving-message*
-   :*before-displaying-links-hook*))
+   :*before-displaying-links-hook*
+   :*after-char-to-command-window*))
 
 (defpackage :keybindings
   (:use

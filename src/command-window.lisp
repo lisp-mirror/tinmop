@@ -21,7 +21,7 @@
     :initform ()
     :initarg  :command-line
     :accessor command-line
-    :documentation "A list of keys so far inserted by the user")
+    :documentation "A list of keys so far inserted by the user, or the input string, depending on the mode.")
    (echo-character
     :initform nil
     :initarg  :echo-character
@@ -539,6 +539,9 @@ command line."
             (win-show suggestions-win)
             (setf command-line
                   (insert-at-point command-window event command-line))
+            (when 'hooks:*after-char-to-command-window*
+              (hooks:run-hook 'hooks:*after-char-to-command-window*
+                              command-window))
             (show-candidate-completion command-window)))))))
   command-window)
 
