@@ -35,14 +35,14 @@ etc/init.lisp compare_version.awk
 
 SUBDIRS              = po
 
-nobase_dist_doc_DATA        = README.org README.txt LICENSES.org CONTRIBUTING.org \
+dist_doc_DATA        = README.org README.txt LICENSES.org CONTRIBUTING.org \
 doc/man.org doc/send-toot.lisp NEWS.org ChangeLog AUTHORS
 
 confdir              = $(sysconfdir)/$(PACKAGE)
 
 dist_conf_DATA       = etc/init.lisp etc/default-theme.conf etc/shared.conf
 
-nobase_dist_pkgdata_DATA    = scripts/welcome-bot.lisp  \
+dist_pkgdata_DATA    = scripts/welcome-bot.lisp  \
 modules/next-previous-open.lisp    \
 modules/share-gemini-link.lisp     \
 modules/rewrite-message-urls.lisp
