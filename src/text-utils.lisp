@@ -523,7 +523,15 @@ lines fitted in the box (nil in this case).
                        lines-length)
                    rest-lines-index)))))
 
-(defun box-fit-multiple-column (lines box-width box-height &key (spaces-between 1))
+(defun box-fit-multiple-column (lines box-width box-height
+                                &key
+                                  (spaces-between 1)
+                                  (truncate-restart-fn (lambda (batch)
+                                                         (mapcar (lambda (a)
+                                                                   (subseq a
+                                                                           0
+                                                                           (- box-width spaces-between)))
+                                                                 batch))))
   "Given 'lines' as list of strings  this procedure will fits them in a
 box of width and height passed as parameters ('box-width' and 'box-height').
 
@@ -556,6 +564,7 @@ printed in the box column by column; in the example above the results are:
              (multiple-value-bind (columns rest-index)
                  (box-fit-as-much-lines-columns lines box-width
                                                 box-height
+                                                :truncate-restart-fn truncate-restart-fn
                                                 :spaces-between spaces-between
                                                 :pad-right-fn
                                                 (lambda (a max-width)

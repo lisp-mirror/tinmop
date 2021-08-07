@@ -101,10 +101,14 @@
                                                    :line-char       render-vertical-line-value
                                                    :last-child-char render-leaf-value
                                                    :print-data      t))
-                (batches   (text-utils:box-fit-multiple-column-annotated tree-lines
-                                                                         (- (win-width  window) 2)
-                                                                         (- (win-height window)
-                                                                            +box-height-diff+))))
+                (batches     (handler-bind ((conditions:out-of-bounds
+                                              (lambda (e)
+                                                (declare (ignore e))
+                                                (invoke-restart 'truncate))))
+                               (text-utils:box-fit-multiple-column-annotated tree-lines
+                                                                             (- (win-width  window) 2)
+                                                                             (- (win-height window)
+                                                                                +box-height-diff+)))))
       (with-accessors ((tree-color-map tree-color-map)) window
         (let ((colorized-batches (loop for batch in batches collect
                                       (loop for column in batch collect

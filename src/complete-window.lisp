@@ -77,10 +77,23 @@
       (multiple-value-bind (candidates common-prefix underline-char-indices)
           (funcall complete:*complete-function* hint)
         (when candidates
-          (let* ((batches (text-utils:box-fit-multiple-column candidates
-                                                              (- (win-width  object) 2)
-                                                              (- (win-height object)
-                                                                 +box-height-diff+)))
+          (let* ((max-string-size (max 1 (floor (/ (win-width-no-border object) 2.5))))
+                 (truncate-fn        (lambda (batch)
+                                       (mapcar (lambda (a)
+                                                 (safe-subseq a
+                                                              0
+                                                              max-string-size))
+                                               batch)))
+                 (batches (handler-bind ((conditions:out-of-bounds
+                                           (lambda (e)
+                                             (declare (ignore e))
+                                             (invoke-restart 'truncate))))
+                            (text-utils:box-fit-multiple-column candidates
+                                                                (- (win-width  object) 2)
+                                                                (- (win-height object)
+                                                                   +box-height-diff+)
+                                                                :truncate-restart-fn
+                                                                truncate-fn)))
                  (padding-size  (- (length candidates)
                                    (length underline-char-indices)))
                  (padding (when (> padding-size 0)
@@ -119,18 +132,18 @@
                    for row in column
                    for indices-row-underlined in column-indices
                    with row-count = 1 do
-                     (let ((text (if (and (= row-count    (1+ selected-item-row-index))
-                                          (= column-count selected-item-column-index))
-                                     (make-tui-string row
-                                                      :fgcolor foreground-selected-item
-                                                      :bgcolor background-selected-item)
-                                     (make-tui-string row))))
-                       (print-text object
-                                     (apply-attributes text
-                                                       indices-row-underlined
-                                                       matched-attributes)
-                                     column-offset
-                                     row-count))
+                     (let* ((text     (if (and (= row-count    (1+ selected-item-row-index))
+                                               (= column-count selected-item-column-index))
+                                          (make-tui-string row
+                                                           :fgcolor foreground-selected-item
+                                                           :bgcolor background-selected-item)
+                                          (make-tui-string row)))
+                            (tui-text (handler-case
+                                          (apply-attributes text
+                                                            indices-row-underlined
+                                                            matched-attributes)
+                                        (error () text))))
+                       (print-text object tui-text column-offset row-count))
                      (incf row-count))
                  (incf column-offset column-size)))
           (draw-pagination-info object)))
