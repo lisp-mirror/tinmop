@@ -14,11 +14,27 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+;; This   module  will   expand  an   abbreviation  as   described  in
+;; *expand-abbrev-rewriting-rules* when typing on the command line the
+;; command line  is that  thin window  on the  bottom of  the terminal
+;; where  user  can  input  data   when  requested  from  the  program
+;; (e.g.     asking    for     a    password).      an    entry     in
+;; *expand-abbrev-rewriting-rules*  is  composed  by  a  list  of  two
+;; elements the first is a regular expression the second the expansion,
+;; for example
+
+;; ("^\\^g" "gemini://")
+
+;; means:  if a  string that  starts ("^")  with "^g"  is expanded  to
+;; gemini:// if  the input string  starts with a backslash  ("\") this
+;; escape the second  character so if you want to  enter "^g" you need
+;; to start typing "\^g".
+
 (in-package :modules)
 
 (defparameter *expand-abbrev-rewriting-rules* '(("^\\^g" "gemini://"))
   "Before  displaying  messages that  module  will  rewrites the  first
-  element of each item of this list with the second
+  element of each item (a regular expression) of this list with the second
 
 Example
 
