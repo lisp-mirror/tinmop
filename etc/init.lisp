@@ -41,6 +41,10 @@
 
 (load-module "share-gemini-link.lisp")
 
+;; abbrevation on command line
+
+(load-module "expand-abbrev-command-window.lisp")
+
 ;; keybindings syntax:
 
 ;; a command is executed after a sequence  of one or more keys.  a key

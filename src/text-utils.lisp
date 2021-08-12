@@ -516,12 +516,15 @@ lines fitted in the box (nil in this case).
                                  box-height)
                               (+ width-so-far
                                  column-width))))))))
-      (fit 0 box-height)
-      (values (reverse columns)
-              (and rest-lines-index
-                   (<= rest-lines-index
-                       lines-length)
-                   rest-lines-index)))))
+      (if (> box-height 0)
+          (progn
+            (fit 0 box-height)
+            (values (reverse columns)
+                    (and rest-lines-index
+                         (<= rest-lines-index
+                             lines-length)
+                         rest-lines-index)))
+          nil))))
 
 (defun box-fit-multiple-column (lines box-width box-height
                                 &key
@@ -577,7 +580,8 @@ printed in the box column by column; in the example above the results are:
                                                     box-width
                                                     box-height))
                    (list columns)))))
-    (fit)))
+    (when lines
+      (fit))))
 
 (defun annotated-text-symbol (a)
   (car a))
