@@ -88,9 +88,11 @@
                            (life-start     nil)
                            (life-end       nil))
   (bt:make-thread (lambda ()
-                    (notify starting-message :life life-start)
+                    (when (string-not-empty-p starting-message)
+                      (notify starting-message :life life-start))
                     (funcall procedure)
-                    (notify ending-message :life life-end))))
+                    (when (string-not-empty-p ending-message)
+                      (notify ending-message :life life-end)))))
 
 (defmacro with-blocking-notify-procedure ((starting-message
                                            &optional (ending-message `(_ "Task completed")))

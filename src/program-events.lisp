@@ -1296,11 +1296,13 @@
 (defmethod process-event ((object gemlog-refresh-all-event))
   (let ((all-subscribed-gemlogs (mapcar #'db:row-url (db:gemini-all-subscriptions))))
     (mapcar (lambda (subscription)
-              (let* ((payload (lambda ()
-                                (ui:notify (format nil
-                                                   (_ "updating gemlog ~a")
-                                                   subscription))
-                                (gemini-subscription:refresh subscription)))
+              (let* ((notification-message (format nil (_ "updating gemlog ~a") subscription))
+                     (payload (lambda ()
+                                (ui:notify-procedure (lambda ()
+                                                       (db-utils:with-ready-database ()
+                                                         (gemini-subscription:refresh subscription)))
+                                                     notification-message
+                                                     :ending-message nil)))
                      (event (make-instance 'function-event
                                            :payload  payload
                                            :priority +minimum-event-priority+)))
