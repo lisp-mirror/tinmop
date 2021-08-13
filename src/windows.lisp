@@ -98,7 +98,7 @@
   `(with-accessors ((,slot croatoan-window)) ,window
      ,@body))
 
-(defmacro when-window-shown ((window &key (min-valid-height 5) (min-valid-width 5)) &body body)
+(defmacro when-window-shown ((window &key (min-valid-height 2) (min-valid-width 2)) &body body)
   (with-gensyms (height width)
     `(when ,window
        (let ((,height (if (window-uses-border-p ,window)

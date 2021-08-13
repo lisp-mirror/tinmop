@@ -127,7 +127,8 @@ be either `:keybinding' or `:string'.  the former for key command the latter for
                    (error-message-attributes error-message-attributes)
                    (info-message-bg          info-message-bg)
                    (info-message-fg          info-message-fg)
-                   (info-message-attributes  info-message-attributes)) object
+                   (info-message-attributes  info-message-attributes)
+                   (suggestions-win          suggestions-win)) object
     (let* ((w (win-width *main-window*))
            (h +command-window-height+)
            (x 0)
@@ -139,21 +140,23 @@ be either `:keybinding' or `:string'.  the former for key command the latter for
             (swconf:command-error-message-colors)
           (multiple-value-bind (info-bg info-fg info-attributes)
               (swconf:command-info-message-colors)
-          (setf error-message-bg error-bg)
-          (setf error-message-fg error-fg)
-          (setf error-message-attributes error-attributes)
-          (setf info-message-bg info-bg)
-          (setf info-message-fg info-fg)
-          (setf info-message-attributes info-attributes)
-          (setf (point-fg object) (win-bgcolor object))
-          (setf (point-bg object) (win-fgcolor object))
-          (setf (commands-separator object)
-                (make-tui-string value
-                                 :fgcolor fg
-                                 :bgcolor bg))
-          (win-resize object w h)
-          (win-move   object x y)
-          object))))))
+            (setf error-message-bg error-bg)
+            (setf error-message-fg error-fg)
+            (setf error-message-attributes error-attributes)
+            (setf info-message-bg info-bg)
+            (setf info-message-fg info-fg)
+            (setf info-message-attributes info-attributes)
+            (setf (point-fg object) (win-bgcolor object))
+            (setf (point-bg object) (win-fgcolor object))
+            (setf (commands-separator object)
+                  (make-tui-string value
+                                   :fgcolor fg
+                                   :bgcolor bg))
+            (win-resize object w h)
+            (win-move   object x y)
+            (when suggestions-win
+              (refresh-config suggestions-win))
+            object))))))
 
 (defmethod calculate ((object command-window) dt)
   (with-accessors ((suggestions-win suggestions-win)) object
@@ -560,6 +563,7 @@ command line."
     (setf input-mode mode)
     (when suggestions-win
       (win-hide suggestions-win))
+    (refresh-config suggestions-cached-win)
     (setf suggestions-win suggestions-cached-win)))
 
 (defmacro gen-set-mode-function (fn-name mode suggestions-cached-win)
