@@ -98,10 +98,19 @@
   `(with-accessors ((,slot croatoan-window)) ,window
      ,@body))
 
-(defmacro when-window-shown ((window) &body body)
-  `(when (and ,window
-              (win-shown-p ,window))
-     ,@body))
+(defmacro when-window-shown ((window &key (min-valid-height 5) (min-valid-width 5)) &body body)
+  (with-gensyms (height width)
+    `(when ,window
+       (let ((,height (if (window-uses-border-p ,window)
+                          (win-height-no-border ,window)
+                          (win-height           ,window)))
+             (,width  (if (window-uses-border-p ,window)
+                          (win-width-no-border  ,window)
+                          (win-width            ,window))))
+         (when (and (win-shown-p ,window)
+                    (> ,height ,min-valid-height)
+                    (> ,width  ,min-valid-width))
+           ,@body)))))
 
 (defun win-clear (window &key (redraw t))
   "Clear window content"
@@ -653,6 +662,11 @@ insetred by the user"
     :initarg  :uses-border-p
     :reader   uses-border-p))
   (:documentation "This is a window that has a border."))
+
+(defun window-uses-border-p (window)
+  (and window
+       (typep window 'border-window)
+       (uses-border-p window)))
 
 (defmethod draw :after ((object border-window))
   (when (uses-border-p object)

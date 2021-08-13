@@ -65,55 +65,57 @@
                    (single-row-height single-row-height)
                    (top-row-padding   top-row-padding)
                    (new-messages-mark new-messages-mark)) object
-    (win-clear object)
-    (with-croatoan-window (croatoan-window object)
-      (let ((histogram-width (truncate (* 2/3 (win-width-no-border object)))))
-        (loop
-           for y from (+ 2 top-row-padding) by single-row-height
-           for row-fields  in (map-rows object #'fields) do
-             (let* ((histogram-data            (fields-histogram row-fields))
-                    (length-histogram-data     (length histogram-data))
-                    (histogram-visualized-data (safe-subseq histogram-data
-                                                            (- length-histogram-data
-                                                               histogram-width)
-                                                            length-histogram-data))
-                    (histogram                 (cl-spark:spark histogram-visualized-data))
-                    (got-new-messages-p        (getf row-fields :got-new-message-p)))
-               (print-text object
-                           histogram
-                           1 y
-                           :bgcolor (bgcolor croatoan-window)
-                           :fgcolor histogram-fg)
-               (when got-new-messages-p
-                 (print-text object new-messages-mark nil nil
-                             :bgcolor (bgcolor croatoan-window)
-                             :fgcolor histogram-fg))))))))
+    (when-window-shown (object)
+      (win-clear object)
+      (with-croatoan-window (croatoan-window object)
+        (let ((histogram-width (truncate (* 2/3 (win-width-no-border object)))))
+          (loop
+            for y from (+ 2 top-row-padding) by single-row-height
+            for row-fields  in (map-rows object #'fields) do
+              (let* ((histogram-data            (fields-histogram row-fields))
+                     (length-histogram-data     (length histogram-data))
+                     (histogram-visualized-data (safe-subseq histogram-data
+                                                             (- length-histogram-data
+                                                                histogram-width)
+                                                             length-histogram-data))
+                     (histogram                 (cl-spark:spark histogram-visualized-data))
+                     (got-new-messages-p        (getf row-fields :got-new-message-p)))
+                (print-text object
+                            histogram
+                            1 y
+                            :bgcolor (bgcolor croatoan-window)
+                            :fgcolor histogram-fg)
+                (when got-new-messages-p
+                  (print-text object new-messages-mark nil nil
+                              :bgcolor (bgcolor croatoan-window)
+                              :fgcolor histogram-fg)))))))))
 
 (defmethod resync-rows-db ((object tags-window) &key (redraw t) (suggested-message-index nil))
   (with-accessors ((rows              rows)
                    (selected-line-bg  selected-line-bg)
                    (selected-line-fg  selected-line-fg)) object
-    (flet ((make-rows (line-fields bg fg)
-             (mapcar (lambda (fields)
-                       (let ((text (db:tag->folder-name (fields-tag fields))))
-                         (make-instance 'line
-                                        :fields        fields
-                                        :normal-text   text
-                                        :selected-text text
-                                        :normal-bg     bg
-                                        :normal-fg     fg
-                                        :selected-bg   fg
-                                        :selected-fg   bg)))
-                     line-fields)))
-      (let ((line-fields (make-tag-line-fields)))
-        (line-oriented-window:update-all-rows object
-                                              (make-rows line-fields
-                                                         selected-line-bg
-                                                         selected-line-fg))
-        (when suggested-message-index
-          (select-row object suggested-message-index))
-        (when redraw
-          (draw object))))))
+    (when-window-shown (object)
+      (flet ((make-rows (line-fields bg fg)
+               (mapcar (lambda (fields)
+                         (let ((text (db:tag->folder-name (fields-tag fields))))
+                           (make-instance 'line
+                                          :fields        fields
+                                          :normal-text   text
+                                          :selected-text text
+                                          :normal-bg     bg
+                                          :normal-fg     fg
+                                          :selected-bg   fg
+                                          :selected-fg   bg)))
+                       line-fields)))
+        (let ((line-fields (make-tag-line-fields)))
+          (line-oriented-window:update-all-rows object
+                                                (make-rows line-fields
+                                                           selected-line-bg
+                                                           selected-line-fg))
+          (when suggested-message-index
+            (select-row object suggested-message-index))
+          (when redraw
+            (draw object)))))))
 
 (defun fields-tag (fields)
   (getf fields :tag))

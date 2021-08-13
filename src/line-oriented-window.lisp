@@ -409,38 +409,39 @@ this exact quantity would go beyond the length or rows or zero."
                    (single-row-height      single-row-height)
                    (top-row-padding        top-row-padding)
                    (top-horizontal-padding top-horizontal-padding)) object
-    (let ((max-line-size (if uses-border-p
-                             (win-width-no-border object)
-                             (win-width           object))))
-      (let ((rows    (renderizable-rows-data object))
-            (x       (if (uses-border-p object)
-                         1
-                         0))
-            (y-start (if (uses-border-p object)
-                         1
-                         0)))
-        (loop
-           for y from (+ y-start
-                         top-horizontal-padding
-                         top-row-padding)
-           by single-row-height
-           for ct from 0
-           for row in rows do
-             (if (selectedp row)
-                 (print-text object
-                             (right-pad-text (text-ellipsis (selected-text row)
-                                                            max-line-size)
-                                             max-line-size)
-                             x y
-                             :bgcolor (selected-bg row)
-                             :fgcolor (selected-fg row))
-                 (print-text object
-                             (right-pad-text (text-ellipsis (normal-text row)
-                                                            max-line-size)
-                                             max-line-size)
-                             x y
-                             :bgcolor (normal-bg row)
-                             :fgcolor (normal-fg row))))))))
+    (when-window-shown (object)
+      (let ((max-line-size (if uses-border-p
+                               (win-width-no-border object)
+                               (win-width           object))))
+        (let ((rows    (renderizable-rows-data object))
+              (x       (if (uses-border-p object)
+                           1
+                           0))
+              (y-start (if (uses-border-p object)
+                           1
+                           0)))
+          (loop
+            for y from (+ y-start
+                          top-horizontal-padding
+                          top-row-padding)
+            by single-row-height
+            for ct from 0
+            for row in rows do
+              (if (selectedp row)
+                  (print-text object
+                              (right-pad-text (text-ellipsis (selected-text row)
+                                                             max-line-size)
+                                              max-line-size)
+                              x y
+                              :bgcolor (selected-bg row)
+                              :fgcolor (selected-fg row))
+                  (print-text object
+                              (right-pad-text (text-ellipsis (normal-text row)
+                                                             max-line-size)
+                                              max-line-size)
+                              x y
+                              :bgcolor (normal-bg row)
+                              :fgcolor (normal-fg row)))))))))
 
 (defgeneric resync-rows-db (object &key redraw)
   (:documentation "Synchronize information table slot of `object` with

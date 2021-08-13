@@ -784,21 +784,22 @@ db:renumber-timeline-message-index."
 (defmethod resync-rows-db ((object thread-window) &key (redraw t) (suggested-message-index nil))
   (with-accessors ((row-selected-index row-selected-index)
                    (rows               rows)) object
-    (let ((saved-row-selected-index (if suggested-message-index
-                                        (db:message-index->sequence-index suggested-message-index)
-                                        row-selected-index))
-          (first-message-index      (or suggested-message-index
-                                        (db:row-message-index (fields (rows-first-elt object))))))
-      (handler-bind ((conditions:out-of-bounds
-                      (lambda (e)
-                        (invoke-restart 'ignore-selecting-action e))))
-        (multiple-value-bind (tree pos)
-            (fit-timeline-to-window object first-message-index)
-          (build-lines object tree pos)
-          (unselect-all object)
-          (select-row object saved-row-selected-index)
-          (when redraw
-            (draw object))))))
+    (when-window-shown (object)
+      (let ((saved-row-selected-index (if suggested-message-index
+                                          (db:message-index->sequence-index suggested-message-index)
+                                          row-selected-index))
+            (first-message-index      (or suggested-message-index
+                                          (db:row-message-index (fields (rows-first-elt object))))))
+        (handler-bind ((conditions:out-of-bounds
+                         (lambda (e)
+                           (invoke-restart 'ignore-selecting-action e))))
+          (multiple-value-bind (tree pos)
+              (fit-timeline-to-window object first-message-index)
+            (build-lines object tree pos)
+            (unselect-all object)
+            (select-row object saved-row-selected-index)
+            (when redraw
+              (draw object)))))))
   object)
 
 (defun reblogged-data (reblogger-status)

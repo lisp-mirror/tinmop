@@ -1679,6 +1679,7 @@
    :in-focus-p
    :border-window
    :uses-border-p
+   :window-uses-border-p
    :title-window))
 
 (defpackage :notify-window
