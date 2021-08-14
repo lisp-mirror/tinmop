@@ -1291,24 +1291,27 @@
             keybindings:*gemini-message-keymap*)
       (windows:draw  specials:*message-window*))))
 
+(defclass gemlog-refresh-thread  (program-event) ())
+
+(defmethod process-event ((object gemlog-refresh-thread))
+  (let* ((subscription         (payload object))
+         (notification-message (format nil (_ "updating gemlog ~a") subscription)))
+    (ui:notify-procedure (lambda ()
+                           (db-utils:with-ready-database ()
+                             (ignore-errors
+                              (gemini-subscription:refresh subscription))))
+                         notification-message
+                         :ending-message nil)))
+
 (defclass gemlog-refresh-all-event (program-event) ())
 
 (defmethod process-event ((object gemlog-refresh-all-event))
   (let ((all-subscribed-gemlogs (mapcar #'db:row-url (db:gemini-all-subscriptions))))
-    (mapcar (lambda (subscription)
-              (let* ((notification-message (format nil (_ "updating gemlog ~a") subscription))
-                     (payload (lambda ()
-                                (ui:notify-procedure (lambda ()
-                                                       (db-utils:with-ready-database ()
-                                                         (ignore-errors
-                                                          (gemini-subscription:refresh subscription))))
-                                                     notification-message
-                                                     :ending-message nil)))
-                     (event (make-instance 'function-event
-                                           :payload  payload
-                                           :priority +minimum-event-priority+)))
-                (push-event event)))
-            all-subscribed-gemlogs)))
+    (loop for subscription in all-subscribed-gemlogs do
+      (let ((event (make-instance 'gemlog-refresh-thread
+                                  :payload  subscription
+                                  :priority +minimum-event-priority+)))
+        (push-event event)))))
 
 (defclass gemini-toc-jump-to-section (program-event)
   ((toc-win
