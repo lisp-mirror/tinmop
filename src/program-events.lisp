@@ -1300,7 +1300,8 @@
                      (payload (lambda ()
                                 (ui:notify-procedure (lambda ()
                                                        (db-utils:with-ready-database ()
-                                                         (gemini-subscription:refresh subscription)))
+                                                         (ignore-errors
+                                                          (gemini-subscription:refresh subscription))))
                                                      notification-message
                                                      :ending-message nil)))
                      (event (make-instance 'function-event
