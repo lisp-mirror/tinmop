@@ -1630,6 +1630,8 @@
    :wrapper-window
    :croatoan-window
    :with-croatoan-window
+   :+min-shown-win-height+
+   :+min-shown-win-width+
    :when-window-shown
    :keybindings
    :win-clear

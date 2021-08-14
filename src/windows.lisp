@@ -98,7 +98,14 @@
   `(with-accessors ((,slot croatoan-window)) ,window
      ,@body))
 
-(defmacro when-window-shown ((window &key (min-valid-height 2) (min-valid-width 2)) &body body)
+(define-constant +min-shown-win-height+ 3 :test #'=)
+
+(define-constant +min-shown-win-width+  3 :test #'=)
+
+(defmacro when-window-shown ((window &key
+                                       (min-valid-height +min-shown-win-height+)
+                                       (min-valid-width  +min-shown-win-width+))
+                             &body body)
   (with-gensyms (height width)
     `(when ,window
        (let ((,height (if (window-uses-border-p ,window)
@@ -108,8 +115,8 @@
                           (win-width-no-border  ,window)
                           (win-width            ,window))))
          (when (and (win-shown-p ,window)
-                    (> ,height ,min-valid-height)
-                    (> ,width  ,min-valid-width))
+                    (>= ,height ,min-valid-height)
+                    (>= ,width  ,min-valid-width))
            ,@body)))))
 
 (defun win-clear (window &key (redraw t))

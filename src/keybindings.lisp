@@ -514,10 +514,15 @@ and `make-blocking-list-dialog-window') showing the full docstring for a command
                             (string< text-a text-b)))))))
              (make-filter-help-text (scanner)
                (lambda (a)
-                 (scan scanner
-                       (if (stringp a)
-                           a
-                           (tui:tui-string->chars-string a))))))
+                 (let ((text (help-fields-get-text a))
+                       (fn   (help-fields-get-function a)))
+                   (or (null fn)
+                       (scan scanner
+                             (if (stringp text)
+                                 text
+                                 (tui:tui-string->chars-string text)))))))
+             (valid-results-p (fields)
+               (> (length fields) 2)))
       (when-let* ((focused-keybindings   (main-window:focused-keybindings main-window))
                   (global-help           (sort-help (key-paths *global-keymap*)))
                   (header-focused        (colorize-header (_ "Focused window keys")))
@@ -532,22 +537,22 @@ and `make-blocking-list-dialog-window') showing the full docstring for a command
                       (list global-header-fields)
                       global-help))
         (handler-case
-          (let* ((scanner   (create-scanner regex :case-insensitive-mode t))
-                 (all-lines (remove-if-not (make-filter-help-text scanner)
-                                           (mapcar #'help-fields-get-text
-                                                   fields)))
-                 (no-help-message (list (_ "No command matching your criteria found"))))
-            (if all-lines
-                (line-oriented-window:make-blocking-list-dialog-window specials:*main-window*
-                                                                       fields
-                                                                       all-lines
-                                                                       #'help-expand
-                                                                       (_ "Quick help"))
-                (line-oriented-window:make-blocking-list-dialog-window specials:*main-window*
-                                                                       '("dummy")
-                                                                       no-help-message
-                                                                       (lambda (a b)
-                                                                         (declare (ignore a b))))))
+            (let* ((scanner   (create-scanner regex :case-insensitive-mode t))
+                   (actual-fields (remove-if-not (make-filter-help-text scanner)
+                                                 fields))
+                   (actual-lines  (mapcar #'help-fields-get-text actual-fields))
+                   (no-help-message (list (_ "No command matching your criteria found"))))
+              (if (valid-results-p actual-fields)
+                  (line-oriented-window:make-blocking-list-dialog-window specials:*main-window*
+                                                                         actual-fields
+                                                                         actual-lines
+                                                                         #'help-expand
+                                                                         (_ "Quick help"))
+                  (line-oriented-window:make-blocking-list-dialog-window specials:*main-window*
+                                                                         '((:text "dummy"))
+                                                                         no-help-message
+                                                                         (lambda (a b)
+                                                                           (declare (ignore a b))))))
           (cl-ppcre:ppcre-syntax-error (e)
             (ui:error-message (format nil
                                       (_ "invalid regular expression ~s ~a")

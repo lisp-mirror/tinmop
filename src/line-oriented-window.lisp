@@ -461,7 +461,9 @@ will fire the `callback' function (with the selected field from `all-fields'
                                  (+ (find-max-line-width text-lines)
                                     2)))
          (window-height     (min (truncate (* 0.9 (win-height screen)))
-                                 (+ (length text-lines) 2)))
+                                 (max (length text-lines)
+                                      (+ +min-shown-win-height+
+                                         2))))
          (window-x          (truncate (- (* 0.5 (win-width screen))
                                          (* 0.5 window-width))))
          (window-y          (truncate (- (* 0.5 (win-height screen))
