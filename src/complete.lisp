@@ -45,10 +45,11 @@ See: complete:directory-complete")
 
 (defun underlying-directory-p (pathname)
   "Find the actual directory of pathname (i.e. resolve file link"
-  (case (file-kind pathname)
-    (:directory t)
-    (:symbolic-link
-     (file-kind (merge-pathnames (read-link pathname) pathname)))))
+  (ignore-errors
+   (case (file-kind pathname)
+     (:directory t)
+     (:symbolic-link
+      (file-kind (merge-pathnames (read-link pathname) pathname))))))
 
 ;;; We can't easily do zsh-style tab-completion of ~us into ~user, but
 ;;; at least we can expand ~ and ~user.  The other bug here at the
@@ -232,22 +233,26 @@ list af all possible candidtae for completion."
 
 (defun make-complete-gemini-iri-fn (prompt)
   (lambda (hint)
-    (when-let ((bag (remove-duplicates (funcall #'db:history-prompt->values
-                                                prompt)
-                                       :test #'string=)))
-      (multiple-value-bind (matched-strings indices)
-          (uri-matcher hint bag)
-        (when matched-strings
-          (values matched-strings
-                  nil             ;for fuzzy search common prefix does
-                                  ;not  makes  sense; note  also  that
-                                  ;setting  this  to  nil  will  force
-                                  ;selecting   the   first   item   in
-                                  ;'complete-window'             (see:
-                                  ;complete-at-point               and
-                                  ;insert-selected-suggestion),
+    (if (or (text-utils:string-starts-with-p fs:*directory-sep* hint)
+            (text-utils:string-starts-with-p "." hint)
+            (text-utils:string-starts-with-p "~" hint))
+        (directory-complete hint)
+        (when-let ((bag (remove-duplicates (funcall #'db:history-prompt->values
+                                                    prompt)
+                                           :test #'string=)))
+          (multiple-value-bind (matched-strings indices)
+              (uri-matcher hint bag)
+            (when matched-strings
+              (values matched-strings
+                      nil         ;for fuzzy search common prefix does
+                                        ;not  makes  sense; note  also  that
+                                        ;setting  this  to  nil  will  force
+                                        ;selecting   the   first   item   in
+                                        ;'complete-window'             (see:
+                                        ;complete-at-point               and
+                                        ;insert-selected-suggestion),
 
-                  indices))))))
+                      indices)))))))
 
 (defun complete-chat-message (hint)
   (append (username-complete hint)
