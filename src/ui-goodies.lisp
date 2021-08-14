@@ -58,7 +58,9 @@
            (when (boolean-input-accepted-p maybe-accepted)
              (let ((delete-event (make-instance 'delete-all-status-event)))
                (push-event delete-event)))
-           (clean-temporary-files)))
+           (db-utils:with-ready-database (:connect nil)
+             (db:renumber-all-timelines '())
+             (clean-temporary-files))))
     (let ((delete-count        (db:count-status-marked-to-delete))
           (stop-download-event (make-instance 'gemini-abort-all-downloading-event
                                               :priority +maximum-event-priority+)))
@@ -70,7 +72,9 @@
                                                 "Delete ~a messages? [y/N] "
                                                 delete-count)
                                             delete-count))
-          (clean-temporary-files)))))
+          (progn
+            (db:renumber-all-timelines '())
+            (clean-temporary-files))))))
 
 (defun notify (message &key (life nil) (as-error nil) (priority +standard-event-priority+))
   (let ((event (make-instance 'notify-user-event

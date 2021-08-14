@@ -1976,11 +1976,21 @@ messages are sorted as below:
     (loop for folder in all-folders do
       (loop for timeline in all-timelines
             when (or (statuses-marked-to-delete timeline folder)
+                     (duplicated-message-index-p timeline folder)
                      (find (cons timeline folder)
                            timelines/folders-with-forgotten
                            :test #'equalp))
               do
                  (renumber-timeline-message-index timeline folder :account-id nil)))))
+
+(defun duplicated-message-index-p (timeline folder)
+  (let ((all-indices (mapcar #'second
+                             (fetch-all-rows (select :message-index
+                                               (from +table-status+)
+                                               (where (:and (:= :folder   folder)
+                                                            (:= :timeline timeline))))))))
+    (not (length= (remove-duplicates all-indices :test #'=)
+                  all-indices))))
 
 (defun all-attachments-to-status (status-id)
   (fetch-all-rows (select :*

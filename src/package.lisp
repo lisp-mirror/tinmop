@@ -891,6 +891,7 @@
    :annotated-tree-line->data-plist
    :renumber-timeline-message-index
    :renumber-all-timelines
+   :duplicated-message-index-p
    :all-attachments-to-status
    :attachment-to-chat-message
    :all-attachments-urls-to-status
