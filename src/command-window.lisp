@@ -487,7 +487,8 @@ command line."
              (when (and new-id
                         new-input)
                (setf history-position new-id)
-               (setf command-line new-input)))
+               (setf command-line new-input)
+               (move-point-to-end command-window command-line)))
            (insert-in-history (prompt command-line)
              (db:insert-in-history prompt command-line)
              (set-history-most-recent command-window prompt)))
