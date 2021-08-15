@@ -55,12 +55,12 @@
 (defun clean-close-program ()
   "Use this to close the program"
   (flet ((on-input-complete (maybe-accepted)
-           (when (boolean-input-accepted-p maybe-accepted)
-             (let ((delete-event (make-instance 'delete-all-status-event)))
-               (push-event delete-event)))
-           (db-utils:with-ready-database (:connect nil)
-             (db:renumber-all-timelines '())
-             (clean-temporary-files))))
+           (if (boolean-input-accepted-p maybe-accepted)
+               (let ((delete-event (make-instance 'delete-all-status-event)))
+                 (push-event delete-event))
+               (db-utils:with-ready-database (:connect nil)
+                 (db:renumber-all-timelines '())))
+             (clean-temporary-files)))
     (let ((delete-count        (db:count-status-marked-to-delete))
           (stop-download-event (make-instance 'gemini-abort-all-downloading-event
                                               :priority +maximum-event-priority+)))
