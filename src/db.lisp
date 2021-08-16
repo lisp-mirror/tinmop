@@ -1832,6 +1832,8 @@ row."
 
 (gen-access-message-row value                       :value)
 
+(gen-access-message-row section                     :section)
+
 (defun row-votes-count (row)
   (and row (db-getf row :votes-count :default 0)))
 
@@ -3111,14 +3113,22 @@ days in the past"
                         (:type :value :section :description :created-at)
                         (type  value  section  description now)))))
 
-(defun bookmark-delete (type value)
-  (query (make-delete +table-bookmark+
-                      (:and (:= :type type)
-                            (:= :value value)))))
-
 (defun bookmark-all-sections ()
   (let ((rows (query (select :section (from +table-bookmark+)))))
     (mapcar #'second rows)))
+
+(defun bookmark-complete->id (description)
+  (ignore-errors (parse-integer description :junk-allowed t)))
+
+(defun bookmark-description-for-complete (type)
+  (let ((rows (query (select :* (from +table-bookmark+) (where (:= :type type))))))
+    (mapcar (lambda (a) (strcat (to-s (row-id          a))
+                                ": -"
+                                (row-section     a)
+                                " - "
+                                (row-description a)
+                                (row-value       a)))
+            rows)))
 
 (defun bookmark-all-by-section (section)
   (if (null section)
@@ -3130,3 +3140,6 @@ days in the past"
     (loop for section in sections
           collect
           (cons section (bookmark-all-by-section section)))))
+
+(defun bookmark-delete (id)
+  (delete-by-id +table-bookmark+ id))

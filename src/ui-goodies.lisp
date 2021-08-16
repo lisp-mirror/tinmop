@@ -2086,10 +2086,13 @@ gemini page the program is rendering."
              (source      (gemini-viewer:gemini-metadata-source-file metadata))
              (description (gemini-parser:gemini-first-h1 source)))
         (labels ((on-description-completed (new-description)
-                   (setf description new-description)
-                   (ui:ask-string-input #'on-section-completed
-                                        :prompt (format nil (_ "Insert bookmark section: "))
-                                        :complete-fn #'complete:bookmark-section-complete))
+                   (if (text-utils:string-empty-p new-description)
+                       (error-message (_ "Empty description"))
+                       (progn
+                         (setf description new-description)
+                         (ui:ask-string-input #'on-section-completed
+                                              :prompt (format nil (_ "Insert bookmark section: "))
+                                              :complete-fn #'complete:bookmark-section-complete))))
                  (on-section-completed (section)
                    (db-utils:with-ready-database (:connect nil)
                      (db:bookmark-add db:+bookmark-gemini-type-entry+
@@ -2128,3 +2131,15 @@ gemini page the program is rendering."
                                        :window *message-window*
                                        :payload bookmark-page)))
     (push-event event)))
+
+(defun delete-gemini-bookmark ()
+  (flet ((on-description-completed (selected)
+           (if (text-utils:string-empty-p selected)
+               (error-message (_ "No entry selected"))
+               (when-let ((id (db:bookmark-complete->id selected)))
+                 (db-utils:with-ready-database (:connect nil)
+                   (db:bookmark-delete id))))))
+    (ui:ask-string-input #'on-description-completed
+                               :prompt        (format nil (_ "Delete bookmark: "))
+                               :complete-fn
+                               (complete:bookmark-description-complete-clsr db:+bookmark-gemini-type-entry+))))

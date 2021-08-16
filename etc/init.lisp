@@ -363,6 +363,8 @@
 
 (define-key "C-b s"     #'display-bookmark                           *gemini-message-keymap*)
 
+(define-key "C-b d"     #'delete-gemini-bookmark                     *gemini-message-keymap*)
+
 (define-key "U"         #'gemini-view-source                         *gemini-message-keymap*)
 
 (define-key "d"         #'gemini-open-streams-window                 *gemini-message-keymap*)

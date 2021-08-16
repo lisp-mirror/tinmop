@@ -1017,8 +1017,11 @@
    :purge-seen-gemlog-entries
    :bookmark-add
    :bookmark-delete
+   :bookmark-complete->id
+   :bookmark-description-for-complete
    :bookmark-all-sections
-   :bookmark-all-grouped-by-section))
+   :bookmark-all-grouped-by-section
+   :bookmark-delete))
 
 (defpackage :date-formatter
   (:use
@@ -1325,7 +1328,8 @@
    :make-complete-gemini-iri-fn
    :complete-chat-message
    :complete-always-empty
-   :bookmark-section-complete))
+   :bookmark-section-complete
+   :bookmark-description-complete-clsr))
 
 (defpackage :program-events
   (:use
@@ -2609,7 +2613,8 @@
    :ask-input-on-tofu-error
    :import-gemini-certificate
    :bookmark-gemini-page
-   :display-bookmark))
+   :display-bookmark
+   :delete-gemini-bookmark))
 
 (defpackage :scheduled-events
   (:use

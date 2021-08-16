@@ -264,3 +264,9 @@ list af all possible candidtae for completion."
 
 (with-simple-complete bookmark-section-complete
   (lambda () (remove-if #'null (db:bookmark-all-sections))))
+
+(defun bookmark-description-complete-clsr (type)
+  (lambda (hint)
+    (when-let ((matched (remove-if-not (lambda (a) (cl-ppcre:scan hint a))
+                                       (db:bookmark-description-for-complete type))))
+      (values matched (reduce-to-common-prefix matched)))))
