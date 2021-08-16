@@ -1182,11 +1182,12 @@ This makes sense only for gemini file stream, if not this command performs the s
   (%open-message-link-perform-opening t))
 
 (defun close-open-message-link-window ()
-  (when (message-window:display-gemini-text-p *open-message-link-window*)
-    (open-message-link-window:forget-gemini-link-window))
-  (if (message-window:display-gemini-text-p *message-window*)
-      (close-window-and-return-to-message *open-message-link-window*)
-      (close-window-and-return-to-threads *open-message-link-window*)))
+  (when-window-shown (*open-message-link-window*)
+    (when (message-window:display-gemini-text-p *open-message-link-window*)
+      (open-message-link-window:forget-gemini-link-window))
+    (if (message-window:display-gemini-text-p *message-window*)
+        (close-window-and-return-to-message *open-message-link-window*)
+        (close-window-and-return-to-threads *open-message-link-window*))))
 
 (defun gemini-open-certificates-window ()
   "Open a window with all the  client certificated generated so far to
