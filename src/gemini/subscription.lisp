@@ -54,8 +54,7 @@ This function return the 'post-title' substring."
                 (page   (babel:octets-to-string data))
                 (parsed (parse-gemini-file page))
                 (iri    (iri:iri-parse url))
-                (title  (first (html-utils:children (html-utils:find-tag :h1
-                                                                         parsed)))))
+                (title  (gemini-first-h1 parsed)))
       (let* ((maybe-subtitle-pos (html-utils:position-tag :h2 parsed))
              (subtitle           (when (subtitle-p parsed maybe-subtitle-pos)
                                    (first (html-utils:children (elt parsed

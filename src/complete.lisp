@@ -261,3 +261,6 @@ list af all possible candidtae for completion."
 (defun complete-always-empty (hint)
   (declare (ignore hint))
   nil)
+
+(with-simple-complete bookmark-section-complete
+  (lambda () (remove-if #'null (db:bookmark-all-sections))))

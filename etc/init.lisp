@@ -359,6 +359,10 @@
 
 (define-key "b"         #'gemini-history-back                        *gemini-message-keymap*)
 
+(define-key "C-b a"     #'bookmark-gemini-page                       *gemini-message-keymap*)
+
+(define-key "C-b s"     #'display-bookmark                           *gemini-message-keymap*)
+
 (define-key "U"         #'gemini-view-source                         *gemini-message-keymap*)
 
 (define-key "d"         #'gemini-open-streams-window                 *gemini-message-keymap*)

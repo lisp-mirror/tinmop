@@ -1016,6 +1016,34 @@
     (tui:with-notify-errors
       (api-client:poll-vote poll-id choices))))
 
+(defclass gemini-display-data-page (program-event)
+  ((window
+    :initform nil
+    :initarg :window
+    :accessor window)
+   (local-path
+    :initform ""
+    :initarg :local-path
+    :accessor local-path)))
+
+(defmethod process-event ((object gemini-display-data-page))
+  (with-accessors ((page-data  payload)
+                   (window     window)
+                   (local-path local-path)) object
+    (tui:with-notify-errors
+      (let* ((parsed       (gemini-parser:parse-gemini-file page-data))
+             (local-path-p (text-utils:string-not-empty-p local-path))
+             (links        (gemini-parser:sexp->links parsed
+                                                      nil
+                                                      nil
+                                                      local-path
+                                                      :comes-from-local-file local-path-p))
+             (ir-text      (gemini-parser:sexp->text-rows parsed
+                                                          gemini-client:*gemini-page-theme*)))
+        (gemini-viewer:maybe-initialize-metadata window)
+        (refresh-gemini-message-window links page-data ir-text nil)
+        (windows:draw window)))))
+
 (defclass gemini-request-event (program-event)
   ((url
     :initform nil

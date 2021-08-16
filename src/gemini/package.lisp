@@ -88,7 +88,8 @@
    :sexp->text-rows
    :sexp->text
    :parse-gemini-response-header
-   :gemini-iri-p))
+   :gemini-iri-p
+   :gemini-first-h1))
 
 (defpackage :gemini-client
   (:use

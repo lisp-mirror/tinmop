@@ -2078,3 +2078,52 @@ gemini page the program is rendering."
       (ui:ask-string-input #'on-cert-path-input-complete
                            :prompt (format nil (_ "Insert certificate file: "))
                            :complete-fn #'complete:directory-complete))))
+
+(defun bookmark-gemini-page ()
+  (if (message-window:gemini-window-p)
+      (let* ((link        (gemini-viewer:current-gemini-url))
+             (metadata    (message-window:metadata *message-window*))
+             (source      (gemini-viewer:gemini-metadata-source-file metadata))
+             (description (gemini-parser:gemini-first-h1 source)))
+        (labels ((on-description-completed (new-description)
+                   (setf description new-description)
+                   (ui:ask-string-input #'on-section-completed
+                                        :prompt (format nil (_ "Insert bookmark section: "))
+                                        :complete-fn #'complete:bookmark-section-complete))
+                 (on-section-completed (section)
+                   (db-utils:with-ready-database (:connect nil)
+                     (db:bookmark-add db:+bookmark-gemini-type-entry+
+                                      link
+                                      :section     section
+                                      :description description))
+                   (notify (format nil (_ "Added ~s in bookmark") link))))
+          (ui:ask-string-input #'on-description-completed
+                               :prompt        (format nil (_ "Insert bookmark description: "))
+                               :initial-value description)))
+      (error-message (_ "The window is not displaying a gemini document"))))
+
+(defun generate-bookmark-page ()
+  (let ((bookmarks-sections (db:bookmark-all-grouped-by-section)))
+    (with-output-to-string (stream)
+      (loop for section in bookmarks-sections do
+        (let ((header    (car section))
+              (bookmarks (cdr section)))
+          (when (string-empty-p header)
+            (setf header (_ "Uncategorized")))
+          (write-string (gemini-parser:geminize-h1 header) stream)
+          (write-char #\Newline stream)
+          (write-char #\Newline stream)
+          (loop for bookmark in bookmarks do
+            (let ((link (join-with-strings* " "
+                                            (db:row-value       bookmark)
+                                            (db:row-description bookmark))))
+              (write-string (gemini-parser:geminize-link link) stream)
+              (write-char #\Newline stream)))
+          (write-char #\Newline stream))))))
+
+(defun display-bookmark ()
+  (let* ((bookmark-page (generate-bookmark-page))
+         (event         (make-instance 'gemini-display-data-page
+                                       :window *message-window*
+                                       :payload bookmark-page)))
+    (push-event event)))

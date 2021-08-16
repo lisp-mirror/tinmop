@@ -670,3 +670,12 @@
            (string-equal +gemini-scheme+
                          (uri:scheme parsed))
            (uri:host parsed)))))
+
+(defgeneric gemini-first-h1 (data))
+
+(defmethod gemini-first-h1 ((data cons))
+  (first (html-utils:children (html-utils:find-tag :h1 data))))
+
+(defmethod gemini-first-h1 ((data string))
+  (when-let ((parsed (parse-gemini-file data)))
+    (gemini-first-h1 parsed)))

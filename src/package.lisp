@@ -779,6 +779,8 @@
    :+table-saved-status+
    :+table-crypto-data+
    :+table-gemini-subscription+
+   :+table-bookmark+
+   :+bookmark-gemini-type-entry+
    :+federated-timeline+
    :+local-timeline+
    :+home-timeline+
@@ -885,6 +887,8 @@
    :row-cache-accessed-at
    :row-cache-created-at
    :row-seenp
+   :row-description
+   :row-value
    :next-status-tree
    :previous-status-tree
    :message-tree-root-equal
@@ -1010,7 +1014,11 @@
    :row-post-seenp
    :gemlog-entries
    :delete-gemlog-entry
-   :purge-seen-gemlog-entries))
+   :purge-seen-gemlog-entries
+   :bookmark-add
+   :bookmark-delete
+   :bookmark-all-sections
+   :bookmark-all-grouped-by-section))
 
 (defpackage :date-formatter
   (:use
@@ -1316,7 +1324,8 @@
    :conversation-folder
    :make-complete-gemini-iri-fn
    :complete-chat-message
-   :complete-always-empty))
+   :complete-always-empty
+   :bookmark-section-complete))
 
 (defpackage :program-events
   (:use
@@ -1408,6 +1417,7 @@
    :report-status-event
    :add-crypto-data-event
    :poll-vote-event
+   :gemini-display-data-page
    :gemini-request-event
    :gemini-back-event
    :gemini-got-line-event
@@ -2597,7 +2607,9 @@
    :pass-focus-on-bottom
    :pass-focus-on-top
    :ask-input-on-tofu-error
-   :import-gemini-certificate))
+   :import-gemini-certificate
+   :bookmark-gemini-page
+   :display-bookmark))
 
 (defpackage :scheduled-events
   (:use
