@@ -2105,12 +2105,13 @@ gemini page the program is rendering."
 (defun generate-bookmark-page ()
   (let ((bookmarks-sections (db:bookmark-all-grouped-by-section)))
     (with-output-to-string (stream)
+      (format stream (gemini-parser:geminize-h1 (_ "My bookmark~2%")))
       (loop for section in bookmarks-sections do
         (let ((header    (car section))
               (bookmarks (cdr section)))
           (when (string-empty-p header)
             (setf header (_ "Uncategorized")))
-          (write-string (gemini-parser:geminize-h1 header) stream)
+          (write-string (gemini-parser:geminize-h2 header) stream)
           (write-char #\Newline stream)
           (write-char #\Newline stream)
           (loop for bookmark in bookmarks do
