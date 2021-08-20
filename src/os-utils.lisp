@@ -162,3 +162,17 @@
                                            give-focus-to-message-window)
             (os-utils:open-link-with-program program resource))
         (os-utils:xdg-open resource))))
+
+(defun unzip-file (zip-file destination-dir)
+  (cond
+    ((not (fs:file-exists-p zip-file))
+     (error (format nil (_ "File ~s does not exists"))))
+    ((not (fs:directory-exists-p destination-dir))
+     (error (format nil (_ "Destination directory ~s does not exists"))))
+    (t
+     (run-external-program +unzip-bin+
+                           (list "-o" zip-file "-d" destination-dir)
+                           :search t
+                           :wait   t
+                           :output *standard-output*
+                           :error  *standard-output*))))

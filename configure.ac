@@ -43,6 +43,13 @@ if test "$GPG" = "no" ; then
    exit 1;
 fi
 
+AC_PATH_PROG([UNZIP],[unzip],[no])
+
+if test "$GPG" = "no" ; then
+   AC_MSG_WARN([Can not find unzip, genpub support will be disabled.])
+   exit 1;
+fi
+
 AC_PATH_PROG([BASH],[bash],[no])
 
 if test "$BASH" = "no" ; then

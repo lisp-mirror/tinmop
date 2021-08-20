@@ -34,6 +34,7 @@
    :+issue-tracker+
    :+openssl-bin+
    :+xdg-open-bin+
+   :+unzip-bin+
    :_
    :n_))
 
@@ -340,7 +341,8 @@
    :generate-ssl-certificate
    :send-to-pipe
    :open-link-with-program
-   :open-resource-with-external-program))
+   :open-resource-with-external-program
+   :unzip-file))
 
 (defpackage :text-utils
   (:use

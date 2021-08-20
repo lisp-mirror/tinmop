@@ -15,7 +15,9 @@
 
 (alexandria:define-constant +openssl-bin+   "@OPENSSL@"  :test #'string=)
 
-(alexandria:define-constant +xdg-open-bin+  "@XDG_OPEN@"  :test #'string=)
+(alexandria:define-constant +xdg-open-bin+  "@XDG_OPEN@" :test #'string=)
+
+(alexandria:define-constant +unzip-bin+     "@UNZIP@"    :test #'string=)
 
 (defmacro with-return-untranslated ((untranslated) &body body)
   `(handler-bind ((i18n-conditions:no-translation-table-error

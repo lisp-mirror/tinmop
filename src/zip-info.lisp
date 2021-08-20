@@ -43,11 +43,11 @@
                                                    +eocd-tot-no-entry-cd+
                                                    +eocd-cd-size+
                                                    +eocd-cd-offset+
-                                                   +zip-file-comment-length+)
+                                                   +eocd-zip-file-comment-length+)
   :test #'=)
 
 (alexandria:define-constant +eocd-zip-file-comment-offset+ (- +eocd-fixed-size+
-                                                              +zip-file-comment-length+)
+                                                              +eocd-zip-file-comment-length+)
   :test #'=)
 
 (defun open-file (path)
@@ -83,6 +83,6 @@
                  (eocd-offset-minus-zip-comment  (- eocd-fixed-part-offset
                                                     +eocd-zip-file-comment-length+)))
             (file-position stream eocd-offset-minus-zip-comment)
-            (let ((comment-size (read-bytes->int stream +zip-file-comment-length+)))
+            (let ((comment-size (read-bytes->int stream +eocd-zip-file-comment-length+)))
               (= (+ eocd-fixed-part-offset comment-size)
                  file-size))))))))
