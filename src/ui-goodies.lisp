@@ -31,6 +31,7 @@
   "Use this to close the program"
   (flet ((on-input-complete (maybe-accepted)
            (when (boolean-input-accepted-p maybe-accepted)
+             (fs:clean-temporary-directories)
              (fs:clean-temporary-files))
            (push-event (make-instance 'quit-program-event))))
     (let ((temporary-text        (strcat (format nil
@@ -38,7 +39,10 @@
                                                  (swconf:gemini-h1-prefix))
                                          (format nil
                                                  "~{- ~a~%~}"
-                                                 fs:*temporary-files-created*)))
+                                                 fs:*temporary-files-created*)
+                                         (format nil
+                                                 "~{- ~a~%~}"
+                                                 fs:*temporary-directories-created*)))
           (temporary-files-count (length fs:*temporary-files-created*)))
       (if (> temporary-files-count 0)
           (progn

@@ -305,6 +305,9 @@
    :*temporary-files-created*
    :temporary-file
    :clean-temporary-files
+   :*temporary-directories-created*
+   :temporary-directory
+   :clean-temporary-directories
    :with-anaphoric-temp-file
    :temp-file
    :file-can-write-p

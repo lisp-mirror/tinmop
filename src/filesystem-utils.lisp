@@ -307,6 +307,34 @@
               `(delete-file-if-exists temp-file)
               nil))))
 
+(defparameter *temporary-directories-created* ())
+
+(defun temporary-directory (&optional (temp-parent-directory nil))
+  (let ((tmpdir (or temp-parent-directory
+                    (os-utils:default-temp-dir))))
+    (let ((directory-path (if tmpdir
+                              (nix:mkdtemp (format nil "~a~a"
+                                                   tmpdir
+                                                   config:+program-name+))
+                              (nix:mkdtemp (format nil "~atmp~a"
+                                                   *directory-sep*
+                                                   config:+program-name+)))))
+      (push directory-path *temporary-directories-created*)
+      directory-path)))
+
+(defun clean-temporary-directories ()
+  (dolist (temporary-directory *temporary-directories-created*)
+    (labels ((recursive-delete (dir)
+               (let ((children (collect-children dir)))
+                 (dolist (file-or-dir children)
+                   (cond
+                     ((file-exists-p file-or-dir)
+                      (delete-file-if-exists file-or-dir))
+                     ((and (directory-exists-p file-or-dir)
+                           (not (cl-ppcre:scan "\\.$" file-or-dir)))
+                      (recursive-delete file-or-dir)))))))
+      (recursive-delete temporary-directory))))
+
 (defun has-file-permission-p (file permission)
   (find permission (osicat:file-permissions file) :test #'eq))
 
