@@ -67,6 +67,7 @@
                (:file "html-utils")
                (:file "crypto-utils")
                (:file "resources-utils")
+               (:file "zip-info")
                (:file "interfaces")
                (:file "mtree-utils")
                (:file "bs-tree")

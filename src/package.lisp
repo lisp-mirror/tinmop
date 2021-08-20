@@ -416,11 +416,12 @@
    :html->text))
 
 (defpackage :resources-utils
-  (:use :cl
+  (:use
+   :cl
    :cl-ppcre
-        :config
+   :config
    :constants
-        :filesystem-utils
+   :filesystem-utils
    :text-utils)
   (:nicknames :res)
   (:export
@@ -433,6 +434,18 @@
    :get-config-file
    :get-sys-config-file
    :get-data-file))
+
+(defpackage :zip-info
+  (:use
+   :cl
+   :cl-ppcre
+   :config
+   :constants
+   :filesystem-utils
+   :text-utils
+   :misc-utils)
+  (:export
+   :zip-file-p))
 
 (defpackage :crypto-utils
   (:use :cl
