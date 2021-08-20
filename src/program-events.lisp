@@ -1120,17 +1120,22 @@
              (gemini-viewer:push-url-to-history window index-path)
              (refresh-gemini-message-window links raw-text ir nil)
              (windows:draw window)))
+          ((zip-info:zip-file-p local-path)
+           (let ((temp-directory (fs:temporary-directory)))
+             (os-utils:unzip-file local-path temp-directory)
+             (setf (url object) temp-directory)
+             (push-event object)))
           (t
            (let* ((file-string (fs:slurp-file local-path))
                   (parent-dir  (fs:parent-dir-path local-path))
-                  (parsed  (gemini-parser:parse-gemini-file file-string))
-                  (links   (gemini-parser:sexp->links parsed
-                                                      nil
-                                                      nil
-                                                      parent-dir
-                                                      :comes-from-local-file t))
-                  (ir-text   (gemini-parser:sexp->text-rows parsed
-                                                            gemini-client:*gemini-page-theme*)))
+                  (parsed      (gemini-parser:parse-gemini-file file-string))
+                  (links       (gemini-parser:sexp->links parsed
+                                                          nil
+                                                          nil
+                                                          parent-dir
+                                                          :comes-from-local-file t))
+                  (ir-text     (gemini-parser:sexp->text-rows parsed
+                                                              gemini-client:*gemini-page-theme*)))
              (gemini-viewer:maybe-initialize-metadata window)
              (gemini-viewer:push-url-to-history window local-path)
              (refresh-gemini-message-window links file-string ir-text nil)

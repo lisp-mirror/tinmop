@@ -1,4 +1,8 @@
 modules/share-gemini-link.lisp
+src/9p-client/client.lisp
+src/9p-client/conditions.lisp
+src/9p-client/message-types.lisp
+src/9p-client/package.lisp
 src/api-client.lisp
 src/api-pleroma-entities.lisp
 src/api-pleroma.lisp
@@ -19,10 +23,12 @@ src/crypto-utils.lisp
 src/date-formatter.lisp
 src/db-utils.lisp
 src/db.lisp
+src/emoji-matcher.lisp
 src/emoji-shortcodes.lisp
 src/filesystem-utils.lisp
 src/follow-requests.lisp
 src/gemini-client-certificates-window.lisp
+src/gemini-page-toc.lisp
 src/gemini-subscription-window.lisp
 src/gemini-viewer-metadata.lisp
 src/gemini-viewer.lisp
@@ -82,9 +88,11 @@ src/tests/uri-tests.lisp
 src/tests/x509-tests.lisp
 src/text-utils.lisp
 src/thread-window.lisp
+src/tour-mode-parser.lisp
 src/tui-utils.lisp
 src/ui-goodies.lisp
 src/uri-parser.lisp
 src/windows.lisp
 src/x509-ffi.lisp
 src/x509.lisp
+src/zip-info.lisp
