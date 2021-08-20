@@ -1066,7 +1066,7 @@
 (defun relative-path->absolute (path)
   (uri:normalize-path (fs:prepend-pwd path)))
 
-(defun render-directory-ag-gemini-text (root-directory)
+(defun render-directory-as-gemini-text (root-directory)
   (let* ((index-path ( relative-path->absolute root-directory))
          (all-paths  (mapcar #'uri:normalize-path
                              (fs:collect-children index-path)))
@@ -1116,7 +1116,7 @@
                                   :use-cached-file-if-exists use-cached-file-if-exists))
           ((fs:dirp local-path)
            (let* ((index-path (relative-path->absolute local-path))
-                  (raw-text   (render-directory-ag-gemini-text local-path))
+                  (raw-text   (render-directory-as-gemini-text local-path))
                   (parsed     (gemini-parser:parse-gemini-file raw-text))
                   (links      (gemini-parser:sexp->links parsed
                                                          nil
