@@ -1063,6 +1063,34 @@
     :initarg :enqueue
     :accessor enqueue)))
 
+(defun relative-path->absolute (path)
+  (uri:normalize-path (fs:prepend-pwd path)))
+
+(defun render-directory-ag-gemini-text (root-directory)
+  (let* ((index-path ( relative-path->absolute root-directory))
+         (all-paths  (mapcar #'uri:normalize-path
+                             (fs:collect-children index-path)))
+         (link-lines ())
+         (raw-text   (with-output-to-string (stream)
+                       (write-sequence (gemini-parser:geminize-h1
+                                        (format nil
+                                                (_ "Index of local directory ~a~2%")
+                                                index-path))
+                                       stream))))
+
+    (loop for path in all-paths do
+      (let* ((dirp                  (fs:dirp path))
+             (dir-symbol            (swconf:directory-symbol))
+             (link-label            (if dirp
+                                        (text-utils:strcat path " " dir-symbol)
+                                        path))
+             (encoded-path          (gemini-client::percent-encode-path path))
+             (link                  (gemini-parser:make-gemini-link encoded-path link-label)))
+        (push link link-lines)))
+    (setf link-lines (sort link-lines #'string<))
+    (text-utils:join-with-strings (append (list raw-text) link-lines)
+                                  (format nil "~%"))))
+
 (defmethod process-event ((object gemini-request-event))
   (tui:with-notify-errors
     (with-accessors ((url                            url) ; if a local file *not* percent encoded
@@ -1087,26 +1115,8 @@
                                   :enqueue                   enqueue
                                   :use-cached-file-if-exists use-cached-file-if-exists))
           ((fs:dirp local-path)
-           (let* ((index-path (uri:normalize-path (fs:prepend-pwd local-path)))
-                  (all-paths  (mapcar #'uri:normalize-path
-                                      (fs:collect-children index-path)))
-                  (raw-text   (with-output-to-string (stream)
-                                (write-sequence (gemini-parser:geminize-h1
-                                                 (format nil
-                                                         (_ "Index of local directory ~a~2%")
-                                                         index-path))
-                                                stream)
-                                (loop for path in all-paths do
-                                  (let* ((dirp       (fs:dirp path))
-                                         (dir-symbol (swconf:directory-symbol))
-                                         (link-label (if dirp
-                                                         (text-utils:strcat path " " dir-symbol)
-                                                         path))
-                                         (encoded-path (gemini-client::percent-encode-path path)))
-                                    (format stream
-                                            "~a~%"
-                                            (gemini-parser:make-gemini-link encoded-path
-                                                                            link-label))))))
+           (let* ((index-path (relative-path->absolute local-path))
+                  (raw-text   (render-directory-ag-gemini-text local-path))
                   (parsed     (gemini-parser:parse-gemini-file raw-text))
                   (links      (gemini-parser:sexp->links parsed
                                                          nil
