@@ -450,7 +450,8 @@
    :text-utils
    :misc-utils)
   (:export
-   :zip-file-p))
+   :zip-file-p
+   :list-entries))
 
 (defpackage :crypto-utils
   (:use :cl

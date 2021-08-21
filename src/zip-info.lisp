@@ -18,7 +18,7 @@
 
 (alexandria:define-constant +byte-type+                '(unsigned-byte 8) :test #'equalp)
 
-(alexandria:define-constant +eocd-signature+                   #x06054b50 :test #'=)
+(alexandria:define-constant +eocd-signature-value+             #x06054b50 :test #'=)
 
 (alexandria:define-constant +eocd-signature-size+                       4 :test #'=)
 
@@ -50,6 +50,68 @@
                                                               +eocd-zip-file-comment-length+)
   :test #'=)
 
+(alexandria:define-constant +cd-signature-value+                 #x02014b50 :test #'=)
+
+(alexandria:define-constant +cd-central-file-header-signature+            4 :test #'=)
+
+(alexandria:define-constant +cd-version-made-by+                          2 :test #'=)
+
+(alexandria:define-constant +cd-version-needed-to-extract+                2 :test #'=)
+
+(alexandria:define-constant +cd-general-purpose-bit-flag+                 2 :test #'=)
+
+(alexandria:define-constant +cd-compression-method+                       2 :test #'=)
+
+(alexandria:define-constant +cd-last-mod-file-time+                       2 :test #'=)
+
+(alexandria:define-constant +cd-last-mod-file-date+                       2 :test #'=)
+
+(alexandria:define-constant +cd-crc-32+                                   4 :test #'=)
+
+(alexandria:define-constant +cd-compressed-size+                          4 :test #'=)
+
+(alexandria:define-constant +cd-uncompressed-size+                        4 :test #'=)
+
+(alexandria:define-constant +cd-file-name-length+                         2 :test #'=)
+
+(alexandria:define-constant +cd-extra-field-length+                       2 :test #'=)
+
+(alexandria:define-constant +cd-file-comment-length+                      2 :test #'=)
+
+(alexandria:define-constant +cd-disk-number-start+                        2 :test #'=)
+
+(alexandria:define-constant +cd-internal-file-attributes+                 2 :test #'=)
+
+(alexandria:define-constant +cd-external-file-attributes+                 4 :test #'=)
+
+(alexandria:define-constant +cd-relative-offset-of-local-header+          4 :test #'=)
+
+(alexandria:define-constant +cd-fixed-size+ (+ +cd-central-file-header-signature+
+                                               +cd-version-made-by+
+                                               +cd-version-needed-to-extract+
+                                               +cd-general-purpose-bit-flag+
+                                               +cd-compression-method+
+                                               +cd-last-mod-file-time+
+                                               +cd-last-mod-file-date+
+                                               +cd-crc-32+
+                                               +cd-compressed-size+
+                                               +cd-uncompressed-size+
+                                               +cd-file-name-length+
+                                               +cd-extra-field-length+
+                                               +cd-file-comment-length+
+                                               +cd-disk-number-start+
+                                               +cd-internal-file-attributes+
+                                               +cd-external-file-attributes+
+                                               +cd-relative-offset-of-local-header+)
+  :test #'=)
+
+
+(define-condition zip-error (conditions:text-error)
+  ()
+  (:report (lambda (condition stream)
+             (format stream "~a" (conditions:text condition))))
+  (:documentation "Error for zip files procedures"))
+
 (defun open-file (path)
   (open path :element-type +byte-type+ :direction :input :if-does-not-exist :error))
 
@@ -65,24 +127,100 @@
 (defun read-bytes->int (stream size)
   (misc:byte->int (loop repeat size collect (read-byte stream))))
 
+(defun make-zip-error (reason)
+  (error 'zip-error :text reason))
+
 (defun zip-file-p (path)
   (let ((file-size  (file-size path))
         (eocd-start nil))
-    (when (>= file-size +eocd-fixed-size+)
+    (if (>= file-size +eocd-fixed-size+)
       (with-open-zip-file (stream path)
         (loop named signature-finder for position
               from (- file-size +eocd-signature-size+)
               downto 0 do
           (file-position stream position)
           (let ((maybe-signature (read-bytes->int stream +eocd-signature-size+)))
-            (when (= maybe-signature +eocd-signature+)
+            (when (= maybe-signature +eocd-signature-value+)
               (setf eocd-start position)
               (return-from signature-finder t))))
-        (when eocd-start
-          (let* ((eocd-fixed-part-offset         (+ eocd-start +eocd-fixed-size+))
-                 (eocd-offset-minus-zip-comment  (- eocd-fixed-part-offset
-                                                    +eocd-zip-file-comment-length+)))
-            (file-position stream eocd-offset-minus-zip-comment)
-            (let ((comment-size (read-bytes->int stream +eocd-zip-file-comment-length+)))
-              (= (+ eocd-fixed-part-offset comment-size)
-                 file-size))))))))
+        (if eocd-start
+            (let* ((eocd-fixed-part-offset         (+ eocd-start +eocd-fixed-size+))
+                   (eocd-offset-minus-zip-comment  (- eocd-fixed-part-offset
+                                                      +eocd-zip-file-comment-length+)))
+              (file-position stream eocd-offset-minus-zip-comment)
+              (let ((comment-size (read-bytes->int stream +eocd-zip-file-comment-length+)))
+                (values (= (+ eocd-fixed-part-offset comment-size)
+                           file-size)
+                        eocd-start)))
+            (make-zip-error (format nil "File ~s contains no zip signature" path))))
+      (make-zip-error (format nil "File ~s is too short to be a zip file" path)))))
+
+(defun start-of-central-directory (path)
+  (multiple-value-bind (zipp eocd-start)
+      (zip-file-p path)
+    (when zipp
+      (with-open-zip-file (stream path)
+        (file-position stream (- (+ eocd-start +eocd-fixed-size+)
+                                 +eocd-zip-file-comment-length+
+                                 +eocd-cd-offset+))
+        (read-bytes->int stream +eocd-cd-offset+)))))
+
+(defun cd-variable-data-lengths (stream start-of-central-directory)
+  (file-position stream (+ start-of-central-directory
+                           +cd-central-file-header-signature+
+                           +cd-version-made-by+
+                           +cd-version-needed-to-extract+
+                           +cd-general-purpose-bit-flag+
+                           +cd-compression-method+
+                           +cd-last-mod-file-time+
+                           +cd-last-mod-file-date+
+                           +cd-crc-32+
+                           +cd-compressed-size+
+                           +cd-uncompressed-size+))
+  (let ((file-name-length    (read-bytes->int stream +cd-file-name-length+))
+        (extra-field-length  (read-bytes->int stream +cd-extra-field-length+))
+        (file-comment-length (read-bytes->int stream +cd-file-comment-length+)))
+    (values file-name-length extra-field-length file-comment-length)))
+
+(defun cd-total-length (stream start-of-central-directory)
+  (multiple-value-bind (file-name-length extra-field-length file-comment-length)
+      (cd-variable-data-lengths stream start-of-central-directory)
+      (+ +cd-fixed-size+
+         file-name-length
+         extra-field-length
+         file-comment-length)))
+
+(defun list-file-from-cd (stream start-of-central-directory)
+  (let ((file-name-length (cd-variable-data-lengths stream start-of-central-directory)))
+    (file-position stream (+ +cd-fixed-size+ start-of-central-directory))
+    (let ((res (make-array file-name-length :element-type +byte-type+)))
+      (read-sequence res stream)
+      (babel:octets-to-string res))))
+
+(defun list-entries (path)
+  (let ((start-of-central-directory (start-of-central-directory path))
+        (files                      '()))
+    (if start-of-central-directory
+        (labels ((read-file-path (stream)
+                   (ignore-errors
+                    (file-position stream start-of-central-directory)
+                    (let ((signature (read-bytes->int stream
+                                                      +cd-central-file-header-signature+)))
+                      (when (= signature +cd-signature-value+)
+                        (push (list-file-from-cd stream start-of-central-directory)
+                              files)
+                        (setf start-of-central-directory
+                              (+ start-of-central-directory
+                                 (cd-total-length stream
+                                                  start-of-central-directory)))
+                        (read-file-path stream))))))
+          (with-open-zip-file (stream path)
+            (file-position stream start-of-central-directory)
+            (let ((signature (read-bytes->int stream +cd-central-file-header-signature+)))
+              (if (= signature +cd-signature-value+)
+                  (progn
+                    (read-file-path stream)
+                    files)))))
+        (make-zip-error (format nil
+                                "File ~s does not contains directory signature"
+                                path)))))
