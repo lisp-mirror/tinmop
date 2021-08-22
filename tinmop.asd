@@ -129,6 +129,7 @@
                (:file "conversations-window")
                (:file "chats-list-window")
                (:file "gemini-viewer")
+               (:file "gempub")
                (:file "main-window")
                (:file "ui-goodies")
                (:file "scheduled-events")

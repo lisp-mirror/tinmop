@@ -345,7 +345,8 @@
    :send-to-pipe
    :open-link-with-program
    :open-resource-with-external-program
-   :unzip-file))
+   :unzip-file
+   :unzip-single-file))
 
 (defpackage :text-utils
   (:use
@@ -2409,6 +2410,22 @@
    :request
    :open-gemini-stream-window
    :load-gemini-url))
+
+(defpackage :gempub
+  (:use
+   :cl
+   :alexandria
+   :cl-ppcre
+   :esrap
+   :config
+   :constants
+   :text-utils
+   :misc
+   :specials)
+  (:shadowing-import-from :text-utils :split-lines)
+  (:shadowing-import-from :misc :random-elt :shuffle)
+  (:export
+   :extract-metadata))
 
 (defpackage :main-window
   (:use

@@ -131,6 +131,9 @@
 (define-constant +table-bookmark+               :bookmark
   :test #'eq)
 
+(define-constant +table-gempub-metadata+        :gempub-metadata
+  :test #'eq)
+
 (define-constant +bookmark-gemini-type-entry+   "gemini"
   :test #'string=)
 
@@ -583,6 +586,28 @@
                            " UNIQUE(url) ON CONFLICT FAIL"
                            +make-close+)))
 
+(defun make-gempub-metadata ()
+  (query-low-level (strcat (prepare-table +table-gempub-metadata+ :autoincrementp t)
+                           " \"local-uri\"      TEXT, "
+                           " \"original-uri\"   TEXT, "
+                           " title              TEXT, "
+                           " gpubVersion        TEXT, "
+                           " \"index\"          TEXT, "
+                           " author             TEXT, "
+                           " language           TEXT, "
+                           " charset            TEXT, "
+                           " description        TEXT, "
+                           " published          TEXT, "
+                           " publishDate        TEXT, "
+                           " revisionDate       TEXT, "
+                           " copyright          TEXT, "
+                           " license            TEXT, "
+                           " version            TEXT, "
+                           " cover              TEXT, "
+                           ;; timestamp
+                           " \"created-at\"     TEXT NOT NULL"
+                           +make-close+)))
+
 (defun build-all-indices ()
   (create-table-index +table-status+              '(:folder :timeline :status-id))
   (create-table-index +table-account+             '(:id :acct))
@@ -596,8 +621,8 @@
   (create-table-index +table-gemini-tofu-cert+    '(:host))
   (create-table-index +table-gemini-subscription+ '(:url))
   (create-table-index +table-gemlog-entries+      '(:url))
-  (create-table-index +table-bookmark+            '(:type :section :value)))
-
+  (create-table-index +table-bookmark+            '(:type :section :value))
+  (create-table-index +table-gempub-metadata+     '(:local-uri)))
 
 (defmacro gen-delete (suffix &rest names)
   `(progn
@@ -625,7 +650,8 @@
               +table-gemini-tofu-cert+
               +table-gemini-subscription+
               +table-gemlog-entries+
-              +table-bookmark+))
+              +table-bookmark+
+              +table-gempub-metadata+))
 
 (defun build-views ())
 
@@ -660,6 +686,7 @@
     (make-gemini-subscription)
     (make-gemlog-entries)
     (make-bookmark)
+    (make-gempub-metadata)
     (build-all-indices)
     (fs:set-file-permissions (db-path) (logior fs:+s-irusr+ fs:+s-iwusr+))))
 

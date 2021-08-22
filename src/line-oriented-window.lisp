@@ -1,5 +1,5 @@
 ;; tinmop: an humble gemini and pleroma client
-;; Copyright (C) 2020  cage
+;; Copyright (C) 2020,2021  cage
 
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by

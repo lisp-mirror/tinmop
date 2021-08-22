@@ -174,5 +174,17 @@
                            (list "-o" zip-file "-d" destination-dir)
                            :search t
                            :wait   t
-                           :output *standard-output*
-                           :error  *standard-output*))))
+                           :output nil
+                           :error  :output))))
+
+(defun unzip-single-file (zip-file file-entry)
+  (with-output-to-string (stream)
+    (let* ((process   (run-external-program +unzip-bin+
+                                            (list "-p" zip-file file-entry)
+                                            :search t
+                                            :wait   t
+                                            :output stream
+                                            :error  :output))
+           (exit-code (sb-ext:process-exit-code process)))
+      (when (/= exit-code 0)
+        (error (format nil "File ~s extraction from ~s failed" file-entry zip-file))))))
