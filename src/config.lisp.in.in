@@ -19,6 +19,11 @@
 
 (alexandria:define-constant +unzip-bin+     "@UNZIP@"    :test #'string=)
 
+(eval-when (:compile-toplevel :load-toplevel :execute)
+  (when (and (not (member :gempub-support *features*))
+             (string/= +unzip-bin+ ""))
+    (push :gempub-support *features*)))
+
 (defmacro with-return-untranslated ((untranslated) &body body)
   `(handler-bind ((i18n-conditions:no-translation-table-error
                    (lambda (e)

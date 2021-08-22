@@ -22,6 +22,7 @@ po/*.gmo
 quick_quicklisp.sh
 
 src/config.lisp
+src/config.lisp.in
 
 **-noshare.*
 
