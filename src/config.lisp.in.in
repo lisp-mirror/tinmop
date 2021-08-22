@@ -21,7 +21,7 @@
 
 (eval-when (:compile-toplevel :load-toplevel :execute)
   (when (and (not (member :gempub-support *features*))
-             (string/= +unzip-bin+ ""))
+             (string/= +unzip-bin+ "no"))
     (push :gempub-support *features*)))
 
 (defmacro with-return-untranslated ((untranslated) &body body)

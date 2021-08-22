@@ -6357,10 +6357,9 @@ fi
 
 
 
-if test "$GPG" = "no" ; then
+if test "$UNZIP" = "no" ; then
    { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: Can not find unzip, genpub support will be disabled." >&5
 $as_echo "$as_me: WARNING: Can not find unzip, genpub support will be disabled." >&2;}
-   exit 1;
 fi
 
 # Extract the first word of "bash", so it can be a program name with args.
