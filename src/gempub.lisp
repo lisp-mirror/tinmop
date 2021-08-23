@@ -70,10 +70,51 @@
 
 (define-constant +metadata-entry-name "metadata.txt" :test #'string=)
 
-(defmethod extract-metadata (zip-file)
+(defun extract-metadata (zip-file)
   (when (zip-info:zip-file-p zip-file)
     (let ((entries (zip-info:list-entries zip-file)))
       (when (find +metadata-entry-name entries :test #'String=)
         (when-let ((metadata-raw (os-utils:unzip-single-file zip-file
                                                              +metadata-entry-name)))
           (parse 'metadata metadata-raw))))))
+
+(defun save-metadata (zip-file)
+  (when-let ((metadata (extract-metadata zip-file)))
+    (db:gempub-metadata-add zip-file
+                            nil
+                            (getf metadata :title)
+                            (getf metadata :gpubVersion)
+                            (getf metadata :index)
+                            (getf metadata :author)
+                            (getf metadata :language)
+                            (getf metadata :charset)
+                            (getf metadata :description)
+                            (getf metadata :published)
+                            (getf metadata :publishDate)
+                            (getf metadata :revisionDate)
+                            (getf metadata :copyright)
+                            (getf metadata :license)
+                            (getf metadata :version)
+                            (getf metadata :cover))))
+
+(defun sync-library (&key (notify nil))
+  (let ((all-known        (db:all-gempub-metadata))
+        (all-gempub-files (remove-if-not (lambda (a) (ignore-errors (zip-info:zip-file-p a)))
+                                         (fs:collect-files/dirs (swconf:gempub-library-directory))))
+        (removed-known    '())
+        (added-file       '()))
+    (loop for known in all-known do
+      (let ((local-uri (db:row-local-uri known)))
+        (when (not (and (fs:file-exists-p    local-uri)
+                        (zip-info:zip-file-p local-uri)))
+          (push local-uri removed-known)
+          (db:gempub-metadata-delete local-uri))))
+    (loop for gempub-file in all-gempub-files do
+      (when (not (db:gempub-metadata-find gempub-file))
+        (push gempub-file added-file)
+        (save-metadata gempub-file)))
+    (when notify
+      (loop for removed in removed-known do
+        (ui:notify (format nil (_ "Removed gempub ~s from library, missing file") removed)))
+      (loop for added in added-file do
+        (ui:notify (format nil (_ "Added gempub ~s into the library") added))))))

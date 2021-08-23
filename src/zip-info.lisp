@@ -130,30 +130,40 @@
 (defun make-zip-error (reason)
   (error 'zip-error :text reason))
 
+(alexandria:define-constant +max-eocd-total-size+  65536 :test #'=)
+
 (defun zip-file-p (path)
   (let ((file-size  (file-size path))
         (eocd-start nil))
     (if (>= file-size +eocd-fixed-size+)
-      (with-open-zip-file (stream path)
-        (loop named signature-finder for position
-              from (- file-size +eocd-signature-size+)
-              downto 0 do
-          (file-position stream position)
-          (let ((maybe-signature (read-bytes->int stream +eocd-signature-size+)))
-            (when (= maybe-signature +eocd-signature-value+)
-              (setf eocd-start position)
-              (return-from signature-finder t))))
-        (if eocd-start
-            (let* ((eocd-fixed-part-offset         (+ eocd-start +eocd-fixed-size+))
-                   (eocd-offset-minus-zip-comment  (- eocd-fixed-part-offset
-                                                      +eocd-zip-file-comment-length+)))
-              (file-position stream eocd-offset-minus-zip-comment)
-              (let ((comment-size (read-bytes->int stream +eocd-zip-file-comment-length+)))
-                (values (= (+ eocd-fixed-part-offset comment-size)
-                           file-size)
-                        eocd-start)))
-            (make-zip-error (format nil "File ~s contains no zip signature" path))))
-      (make-zip-error (format nil "File ~s is too short to be a zip file" path)))))
+        (with-open-zip-file (stream path)
+          (let ((buffer (make-array +max-eocd-total-size+ :element-type +byte-type+)))
+            (file-position stream (- file-size +max-eocd-total-size+))
+            (read-sequence buffer stream)
+            (loop named signature-finder
+                  for eocd-position
+                  from (- file-size +eocd-signature-size+) downto 0
+                  for position
+                  from (- +max-eocd-total-size+ +eocd-signature-size+) downto 0
+                  do
+                  (let* ((maybe-signature (misc:byte->int (subseq buffer
+                                                                  position
+                                                                  (+ position
+                                                                     +eocd-signature-size+)))))
+                    (when (= maybe-signature +eocd-signature-value+)
+                      (setf eocd-start eocd-position)
+                      (return-from signature-finder t)))))
+          (if eocd-start
+              (let* ((eocd-fixed-part-offset         (+ eocd-start +eocd-fixed-size+))
+                     (eocd-offset-minus-zip-comment  (- eocd-fixed-part-offset
+                                                        +eocd-zip-file-comment-length+)))
+                (file-position stream eocd-offset-minus-zip-comment)
+                (let ((comment-size (read-bytes->int stream +eocd-zip-file-comment-length+)))
+                  (values (= (+ eocd-fixed-part-offset comment-size)
+                             file-size)
+                          eocd-start)))
+              (make-zip-error (format nil "File ~s contains no zip signature" path))))
+        (make-zip-error (format nil "File ~s is too short to be a zip file" path)))))
 
 (defun start-of-central-directory (path)
   (multiple-value-bind (zipp eocd-start)

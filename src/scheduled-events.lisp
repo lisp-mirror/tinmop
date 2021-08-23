@@ -70,10 +70,14 @@
   (when (swconf:gemini-update-gemlog-at-start-p)
     (ui:gemlog-refresh-all)))
 
+(gen-at-boot-function sync-gempub-library
+  (gempub:sync-library :notify t))
+
 (defun run-scheduled-events (ticks)
   (refresh-all-chats-messages ticks)
   (refresh-all-chats-data ticks)
   (refresh-gemlog-subscriptions ticks)
   (purge-gemlog-entries ticks)
   (purge-history)
-  (refresh-gemlog-posts))
+  (refresh-gemlog-posts)
+  (sync-gempub-library))

@@ -133,6 +133,26 @@
     (setf all-paths (sort all-paths #'string<))
     all-paths))
 
+(defun collect-files/dirs (root)
+  (let ((all-files '())
+        (all-dirs  '()))
+    (labels ((collect (dir)
+               (when (not (member dir all-files :test #'string=))
+                 (let* ((all-children (collect-children dir))
+                        (files        (remove-if #'directory-exists-p all-children))
+                        (directories  (remove-if (lambda (a)
+                                                   (or (file-exists-p a)
+                                                       (string= (path-last-element a) ".")
+                                                       (string= (path-last-element a) "..")))
+                                                 all-children)))
+                   (setf all-files (append all-files files))
+                   (setf all-dirs  (append all-dirs directories))
+                   (loop for new-dir in directories do
+                      (collect new-dir))))))
+    (collect root)
+      (values all-files
+              all-dirs))))
+
 (defgeneric prepend-pwd (object))
 
 (defmethod prepend-pwd ((object string))

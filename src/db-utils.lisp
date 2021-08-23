@@ -331,7 +331,6 @@ example
 example
 
 (make-delete :table-name
-             (:col-a :col-b)
              (:and (:= col-a 1)
                    (:= col-b 2)))
 "
@@ -343,7 +342,7 @@ example
 
 example
 
-(make-delete :table-name
+(make-update :table-name
              (:col-a :col-b)
              (1      2)
              (:and (:= col-a 1)

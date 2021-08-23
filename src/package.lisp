@@ -282,6 +282,7 @@
    :add-extension
    :do-directory
    :collect-children
+   :collect-files/dirs
    :prepend-pwd
    :search-matching-file
    :regular-file-p
@@ -909,6 +910,20 @@
    :row-seenp
    :row-description
    :row-value
+   :row-local-uri
+   :row-original-uri
+   :row-gpub-version
+   :row-index-file
+   :row-author
+   :row-language
+   :row-charset
+   :row-publishedp
+   :row-publish-date
+   :row-revision-date
+   :row-copyright
+   :row-license
+   :row-version
+   :row-cover
    :next-status-tree
    :previous-status-tree
    :message-tree-root-equal
@@ -1036,12 +1051,15 @@
    :delete-gemlog-entry
    :purge-seen-gemlog-entries
    :bookmark-add
-   :bookmark-delete
    :bookmark-complete->id
    :bookmark-description-for-complete
    :bookmark-all-sections
    :bookmark-all-grouped-by-section
-   :bookmark-delete))
+   :bookmark-delete
+   :gempub-metadata-add
+   :all-gempub-metadata
+   :gempub-metadata-delete
+   :gempub-metadata-find))
 
 (defpackage :date-formatter
   (:use
@@ -1176,6 +1194,7 @@
    :max-report-comment-length
    :quote-char
    :max-attachments-allowed
+   :gempub-library-directory
    :color-regexps
    :ignore-users-regexps
    :win-bg
@@ -2425,7 +2444,8 @@
   (:shadowing-import-from :text-utils :split-lines)
   (:shadowing-import-from :misc :random-elt :shuffle)
   (:export
-   :extract-metadata))
+   :extract-metadata
+   :sync-library))
 
 (defpackage :main-window
   (:use

@@ -504,6 +504,9 @@
                    command-separator
                    gemini
                    gemlog
+                   gempub
+                   library
+                   sync
                    favicon
                    tree
                    branch
@@ -525,6 +528,7 @@
                    read
                    unread
                    directory-symbol
+                   directory
                    fetch
                    update
                    close-after-select
@@ -833,6 +837,14 @@
   (num:parse-number-default (access:accesses *software-configuration*
                                              +key-max-numbers-allowed-attachments+)
                             4))
+
+(defun gempub-library-directory ()
+  (or (access:accesses *software-configuration*
+                       +key-gempub+
+                       +key-directory+
+                       +key-library+)
+      (res:home-datadir)))
+
 
 (defun external-editor ()
   (access:access *software-configuration*

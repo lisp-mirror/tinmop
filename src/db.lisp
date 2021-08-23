@@ -591,15 +591,15 @@
                            " \"local-uri\"      TEXT, "
                            " \"original-uri\"   TEXT, "
                            " title              TEXT, "
-                           " gpubVersion        TEXT, "
-                           " \"index\"          TEXT, "
+                           " \"gpub-version\"   TEXT, "
+                           " \"index-file\"     TEXT, "
                            " author             TEXT, "
                            " language           TEXT, "
                            " charset            TEXT, "
                            " description        TEXT, "
                            " published          TEXT, "
-                           " publishDate        TEXT, "
-                           " revisionDate       TEXT, "
+                           " \"publish-date\"   TEXT, "
+                           " \"revision-date\"  TEXT, "
                            " copyright          TEXT, "
                            " license            TEXT, "
                            " version            TEXT, "
@@ -1860,6 +1860,34 @@ row."
 (gen-access-message-row value                       :value)
 
 (gen-access-message-row section                     :section)
+
+(gen-access-message-row local-uri                   :local-uri)
+
+(gen-access-message-row original-uri                :original-uri)
+
+(gen-access-message-row gpub-version                :gpub-version)
+
+(gen-access-message-row index-file                  :index-file)
+
+(gen-access-message-row author                      :author)
+
+(gen-access-message-row language                    :language)
+
+(gen-access-message-row charset                     :charset)
+
+(gen-access-message-row publishedp                  :published)
+
+(gen-access-message-row publish-date                :publish-date)
+
+(gen-access-message-row revision-date               :revision-date)
+
+(gen-access-message-row copyright                   :copyright)
+
+(gen-access-message-row license                     :license)
+
+(gen-access-message-row version                     :version)
+
+(gen-access-message-row cover                       :cover)
 
 (defun row-votes-count (row)
   (and row (db-getf row :votes-count :default 0)))
@@ -3170,3 +3198,67 @@ days in the past"
 
 (defun bookmark-delete (id)
   (delete-by-id +table-bookmark+ id))
+
+(defun gempub-metadata-add (local-uri
+                            &optional
+                              original-uri
+                              title
+                              gpub-version
+                              index-file
+                              author
+                              language
+                              charset
+                              description
+                              published
+                              publish-date
+                              revision-date
+                              copyright
+                              license
+                              version
+                              cover)
+  (assert (stringp local-uri))
+  (with-db-current-timestamp (now)
+    (query (make-insert +table-gempub-metadata+
+                        (:local-uri
+                         :original-uri
+                         :title
+                         :gpub-version
+                         :index-file
+                         :author
+                         :language
+                         :charset
+                         :description
+                         :published
+                         :publish-date
+                         :revision-date
+                         :copyright
+                         :license
+                         :version
+                         :cover
+                         :created-at)
+                        (local-uri
+                         original-uri
+                         title
+                         gpub-version
+                         index-file
+                         author
+                         language
+                         charset
+                         description
+                         published
+                         publish-date
+                         revision-date
+                         copyright
+                         license
+                         version
+                         cover
+                         now)))))
+
+(defun all-gempub-metadata ()
+  (query (select :* (from +table-gempub-metadata+))))
+
+(defun gempub-metadata-delete (local-uri)
+  (query (delete-from +table-gempub-metadata+ (where (:= :local-uri local-uri)))))
+
+(defun gempub-metadata-find (local-uri)
+  (query (select :* (from +table-gempub-metadata+) (where (:= :local-uri local-uri)))))
