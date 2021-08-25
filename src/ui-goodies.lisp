@@ -561,6 +561,11 @@ current has focus"
                      :documentation      "Move focus on gemini page table of contents window"
                      :info-change-focus-message (_ "Focus passed on gemini toc window."))
 
+(gen-focus-to-window gempub-library-window
+                     *gempub-library-window*
+                     :documentation      "Move focus on gempub library window"
+                     :info-change-focus-message (_ "Focus passed on gempub library window"))
+
 (defun print-quick-help ()
   "Print a quick help"
   (keybindings:print-help *main-window*))
@@ -2148,3 +2153,30 @@ gemini page the program is rendering."
                                :prompt        (format nil (_ "Delete bookmark: "))
                                :complete-fn
                                (complete:bookmark-description-complete-clsr db:+bookmark-gemini-type-entry+))))
+
+(defun open-gempub-library ()
+  "Open the personal library of gempub files."
+  (flet ((on-input-completed (query)
+           (push-event (make-instance 'function-event
+                                      :payload
+                                      (lambda ()
+                                        (db-utils:with-ready-database (:connect nil)
+                                          (gempub:open-gempub-library-window query)
+                                          (focus-to-gempub-library-window)))))))
+    (ui:ask-string-input #'on-input-completed
+                         :prompt (format nil (_ "Search criteria: ")))))
+
+(defun gempub-library-window-move (amount)
+  (ignore-errors
+    (line-oriented-window:unselect-all *gempub-library-window*)
+    (line-oriented-window:row-move     *gempub-library-window* amount)
+    (draw  *gempub-library-window*)))
+
+(defun gempub-library-window-go-up ()
+  (gempub-library-window-move -1))
+
+(defun gempub-library-window-go-down ()
+  (gempub-library-window-move 1))
+
+(defun gempub-library-window-close ()
+  (close-window-and-return-to-message *gempub-library-window*))

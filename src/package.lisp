@@ -917,7 +917,7 @@
    :row-author
    :row-language
    :row-charset
-   :row-publishedp
+   :row-published
    :row-publish-date
    :row-revision-date
    :row-copyright
@@ -1113,6 +1113,7 @@
    :+key-error-dialog+
    :+key-input-dialog+
    :+key-notify-window+
+   :+key-gempub-library-window+
    :+key-notification-life+
    :+key-modeline+
    :+key-date-format+
@@ -1342,7 +1343,8 @@
    :*gemini-certificates-window*
    :*gemini-subscription-window*
    :*gemini-toc-window*
-   :*chats-list-window*))
+   :*chats-list-window*
+   :*gempub-library-window*))
 
 (defpackage :complete
   (:use
@@ -1643,6 +1645,7 @@
    :*chat-message-keymap*
    :*gemlog-subscription-keymap*
    :*gemini-toc-keymap*
+   :*gempub-library-keymap*
    :define-key
    :init-keyboard-mapping
    :find-keymap-node
@@ -2440,12 +2443,16 @@
    :constants
    :text-utils
    :misc
-   :specials)
+   :specials
+   :windows
+   :line-oriented-window)
   (:shadowing-import-from :text-utils :split-lines)
   (:shadowing-import-from :misc :random-elt :shuffle)
   (:export
    :extract-metadata
-   :sync-library))
+   :sync-library
+   :parse-search-gempub
+   :open-gempub-library-window))
 
 (defpackage :main-window
   (:use
@@ -2670,7 +2677,12 @@
    :import-gemini-certificate
    :bookmark-gemini-page
    :display-bookmark
-   :delete-gemini-bookmark))
+   :delete-gemini-bookmark
+   :open-gempub-library
+   :gempub-library-window-move
+   :gempub-library-window-go-up
+   :gempub-library-window-go-down
+   :gempub-library-window-close))
 
 (defpackage :scheduled-events
   (:use

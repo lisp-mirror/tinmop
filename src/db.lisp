@@ -1875,7 +1875,7 @@ row."
 
 (gen-access-message-row charset                     :charset)
 
-(gen-access-message-row publishedp                  :published)
+(gen-access-message-row published                   :published)
 
 (gen-access-message-row publish-date                :publish-date)
 

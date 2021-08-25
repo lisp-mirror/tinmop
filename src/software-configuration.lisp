@@ -466,6 +466,7 @@
                    input-dialog
                    help-dialog
                    notify-window
+                   gempub-library-window
                    notification-icon
                    life
                    quick-help

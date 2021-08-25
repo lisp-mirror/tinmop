@@ -66,3 +66,6 @@
 
 (defparameter *chats-list-window*               nil
   "The window that shows all the chats.")
+
+(defparameter *gempub-library-window* nil
+  "The window that shows the gempub library.")

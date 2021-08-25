@@ -118,3 +118,133 @@
         (ui:notify (format nil (_ "Removed gempub ~s from library, missing file") removed)))
       (loop for added in added-file do
         (ui:notify (format nil (_ "Added gempub ~s into the library") added))))))
+
+(defrule spaces (+ blank)
+  (:constant nil))
+
+(defrule column (or "title"
+                    "author"
+                    "language"
+                    "description"
+                    "publish-date"
+                    "revision-date"
+                    "copyright")
+  (:text t))
+
+(defrule column-value (and #\" (+ (not #\")) #\")
+  (:text t))
+
+(defrule term (or and-where
+                  or-where
+                  like)
+  (:function (lambda (a) (join-with-strings a " "))))
+
+(defrule like (and column spaces "like" spaces column-value)
+  (:function (lambda (a) (format nil
+                                 "~a like \"%~a%\""
+                                 (first a)
+                                 (string-trim '(#\") (fifth a))))))
+
+(defrule and-where (and term spaces "and" spaces term))
+
+(defrule or-where (and term spaces "or" spaces term))
+
+(defrule where-clause (and "where" spaces (+ term))
+  (:function (lambda (a) (strcat "where " (join-with-strings (third a) " ")))))
+
+(defun parse-search-gempub (query)
+  (let* ((where-clause (when (string-not-empty-p query)
+                         (parse 'where-clause query)))
+         (sql-query    (if where-clause
+                           (strcat (format nil
+                                           "select * from \"~a\" ~a"
+                                           db::+table-gempub-metadata+
+                                           where-clause))
+                           (format nil "select * from \"~a\"" db::+table-gempub-metadata+))))
+    (db-utils:query-low-level sql-query)))
+
+(defclass gempub-library-window (focus-marked-window
+                                 simple-line-navigation-window
+                                 title-window
+                                 border-window)
+  ((query-rows
+    :initform '()
+    :initarg  :query-rows
+    :accessor query-rows)))
+
+(defmethod refresh-config :after ((object gempub-library-window))
+  (open-attach-window:refresh-view-links-window-config object
+                                                       swconf:+key-gempub-library-window+)
+  (refresh-config-sizes object swconf:+key-thread-window+)
+  (win-move object
+            (- (win-width *main-window*)
+               (win-width object))
+            0)
+  (win-move object
+            (- (win-width *main-window*)
+               (win-width object))
+            0)
+  object)
+
+(defun row->list-item (row)
+  (join-with-strings* " "
+                      (db:row-title     row)
+                      (db:row-author    row)
+                      (db:row-published row)))
+
+(defun row->unselected-list-item (row)
+  (row->list-item row))
+
+(defun row->selected-list-item (row)
+  (row->list-item row))
+
+(defmethod resync-rows-db ((object gempub-library-window)
+                           &key
+                             (redraw t)
+                             (suggested-message-index 0))
+  (with-accessors ((rows             rows)
+                   (selected-line-bg selected-line-bg)
+                   (selected-line-fg selected-line-fg)
+                   (query-rows       query-rows)) object
+    (flet ((make-rows (rows bg fg)
+             (mapcar (lambda (row)
+                       (make-instance 'line
+                                      :normal-text   (row->unselected-list-item row)
+                                      :selected-text (row->selected-list-item   row)
+                                      :fields        row
+                                      :normal-bg     fg
+                                      :normal-fg     bg
+                                      :selected-bg   bg
+                                      :selected-fg   fg))
+                     rows)))
+      (with-croatoan-window (croatoan-window object)
+        (line-oriented-window:update-all-rows object
+                                              (make-rows query-rows
+                                                         selected-line-bg
+                                                         selected-line-fg))
+        (when suggested-message-index
+          (handler-bind ((conditions:out-of-bounds
+                          (lambda (e)
+                            (invoke-restart 'ignore-selecting-action e))))
+            (select-row object suggested-message-index)))
+        (when redraw
+          (win-clear object)
+          (draw object))))))
+
+(defun open-gempub-library-window (query)
+  (let* ((low-level-window (tui:make-croatoan-window :enable-function-keys t)))
+    (setf *gempub-library-window*
+          (make-instance 'gempub-library-window
+                         :query-rows        (parse-search-gempub query)
+                         :top-row-padding   0
+                         :title             (_ "Gempub library")
+                         :single-row-height 1
+                         :uses-border-p     t
+                         :keybindings       keybindings:*gempub-library-keymap*
+                         :croatoan-window   low-level-window))
+    (refresh-config  *gempub-library-window*)
+    (resync-rows-db  *gempub-library-window* :redraw nil)
+    (when (not (line-oriented-window:rows-empty-p *gempub-library-window*))
+      (line-oriented-window:select-row  *gempub-library-window* 0))
+    (draw  *gempub-library-window*)
+    *gempub-library-window*))

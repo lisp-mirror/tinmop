@@ -157,6 +157,8 @@
 
 (define-key "M-g c s"   #'gemini-open-certificates-window)
 
+(define-key "M-g g l"   #'open-gempub-library)
+
 (define-key "M-right"   #'pass-focus-on-right)
 
 (define-key "M-left"    #'pass-focus-on-left)
@@ -434,6 +436,18 @@
 (define-key "d"         #'gemlog-cancel-subscription                 *gemlog-subscription-keymap*)
 
 (define-key "l"         #'open-message-link                          *gemlog-subscription-keymap*)
+
+;; gempub library window keymap
+
+(define-key "up"        #'gempub-library-window-go-up                *gempub-library-keymap*)
+
+(define-key "down"      #'gempub-library-window-go-down              *gempub-library-keymap*)
+
+(define-key "q"         #'gempub-library-window-close                *gempub-library-keymap*)
+
+(define-key "C-J"       #'gemini-delete-certificate                  *gemini-certificates-keymap*)
+
+
 
 ;; tags keymap
 

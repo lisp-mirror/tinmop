@@ -270,6 +270,9 @@ produces a tree and graft the latter on `existing-tree'"
 (defparameter *gemini-toc-keymap*  (make-starting-comand-tree)
   "The keymap for gemini table of contents window.")
 
+(defparameter *gempub-library-keymap* (make-starting-comand-tree)
+  "The keymap for gempub library of publication.")
+
 (defun define-key (key-sequence function &optional (existing-keymap *global-keymap*))
   "Define a key sequence that trigger a function:
 
