@@ -1130,13 +1130,12 @@
              (gemini-viewer:push-url-to-history window index-path)
              (refresh-gemini-message-window links raw-text ir nil)
              (windows:draw window)))
-          ((zip-info:zip-file-p local-path)
+          ((zip-info:zip-file-p local-path :ignore-errors t)
            (let ((temp-directory (fs:temporary-directory)))
              (os-utils:unzip-file local-path temp-directory)
              (let* ((library-entry (db:gempub-metadata-find local-path))
                     (index-file    (and library-entry
                                         (db:row-index-file library-entry))))
-               (misc:dbg "ii ~a ~a" local-path index-file)
                (if index-file
                    (setf (url object) (fs:cat-parent-dir temp-directory index-file))
                    (setf (url object) temp-directory))

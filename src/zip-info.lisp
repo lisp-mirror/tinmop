@@ -132,7 +132,7 @@
 
 (alexandria:define-constant +max-eocd-total-size+  65536 :test #'=)
 
-(defun zip-file-p (path)
+(defun zip-file-p (path &key (ignore-errors nil))
   (let ((file-size  (file-size path))
         (eocd-start nil))
     (if (>= file-size +eocd-fixed-size+)
@@ -164,8 +164,10 @@
                   (values (= (+ eocd-fixed-part-offset comment-size)
                              file-size)
                           eocd-start)))
-              (make-zip-error (format nil "File ~s contains no zip signature" path))))
-        (make-zip-error (format nil "File ~s is too short to be a zip file" path)))))
+              (when (not ignore-errors)
+                (make-zip-error (format nil "File ~s contains no zip signature" path)))))
+        (when (not ignore-errors)
+          (make-zip-error (format nil "File ~s is too short to be a zip file" path))))))
 
 (defun start-of-central-directory (path)
   (multiple-value-bind (zipp eocd-start)

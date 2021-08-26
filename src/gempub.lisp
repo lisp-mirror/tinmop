@@ -71,7 +71,7 @@
 (define-constant +metadata-entry-name "metadata.txt" :test #'string=)
 
 (defun extract-metadata (zip-file)
-  (when (zip-info:zip-file-p zip-file)
+  (when (zip-info:zip-file-p zip-file :ignore-errors t)
     (let ((entries (zip-info:list-entries zip-file)))
       (when (find +metadata-entry-name entries :test #'String=)
         (when-let ((metadata-raw (os-utils:unzip-single-file zip-file
@@ -99,14 +99,15 @@
 
 (defun sync-library (&key (notify nil))
   (let ((all-known        (db:all-gempub-metadata))
-        (all-gempub-files (remove-if-not (lambda (a) (ignore-errors (zip-info:zip-file-p a)))
+        (all-gempub-files (remove-if-not (lambda (a) (zip-info:zip-file-p a
+                                                                          :ignore-errors t))
                                          (fs:collect-files/dirs (swconf:gempub-library-directory))))
         (removed-known    '())
         (added-file       '()))
     (loop for known in all-known do
       (let ((local-uri (db:row-local-uri known)))
         (when (not (and (fs:file-exists-p    local-uri)
-                        (zip-info:zip-file-p local-uri)))
+                        (zip-info:zip-file-p local-uri :ignore-errors t)))
           (push local-uri removed-known)
           (db:gempub-metadata-delete local-uri))))
     (loop for gempub-file in (mapcar #'uri:normalize-path all-gempub-files) do
