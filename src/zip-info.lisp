@@ -138,7 +138,9 @@
     (if (>= file-size +eocd-fixed-size+)
         (with-open-zip-file (stream path)
           (let ((buffer (make-array +max-eocd-total-size+ :element-type +byte-type+)))
-            (file-position stream (- file-size +max-eocd-total-size+))
+            (file-position stream (- file-size
+                                     (min +max-eocd-total-size+
+                                          file-size)))
             (read-sequence buffer stream)
             (loop named signature-finder
                   for eocd-position
