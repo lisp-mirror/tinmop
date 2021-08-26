@@ -98,6 +98,8 @@
                             (getf metadata :cover))))
 
 (defun sync-library (&key (notify nil))
+  (when notify
+    (ui:notify (format nil (_ "Syncing gempub library."))))
   (let ((all-known        (db:all-gempub-metadata))
         (all-gempub-files (remove-if-not (lambda (a) (zip-info:zip-file-p a
                                                                           :ignore-errors t))
@@ -193,10 +195,13 @@
                       (db:row-author    row)
                       (db:row-published row)))
 
-(defun row->unselected-list-item (row)
-  (row->list-item row))
+(defun row->selected-list-item (row fg bg)
+  (tui:make-tui-string (row->list-item row)
+                       :attributes (tui:attribute-bold)
+                       :fgcolor    fg
+                       :bgcolor    bg))
 
-(defun row->selected-list-item (row)
+(defun row->unselected-list-item (row)
   (row->list-item row))
 
 (defmethod resync-rows-db ((object gempub-library-window)
@@ -211,7 +216,7 @@
              (mapcar (lambda (row)
                        (make-instance 'line
                                       :normal-text   (row->unselected-list-item row)
-                                      :selected-text (row->selected-list-item   row)
+                                      :selected-text (row->selected-list-item  row fg bg)
                                       :fields        row
                                       :normal-bg     fg
                                       :normal-fg     bg
