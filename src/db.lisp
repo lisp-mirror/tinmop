@@ -3261,4 +3261,4 @@ days in the past"
   (query (delete-from +table-gempub-metadata+ (where (:= :local-uri local-uri)))))
 
 (defun gempub-metadata-find (local-uri)
-  (query (select :* (from +table-gempub-metadata+) (where (:= :local-uri local-uri)))))
+  (fetch-single (select :* (from +table-gempub-metadata+) (where (:= :local-uri local-uri)))))

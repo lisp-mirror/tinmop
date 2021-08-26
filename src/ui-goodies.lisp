@@ -2180,3 +2180,9 @@ gemini page the program is rendering."
 
 (defun gempub-library-window-close ()
   (close-window-and-return-to-message *gempub-library-window*))
+
+(defun gempub-open-file ()
+  "Open the selected gempub."
+  (when-let* ((fields (line-oriented-window:selected-row-fields *gempub-library-window*))
+              (iri-to-open (db:row-local-uri fields)))
+    (gemini-viewer:load-gemini-url iri-to-open :give-focus-to-message-window t)))

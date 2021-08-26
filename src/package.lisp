@@ -2682,7 +2682,8 @@
    :gempub-library-window-move
    :gempub-library-window-go-up
    :gempub-library-window-go-down
-   :gempub-library-window-close))
+   :gempub-library-window-close
+   :gempub-open-file))
 
 (defpackage :scheduled-events
   (:use

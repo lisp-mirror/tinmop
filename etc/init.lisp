@@ -445,9 +445,7 @@
 
 (define-key "q"         #'gempub-library-window-close                *gempub-library-keymap*)
 
-(define-key "C-J"       #'gemini-delete-certificate                  *gemini-certificates-keymap*)
-
-
+(define-key "C-J"       #'gempub-open-file                           *gempub-library-keymap*)
 
 ;; tags keymap
 

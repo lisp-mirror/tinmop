@@ -1133,8 +1133,14 @@
           ((zip-info:zip-file-p local-path)
            (let ((temp-directory (fs:temporary-directory)))
              (os-utils:unzip-file local-path temp-directory)
-             (setf (url object) temp-directory)
-             (push-event object)))
+             (let* ((library-entry (db:gempub-metadata-find local-path))
+                    (index-file    (and library-entry
+                                        (db:row-index-file library-entry))))
+               (misc:dbg "ii ~a ~a" local-path index-file)
+               (if index-file
+                   (setf (url object) (fs:cat-parent-dir temp-directory index-file))
+                   (setf (url object) temp-directory))
+               (push-event object))))
           (t
            (let* ((file-string (fs:slurp-file local-path))
                   (parent-dir  (fs:parent-dir-path local-path))
