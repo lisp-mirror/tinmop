@@ -1042,6 +1042,7 @@
                                                           gemini-client:*gemini-page-theme*)))
         (gemini-viewer:maybe-initialize-metadata window)
         (refresh-gemini-message-window links page-data ir-text nil)
+        (ui:open-gemini-toc)
         (windows:draw window)))))
 
 (defclass gemini-request-event (program-event)
@@ -1143,18 +1144,13 @@
           (t
            (let* ((file-string (fs:slurp-file local-path))
                   (parent-dir  (fs:parent-dir-path local-path))
-                  (parsed      (gemini-parser:parse-gemini-file file-string))
-                  (links       (gemini-parser:sexp->links parsed
-                                                          nil
-                                                          nil
-                                                          parent-dir
-                                                          :comes-from-local-file t))
-                  (ir-text     (gemini-parser:sexp->text-rows parsed
-                                                              gemini-client:*gemini-page-theme*)))
-             (gemini-viewer:maybe-initialize-metadata window)
-             (gemini-viewer:push-url-to-history window local-path)
-             (refresh-gemini-message-window links file-string ir-text nil)
-             (windows:draw window))))))))
+                  (event       (make-instance 'gemini-display-data-page
+                                              :local-path  parent-dir
+                                              :window      window
+                                              :payload     file-string)))
+             (let ((*process-events-immediately* t))
+               (push-event event))
+             (gemini-viewer:push-url-to-history window local-path))))))))
 
 (defclass gemini-back-event (program-event) ())
 
