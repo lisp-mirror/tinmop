@@ -1156,6 +1156,12 @@
                                                       nil
                                                       parent-dir
                                                       :comes-from-local-file t))
+                  (local-links (remove-if (lambda (link)
+                                            (let ((target      (gemini-parser:target link)))
+                                              (if target
+                                                  (uri:scheme (iri:iri-parse target))
+                                                  t)))
+                                          links))
                   (event       (make-instance 'gemini-display-data-page
                                               :local-path parent-dir
                                               :window     window
@@ -1163,7 +1169,7 @@
              (let ((*process-events-immediately* t))
                (push-event event))
              (ui:clean-all-tour)
-             (ui:add-links-to-tour links)
+             (ui:add-links-to-tour local-links)
              (gemini-viewer:push-url-to-history window local-path)))
           (t
            (let* ((file-string (fs:slurp-file local-path))
