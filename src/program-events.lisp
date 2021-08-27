@@ -1059,6 +1059,11 @@
     :initarg :give-focus-to-message-window
     :reader  give-focus-to-message-window-p
     :writer  (setf give-focus-to-message-window))
+   (opening-gempub-file
+    :initform nil
+    :initarg :opening-gempub-file
+    :reader  opening-gempub-file-p
+    :writer  (setf opening-gempub-file))
    (enqueue
     :initform nil
     :initarg :enqueue
@@ -1140,14 +1145,33 @@
                (if index-file
                    (setf (url object) (fs:cat-parent-dir temp-directory index-file))
                    (setf (url object) temp-directory))
+               (setf (opening-gempub-file object) t)
                (push-event object))))
+          ((opening-gempub-file-p object)
+           (let* ((file-string (fs:slurp-file local-path))
+                  (parsed      (gemini-parser:parse-gemini-file file-string))
+                  (parent-dir  (fs:parent-dir-path local-path))
+                  (links       (gemini-parser:sexp->links parsed
+                                                      nil
+                                                      nil
+                                                      parent-dir
+                                                      :comes-from-local-file t))
+                  (event       (make-instance 'gemini-display-data-page
+                                              :local-path parent-dir
+                                              :window     window
+                                              :payload    file-string)))
+             (let ((*process-events-immediately* t))
+               (push-event event))
+             (ui:clean-all-tour)
+             (ui:add-links-to-tour links)
+             (gemini-viewer:push-url-to-history window local-path)))
           (t
            (let* ((file-string (fs:slurp-file local-path))
                   (parent-dir  (fs:parent-dir-path local-path))
                   (event       (make-instance 'gemini-display-data-page
-                                              :local-path  parent-dir
-                                              :window      window
-                                              :payload     file-string)))
+                                              :local-path parent-dir
+                                              :window     window
+                                              :payload    file-string)))
              (let ((*process-events-immediately* t))
                (push-event event))
              (gemini-viewer:push-url-to-history window local-path))))))))

@@ -1924,6 +1924,20 @@ gemini://gemini.circumlunar.space/docs/companion/subscription.gmi
 
 (let ((tour ()))
 
+  (defun clean-tour (regex)
+    (let ((scanner (create-scanner regex :case-insensitive-mode t)))
+      (setf tour
+            (remove-if (lambda (a)
+                         (or (scan scanner (gemini-parser:name a))
+                             (scan scanner (gemini-parser:target a))))
+                       tour))))
+
+  (defun clean-all-tour ()
+    (clean-tour ".*"))
+
+  (defun add-links-to-tour (links)
+    (funcall (tour-mode-on-input-completed-clsr links) ".*"))
+
   (defun tour-mode-on-input-completed-clsr (links)
     (lambda (data)
       (when (string-not-empty-p data)

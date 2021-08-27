@@ -2659,6 +2659,9 @@
    :gemlog-cancel-subscription
    :send-to-pipe
    :send-message-to-pipe
+   :clean-all-tour
+   :clean-tour
+   :add-links-to-tour
    :tour-mode-link
    :next-tour-link
    :show-tour-links
