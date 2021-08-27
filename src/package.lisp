@@ -2449,6 +2449,7 @@
   (:shadowing-import-from :text-utils :split-lines)
   (:shadowing-import-from :misc :random-elt :shuffle)
   (:export
+   :gempub-file-p
    :extract-metadata
    :sync-library
    :parse-search-gempub
