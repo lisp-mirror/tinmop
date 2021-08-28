@@ -544,7 +544,9 @@ and `make-blocking-list-dialog-window') showing the full docstring for a command
                                  text
                                  (tui:tui-string->chars-string text)))))))
              (valid-results-p (fields)
-               (> (length fields) 2)))
+               (if global-search
+                   fields
+                   (> (length fields) 2))))
       (when-let* ((focused-keybindings   (main-window:focused-keybindings main-window))
                   (global-help           (sort-help (if global-search
                                                         (loop for i in *all-keymaps* append
@@ -569,6 +571,8 @@ and `make-blocking-list-dialog-window') showing the full docstring for a command
                                                  fields))
                    (actual-lines  (mapcar #'help-fields-get-text actual-fields))
                    (no-help-message (list (_ "No command matching your criteria found"))))
+              (misc:dbg "aext ~a ->~a" actual-fields (valid-results-p actual-fields))
+
               (if (valid-results-p actual-fields)
                   (line-oriented-window:make-blocking-list-dialog-window specials:*main-window*
                                                                          actual-fields

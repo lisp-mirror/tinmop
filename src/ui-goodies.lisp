@@ -1997,7 +1997,8 @@ gemini://gemini.circumlunar.space/docs/companion/subscription.gmi
         (info-message (_ "Tour saved")))))
 
   (defun tour-mode-link ()
-    "Enable   \"tour  mode\".   Ask  for   link  indices,   each  link
+    "Enable   \"tour  mode\".
+    Ask  for   link  indices,   each  link
     corresponding to the  index will be saved in a  special queue that
     can be opened using `next-tour-link' in a last-in last-out way.
 

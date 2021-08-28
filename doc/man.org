@@ -258,7 +258,7 @@
   all its table of  contents on the tour mode, so  that the book could
   be browsed.
 
-  For more information on tour mode use /'C-h a <enter> tour'/.
+  For more information on tour mode use /'C-h A <enter> tour mode'/.
 
 * How to get more help
 
