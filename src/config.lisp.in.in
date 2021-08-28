@@ -19,10 +19,18 @@
 
 (alexandria:define-constant +unzip-bin+     "@UNZIP@"    :test #'string=)
 
+(alexandria:define-constant +man-bin+       "@MAN@"    :test #'string=)
+
 (eval-when (:compile-toplevel :load-toplevel :execute)
-  (when (and (not (member :gempub-support *features*))
-             (string/= +unzip-bin+ "no"))
-    (push :gempub-support *features*)))
+
+  (defun allow-features (test-value feature-keyword)
+    (when (and (not (member feature-keyword *features*))
+               (string/= test-value "no"))
+      (push feature-keyword *features*)))
+
+  (allow-features +unzip-bin+ :gempub-support)
+
+  (allow-features +man-bin+   :man-bin))
 
 (defmacro with-return-untranslated ((untranslated) &body body)
   `(handler-bind ((i18n-conditions:no-translation-table-error

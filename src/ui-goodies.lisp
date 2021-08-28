@@ -20,6 +20,21 @@
 (defun boolean-input-accepted-p (user-input)
   (string-equal user-input (_ "y")))
 
+(defun open-manual ()
+  #+man-bin
+  (progn
+    (croatoan:end-screen)
+    (tui:with-notify-errors
+      (os-utils::run-external-program +man-bin+
+                                      (list +program-name+)
+                                      :search t
+                                      :wait   t
+                                      :input  t
+                                      :output t
+                                      :error  t)))
+  #-man-bin
+  (notify (_ "No manpage binary found on this system") :as-error t))
+
 (defun quit-program ()
   "This  is not the right function to quit the program, use
   'clean-close-program'."

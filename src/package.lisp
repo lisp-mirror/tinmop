@@ -35,6 +35,7 @@
    :+openssl-bin+
    :+xdg-open-bin+
    :+unzip-bin+
+   :+man-bin+
    :_
    :n_))
 
@@ -2500,6 +2501,7 @@
   (:shadowing-import-from :misc :random-elt :shuffle)
   (:export
    :delete-message-status-marked-to-delete
+   :open-manual
    :quit-program
    :clean-close-program
    :notify

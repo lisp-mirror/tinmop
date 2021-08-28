@@ -49,6 +49,12 @@ if test "$UNZIP" = "no" ; then
    AC_MSG_WARN([Can not find unzip, genpub support will be disabled.])
 fi
 
+AC_PATH_PROG([MAN],[man],[no])
+
+if test "$MAN" = "no" ; then
+   AC_MSG_WARN([Can not find man.])
+fi
+
 AC_PATH_PROG([BASH],[bash],[no])
 
 if test "$BASH" = "no" ; then

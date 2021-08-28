@@ -143,6 +143,8 @@
 
 (define-key "C-h a"     #'apropos-help)
 
+(define-key "C-h m"     #'open-manual)
+
 (define-key "!"         #'gemini-search)
 
 (define-key ">"         #'open-gemini-address)
