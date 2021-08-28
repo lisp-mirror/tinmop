@@ -191,9 +191,7 @@
    Again in the configuration directory there is a (commented) file
    named ~init.lisp~ that user can use as their starting point to
    write their files. A custom init file, or other module files, must
-   be located into the directory ~$HOME/.local/share/tinmop/~ or
-   ~$HOME/.config/tinmop/~ (because, you know, data is code and code
-   is data) to be successfully loaded.
+   be located into the directory ~$HOME/.local/share/tinmop/~.
 
    However there is no need to write their own init file if user is
    happy with the provided one by the package maintainers.
@@ -201,11 +199,66 @@
 * First time start
 
   After the configuration the program can be started but we are not
-  ready to join the network yet because tinmop need to be /trusted/ by
+  ready to join the fediverse yet because tinmop need to be /trusted/ by
   the server. Just follows the instruction on screen to register the
   application with your instance. This procedure should be followed
   once: when the program starts for the first time (but please note
   that there must be a file with valid credentials available).
+
+  There  is no  additional steps  to  follow to  connect to  gemspace,
+  instead.
+
+* Gempub support
+
+  Tinmop  maintains a  gempub  library scanning  a  directory on  your
+  file system (library  directory); the  library directory path  can be
+  set using the configuration directive:
+
+  #+BEGIN_SRC text
+
+   gempub.directory.library = /absolute/path/to/your/gempub/library
+
+  #+END_SRC
+
+  the  default  value  is  ~$XDG_DATA_HOME~  (usually  something  like
+  ~%HOME/.local/share/tinmop/~).
+
+  Using /M-g  g l/ the  library can be  inspected using a  simple query
+  language (similar to SQL) that search  in the metadata of the gempub
+  files, example of query follows:
+
+  #+BEGIN_SRC text
+
+   where author like "calvino" and published < "1980"
+
+   where author like "cal%" or published = "1980"
+
+  #+END_SRC
+
+  Valid search keys are:
+
+  - title
+  - author
+  - language
+  - description
+  - publish-date
+  - revision-date
+  - published
+  - copyright
+
+  You can use ~<  > = != <= >= like~ operators  for comparison and the
+  two logical  operator ~and~ and ~or~,  the character ~%~ act  like a
+  wildcard and means: /'any sequence of character'/.
+
+  Note that  the right hand side  of the operator must  be wrapped in
+  quotes.
+
+  After the  search is performed a  window with the results  is shown,
+  selecting an item  of this window will open the  gempub and will add
+  all its table of  contents on the tour mode, so  that the book could
+  be browsed.
+
+  For more information on tour mode use /'C-h a <enter> tour'/.
 
 * How to get more help
 
@@ -242,7 +295,7 @@
 
 ** Debug mode
 
-   If you decomment the line:
+   If you uncomment the line:
 
    #+BEGIN_SRC lisp
    ;;(push :debug-mode *features*)

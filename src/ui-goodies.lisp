@@ -1989,6 +1989,14 @@ gemini://gemini.circumlunar.space/docs/companion/subscription.gmi
     corresponding to the  index will be saved in a  special queue that
     can be opened using `next-tour-link' in a last-in last-out way.
 
+    More than one index can be specified using comma (',') or space as
+    separator and index ranges can be specified using dash, e.g:
+
+    1 2 5 8-12
+
+    The string above will save the link index number 1, 2, 3, 5, 8, 9,
+    10, 11, 12 to the tour.
+
     If user input is made by a single word only (i.e. a string with no
     spaces),  the input  is used  as a  regular expression  to collect
     matching links (matching name or URI)."
