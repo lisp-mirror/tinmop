@@ -1040,6 +1040,8 @@
                                                       :comes-from-local-file local-path-p))
              (ir-text      (gemini-parser:sexp->text-rows parsed
                                                           gemini-client:*gemini-page-theme*)))
+        (setf (windows:keybindings window)
+              keybindings:*gemini-message-keymap*)
         (gemini-viewer:maybe-initialize-metadata window)
         (refresh-gemini-message-window links page-data ir-text nil)
         (ui:open-gemini-toc)

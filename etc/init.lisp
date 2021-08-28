@@ -163,6 +163,8 @@
 
 (define-key "M-g g l"   #'open-gempub-library)
 
+(define-key "M-g g b s" #'display-bookmark)
+
 (define-key "M-right"   #'pass-focus-on-right)
 
 (define-key "M-left"    #'pass-focus-on-left)
