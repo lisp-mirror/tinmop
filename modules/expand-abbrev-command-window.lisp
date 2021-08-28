@@ -32,7 +32,7 @@
 
 (in-package :modules)
 
-(defparameter *expand-abbrev-rewriting-rules* '(("^\\!g" "gemini://"))
+(defparameter *expand-abbrev-rewriting-rules* '(("^!g" "gemini://"))
   "Before  displaying  messages that  module  will  rewrites the  first
   element of each item (a regular expression) of this list with the second
 
@@ -63,20 +63,26 @@ So the whole list is like: '((\"foo\" \"bar\") (\"old\" \"new\") ...)")
 (defparameter *expand-abbrev-stop-rewrite* nil)
 
 (defun expand-abbrev-command-hook-fn (command-window)
-  (let ((expanded (command-window:command-line command-window)))
+  (let ((expanded              (command-window:command-line command-window)))
     (when (null *expand-abbrev-stop-rewrite*)
       (if (scan "^\\\\." expanded)
           (progn
             (setf *expand-abbrev-stop-rewrite* t)
             (setf expanded (subseq expanded 1)))
-          (loop for expansion in *expand-abbrev-actual-rewriting-rules*
-                when (scan (expand-abbrev-abbrev-re expansion) expanded)
-                  do
-                     (setf expanded (regex-replace (expand-abbrev-abbrev-re expansion)
-                                                   expanded
-                                                   (expand-abbrev-abbrev-replace expansion)))))
-      (setf (command-window:command-line command-window) expanded)
-      (point-tracker:move-point-to-end command-window expanded)))
+          (loop for expansion in *expand-abbrev-actual-rewriting-rules* do
+            (let ((start (scan (expand-abbrev-abbrev-re expansion) expanded)))
+              (when start
+                (setf expanded (regex-replace (expand-abbrev-abbrev-re expansion)
+                                              expanded
+                                              (expand-abbrev-abbrev-replace expansion)))
+                (point-tracker:move-point command-window
+                                          start
+                                          (length expanded))
+                (point-tracker:move-point-right command-window
+                                                 (length expanded)
+                                                 :offset
+                                                 (length (expand-abbrev-abbrev-replace expansion)))))))
+      (setf (command-window:command-line command-window) expanded)))
   command-window)
 
 (defun expand-abbrev-command-fire-hook (x)
