@@ -66,7 +66,8 @@ Welcome to ~a! A gemini and pleroma client.
 - for searching in the help type: 'C-h a' (control and 'h' keys toghether, then 'a');
   [if this keychords  does not works, ask to your system administrator]
 
-- documentation is available in man format. Type 'man tinmop' at shell's prompt;
+- documentation is available in man format. Type 'man tinmop' at shell's prompt
+  or 'C-h m';
 
 - for general information about this program (including license) type 'C-a';
 

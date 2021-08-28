@@ -1605,7 +1605,7 @@ certificate).
         (fg    (swconf:win-fg swconf:+key-help-dialog+)))
     (windows:make-blocking-message-dialog *main-window*
                                           nil
-                                          (_ "Welcome")
+                                          (_ " Welcome ")
                                           lines
                                           bg
                                           fg)))
