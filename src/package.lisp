@@ -2556,6 +2556,7 @@
    :focus-to-conversations-window
    :print-quick-help
    :apropos-help
+   :apropos-help-global
    :move-message-tree
    :change-folder
    :change-timeline

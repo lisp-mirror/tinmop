@@ -273,6 +273,25 @@ produces a tree and graft the latter on `existing-tree'"
 (defparameter *gempub-library-keymap* (make-starting-comand-tree)
   "The keymap for gempub library of publication.")
 
+(defparameter *all-keymaps* (list *global-keymap*
+                                  *thread-keymap*
+                                  *message-keymap*
+                                  *gemini-message-keymap*
+                                  *tags-keymap*
+                                  *conversations-keymap*
+                                  *send-message-keymap*
+                                  *follow-requests-keymap*
+                                  *open-attach-keymap*
+                                  *open-message-link-keymap*
+                                  *open-gemini-link-keymap*
+                                  *gemini-downloads-keymap*
+                                  *gemini-certificates-keymap*
+                                  *chats-list-keymap*
+                                  *chat-message-keymap*
+                                  *gemlog-subscription-keymap*
+                                  *gemini-toc-keymap*
+                                  *gempub-library-keymap*))
+
 (defun define-key (key-sequence function &optional (existing-keymap *global-keymap*))
   "Define a key sequence that trigger a function:
 
@@ -420,7 +439,7 @@ understand"
     ((functionp key)
      (if (documentation key t)
          (with-input-from-string (stream (documentation key t))
-           (read-line stream))
+           (regex-replace-all "  +" (read-line stream) " "))
          (function-name key)))
     ((string= key "^J")
      (_ "Enter"))
@@ -489,7 +508,7 @@ and `make-blocking-list-dialog-window') showing the full docstring for a command
                                           bg
                                           fg)))
 
-(defun print-help (main-window &key (regex ".*"))
+(defun print-help (main-window &key (regex ".*") (global-search nil))
   "Generate an help text for the focused window and main window"
   (multiple-value-bind (header-bg header-fg attribute-header)
       (swconf:quick-help-header-colors)
@@ -527,7 +546,10 @@ and `make-blocking-list-dialog-window') showing the full docstring for a command
              (valid-results-p (fields)
                (> (length fields) 2)))
       (when-let* ((focused-keybindings   (main-window:focused-keybindings main-window))
-                  (global-help           (sort-help (key-paths *global-keymap*)))
+                  (global-help           (sort-help (if global-search
+                                                        (loop for i in *all-keymaps* append
+                                                                       (key-paths i))
+                                                        (key-paths *global-keymap*))))
                   (header-focused        (colorize-header (_ "Focused window keys")))
                   (header-global         (colorize-header  (_ "Global keys")))
                   (focused-help          (sort-help (key-paths focused-keybindings)))
@@ -535,10 +557,12 @@ and `make-blocking-list-dialog-window') showing the full docstring for a command
                   (focused-header-fields (make-help-fields header-focused nil))
                   (fields                (list focused-header-fields)))
         (setf fields
-              (append fields
-                      focused-help
-                      (list global-header-fields)
-                      global-help))
+              (if global-search
+                  global-help
+                  (append fields
+                          focused-help
+                          (list global-header-fields)
+                          global-help)))
         (handler-case
             (let* ((scanner   (create-scanner regex :case-insensitive-mode t))
                    (actual-fields (remove-if-not (make-filter-help-text scanner)

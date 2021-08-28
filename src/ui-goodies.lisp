@@ -595,6 +595,18 @@ current has focus"
                       :prompt      (_ "Search for commands (regexp): ")
                       :complete-fn #'complete:complete-always-empty)))
 
+(defun apropos-help-global ()
+  "Print a  command's documentation  matching a regular  expression in
+all commands database."
+  (flet ((on-input-complete (regex)
+           (let ((event (make-instance 'help-apropos-event
+                                       :globalp t
+                                       :regex   regex)))
+             (push-event event))))
+    (ask-string-input #'on-input-complete
+                      :prompt      (_ "Search for commands (regexp): ")
+                      :complete-fn #'complete:complete-always-empty)))
+
 (defun move-message-tree ()
   "Move messages tree to a different folder. If folder does not exist will be created."
   (flet ((on-input-complete (new-folder)

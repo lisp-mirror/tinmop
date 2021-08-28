@@ -1555,11 +1555,18 @@
   ((regex
     :initform nil
     :initarg :regex
-    :accessor regex)))
+    :accessor regex)
+   (global
+    :initform nil
+    :initarg :globalp
+    :reader  globalp
+    :writer  (setf global))))
 
 (defmethod process-event ((object help-apropos-event))
   (with-accessors ((regex regex)) object
-    (keybindings:print-help specials:*main-window* :regex regex)))
+    (keybindings:print-help specials:*main-window*
+                            :regex regex
+                            :global-search (globalp object))))
 
 (defclass redraw-window-event (program-event) ())
 
