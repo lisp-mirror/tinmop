@@ -127,12 +127,23 @@
 (defrule spaces (+ blank)
   (:constant nil))
 
-(defrule column (or "title"
+(defrule publish-date-alias "publishedDate"
+  (:constant "\"published-date\""))
+
+(defrule revision-date-alias "revisionDate"
+  (:constant "\"revision-date\""))
+
+(defrule column-alias (or publish-date-alias
+                          revision-date-alias))
+
+(defrule column (or column-alias
+                    "title"
                     "author"
                     "language"
                     "description"
                     "publish-date"
                     "revision-date"
+                    "published"
                     "copyright")
   (:text t))
 
@@ -141,7 +152,13 @@
 
 (defrule term (or and-where
                   or-where
-                  like)
+                  like
+                  =-term
+                  !=-term
+                  <-term
+                  >-term
+                  <=-term
+                  >=-term)
   (:function (lambda (a) (join-with-strings a " "))))
 
 (defrule like (and column spaces "like" spaces column-value)
@@ -149,6 +166,42 @@
                                  "~a like \"%~a%\""
                                  (first a)
                                  (string-trim '(#\") (fifth a))))))
+
+(defrule =-term (and column spaces "=" spaces column-value)
+  (:function (lambda (a) (format nil
+                                 "~a = ~a"
+                                 (first a)
+                                 (fifth a)))))
+
+(defrule <-term (and column spaces "<" spaces column-value)
+  (:function (lambda (a) (format nil
+                                 "~a < ~a"
+                                 (first a)
+                                 (fifth a)))))
+
+(defrule >-term (and column spaces ">" spaces column-value)
+  (:function (lambda (a) (format nil
+                                 "~a > ~a"
+                                 (first a)
+                                 (fifth a)))))
+
+(defrule <=-term (and column spaces "<=" spaces column-value)
+  (:function (lambda (a) (format nil
+                                 "~a <= ~a"
+                                 (first a)
+                                 (fifth a)))))
+
+(defrule >=-term (and column spaces ">=" spaces column-value)
+  (:function (lambda (a) (format nil
+                                 "~a >= ~a"
+                                 (first a)
+                                 (fifth a)))))
+
+(defrule !=-term (and column spaces "!=" spaces column-value)
+  (:function (lambda (a) (format nil
+                                 "~a != ~a"
+                                 (first a)
+                                 (fifth a)))))
 
 (defrule and-where (and term spaces "and" spaces term))
 
