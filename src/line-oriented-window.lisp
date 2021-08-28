@@ -392,6 +392,16 @@ this exact quantity would go beyond the length or rows or zero."
     :initarg  :selected-line-fg
     :accessor selected-line-fg
     :documentation "The foreground color for a selected line")
+   (unselected-line-bg
+    :initform :blue
+    :initarg  :unselected-line-bg
+    :accessor unselected-line-bg
+    :documentation "The background color for a unselected line")
+   (unselected-line-fg
+    :initform :red
+    :initarg  :unselected-line-fg
+    :accessor unselected-line-fg
+    :documentation "The foreground color for a unselected line")
    ;; (line
    ;;  :initform :red
    ;;  :initarg  :selected-line-fg

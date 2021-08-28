@@ -524,6 +524,7 @@
                    server
                    message
                    selected
+                   unselected
                    deleted
                    input
                    read
@@ -1270,51 +1271,80 @@
    (selected-foreground
     :initform :white
     :initarg  :selected-foreground
-    :accessor selected-foreground)))
+    :accessor selected-foreground)
+   (unselected-background
+    :initform :black
+    :initarg  :unselected-background
+    :accessor unselected-background)
+   (unselected-foreground
+    :initform :white
+    :initarg  :unselected-foreground
+    :accessor unselected-foreground)))
 
 (defmethod print-object ((object form-style) stream)
   (print-unreadable-object (object stream :type t)
-    (with-accessors ((background          background)
-                     (foreground          foreground)
-                     (input-background    input-background)
-                     (input-foreground    input-foreground)
-                     (selected-background selected-background)
-                     (selected-foreground selected-foreground)) object
+    (with-accessors ((background            background)
+                     (foreground            foreground)
+                     (input-background      input-background)
+                     (input-foreground      input-foreground)
+                     (selected-background   selected-background)
+                     (selected-foreground   selected-foreground)
+                     (unselected-background unselected-background)
+                     (unselected-foreground selected-foreground)) object
       (format stream
-              "fg ~a bg ~a input-fg ~a input-bg ~a selected-fg ~a selected-bg ~a"
+              "fg ~a bg ~a input-fg ~a input-bg ~a selected-fg ~a selected-bg ~a unselected-fg ~a unselected-bg ~a"
               foreground
               background
               input-foreground
               input-background
               selected-foreground
-              selected-background))))
+              selected-background
+              unselected-foreground
+              unselected-background))))
 
 (defun form-style (window-key)
-  (make-instance 'form-style
-                 :background          (access:accesses *software-configuration*
-                                                       window-key
-                                                       +key-background+)
-                 :foreground          (access:accesses *software-configuration*
-                                                       window-key
-                                                       +key-foreground+)
-                 :selected-background (access:accesses *software-configuration*
-                                                       window-key
-                                                       +key-input+
-                                                       +key-selected+
-                                                       +key-background+)
-                 :selected-foreground (access:accesses *software-configuration*
-                                                       window-key
-                                                       +key-input+
-                                                       +key-selected+
-                                                       +key-foreground+)
-                 :input-background    (access:accesses *software-configuration*
-                                                       window-key
-                                                       +key-input+
-                                                       +key-background+)
-                 :input-foreground    (access:accesses *software-configuration*
-                                                       window-key
-                                                       +key-input+
-                                                       +key-foreground+)))
+  (let* ((bg            (access:accesses *software-configuration*
+                                         window-key
+                                         +key-background+))
+         (fg            (access:accesses *software-configuration*
+                                         window-key
+                                         +key-foreground+))
+         (unselected-fg (or (access:accesses *software-configuration*
+                                             window-key
+                                             +key-input+
+                                             +key-unselected+
+                                             +key-foreground+)
+                            fg))
+         (unselected-bg (or (access:accesses *software-configuration*
+                                             window-key
+                                             +key-input+
+                                             +key-unselected+
+                                             +key-background+)
+                            bg)))
+    (make-instance 'form-style
+                   :background           bg
+                   :foreground           fg
+                   :selected-background  (access:accesses *software-configuration*
+                                                         window-key
+                                                         +key-input+
+                                                         +key-selected+
+                                                         +key-background+)
+                   :selected-foreground   (access:accesses *software-configuration*
+                                                         window-key
+                                                         +key-input+
+                                                         +key-selected+
+                                                         +key-foreground+)
+
+                   :unselected-background unselected-bg
+                   :unselected-foreground unselected-fg
+                   :input-background      (access:accesses *software-configuration*
+                                                         window-key
+                                                         +key-input+
+                                                         +key-background+)
+                   :input-foreground      (access:accesses *software-configuration*
+                                                         window-key
+                                                         +key-input+
+                                                         +key-foreground+))))
 ;;;;;; tests
 
 (defun trivial-configuration-missing-value-check ()

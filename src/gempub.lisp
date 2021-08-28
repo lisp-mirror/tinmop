@@ -192,12 +192,12 @@
   object)
 
 (defun row->list-item (row)
-  (join-with-strings* " "
+  (join-with-strings* ", "
                       (db:row-title     row)
                       (db:row-author    row)
                       (db:row-published row)))
 
-(defun row->selected-list-item (row fg bg)
+(defun row->selected-list-item (row bg fg)
   (tui:make-tui-string (row->list-item row)
                        :attributes (tui:attribute-bold)
                        :fgcolor    fg
@@ -211,25 +211,32 @@
                              (redraw t)
                              (suggested-message-index 0))
   (with-accessors ((rows             rows)
-                   (selected-line-bg selected-line-bg)
-                   (selected-line-fg selected-line-fg)
-                   (query-rows       query-rows)) object
-    (flet ((make-rows (rows bg fg)
+                   (selected-line-bg   selected-line-bg)
+                   (selected-line-fg   selected-line-fg)
+                   (unselected-line-bg unselected-line-bg)
+                   (unselected-line-fg unselected-line-fg)
+                   (query-rows         query-rows)) object
+    (flet ((make-rows (rows selected-bg   selected-fg
+                            unselected-bg unselected-fg)
              (mapcar (lambda (row)
                        (make-instance 'line
                                       :normal-text   (row->unselected-list-item row)
-                                      :selected-text (row->selected-list-item  row fg bg)
+                                      :selected-text (row->selected-list-item   row
+                                                                                selected-bg
+                                                                                selected-fg)
                                       :fields        row
-                                      :normal-bg     fg
-                                      :normal-fg     bg
-                                      :selected-bg   bg
-                                      :selected-fg   fg))
+                                      :normal-bg     unselected-bg
+                                      :normal-fg     unselected-fg
+                                      :selected-bg   selected-bg
+                                      :selected-fg   selected-fg))
                      rows)))
       (with-croatoan-window (croatoan-window object)
         (line-oriented-window:update-all-rows object
                                               (make-rows query-rows
                                                          selected-line-bg
-                                                         selected-line-fg))
+                                                         selected-line-fg
+                                                         unselected-line-bg
+                                                         unselected-line-fg))
         (when suggested-message-index
           (handler-bind ((conditions:out-of-bounds
                           (lambda (e)

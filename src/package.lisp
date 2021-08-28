@@ -1241,7 +1241,9 @@
    :input-background
    :input-foreground
    :selected-background
-   :selected-foreground))
+   :selected-foreground
+   :unselected-background
+   :unselected-foreground))
 
 (defpackage :tui-utils
   (:use
@@ -1955,6 +1957,8 @@
    :simple-line-navigation-window
    :selected-line-bg
    :selected-line-fg
+   :unselected-line-bg
+   :unselected-line-fg
    :resync-rows-db
    :make-blocking-list-dialog-window))
 

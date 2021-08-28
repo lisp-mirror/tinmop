@@ -1613,9 +1613,13 @@ certificate).
 (defun reset-timeline-pagination ()
   "Removes the pagination data for current timeline and folder
 
-For each timeline the software keep tracks of the oldest and newest toot fetched from the instance, This way we can expand the messages thread from the point we left after the latest update.
+For each  timeline the software keep  tracks of the oldest  and newest
+toot fetched  from the instance, This  way we can expand  the messages
+thread from the point we left after the latest update.
 
-This command will remove those limits so that we can just jump to the last messages posted on the instance and start expanding toots from there."
+This command will remove those limits so  that we can just jump to the
+last messages  posted on the  instance and start expanding  toots from
+there."
   (let* ((timeline (thread-window:timeline-type *thread-window*))
          (folder   (thread-window:timeline-folder *thread-window*)))
     (with-blocking-notify-procedure ((_ "Clearing pagination data"))
@@ -2189,9 +2193,10 @@ gemini page the program is rendering."
            (push-event (make-instance 'function-event
                                       :payload
                                       (lambda ()
-                                        (db-utils:with-ready-database (:connect nil)
-                                          (gempub:open-gempub-library-window query)
-                                          (focus-to-gempub-library-window)))))))
+                                        (tui:with-notify-errors
+                                          (db-utils:with-ready-database (:connect nil)
+                                            (gempub:open-gempub-library-window query)
+                                            (focus-to-gempub-library-window))))))))
     (ui:ask-string-input #'on-input-completed
                          :prompt (format nil (_ "Search criteria: ")))))
 
