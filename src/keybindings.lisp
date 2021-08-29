@@ -273,24 +273,24 @@ produces a tree and graft the latter on `existing-tree'"
 (defparameter *gempub-library-keymap* (make-starting-comand-tree)
   "The keymap for gempub library of publication.")
 
-(defparameter *all-keymaps* (list *global-keymap*
-                                  *thread-keymap*
-                                  *message-keymap*
-                                  *gemini-message-keymap*
-                                  *tags-keymap*
-                                  *conversations-keymap*
-                                  *send-message-keymap*
-                                  *follow-requests-keymap*
-                                  *open-attach-keymap*
-                                  *open-message-link-keymap*
-                                  *open-gemini-link-keymap*
-                                  *gemini-downloads-keymap*
-                                  *gemini-certificates-keymap*
-                                  *chats-list-keymap*
-                                  *chat-message-keymap*
-                                  *gemlog-subscription-keymap*
-                                  *gemini-toc-keymap*
-                                  *gempub-library-keymap*))
+(defparameter *all-keymaps* '(*global-keymap*
+                              *thread-keymap*
+                              *message-keymap*
+                              *gemini-message-keymap*
+                              *tags-keymap*
+                              *conversations-keymap*
+                              *send-message-keymap*
+                              *follow-requests-keymap*
+                              *open-attach-keymap*
+                              *open-message-link-keymap*
+                              *open-gemini-link-keymap*
+                              *gemini-downloads-keymap*
+                              *gemini-certificates-keymap*
+                              *chats-list-keymap*
+                              *chat-message-keymap*
+                              *gemlog-subscription-keymap*
+                              *gemini-toc-keymap*
+                              *gempub-library-keymap*))
 
 (defun define-key (key-sequence function &optional (existing-keymap *global-keymap*))
   "Define a key sequence that trigger a function:
@@ -508,6 +508,34 @@ and `make-blocking-list-dialog-window') showing the full docstring for a command
                                           bg
                                           fg)))
 
+(defmacro gen-humanize-keymap-name (translations)
+  `(defun humanize-keymap-name (keymap-name)
+     (cond
+       ,@(loop for (name . translation) in translations collect
+               `((string-equal keymap-name ',name)
+                 ,translation))
+       (t keymap-name))))
+
+(gen-humanize-keymap-name ((*global-keymap*              . (_ "Global keymap"))
+                           (*thread-keymap*              . (_ "Thread window keymap"))
+                           (*message-keymap*             . (_ "Message window keymap"))
+                           (*gemini-message-keymap*      . (_ "Gemini page keymap"))
+                           (*tags-keymap*                . (_ "Subscribed tags keymap"))
+                           (*conversations-keymap*       . (_ "Conversation keymap"))
+                           (*send-message-keymap*        . (_ "Post pleroma message keymap"))
+                           (*follow-requests-keymap*     . (_ "Follow request keymap"))
+                           (*open-attach-keymap*         . (_ "Open attachment keymap"))
+                           (*open-message-link-keymap*   . (_ "Open link window keymap"))
+                           (*open-gemini-link-keymap*    . (_ "Open gemini page's link keymap"))
+                           (*gemini-downloads-keymap*    . (_ "Gemini download window keymap"))
+                           (*gemini-certificates-keymap* . (_ "Gemini certificate window keymap"))
+                           (*chats-list-keymap*          . (_ "Chat list window keymap"))
+                           (*chat-message-keymap*        . (_ "Chat window keymap"))
+                           (*gemlog-subscription-keymap* . (_ "Gemlog subscription window keymap"))
+                           (*gemini-toc-keymap*          . (_ "Gemini page TOC keymap"))
+                           (*gempub-library-keymap*      . (_ "Gempub library window keymap"))))
+
+
 (defun print-help (main-window &key (regex ".*") (global-search nil))
   "Generate an help text for the focused window and main window"
   (multiple-value-bind (header-bg header-fg attribute-header)
@@ -544,32 +572,38 @@ and `make-blocking-list-dialog-window') showing the full docstring for a command
                                  text
                                  (tui:tui-string->chars-string text)))))))
              (valid-results-p (fields)
-               (if global-search
-                   fields
-                   (> (length fields) 2))))
+               fields)
+             (humanize-keymap-names (keymaps)
+               (mapcar (lambda (a) (colorize-header (humanize-keymap-name a)))
+                         keymaps)))
       (when-let* ((focused-keybindings   (main-window:focused-keybindings main-window))
-                  (global-help           (sort-help (if global-search
-                                                        (loop for i in *all-keymaps* append
-                                                                       (key-paths i))
-                                                        (key-paths *global-keymap*))))
-                  (header-focused        (colorize-header (_ "Focused window keys")))
-                  (header-global         (colorize-header  (_ "Global keys")))
-                  (focused-help          (sort-help (key-paths focused-keybindings)))
-                  (global-header-fields  (make-help-fields header-global nil))
-                  (focused-header-fields (make-help-fields header-focused nil))
-                  (fields                (list focused-header-fields)))
-        (setf fields
-              (if global-search
-                  global-help
-                  (append fields
-                          focused-help
-                          (list global-header-fields)
-                          global-help)))
+                  (all-help              (if global-search
+                                             (loop for i in *all-keymaps* collect
+                                                (sort-help (key-paths (symbol-value i))))
+                                             (list (sort-help (key-paths *global-keymap*))
+                                                   (sort-help (key-paths focused-keybindings)))))
+                  (headers               (if global-search
+                                             (humanize-keymap-names *all-keymaps*)
+                                             (humanize-keymap-names (list '*global-keymap*
+                                                                          (_ "Focused window keymap")))))
+                  (global-header-fields  (mapcar (lambda (a) (make-help-fields a nil))
+                                                 headers))
+                  (fields                (loop for header in global-header-fields
+                                               for help in all-help
+                                               collect
+                                               (list header help))))
         (handler-case
-            (let* ((scanner   (create-scanner regex :case-insensitive-mode t))
-                   (actual-fields (remove-if-not (make-filter-help-text scanner)
-                                                 fields))
-                   (actual-lines  (mapcar #'help-fields-get-text actual-fields))
+            (let* ((scanner        (create-scanner regex :case-insensitive-mode t))
+                   (actual-fields (loop for field in fields
+                                        appending
+                                        (when-let* ((header        (first  field))
+                                                    (help-commands (second field))
+                                                    (filtered-help-commands
+                                                     (remove-if-not (make-filter-help-text scanner)
+                                                                    help-commands)))
+                                          (append (list header)
+                                                  filtered-help-commands))))
+                   (actual-lines    (mapcar #'help-fields-get-text actual-fields))
                    (no-help-message (list (_ "No command matching your criteria found"))))
               (if (valid-results-p actual-fields)
                   (line-oriented-window:make-blocking-list-dialog-window specials:*main-window*
