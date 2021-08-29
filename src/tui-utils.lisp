@@ -147,6 +147,9 @@ as argument `complex-string'."
 (defmethod to-tui-string ((object string) &key &allow-other-keys)
   (make-tui-string object))
 
+(defmethod to-tui-string ((object complex-string) &key &allow-other-keys)
+  object)
+
 (defgeneric cat-complex-string (a b &key color-attributes-contagion)
   (:documentation "Return  a new `complex-string' that  is the results
   of concatenating `a' and 'b'. If `color-attributes-contagion' is non
@@ -412,6 +415,16 @@ latter has a length equals to `total-size'"))
                     last-char-bg))))
         res))))
 
+(defun tui-string-apply-colors (text fgcolor bgcolor &key (destructive nil))
+  (let ((results (if destructive
+                     text
+                     (croatoan::copy-complex-string text))))
+    (with-accessors ((complex-char-array complex-char-array)) results
+      (loop for char across complex-char-array do
+        (setf (fgcolor char) fgcolor)
+        (setf (bgcolor char) bgcolor)))
+    results))
+
 (defgeneric apply-attributes (object index attributes))
 
 (defmethod apply-attributes ((object complex-string) (index fixnum) attributes)
@@ -433,6 +446,14 @@ latter has a length equals to `total-size'"))
 
 (defmethod apply-attributes (object (index null) attributes)
   object)
+
+(defmethod apply-attributes ((object complex-string) (index (eql :all)) attributes)
+  (loop for char across (complex-char-array object) do
+    (setf (attributes char) attributes))
+  object)
+
+(defmethod apply-attributes ((object string) (index (eql :all)) attributes)
+  (apply-attributes (to-tui-string object) :all attributes))
 
 (defmethod remove-corrupting-utf8-chars ((object complex-string))
   (setf (complex-char-array object)

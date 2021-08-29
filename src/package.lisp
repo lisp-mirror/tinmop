@@ -1299,6 +1299,7 @@
    :with-print-error-message
    :make-tui-char
    :make-tui-string
+   :tui-string-apply-colors
    :apply-attributes))
 
 (defpackage :command-line

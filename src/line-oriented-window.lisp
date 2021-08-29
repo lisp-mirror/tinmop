@@ -402,11 +402,6 @@ this exact quantity would go beyond the length or rows or zero."
     :initarg  :unselected-line-fg
     :accessor unselected-line-fg
     :documentation "The foreground color for a unselected line")
-   ;; (line
-   ;;  :initform :red
-   ;;  :initarg  :selected-line-fg
-   ;;  :accessor selected-line-fg
-   ;;  :documentation "The foreground color for a selected line")
    (top-horizontal-padding
     :initform 0
     :initarg  :top-horizontal-padding
@@ -438,13 +433,15 @@ this exact quantity would go beyond the length or rows or zero."
             for ct from 0
             for row in rows do
               (if (selectedp row)
-                  (print-text object
-                              (right-pad-text (text-ellipsis (selected-text row)
-                                                             max-line-size)
-                                              max-line-size)
-                              x y
-                              :bgcolor (selected-bg row)
-                              :fgcolor (selected-fg row))
+                  (let ((tui-text (to-tui-string (selected-text row))))
+                    (print-text object
+                                (tui-string-apply-colors (right-pad-text (text-ellipsis tui-text
+                                                                                        max-line-size)
+                                                                         max-line-size)
+                                                         (selected-fg row)
+                                                         (selected-bg row))
+
+                                x y))
                   (print-text object
                               (right-pad-text (text-ellipsis (normal-text row)
                                                              max-line-size)
