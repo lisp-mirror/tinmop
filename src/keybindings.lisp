@@ -571,8 +571,6 @@ and `make-blocking-list-dialog-window') showing the full docstring for a command
                                                  fields))
                    (actual-lines  (mapcar #'help-fields-get-text actual-fields))
                    (no-help-message (list (_ "No command matching your criteria found"))))
-              (misc:dbg "aext ~a ->~a" actual-fields (valid-results-p actual-fields))
-
               (if (valid-results-p actual-fields)
                   (line-oriented-window:make-blocking-list-dialog-window specials:*main-window*
                                                                          actual-fields
