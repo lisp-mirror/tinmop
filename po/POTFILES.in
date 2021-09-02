@@ -37,6 +37,7 @@ src/gemini/gemini-constants.lisp
 src/gemini/gemini-parser.lisp
 src/gemini/package.lisp
 src/gemini/subscription.lisp
+src/gempub.lisp
 src/hooks.lisp
 src/html-utils.lisp
 src/idn.lisp
