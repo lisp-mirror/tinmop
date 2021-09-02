@@ -50,7 +50,7 @@ modules/expand-abbrev-command-window.lisp
 
 dist_man1_MANS       = doc/tinmop.man
 
-$(PACKAGE): $(CONF_PATH_FILE) src/*
+$(PACKAGE): $(CONF_PATH_FILE) *.asd src/*
 	$(LISP_COMPILER) \
 	--eval "(asdf:load-system '$(PACKAGE))" \
 	--eval "(in-package main)" \
