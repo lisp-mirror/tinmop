@@ -2066,6 +2066,8 @@ gemini page the program is rendering."
   (gemini-toc-jump-to-entry))
 
 (defun gemini-toc-close ()
+  (hooks:remove-hook 'hooks:*before-rendering-message-visible-rows*
+                     #'gemini-page-toc:highlight-current-section)
   (close-window-and-return-to-message *gemini-toc-window*))
 
 (defun gemini-toc-scroll-down-page ()

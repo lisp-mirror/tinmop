@@ -139,6 +139,8 @@
     (let ((visible-rows                       (visible-rows window))
           (window-width                       (win-width-no-border window))
           (content-available-on-the-left-mark (swconf:left-arrow)))
+      (when hooks:*before-rendering-message-visible-rows*
+        (hooks:run-hook 'hooks:*before-rendering-message-visible-rows* visible-rows window))
       (loop for line in visible-rows
             for y from  1
             do

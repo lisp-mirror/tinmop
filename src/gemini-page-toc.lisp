@@ -83,6 +83,18 @@
           (win-clear object)
           (draw object))))))
 
+(defun highlight-current-section (visible-rows window)
+  (declare (ignore window))
+  (when-let* ((toc-win     *gemini-toc-window*)
+              (line-fields (fields (first visible-rows)))
+              (gid         (getf line-fields :group-id))
+              (index       (position-if (lambda (a) (= (getf (fields a) :group-id)
+                                                       gid))
+                                        (rows toc-win))))
+    (unselect-all toc-win)
+    (select-row toc-win index)
+    (draw toc-win)))
+
 (defun open-toc-window (gemini-window)
   (let* ((low-level-window (make-croatoan-window :enable-function-keys t)))
     (setf *gemini-toc-window*
@@ -96,5 +108,7 @@
     (resync-rows-db *gemini-toc-window* :redraw nil)
     (when (not (line-oriented-window:rows-empty-p *gemini-toc-window*))
       (select-row *gemini-toc-window* 0))
+    (hooks:add-hook 'hooks:*before-rendering-message-visible-rows*
+                    #'highlight-current-section)
     (draw *gemini-toc-window*)
     *gemini-toc-window*))

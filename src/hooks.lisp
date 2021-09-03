@@ -21,7 +21,7 @@
 
 (defgeneric add-hook (hook fn &key append)
   (:documentation "Add FN to the value of HOOK.")
-  (:method ((hook symbol) fn &key append)
+  (:method ((hook symbol) fn &key (append t))
     (declare (type (or function symbol) fn))
     (if (not append)
         (pushnew fn (symbol-value hook))
@@ -87,6 +87,11 @@ non-nil.")
 (defparameter *before-rendering-message-text* '()
   "Run   this    hooks   before    rendering   the   message    on   a
   message-window (the message window is passed as parameter")
+
+(defparameter *before-rendering-message-visible-rows* '()
+  "Run this  hooks before rendering the  visible portion of rows  of a
+  message on  a message-window  (parameters the  visible rows  and the
+  message window")
 
 (defparameter *before-sending-message* '()
   "Run this  hooks before sending  the message, note that  the message

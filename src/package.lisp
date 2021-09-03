@@ -1611,6 +1611,7 @@
    :*before-main-loop*
    :*before-quit*
    :*before-rendering-message-text*
+   :*before-rendering-message-visible-rows*
    :*before-sending-message*
    :*skip-message-hook*
    :*after-saving-message*
@@ -2217,6 +2218,7 @@
   (:shadowing-import-from :text-utils :split-lines)
   (:shadowing-import-from :misc :random-elt :shuffle)
   (:export
+   :highlight-current-section
    :open-toc-window))
 
 (defpackage :command-window
