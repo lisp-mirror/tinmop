@@ -31,11 +31,14 @@
   (incf *pre-group-id*)
   *pre-group-id*)
 
-(defun-w-lock pre-group-id () *parser-lock*
+(defun-w-lock current-pre-group-id () *parser-lock*
   *pre-group-id*)
 
 (defun-w-lock next-header-group-id () *parser-lock*
   (incf *header-group-id*)
+  *header-group-id*)
+
+(defun-w-lock header-group-id () *parser-lock*
   *header-group-id*)
 
 (defun-w-lock set-pre-alt-text (text) *parser-lock*
@@ -398,16 +401,23 @@
     :initarg :alt-text
     :accessor alt-text)))
 
-(defclass pre-start (with-group-id with-alt-text) ())
+(defclass with-pre-group-id ()
+  ((pre-group-id
+    :initform nil
+    :initarg  :pre-group-id
+    :accessor pre-group-id)))
+
+(defclass pre-start (with-group-id with-pre-group-id with-alt-text) ())
 
 (defmethod print-object ((object pre-start) stream)
   (print-unreadable-object (object stream :type t :identity t)
     (format stream "gid: ~a alt ~a" (group-id object) (alt-text object))))
 
-(defun make-pre-start (alt-text group-id fg)
+(defun make-pre-start (alt-text group-id pre-group-id fg)
   (make-instance 'pre-start
-                 :alt-text (tui:make-tui-string alt-text :fgcolor fg)
-                 :group-id group-id))
+                 :alt-text     (tui:make-tui-string alt-text :fgcolor fg)
+                 :group-id     group-id
+                 :pre-group-id pre-group-id))
 
 (defclass pre-end () ())
 
@@ -420,7 +430,7 @@
   (make-instance 'quoted-lines
                  :lines (split-lines text-lines)))
 
-(defclass pre-line (with-group-id with-lines with-alt-text) ())
+(defclass pre-line (with-group-id  with-pre-group-id with-lines with-alt-text) ())
 
 (defmethod print-object ((object pre-line) stream)
   (print-unreadable-object (object stream :type t)
@@ -430,11 +440,12 @@
             (alt-text object)
             (lines object))))
 
-(defun make-pre-line (lines group-id alt-text)
+(defun make-pre-line (lines group-id pre-group-id alt-text)
   (make-instance 'pre-line
-                 :lines    lines
-                 :group-id group-id
-                 :alt-text alt-text))
+                 :lines        lines
+                 :group-id     group-id
+                 :pre-group-id pre-group-id
+                 :alt-text     alt-text))
 
 (defclass vertical-space ()
   ((size
@@ -549,7 +560,8 @@
                                                                             line)
                                                                     :fgcolor fg)))
                           (make-pre-line (list line)
-                                         (pre-group-id)
+                                         (header-group-id)
+                                         (current-pre-group-id)
                                          (current-pre-alt-text))))
                        ((html-utils:tag= :text node)
                         (format nil "~a~%" (text-value node)))
@@ -577,9 +589,10 @@
                        ((html-utils:tag= :pre node)
                         (let ((current-alt-text (pre-alt-text node))
                               (pre-group-id     (next-pre-group-id))
+                              (current-group-id (header-group-id))
                               (fg               (preformatted-fg theme)))
                           (set-pre-alt-text current-alt-text)
-                          (make-pre-start current-alt-text pre-group-id fg)))
+                          (make-pre-start current-alt-text current-group-id pre-group-id fg)))
                        ((html-utils:tag= :pre-end node)
                         (make-pre-end))
                        ((html-utils:tag= :a node)

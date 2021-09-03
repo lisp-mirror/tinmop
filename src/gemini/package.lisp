@@ -70,6 +70,8 @@
    :quote-prefix
    :bullet-prefix
    :with-lines
+   :with-pre-group-id
+   :pre-group-id
    :pre-start
    :value
    :pre-line
