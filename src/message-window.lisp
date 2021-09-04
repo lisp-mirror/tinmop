@@ -259,7 +259,7 @@
                                              text
                                              (make-tui-string text)))))
     (row-add-original-object res original-object)
-    res)) ; even if row-add-original-object returns the modified line explicit returns for clarity
+    res))
 
 (defun row-pre-start-p (row)
   (typep (row-get-original-object row)
