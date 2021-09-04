@@ -38,7 +38,7 @@
   (incf *header-group-id*)
   *header-group-id*)
 
-(defun-w-lock header-group-id () *parser-lock*
+(defun-w-lock current-header-group-id () *parser-lock*
   *header-group-id*)
 
 (defun-w-lock set-pre-alt-text (text) *parser-lock*
@@ -560,7 +560,7 @@
                                                                             line)
                                                                     :fgcolor fg)))
                           (make-pre-line (list line)
-                                         (header-group-id)
+                                         (current-header-group-id)
                                          (current-pre-group-id)
                                          (current-pre-alt-text))))
                        ((html-utils:tag= :text node)
@@ -589,7 +589,7 @@
                        ((html-utils:tag= :pre node)
                         (let ((current-alt-text (pre-alt-text node))
                               (pre-group-id     (next-pre-group-id))
-                              (current-group-id (header-group-id))
+                              (current-group-id (current-header-group-id))
                               (fg               (preformatted-fg theme)))
                           (set-pre-alt-text current-alt-text)
                           (make-pre-start current-alt-text current-group-id pre-group-id fg)))
