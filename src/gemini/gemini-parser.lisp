@@ -424,13 +424,14 @@
 (defun make-pre-end ()
   (make-instance 'pre-end))
 
-(defclass quoted-lines (with-lines) ())
+(defclass quoted-lines (with-group-id with-lines) ())
 
-(defun make-quoted-lines (text-lines)
+(defun make-quoted-lines (text-lines group-id)
   (make-instance 'quoted-lines
-                 :lines (split-lines text-lines)))
+                 :group-id  group-id
+                 :lines     (split-lines text-lines)))
 
-(defclass pre-line (with-group-id  with-pre-group-id with-lines with-alt-text) ())
+(defclass pre-line (with-group-id with-pre-group-id with-lines with-alt-text) ())
 
 (defmethod print-object ((object pre-line) stream)
   (print-unreadable-object (object stream :type t)
@@ -447,7 +448,7 @@
                  :pre-group-id pre-group-id
                  :alt-text     alt-text))
 
-(defclass vertical-space ()
+(defclass vertical-space (with-group-id)
   ((size
     :initform 1
     :initarg  :size
@@ -465,13 +466,14 @@
                  :group-id gid
                  :level    level))
 
-(defclass unordered-list-line (with-lines) ())
+(defclass unordered-list-line (with-group-id with-lines) ())
 
-(defun make-unordered-list-line (text)
+(defun make-unordered-list-line (text header-group-id)
   (make-instance 'unordered-list-line
+                 :group-id header-group-id
                  :lines    (list text)))
 
-(defclass link-line ()
+(defclass link-line (with-group-id)
   ((link-text
     :initarg  :link-text
     :initform nil
@@ -485,11 +487,23 @@
     :initform nil
     :accessor link-value)))
 
-(defun make-link-line (link-text link-name link-value)
+(defun make-link-line (link-text link-name link-value group-id)
   (make-instance 'link-line
+                 :group-id   group-id
                  :link-text  link-text
                  :link-name  link-name
                  :link-value link-value))
+
+(defclass simple-line (with-group-id)
+  ((text-line
+    :initarg :text-line
+    :initform nil
+    :accessor text-line)))
+
+(defun make-simple-line (text header-group-id)
+  (make-instance 'simple-line
+                 :text-line text
+                 :group-id  header-group-id))
 
 (defun sexp->text-rows (parsed-gemini theme)
   (let ((win-width (message-window:viewport-width (viewport theme))))
@@ -542,8 +556,10 @@
                       (lines     (if justified
                                      (mapcar (lambda (a) (strcat quote-prefix a))
                                              justified)
-                                     quote-prefix)))
-                 (make-quoted-lines (join-with-strings lines (format nil "~%")))))
+                                     quote-prefix))
+                      (header-group-id (current-header-group-id)))
+                 (make-quoted-lines (join-with-strings lines (format nil "~%"))
+                                    header-group-id)))
              (pre-alt-text (node)
                (trim (html-utils:attribute-value (html-utils:find-attribute :alt node))))
              (build-rows ()
@@ -551,20 +567,20 @@
                      collect
                      (cond
                        ((null node)
-                        (make-instance 'vertical-space)) ;(format nil "~%"))
+                        (make-instance 'vertical-space
+                                       :group-id (current-header-group-id))) ;(format nil "~%"))
                        ((html-utils:tag= :as-is node)
                         (let* ((line           (text-value node :trim nil))
                                (fg             (preformatted-fg theme))
-                               (line           (tui:make-tui-string (format nil
-                                                                            "~a"
-                                                                            line)
+                               (line           (tui:make-tui-string (format nil "~a" line)
                                                                     :fgcolor fg)))
                           (make-pre-line (list line)
                                          (current-header-group-id)
                                          (current-pre-group-id)
                                          (current-pre-alt-text))))
                        ((html-utils:tag= :text node)
-                        (format nil "~a~%" (text-value node)))
+                        (make-simple-line (format nil "~a~%" (text-value node))
+                                          (current-header-group-id)))
                        ((html-utils:tag= :h1 node)
                         (make-header 1
                                      (header-prefix-h1 (text-value node))
@@ -582,7 +598,7 @@
                                             "~a ~a"
                                             (bullet-prefix theme)
                                             (text-value node))))
-                          (make-unordered-list-line text)))
+                          (make-unordered-list-line text (current-header-group-id))))
                        ((html-utils:tag= :quote node)
                         (fit-quote-lines (text-value node :trim nil)
                                          win-width))
@@ -596,14 +612,15 @@
                        ((html-utils:tag= :pre-end node)
                         (make-pre-end))
                        ((html-utils:tag= :a node)
-                        (let* ((link-name  (text-value node :trim nil))
-                               (link-value (html-utils:attribute-value
-                                            (html-utils:find-attribute :href
-                                                                       node)))
-                               (link-text  (if link-name
-                                               (linkify link-name  link-value)
-                                               (linkify link-value link-value))))
-                          (make-link-line link-text link-name link-value)))))))
+                        (let* ((link-name       (text-value node :trim nil))
+                               (link-value      (html-utils:attribute-value
+                                                 (html-utils:find-attribute :href
+                                                                            node)))
+                               (link-text       (if link-name
+                                                    (linkify link-name  link-value)
+                                                    (linkify link-value link-value)))
+                               (header-group-id (current-header-group-id)))
+                          (make-link-line link-text link-name link-value header-group-id)))))))
       (flatten (build-rows)))))
 
 (defun parse-gemini-file (data)

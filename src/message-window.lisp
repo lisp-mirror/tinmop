@@ -246,7 +246,8 @@
                  :normal-text (make-tui-string (format nil "~%"))
                  :fields      (list +row-vertical-space-field-key+ 1))))
     (row-add-original-object res original-object)
-    res)) ; even if row-add-original-object returns the modified line explicit returns for clarity
+    (row-add-group-id res (gemini-parser:group-id original-object))
+    res))
 
 (defun row-vertical-space-p (row)
   (getf (fields row) +row-vertical-space-field-key+))
@@ -375,22 +376,20 @@
 (defmethod collect-lines-from-ir ((object gemini-parser:with-lines) (window message-window)
                                   &key &allow-other-keys)
   (let ((colorized-lines (colorize-lines (%fit-lines window (gemini-parser:lines object)))))
-    (loop for i in colorized-lines
+    (loop for text in colorized-lines
           collect
-          (make-instance 'line
-                         :normal-text i))))
+          (let ((res-line (make-instance 'line
+                                         :normal-text text))
+                (group-id (gemini-parser:group-id object)))
+            (row-add-original-object res-line object)
+            (row-add-group-id res-line group-id)
+            res-line))))
 
 (defmethod text->rendered-lines-rows (window (text gemini-parser:quoted-lines))
   (collect-lines-from-ir text window))
 
 (defmethod text->rendered-lines-rows (window (text gemini-parser:header-line))
-  (let* ((group-id (gemini-parser:group-id text))
-         (lines    (collect-lines-from-ir text window))
-         (res      (mapcar (lambda (a)
-                             (let ((line (row-add-original-object a text)))
-                               (row-add-group-id line group-id)))
-                           lines)))
-    res))
+  (collect-lines-from-ir text window))
 
 (defmethod text->rendered-lines-rows (window (text gemini-parser:unordered-list-line))
   (collect-lines-from-ir text window))
@@ -398,6 +397,7 @@
 (defmethod text->rendered-lines-rows (window (text gemini-parser:link-line))
   (let ((res (make-instance 'line :normal-text (gemini-parser:link-text text))))
     (row-add-original-object res text)
+    (row-add-group-id res (gemini-parser:group-id text))
     res)) ; even if row-add-original-object returns the modified line explicit returns for clarity
 
 (defun %fit-text (window text)
@@ -427,6 +427,16 @@
                   text-line
                   (make-instance 'line
                                  :normal-text text-line)))
+            new-rows)))
+
+(defmethod text->rendered-lines-rows (window (text gemini-parser:simple-line))
+  (let* ((fitted-lines (%fit-text window (gemini-parser:text-line text)))
+         (new-rows     (colorize-lines fitted-lines)))
+    (mapcar (lambda (text-line)
+              (let ((res (make-instance 'line
+                                        :normal-text text-line)))
+                (row-add-original-object res text)
+                (row-add-group-id        res (gemini-parser:group-id text))))
             new-rows)))
 
 (defun remove-invisible-rows (rows)
