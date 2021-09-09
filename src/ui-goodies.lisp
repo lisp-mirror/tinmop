@@ -18,7 +18,8 @@
 (in-package :ui-goodies)
 
 (defun boolean-input-accepted-p (user-input)
-  (string-equal user-input (_ "y")))
+  (values (string-equal user-input (_ "y"))
+          (string-not-empty-p user-input)))
 
 (defun open-manual ()
   #+man-bin
@@ -74,12 +75,15 @@
 (defun clean-close-program ()
   "Use this to close the program"
   (flet ((on-input-complete (maybe-accepted)
-           (if (boolean-input-accepted-p maybe-accepted)
-               (let ((delete-event (make-instance 'delete-all-status-event)))
-                 (push-event delete-event))
-               (db-utils:with-ready-database (:connect nil)
-                 (db:renumber-all-timelines '())))
-             (clean-temporary-files)))
+           (multiple-value-bind (y-pressed-p not-null-input-p)
+               (boolean-input-accepted-p maybe-accepted)
+             (when not-null-input-p
+               (if y-pressed-p
+                   (let ((delete-event (make-instance 'delete-all-status-event)))
+                     (push-event delete-event))
+                   (db-utils:with-ready-database (:connect nil)
+                     (db:renumber-all-timelines '())))
+               (clean-temporary-files)))))
     (let ((delete-count        (db:count-status-marked-to-delete))
           (stop-download-event (make-instance 'gemini-abort-all-downloading-event
                                               :priority +maximum-event-priority+)))
