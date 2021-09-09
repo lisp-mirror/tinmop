@@ -43,13 +43,21 @@
   (db-utils:close-db)
   (os-utils:exit-program))
 
+(defmacro with-valid-yes-at-prompt ((input-text y-pressed-p) &body body)
+  (with-gensyms (not-null-input-p)
+  `(multiple-value-bind (,y-pressed-p ,not-null-input-p)
+       (boolean-input-accepted-p ,input-text)
+     (when ,not-null-input-p
+       ,@body))))
+
 (defun clean-temporary-files ()
   "Use this to close the program"
   (flet ((on-input-complete (maybe-accepted)
-           (when (boolean-input-accepted-p maybe-accepted)
-             (fs:clean-temporary-directories)
-             (fs:clean-temporary-files))
-           (push-event (make-instance 'quit-program-event))))
+           (with-valid-yes-at-prompt (maybe-accepted y-pressed-p)
+               (when y-pressed-p
+                 (fs:clean-temporary-directories)
+                 (fs:clean-temporary-files))
+             (push-event (make-instance 'quit-program-event)))))
     (let ((temporary-text        (strcat (format nil
                                                  (_ "~a Temporary files~2%")
                                                  (swconf:gemini-h1-prefix))
@@ -75,15 +83,13 @@
 (defun clean-close-program ()
   "Use this to close the program"
   (flet ((on-input-complete (maybe-accepted)
-           (multiple-value-bind (y-pressed-p not-null-input-p)
-               (boolean-input-accepted-p maybe-accepted)
-             (when not-null-input-p
+           (with-valid-yes-at-prompt (maybe-accepted y-pressed-p)
                (if y-pressed-p
                    (let ((delete-event (make-instance 'delete-all-status-event)))
                      (push-event delete-event))
                    (db-utils:with-ready-database (:connect nil)
                      (db:renumber-all-timelines '())))
-               (clean-temporary-files)))))
+               (clean-temporary-files))))
     (let ((delete-count        (db:count-status-marked-to-delete))
           (stop-download-event (make-instance 'gemini-abort-all-downloading-event
                                               :priority +maximum-event-priority+)))
