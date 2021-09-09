@@ -1138,6 +1138,15 @@ If some posts was deleted before, download them again."
     (open-attach-window:init (db:row-message-status-id selected-message))
     (focus-to-open-attach-window)))
 
+(defun open-all-message-attachments ()
+  (when-let* ((win              *thread-window*)
+              (selected-message (line-oriented-window:selected-row-fields win))
+              (status-id        (db:row-message-status-id selected-message))
+              (attachment-urls  (db:all-attachments-urls-to-status status-id
+                                                                   :add-reblogged-urls t)))
+    (loop for attachment-url in attachment-urls do
+      (open-attach-window:open-attachment attachment-url))))
+
 (defun open-message-attach-move (amount)
   (ignore-errors
     (line-oriented-window:unselect-all *open-attach-window*)

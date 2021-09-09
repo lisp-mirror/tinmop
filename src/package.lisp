@@ -2580,6 +2580,7 @@
    :compose-message
    :reply-message
    :open-message-attach
+   :open-all-message-attachments
    :open-message-attach-go-up
    :open-message-attach-go-down
    :open-message-attach-perform-opening

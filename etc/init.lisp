@@ -483,6 +483,8 @@
 
 (define-key "C-J"       #'open-message-attach-perform-opening           *open-attach-keymap*)
 
+(define-key "a"         #'open-all-message-attachments                  *open-attach-keymap*)
+
 (define-key "up"        #'open-message-attach-go-up                     *open-attach-keymap*)
 
 (define-key "down"      #'open-message-attach-go-down                   *open-attach-keymap*)
