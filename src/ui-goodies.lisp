@@ -728,9 +728,13 @@ folder \"mentions\"."
 
 Starting from the oldest toot and going back."
   (flet ((update-payload ()
-           (let* ((timeline          (thread-window:timeline-type *thread-window*))
-                  (folder            (thread-window:timeline-folder *thread-window*))
-                  (min-id            (db:first-pagination-status-id-timeline-folder timeline folder)))
+           (let* ((timeline            (thread-window:timeline-type *thread-window*))
+                  (folder              (thread-window:timeline-folder *thread-window*))
+                  (min-id              (db:first-pagination-status-id-timeline-folder timeline
+                                                                                      folder))
+                  (win                 *thread-window*)
+                  (selected-message    (line-oriented-window:selected-row-fields win))
+                  (selected-message-id (db:row-message-status-id selected-message)))
              (multiple-value-bind (kind localp)
                  (timeline->kind timeline)
                (with-notify-errors
@@ -741,7 +745,9 @@ Starting from the oldest toot and going back."
                                          :recover-from-skipped-statuses t
                                          :max-id                        min-id
                                          :local                         localp)
-                 (let ((refresh-event (make-instance 'refresh-thread-windows-event)))
+                 (let ((refresh-event (make-instance 'refresh-thread-windows-event
+                                                     :message-status-id selected-message-id)))
+
                    (push-event refresh-event)))))))
     (%update-timeline-event #'update-payload)))
 
