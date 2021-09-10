@@ -560,6 +560,12 @@
     :initarg  :message-index
     :accessor message-index)))
 
+(defclass event-with-message-status-id ()
+  ((message-status-id
+    :initform nil
+    :initarg  :message-status-id
+    :accessor message-status-id)))
+
 (defclass event-with-timeline-and-folder ()
   ((new-folder
     :initform nil
@@ -572,13 +578,15 @@
 
 (defclass refresh-thread-windows-event (program-event
                                         event-with-message-index
+                                        event-with-message-status-id
                                         event-with-timeline-and-folder)
   ())
 
 (defmethod process-event ((object refresh-thread-windows-event))
-  (with-accessors ((new-folder    new-folder)
-                   (new-timeline  new-timeline)
-                   (message-index message-index)) object
+  (with-accessors ((new-folder        new-folder)
+                   (new-timeline      new-timeline)
+                   (message-index     message-index)
+                   (message-status-id message-status-id)) object
     (assert message-index)
     (when new-timeline
       (setf (thread-window:timeline-type specials:*thread-window*)
@@ -587,6 +595,7 @@
       (setf (thread-window:timeline-folder specials:*thread-window*)
             new-folder))
     (line-oriented-window:resync-rows-db specials:*thread-window*
+                                         :suggested-status-id     message-status-id
                                          :suggested-message-index message-index
                                          :redraw                  t)))
 

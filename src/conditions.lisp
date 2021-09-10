@@ -45,6 +45,11 @@
    (idx
     :initarg :idx
     :reader idx))
+  (:report (lambda (condition stream)
+             (format stream
+                     "sequence length ~a index ~a"
+                     (length (seq condition))
+                     (idx condition))))
   (:documentation "Error when you go out of bound"))
 
 (define-condition length-error (text-error)

@@ -1,3 +1,178 @@
+2021-09-09  cage
+
+	- added a command to open all the attachments of a post.
+	- prevented  quitting program  when users does  not input  a valid
+	answer at prompt asking for deleting temp files.
+	- prevented  quitting program  when users does  not input  a valid
+	answer at prompt asking for deleting pleroma messages.
+
+2021-09-04  cage
+
+	- removed useless comment.
+	- added group-id property to all gemtext elements.
+	- changed function name from 'header-group-id' to 'current-header-group-id'.
+
+2021-09-03  cage
+
+	- [gemini]  added 'pre-group-id' slot to  gemini text preformatted
+	line; this changes fixed the selection of a TOC entry when reading
+	a gemini text too.
+
+2021-09-03  cage
+
+	- highlighted current TOC entry while browsing gemini page/gempub;
+	- added hook:*before-rendering-message-visible-rows*;
+	- changed default: appending hooks by default in hook:add-hook.
+
+2021-09-02  cage
+
+	- updated Italian translation.
+	- updated version of croatoan installed by the building script;
+	- updated makefile rule to recompile the binary if asdf file is modified.
+
+2021-08-29  cage
+
+	- forced colors to selected line in line oriented-window.
+	- improved search command apropos.
+	- removed debug message.
+
+2021-08-28  cage
+
+	- added command to show bookmarks also to global keymap;
+	- switched to gemini keymap when opening a gemini page from memory.
+	- fixed 'valid-results-p' when a global search is performed.
+	- added 'apropos-help-global'.
+	- updated manpage and docstring relative to gempub and tour mode.
+	- fixed position of cursor when expanding abbreviations.
+	- added more terms when searching gempub metadata ('<', '>', '<=',
+	'<=', '=' '!=').
+	-  allowed line-oriented-window  to render  unselected items  with
+	different  color than  foreground; -  captured parsing  errors when
+	querying gempub library.
+	- updated Italian translation;
+	- updated welcome window's text.
+	- added 'open-manual'.
+	- allowed a custom init.lisp file in the config user home.
+
+2021-08-27  cage
+
+	- prevented  non local  links to  be in tour  mode when  opening a
+	gempub.
+	-  automatically add  a  tour  mode to  browse  the contents  when
+	opening a gempub.
+	- defined alias for 'zip-file-p' as 'gempub-file-p'.
+
+2021-08-26  cage
+
+	- wrote selected gempub entry in bold.
+	- fixed comment.
+	- used default path for gempub library.
+	- added TOC when a gemini file is loaded from a local file.
+	- respected index metadata when opening a gempub file.
+	- prevented crash  when probing for a zip file  which size is less
+	than the maximum size of end of central directory registry.
+	- ensured  'gempub-metadata-find' returns a single  row; - ensured
+	gempub paths are normalized before  adding in the library; - added
+	opening of gempub files from gempub library window.
+
+2021-08-25  cage
+
+	- added a window to show gempub file's library.
+
+2021-08-23  cage
+
+	- added  a directory to store  gempub, the software will  sync the
+	directory's contents with its internal metadata database.
+
+2021-08-22  cage
+
+	- [gempub] added extraction of metadata from gempub;
+	- added table to save gempub's metadata.
+	- removed exiting from configure if unzip is not found.
+	- fixed test to add gempub-support in features.
+	- added gempub-support in *features*;
+	- removed generated file config.lisp.in.
+
+2021-08-21  cage
+
+	- added zip-info:list-entries.
+
+2021-08-20  cage
+
+	- fixed typo.
+	- sorted directory entries when rendering a directory using tinmop.
+	- added draft of gpub support; - updated translation template files
+	and Italian translation.
+	- added 'temporary-directory'.
+	-  added dependency  on  'unzip';
+	-  added  'unzip-file';
+	-  fixed zip-info constant name.
+	- added function 'zip-file-p' to recognize zip files.
+
+2021-08-16  cage
+
+	- set open-message-link-window.close-after-select to 'yes'.
+	- prevented crash  when opening tour mode  links and configuration
+	directive   'open-message-link-window.close-after-select'   values
+	'yes'.
+	- added deletion of bookmark's entries.
+	- added a title to bookmark page.
+	- started with gemini link bookmark.
+
+2021-08-15  cage
+
+	- prevented a race condition occurring when accessing the database
+	on program quit.
+
+2021-08-14  cage
+
+	-  move cursor  to the  end of  the string  when browsing  command
+	line's history.
+	- complete in  a different way things that looks  like local paths
+	when opening gemini  address.  - prevented a crash  when opening a
+	directory that does not exists on local file system.
+	- fixed Italian format string.
+	- fixed regression: command apropos works again.
+	- prevented two  messages with the same  message-index presents in
+	the same folder and timeline.
+	- refactored gemlog updating event.
+	- ignored error when refreshing gemlogs.
+
+2021-08-13  cage
+
+	- forced resizing of suggestion window when terminal is resized.
+	-  improved  macro 'when-window-shown'  to  prevent  crash of  the
+	program when terminal window is too small.
+
+2021-08-12  cage
+
+	- added loading module for abbreviation by default in config file.
+	- prevented crash when terminal height was to small to fits suggestion window.
+	- changed abbreviation.
+	- updated italian translation.
+	- made gemlog's updating non blocking.
+
+2021-08-07  cage
+
+	- updated docs for module.
+	- prevented crash when suggestion windows are shown when the width
+	of the terminal was too thin paginating the suggestions failed.
+	- updated Makefile.in to include new module.
+
+2021-08-06  cage
+
+	- instructed Makefile to install module 'expand-abbrev-command-window'.
+	- removed nobase in Makefile.am.
+	- added keychord to opening  gemini certificate window from global
+	keymap.
+	- allowed switching off abbreviations on the command-window.
+	- added a module to expand abbreviations for the command window.
+
+2021-08-05  cage
+
+	- prevented stripping of directory for data and doc files;
+	- updated Changelog.
+
 2021-08-03  cage
 
 	* src/package.lisp,

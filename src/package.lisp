@@ -1948,6 +1948,7 @@
    :rows-length
    :rows-empty-p
    :rows-remove-if
+   :rows-find-if
    :rows-safe-subseq
    :rows-elt
    :rows-last-elt

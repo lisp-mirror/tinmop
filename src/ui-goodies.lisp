@@ -697,21 +697,26 @@ This  command  also checks  notifications  about  mentioning the  user
 and (if  such mentions  exists) download the  mentioning toots  in the
 folder \"mentions\"."
   (flet ((update-payload ()
-           (let* ((timeline (thread-window:timeline-type *thread-window*))
-                  (folder   (thread-window:timeline-folder *thread-window*))
-                  (max-id   (db:last-pagination-status-id-timeline-folder timeline folder)))
+           (let* ((timeline            (thread-window:timeline-type *thread-window*))
+                  (folder              (thread-window:timeline-folder *thread-window*))
+                  (max-id              (db:last-pagination-status-id-timeline-folder timeline folder))
+                  (win                 *thread-window*)
+                  (selected-message    (line-oriented-window:selected-row-fields win))
+                  (selected-message-id (db:row-message-status-id selected-message)))
              (multiple-value-bind (kind localp)
                  (timeline->kind timeline)
                (with-notify-errors
-                   (client:update-timeline timeline
-                                           kind
-                                           folder
-                                           :recover-from-skipped-statuses t
-                                           :recover-count                 recover-count
-                                           :min-id                        max-id
-                                           :local                         localp)
+                 (client:update-timeline timeline
+                                         kind
+                                         folder
+                                         :recover-from-skipped-statuses t
+                                         :recover-count                 recover-count
+                                         :min-id                        max-id
+                                         :local                         localp)
                  (let ((update-mentions-event (make-instance 'update-mentions-event))
-                       (refresh-event         (make-instance 'refresh-thread-windows-event)))
+                       (refresh-event         (make-instance 'refresh-thread-windows-event
+                                                             :message-status-id
+                                                             selected-message-id)))
                    ;; updating home also triggers the checks for mentions
                    (when (eq kind :home)
                      (push-event update-mentions-event))
@@ -742,8 +747,7 @@ Starting from the oldest toot and going back."
 
 (defun expand-status-tree (force)
   (flet ((update ()
-           (when-let* ((selected-message
-                        (line-oriented-window:selected-row-fields *thread-window*))
+           (when-let* ((selected-message (line-oriented-window:selected-row-fields *thread-window*))
                        (timeline         (thread-window:timeline-type *thread-window*))
                        (folder           (thread-window:timeline-folder *thread-window*))
                        (status-id        (actual-author-message-id selected-message))

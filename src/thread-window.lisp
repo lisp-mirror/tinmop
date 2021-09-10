@@ -773,7 +773,7 @@ db:renumber-timeline-message-index."
                                     message-index))))))
 
 (defmethod goto-first-message ((object thread-window))
-    (goto-message object db:+message-index-start+))
+  (goto-message object db:+message-index-start+))
 
 (defmethod goto-last-message ((object thread-window))
   (with-accessors ((timeline-folder timeline-folder)
@@ -781,7 +781,17 @@ db:renumber-timeline-message-index."
     (when-let ((last-message-index (db:last-message-index-status timeline-type timeline-folder)))
       (goto-message object last-message-index))))
 
-(defmethod resync-rows-db ((object thread-window) &key (redraw t) (suggested-message-index nil))
+(defun find-row-with-status-id (thread-window status-id)
+  (rows-find-if thread-window
+                (lambda (a) (client:id= status-id (db:row-message-status-id (fields a))))))
+
+
+
+(defmethod resync-rows-db ((object thread-window)
+                           &key
+                             (redraw t)
+                             (suggested-message-index nil)
+                             (suggested-status-id     nil))
   (with-accessors ((row-selected-index row-selected-index)
                    (rows               rows)) object
     (when-window-shown (object)
@@ -793,11 +803,19 @@ db:renumber-timeline-message-index."
         (handler-bind ((conditions:out-of-bounds
                          (lambda (e)
                            (invoke-restart 'ignore-selecting-action e))))
+          (when suggested-status-id
+            (when-let* ((future-selected-row    (find-row-with-status-id object
+                                                                         suggested-status-id))
+                        (future-selected-db-row (fields future-selected-row))
+                        (future-selected-index  (db:row-message-index future-selected-db-row)))
+              (setf first-message-index future-selected-index)))
           (multiple-value-bind (tree pos)
               (fit-timeline-to-window object first-message-index)
             (build-lines object tree pos)
             (unselect-all object)
-            (select-row object saved-row-selected-index)
+            (if suggested-status-id
+                (select-row object pos)
+                (select-row object saved-row-selected-index))
             (when redraw
               (draw object)))))))
   object)
