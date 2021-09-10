@@ -2129,9 +2129,9 @@ reblogged (if exists)."
               (= value +db-false+)))
   (let ((query (update :status
                  (set= column value)
-                  (where (:and (:= :timeline timeline)
-                               (:= :folder folder)
-                               (:= :status-id status-id))))))
+                 (where (:and (:= :timeline timeline)
+                              (:= :folder folder)
+                              (:= :status-id status-id))))))
     (query query)))
 
 (defun mark-status-red-p (timeline folder status-id)

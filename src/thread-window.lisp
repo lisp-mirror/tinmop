@@ -882,17 +882,23 @@ db:renumber-timeline-message-index."
 
 (defmethod mark-selected-message-to-delete ((object thread-window)
                                             &key (move-down-selected-message nil))
-  (mark-selected-status-boolean-value object #'db:mark-status-deleted-p)
-  (resync-rows-db object :redraw t)
-  (when move-down-selected-message
-    (go-message-down object)))
+  (if (selected-row object)
+      (progn
+        (mark-selected-status-boolean-value object #'db:mark-status-deleted-p)
+        (resync-rows-db object :redraw t)
+        (when move-down-selected-message
+          (go-message-down object)))
+      (ui:error-message (_ "No message to delete"))))
 
 (defmethod mark-selected-message-prevent-delete ((object thread-window)
                                                  &key (move-down-selected-message nil))
-  (mark-selected-status-boolean-value object #'db:mark-status-prevent-deletion)
-  (resync-rows-db object :redraw t)
-  (when move-down-selected-message
-    (go-message-down object)))
+  (if (selected-row object)
+      (progn
+        (mark-selected-status-boolean-value object #'db:mark-status-prevent-deletion)
+        (resync-rows-db object :redraw t)
+        (when move-down-selected-message
+          (go-message-down object)))
+      (ui:error-message (_ "No message to undelete"))))
 
 (defun rebuild-lines (window message-id)
   (multiple-value-bind (tree pos)
