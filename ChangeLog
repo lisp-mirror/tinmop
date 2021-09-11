@@ -1,3 +1,18 @@
+021-09-10  cage
+
+	- updated italian translation.
+	- prevented moving selected message when updating a timeline backward.
+	- prevented crash when mark or unmark for deletion an empty thread window.
+	- prevented moving selected message when updating a timeline.
+
+2021-09-09  cage
+
+	- added a command to open all the attachments of a post.
+	- prevented  quitting program  when users does  not input  a valid
+	answer at prompt asking for deleting temp files.
+	- prevented  quitting program  when users does  not input  a valid
+	answer at prompt asking for deleting pleroma messages.
+
 2021-09-09  cage
 
 	- added a command to open all the attachments of a post.
