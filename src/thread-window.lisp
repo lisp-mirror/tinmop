@@ -756,29 +756,43 @@ db:renumber-timeline-message-index."
               (select-row object new-index)))
         (draw object)))))
 
+(defun message-index-valid-p (timeline-type timeline-folder message-index)
+  (db:message-from-timeline-folder-message-index timeline-type
+                                                 timeline-folder
+                                                 message-index))
+
+(defun update-thread-window (window message-index)
+  (multiple-value-bind (tree pos)
+      (fit-timeline-to-window window message-index)
+    (build-lines window tree pos)))
+
 (defmethod goto-message ((object thread-window) (message-index number) &key (redraw t))
   (with-accessors ((timeline-folder timeline-folder)
                    (timeline-type   timeline-type)) object
-    (let ((message (db:message-from-timeline-folder-message-index timeline-type
-                                                                  timeline-folder
-                                                                  message-index)))
-      (if message
-          (multiple-value-bind (tree pos)
-              (fit-timeline-to-window object message-index)
-            (build-lines object tree pos)
+    (let ((message-index-valid-p (message-index-valid-p timeline-type
+                                                        timeline-folder
+                                                        message-index)))
+      (if message-index-valid-p
+          (progn
+            (update-thread-window object message-index)
             (when redraw
               (draw object)))
           (ui:info-message (format nil
                                     (_ "No message with index ~a exists.")
                                     message-index))))))
 
+(defun message-tuple-id->message-index (timeline-type timeline-folder status-id)
+  (when-let* ((message (db::message-from-timeline-folder-id timeline-type
+                                                            timeline-folder
+                                                            status-id)))
+    (db:row-message-index message)))
+
 (defmethod goto-message ((object thread-window) (message-index string) &key (redraw t))
   (with-accessors ((timeline-folder timeline-folder)
                    (timeline-type   timeline-type)) object
-    (when-let* ((message (db::message-from-timeline-folder-id timeline-type
-                                                              timeline-folder
-                                                              message-index))
-                (index   (db:row-message-index message)))
+    (when-let* ((index (message-tuple-id->message-index timeline-type
+                                                        timeline-folder
+                                                        message-index)))
       (goto-message object index :redraw redraw))))
 
 (defmethod goto-first-message ((object thread-window))
@@ -800,17 +814,24 @@ db:renumber-timeline-message-index."
                              (suggested-message-index nil)
                              (suggested-status-id     nil))
   (with-accessors ((row-selected-index row-selected-index)
-                   (rows               rows)) object
+                   (rows             rows)
+                   (timeline-folder timeline-folder)
+                   (timeline-type   timeline-type)) object
     (when-window-shown (object)
       (cond
         (suggested-status-id
-         (goto-message object suggested-status-id :redraw redraw))
+         (let ((message-index (message-tuple-id->message-index timeline-type
+                                                        timeline-folder
+                                                        suggested-status-id)))
+           (update-thread-window object message-index)))
         (suggested-message-index
-         (goto-message object suggested-message-index :redraw redraw))
+         (update-thread-window object suggested-message-index))
         (t
          (let* ((selected-row  (selected-row object))
                 (message-index (db:row-message-index (fields selected-row))))
-           (goto-message object message-index :redraw redraw))))))
+           (update-thread-window object message-index))))
+      (when redraw
+        (draw object))))
   object)
 
 (defun reblogged-data (reblogger-status)
