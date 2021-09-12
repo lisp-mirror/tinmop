@@ -608,8 +608,7 @@ current has focus"
                       :complete-fn #'complete:complete-always-empty)))
 
 (defun apropos-help-global ()
-  "Print a  command's documentation  matching a regular  expression in
-all commands database."
+  "Print a  command's documentation  matching a regular  expression in all commands database."
   (flet ((on-input-complete (regex)
            (let ((event (make-instance 'help-apropos-event
                                        :globalp t
