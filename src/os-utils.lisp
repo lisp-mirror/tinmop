@@ -90,6 +90,12 @@
                       :output output
                       :error  error))
 
+(defun process-exit-code (process)
+  (sb-ext:process-exit-code process))
+
+(defun process-exit-success-p (process)
+  (= (process-exit-code process) 0))
+
 (defun open-with-editor (file)
   (multiple-value-bind (exe args)
       (external-editor)

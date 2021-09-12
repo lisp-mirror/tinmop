@@ -26,13 +26,15 @@
   (progn
     (croatoan:end-screen)
     (tui:with-notify-errors
-      (os-utils::run-external-program +man-bin+
-                                      (list +program-name+)
-                                      :search t
-                                      :wait   t
-                                      :input  t
-                                      :output t
-                                      :error  t)))
+      (let ((process (os-utils:run-external-program +man-bin+
+                                                    (list +program-name+)
+                                                    :search t
+                                                    :wait   t
+                                                    :input  t
+                                                    :output t
+                                                    :error  t)))
+        (when (not (os-utils:process-exit-success-p process))
+          (error (_ "Unable to load manual, contact your system administrator"))))))
   #-man-bin
   (notify (_ "No manpage binary found on this system") :as-error t))
 

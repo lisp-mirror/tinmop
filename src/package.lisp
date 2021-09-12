@@ -339,6 +339,9 @@
    :getenv
    :default-temp-dir
    :pwd
+   :run-external-program
+   :process-exit-code
+   :process-exit-success-p
    :open-with-editor
    :exit-program
    :user-cache-dir
