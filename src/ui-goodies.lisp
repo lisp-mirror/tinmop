@@ -763,7 +763,8 @@ Starting from the oldest toot and going back."
                                                         :new-timeline timeline
                                                         :status-id    status-id))
                        (refresh-event    (make-instance 'refresh-thread-windows-event
-                                                        :priority +minimum-event-priority+)))
+                                                        :priority +minimum-event-priority+
+                                                        :message-status-id status-id)))
              (push-event expand-event)
              (push-event refresh-event))))
     (notify-procedure #'update (_ "Expanding thread"))))
