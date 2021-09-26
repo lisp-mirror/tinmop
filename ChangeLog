@@ -1,198 +1,476 @@
-021-09-10  cage
+2021-09-12 cage
 
-	- updated italian translation.
+	* src/os-utils.lisp,
+	* src/package.lisp,
+	* src/ui-goodies.lisp:
+
+	- fixed docstring.
+
+	- notified an error when the manpage can not be printed on screen.
+
+	- prevented moving of the selected message in thread window when a
+	thread is expanded.
+
+2021-09-11 cage
+
+	* ChangeLog,
+	* src/thread-window.lisp:
+
+	- fixed thread-window:resync-rows-db, was not redrawing the window if no
+	message was presents.
+
+	- improved positioning of selected row in
+	'thread-window:resync-rows-db'.
+
+	- updated changelog.
+
+2021-09-10 cage
+
+	* ChangeLog,
+	* po/it.po,
+	* po/tinmop.pot,
+	* src/conditions.lisp,
+	* src/db.lisp,
+	* src/line-oriented-window.lisp,
+	* src/package.lisp,
+	* src/program-events.lisp,
+	* src/thread-window.lisp,
+	* src/ui-goodies.lisp:
+
+	- prevented crash when mark or unmark for deletion an empty thread
+	window.
+
 	- prevented moving selected message when updating a timeline backward.
-	- prevented crash when mark or unmark for deletion an empty thread window.
+
 	- prevented moving selected message when updating a timeline.
 
-2021-09-09  cage
+	- updated italian translation.
+
+2021-09-09 cage
+
+	* etc/init.lisp,
+	* src/package.lisp,
+	* src/ui-goodies.lisp:
 
 	- added a command to open all the attachments of a post.
-	- prevented  quitting program  when users does  not input  a valid
-	answer at prompt asking for deleting temp files.
-	- prevented  quitting program  when users does  not input  a valid
-	answer at prompt asking for deleting pleroma messages.
 
-2021-09-09  cage
+	- prevented quitting program when users does not input a valid answer at
+	prompt asking for deleting pleroma messages.
 
-	- added a command to open all the attachments of a post.
-	- prevented  quitting program  when users does  not input  a valid
-	answer at prompt asking for deleting temp files.
-	- prevented  quitting program  when users does  not input  a valid
-	answer at prompt asking for deleting pleroma messages.
+	- prevented quitting program when users does not input a valid answer at
+	prompt asking for deleting temp files.
 
-2021-09-04  cage
+2021-09-04 cage
+
+	* src/gemini/gemini-parser.lisp,
+	* src/gemini/package.lisp,
+	* src/message-window.lisp:
+
+	- added group-id property to all gemtext elements.
+
+	- changed function name from 'header-group-id' to
+	'current-header-group-id'.
 
 	- removed useless comment.
-	- added group-id property to all gemtext elements.
-	- changed function name from 'header-group-id' to 'current-header-group-id'.
 
-2021-09-03  cage
+2021-09-03 cage
 
-	- [gemini]  added 'pre-group-id' slot to  gemini text preformatted
-	line; this changes fixed the selection of a TOC entry when reading
-	a gemini text too.
+	* src/gemini-page-toc.lisp,
+	* src/gemini/gemini-parser.lisp,
+	* src/gemini/package.lisp,
+	* src/hooks.lisp,
+	* src/message-window.lisp,
+	* src/package.lisp,
+	* src/ui-goodies.lisp:
 
-2021-09-03  cage
+	- [gemini] added 'pre-group-id' slot to gemini text preformatted   line;
+	this  changes fixed  the selection  of a  TOC entry  when   reading  a
+	gemini text too.
 
-	- highlighted current TOC entry while browsing gemini page/gempub;
 	- added hook:*before-rendering-message-visible-rows*;
+
 	- changed default: appending hooks by default in hook:add-hook.
 
-2021-09-02  cage
+	- highlighted current TOC entry while browsing gemini page/gempub;
 
-	- updated Italian translation.
+2021-09-02 cage
+
+	* Makefile.am,
+	* Makefile.in,
+	* po/POTFILES.in,
+	* po/it.po,
+	* po/tinmop.pot,
+	* quick_quicklisp.sh.in,
+	* tinmop.asd:
+
+	- updated italian translation.
+
+	- updated makefile rule to recompile the binary if asdf file is
+	modified.
+
 	- updated version of croatoan installed by the building script;
-	- updated makefile rule to recompile the binary if asdf file is modified.
 
-2021-08-29  cage
+2021-08-29 cage
+
+	* src/keybindings.lisp,
+	* src/line-oriented-window.lisp,
+	* src/package.lisp,
+	* src/tui-utils.lisp:
 
 	- forced colors to selected line in line oriented-window.
+
 	- improved search command apropos.
+
 	- removed debug message.
 
-2021-08-28  cage
+2021-08-28 cage
 
-	- added command to show bookmarks also to global keymap;
-	- switched to gemini keymap when opening a gemini page from memory.
-	- fixed 'valid-results-p' when a global search is performed.
+	* Makefile.in,
+	* configure,
+	* configure.ac,
+	* doc/man.org,
+	* etc/default-theme.conf,
+	* etc/init.lisp,
+	* modules/expand-abbrev-command-window.lisp,
+	* po/it.po,
+	* po/tinmop.pot,
+	* src/config.lisp.in.in,
+	* src/constants.lisp,
+	* src/gempub.lisp,
+	* src/keybindings.lisp,
+	* src/line-oriented-window.lisp,
+	* src/main.lisp,
+	* src/open-attach-window.lisp,
+	* src/package.lisp,
+	* src/program-events.lisp,
+	* src/software-configuration.lisp,
+	* src/ui-goodies.lisp:
+
 	- added 'apropos-help-global'.
-	- updated manpage and docstring relative to gempub and tour mode.
-	- fixed position of cursor when expanding abbreviations.
-	- added more terms when searching gempub metadata ('<', '>', '<=',
-	'<=', '=' '!=').
-	-  allowed line-oriented-window  to render  unselected items  with
-	different  color than  foreground; -  captured parsing  errors when
-	querying gempub library.
-	- updated Italian translation;
-	- updated welcome window's text.
+
 	- added 'open-manual'.
+
+	- added command to show bookmaks also to global keymap;
+
+	- added more terms when searching gempub metadata ('<', '>', '<=', '<=',
+	'=' '!=').
+
+	- allowed  line-oriented-window   to  render  unselected   items   with
+	different color than foreground;
+
 	- allowed a custom init.lisp file in the config user home.
 
-2021-08-27  cage
+	- capured parsing errors when querying gempub library.
 
-	- prevented  non local  links to  be in tour  mode when  opening a
+	- fixed 'valid-results-p' when a global search is performed.
+
+	- fixed position of cursor when expanding abbreviations.
+
+	- switched to gemini keymap when opening a gemini page from memory.
+
+	- updated italian translation;
+
+	- updated manpage and docstring relative to gempub and tour mode.
+
+	- updated welcome window's text.
+
+2021-08-27 cage
+
+	* src/gempub.lisp,
+	* src/package.lisp,
+	* src/program-events.lisp,
+	* src/ui-goodies.lisp:
+
+	- automatically add a tour mode to browse the contents when opening a
 	gempub.
-	-  automatically add  a  tour  mode to  browse  the contents  when
-	opening a gempub.
+
 	- defined alias for 'zip-file-p' as 'gempub-file-p'.
 
-2021-08-26  cage
+	- prevented non local links to be in tour mode when opening a gempub.
+
+2021-08-26 cage
+
+	* etc/default-theme.conf,
+	* etc/init.lisp,
+	* etc/shared.conf,
+	* src/db.lisp,
+	* src/gemini-viewer.lisp,
+	* src/gempub.lisp,
+	* src/package.lisp,
+	* src/program-events.lisp,
+	* src/ui-goodies.lisp,
+	* src/zip-info.lisp:
+
+	- added opening of gempub files from gempub library window.
+
+	- added toc when a gemini file is loaded from a local file.
+
+	- ensured 'gempub-metadata-find' returns a single row;
+
+	- ensured gempub paths are normalized before adding in the library;
+
+	- fixed comment.
+
+	- prevented crash when probing for a zip file which size is less than
+	the mazimum size of end of central directory registry.
+
+	- respected index metadata when opening a gempub file.
+
+	- used default path for gempub library.
 
 	- wrote selected gempub entry in bold.
-	- fixed comment.
-	- used default path for gempub library.
-	- added TOC when a gemini file is loaded from a local file.
-	- respected index metadata when opening a gempub file.
-	- prevented crash  when probing for a zip file  which size is less
-	than the maximum size of end of central directory registry.
-	- ensured  'gempub-metadata-find' returns a single  row; - ensured
-	gempub paths are normalized before  adding in the library; - added
-	opening of gempub files from gempub library window.
 
-2021-08-25  cage
+2021-08-25   cage
+
+	* etc/default-theme.conf,
+	* etc/init.lisp,
+	* src/db.lisp,
+	* src/gempub.lisp,
+	* src/keybindings.lisp,
+	* src/package.lisp,
+	* src/software-configuration.lisp,
+	* src/specials.lisp,
+	* src/ui-goodies.lisp:
 
 	- added a window to show gempub file's library.
 
-2021-08-23  cage
+2021-08-23   cage
 
-	- added  a directory to store  gempub, the software will  sync the
+	* etc/shared.conf,
+	* src/db-utils.lisp,
+	* src/db.lisp,
+	* src/filesystem-utils.lisp,
+	* src/gempub.lisp,
+	* src/package.lisp,
+	* src/scheduled-events.lisp,
+	* src/software-configuration.lisp,
+	* src/zip-info.lisp:
+
+	- added a directory to store gempub, the software will sync the
 	directory's contents with its internal metadata database.
 
-2021-08-22  cage
+2021-08-22 cage
+
+	* .gitignore,
+	* configure,
+	* configure.ac,
+	* src/config.lisp.in,
+	* src/config.lisp.in.in,
+	* src/db.lisp,
+	* src/gempub.lisp,
+	* src/line-oriented-window.lisp,
+	* src/os-utils.lisp,
+	* src/package.lisp,
+	* tinmop.asd:
 
 	- [gempub] added extraction of metadata from gempub;
-	- added table to save gempub's metadata.
-	- removed exiting from configure if unzip is not found.
-	- fixed test to add gempub-support in features.
+
 	- added gempub-support in *features*;
+
+	- added table to save gempub's metadata.
+
+	- fixed test to add gempub-support in features.
+
+	- removed exiting from configure if unzip is not found.
+
 	- removed generated file config.lisp.in.
 
-2021-08-21  cage
+2021-08-21   cage
+
+	* src/package.lisp,
+	* src/zip-info.lisp:
 
 	- added zip-info:list-entries.
 
-2021-08-20  cage
+2021-08-20 cage
 
-	- fixed typo.
-	- sorted directory entries when rendering a directory using tinmop.
-	- added draft of gpub support; - updated translation template files
-	and Italian translation.
+	* Makefile.in,
+	* configure,
+	* configure.ac,
+	* etc/shared.conf,
+	* po/POTFILES.in,
+	* po/it.po,
+	* po/tinmop.pot,
+	* src/config.lisp.in,
+	* src/config.lisp.in.in,
+	* src/filesystem-utils.lisp,
+	* src/os-utils.lisp,
+	* src/package.lisp,
+	* src/program-events.lisp,
+	* src/ui-goodies.lisp,
+	* src/zip-info.lisp,
+	* tinmop.asd:
+
 	- added 'temporary-directory'.
-	-  added dependency  on  'unzip';
-	-  added  'unzip-file';
-	-  fixed zip-info constant name.
+
+	- added 'unzip-file';
+
+	- added dependency on 'unzip';
+
+	- added draft of gpub support;
+
 	- added function 'zip-file-p' to recognize zip files.
 
-2021-08-16  cage
+	- fixed typo.
+
+	- fixed zip-info conatant name.
+
+	- sorted directory entries when rendering a directory using tinmop.
+
+	- updated tranlation template files and italian translation.
+
+2021-08-16 cage
+
+	* etc/init.lisp,
+	* etc/shared.conf,
+	* src/complete.lisp,
+	* src/db.lisp,
+	* src/gemini/gemini-parser.lisp,
+	* src/gemini/package.lisp,
+	* src/gemini/subscription.lisp,
+	* src/package.lisp,
+	* src/program-events.lisp,
+	* src/ui-goodies.lisp:
+
+	- added a title to bookmark page.
+
+	- added deletion of bookmark's entries.
+
+	- prevented crash when opening tour mode links and configuration
+	directive 'open-message-link-window.close-after-select' values 'yes'.
 
 	- set open-message-link-window.close-after-select to 'yes'.
-	- prevented crash  when opening tour mode  links and configuration
-	directive   'open-message-link-window.close-after-select'   values
-	'yes'.
-	- added deletion of bookmark's entries.
-	- added a title to bookmark page.
+
 	- started with gemini link bookmark.
 
-2021-08-15  cage
+2021-08-15   cage
 
-	- prevented a race condition occurring when accessing the database
-	on program quit.
+	* src/ui-goodies.lisp:
 
-2021-08-14  cage
+	- prevented a race condition occurring when accessing the database on
+	program quit.
 
-	-  move cursor  to the  end of  the string  when browsing  command
-	line's history.
-	- complete in  a different way things that looks  like local paths
-	when opening gemini  address.  - prevented a crash  when opening a
-	directory that does not exists on local file system.
-	- fixed Italian format string.
+2021-08-14 cage
+
+	* po/it.po,
+	* src/command-window.lisp,
+	* src/complete.lisp,
+	* src/db.lisp,
+	* src/keybindings.lisp,
+	* src/line-oriented-window.lisp,
+	* src/package.lisp,
+	* src/program-events.lisp,
+	* src/ui-goodies.lisp,
+	* src/windows.lisp:
+
+	- complete in a different way things that looks like local paths when
+	opening gemini address.
+
+	- fixed italian format string.
+
 	- fixed regression: command apropos works again.
-	- prevented two  messages with the same  message-index presents in
-	the same folder and timeline.
-	- refactored gemlog updating event.
+
 	- ignored error when refreshing gemlogs.
 
-2021-08-13  cage
+	- move cursor to the end of th estring when browsing command line's
+	history.
+
+	- prevented a crash when opening a directory that does not exists on
+	local filesystem.
+
+	- prevented two messages with the same message-index presents in the
+	same folder and timeline.
+
+	- refactored gemlog updating event.
+
+2021-08-13 cage
+
+	* src/command-window.lisp,
+	* src/line-oriented-window.lisp,
+	* src/package.lisp,
+	* src/tags-window.lisp,
+	* src/thread-window.lisp,
+	* src/windows.lisp:
 
 	- forced resizing of suggestion window when terminal is resized.
-	-  improved  macro 'when-window-shown'  to  prevent  crash of  the
-	program when terminal window is too small.
 
-2021-08-12  cage
+	- improved macro 'when-window-shown' to prevent crash of the program
+	when terminal window is too small.
+
+2021-08-12 cage
+
+	* etc/init.lisp,
+	* etc/shared.conf,
+	* modules/expand-abbrev-command-window.lisp,
+	* po/it.po,
+	* po/tinmop.pot,
+	* src/program-events.lisp,
+	* src/text-utils.lisp,
+	* src/ui-goodies.lisp:
 
 	- added loading module for abbreviation by default in config file.
-	- prevented crash when terminal height was to small to fits suggestion window.
-	- changed abbreviation.
-	- updated italian translation.
+
+	- changed abbrevation.
+
 	- made gemlog's updating non blocking.
 
-2021-08-07  cage
+	- prevented crash when teminal height was to small to fits suggetion
+	window.
 
-	- updated docs for module.
-	- prevented crash when suggestion windows are shown when the width
-	of the terminal was too thin paginating the suggestions failed.
+	- updated italian translation.
+
+2021-08-07 cage
+
+	* Makefile.in,
+	* modules/expand-abbrev-command-window.lisp,
+	* src/complete-window.lisp,
+	* src/keybindings-window.lisp,
+	* src/text-utils.lisp:
+
+	- prevented crash when suggestion windows are shown   when the width of
+	the terminal was too thin  paginating the   suggestions failed.
+
 	- updated Makefile.in to include new module.
 
-2021-08-06  cage
+	- updated docs for module.
 
-	- instructed Makefile to install module 'expand-abbrev-command-window'.
-	- removed nobase in Makefile.am.
-	- added keychord to opening  gemini certificate window from global
-	keymap.
-	- allowed switching off abbreviations on the command-window.
+2021-08-06 cage
+
+	* Makefile.am,
+	* Makefile.in,
+	* etc/init.lisp,
+	* modules/expand-abbrev-command-window.lisp,
+	* src/command-window.lisp,
+	* src/hooks.lisp,
+	* src/package.lisp:
+
 	- added a module to expand abbreviations for the command window.
 
-2021-08-05  cage
+	- added keychord to opening gemini certificate window from global
+	keymap.
+
+	- allowed switching off abbreviations on the command-window.
+
+	- instructed Makefile to install module 'expand-abbrev-command-window'.
+
+	- removed nobase in Makefile.am.
+
+2021-08-05   cage
+
+	* ChangeLog,
+	* Makefile.am,
+	* Makefile.in,
+	* install-sh:
 
 	- prevented stripping of directory for data and doc files;
+
 	- updated Changelog.
 
-2021-08-03  cage
+2021-08-03   cage
 
+	* etc/init.lisp,
 	* src/package.lisp,
-	* src/ui-goodies.lisp,
-        * etc/init.lisp:
+	* src/ui-goodies.lisp:
 
 	- [gemini] added a procedure to import tls certificates.
 
