@@ -22,7 +22,7 @@
   :pathname    "src"
   :serial      t
   :depends-on (:alexandria
-               :cl-ppcre
+               :cl-ppcre-unicode
                :tooter
                :croatoan
                :osicat

@@ -95,8 +95,6 @@ dnl check sbcl version
 SBCL_MIN_VERSION="1.4.16";
 SBCL_VERSION=`${LISP_COMPILER} --version | ${AWK} -- '// {print $2}'`
 
-CHECK_COMPILER_VERSION_P="yes"
-
 AC_ARG_ENABLE([check-sbcl-version], [AS_HELP_STRING([--disable-check-sbcl-version], [Disable checks for minimum supported SBCL version])], [], [])
 
 if test "$enable_check_sbcl_version" = "yes" || test "$enable_check_sbcl_version" = "" ; then

@@ -81,11 +81,18 @@
                                input
                                output
                                (error :output))
-  (sb-ext:run-program program
+  #-win32 (sb-ext:run-program program
                       args
                       :wait   wait
                       :search search
                       :pty    pty
+                      :input  input
+                      :output output
+                      :error  error)
+  #+win32 (sb-ext:run-program program
+                      args
+                      :wait   wait
+                      :search search
                       :input  input
                       :output output
                       :error  error))

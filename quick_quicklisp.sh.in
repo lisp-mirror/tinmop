@@ -109,7 +109,7 @@ install_dependency () {
     #  --eval "(sb-ext:quit)";             <- keep this line as latest
     @LISP_COMPILER@  \
      --eval "(ql:quickload \"alexandria\")"       \
-     --eval "(ql:quickload \"cl-ppcre\")"         \
+     --eval "(ql:quickload \"cl-ppcre-unicode\")" \
      --eval "(ql:quickload \"tooter\")"           \
      --eval "(ql:quickload \"croatoan\")"         \
      --eval "(ql:quickload \"osicat\")"           \
