@@ -281,13 +281,17 @@
 
 (defmacro with-open-support-file ((stream file &optional (element-type '(unsigned-byte 8)))
                                   &body body)
-  `(with-open-file (,stream ,file
-                            :element-type      ',element-type
-                            :direction         :output
-                            :element-type      'character
-                            :if-exists         :supersede
-                            :if-does-not-exist :create)
-     ,@body))
+  `(handler-case
+       (with-open-file (,stream ,file
+                                :element-type      ',element-type
+                                :direction         :output
+                                :element-type      'character
+                                :if-exists         :supersede
+                                :if-does-not-exist :create)
+         ,@body)
+     (file-error (condition)
+       (declare (ignore condition))
+       nil)))
 
 (defgeneric increment-bytes-count (object data &key &allow-other-keys))
 
