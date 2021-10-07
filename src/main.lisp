@@ -123,9 +123,8 @@ etc.) happened"
   (db-utils:with-ready-database (:connect nil)
     (complete:initialize-complete-username-cache)
     (handler-case
-        (progn
-          (modules:load-sys-module +starting-init-file+)
-          (modules:load-module +starting-init-file+))
+        (or (ignore-errors (modules:load-sys-module +starting-init-file+))
+            (modules:load-module +starting-init-file+))
       (error (e)
         (croatoan:end-screen)
         (format *error-output* "~a~%" e)
