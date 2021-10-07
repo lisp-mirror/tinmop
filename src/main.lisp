@@ -122,13 +122,15 @@ etc.) happened"
   (shared-init)
   (db-utils:with-ready-database (:connect nil)
     (complete:initialize-complete-username-cache)
-    (handler-case
-        (or (ignore-errors (modules:load-sys-module +starting-init-file+))
-            (modules:load-module +starting-init-file+))
-      (error (e)
+    (let ((system-config-file-found-p (modules:load-sys-module +starting-init-file+
+                                                               :not-found-signal-error nil)))
+      (multiple-value-bind (home-config-file-found-p error-message)
+          (modules:load-module +starting-init-file+ :not-found-signal-error nil)
+      (when (not (or system-config-file-found-p
+                     home-config-file-found-p))
         (croatoan:end-screen)
-        (format *error-output* "~a~%" e)
-        (os-utils:exit-program 1)))
+        (format *error-output* "~a~%" error-message)
+        (os-utils:exit-program 1))))
     ;; init main window for first...
     (main-window:init)
     (keybindings-window:init)

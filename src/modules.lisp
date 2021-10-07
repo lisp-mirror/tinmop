@@ -17,11 +17,13 @@
 
 (in-package :modules)
 
-(defun load-sys-module (path)
-  (let ((file (get-sys-config-file path)))
+(defun load-sys-module (path &key (not-found-signal-error t))
+  (when-let ((file (if not-found-signal-error
+                       (get-sys-config-file path)
+                       (ignore-errors (get-sys-config-file path)))))
     (load file :verbose nil :print nil)))
 
-(defun load-module (path)
+(defun load-module (path &key (not-found-signal-error t))
   (flet ((%load (file)
            (load file :verbose nil :print nil)))
     (let ((config-file (conditions:with-default-on-error (nil)
@@ -34,10 +36,13 @@
         (data-file
          (%load data-file))
         (t
-         (error (format nil
-                        (_ "Unrecoverable error: file ~a not found in any of the directory ~a ~a ~a ~a")
-                        path
-                        +sys-data-dir+
-                        +sys-conf-dir+
-                        (home-datadir)
-                        (home-confdir))))))))
+         (let ((error-message (format nil
+                                      (_ "Unrecoverable error: file ~a not found in any of the directory ~a ~a ~a ~a")
+                                      path
+                                      +sys-data-dir+
+                                      +sys-conf-dir+
+                                      (home-datadir)
+                                      (home-confdir))))
+           (if not-found-signal-error
+               (error error-message)
+               (values nil error-message))))))))
