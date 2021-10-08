@@ -173,9 +173,11 @@
 
 (define-key "M-up"      #'pass-focus-on-top)
 
-(define-key "M-l"       #'message-window-lock-scrolling)
+(define-key "M-s l"     #'message-window-lock-scrolling)
 
-(define-key "M-u"       #'message-window-unlock-scrolling)
+(define-key "M-s u"     #'message-window-unlock-scrolling)
+
+(define-key "M-e"       #'eval-command)
 
 ;; focus
 

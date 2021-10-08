@@ -2276,9 +2276,29 @@ gemini page the program is rendering."
     (gemini-viewer:load-gemini-url iri-to-open :give-focus-to-message-window t)))
 
 (defun message-window-lock-scrolling ()
+  "Lock automatic scrolling of message window"
   (setf (message-window:adjust-rows-strategy specials:*message-window*)
-        #'line-oriented-window:adjust-rows-noop))
+        #'line-oriented-window:adjust-rows-noop)
+  (info-message (_ "Message window scrolling locked")))
 
 (defun message-window-unlock-scrolling ()
+  "Allow automatic scrolling of the  message window to always show the
+last line (the  one on the bottom  of the text; useful  for chats, for
+example)."
   (setf (message-window:adjust-rows-strategy specials:*message-window*)
-        #'line-oriented-window:adjust-rows-select-last))
+        #'line-oriented-window:adjust-rows-select-last)
+  (info-message (_ "Message window scrolling unlocked")))
+
+(defun eval-command ()
+  "Eval (execute) a lisp form. (e.g '(ui:notify \"foo\")' )"
+  (flet ((on-input-completed (query)
+           (push-event (make-instance 'function-event
+                                      :payload
+                                      (lambda ()
+                                        (tui:with-notify-errors
+                                          (db-utils:with-ready-database (:connect nil)
+                                            (with-input-from-string (stream query)
+                                              (funcall (compile nil
+                                                                `(lambda () ,(read stream))))))))))))
+    (ui:ask-string-input #'on-input-completed
+                         :prompt (format nil (_ "eval: ")))))

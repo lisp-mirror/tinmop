@@ -2705,7 +2705,8 @@
    :gempub-library-window-close
    :gempub-open-file
    :message-window-lock-scrolling
-   :message-window-unlock-scrolling))
+   :message-window-unlock-scrolling
+   :eval-command))
 
 (defpackage :scheduled-events
   (:use
