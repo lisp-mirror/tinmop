@@ -238,9 +238,10 @@
   (with-accessors ((rows rows)) window
     (when rows
       (let ((height (win-height-no-border window)))
-        (when (>= (rows-length window) height)
-          (select-row window (- (rows-length window)
-                                height))))))
+        (if (>= (rows-length window) height)
+            (select-row window (- (rows-length window)
+                                  height))
+            (select-first-row window)))))
   window)
 
 (defmethod adjust-selected-rows ((object row-oriented-widget) (strategy function))
