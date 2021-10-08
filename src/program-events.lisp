@@ -1224,12 +1224,13 @@
             (progn
               (line-oriented-window:append-new-rows win new-rows)
               (gemini-viewer:append-metadata-link window-metadata links)
-              (gemini-viewer:append-metadata-source window-metadata source))
+              (gemini-viewer:append-metadata-source window-metadata source)
+              (funcall (message-window:adjust-rows-strategy win) win))
+
             (progn
               (setf (gemini-viewer:gemini-metadata-source-file window-metadata) source)
               (setf (gemini-viewer:gemini-metadata-links window-metadata) links)
-              (funcall (message-window:adjust-rows-strategy win)
-                       win)
+              (funcall (message-window:adjust-rows-strategy win) win)
               (line-oriented-window:update-all-rows win new-rows)))))))
 
 (defmethod process-event ((object gemini-got-line-event))
@@ -1251,14 +1252,9 @@
                    (not (skip-rendering-p object))
                    (message-window:display-gemini-text-p win))
           (refresh-gemini-message-window links source ir-line append-text)
-          (multiple-value-bind (x start length)
-              (message-window:visible-rows win)
-            (declare (ignore x))
-            (if (or (not append-text)
-                    (< (+ start length)
-                       (windows:win-height-no-border win)))
-                (windows:draw win)
-                (message-window:draw-downloading-animation win))))))))
+          (windows:draw win)
+          (when append-text
+            (message-window:draw-downloading-animation win)))))))
 
 (defclass gemini-abort-downloading-event (program-event) ())
 

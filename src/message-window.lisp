@@ -33,7 +33,7 @@
     :initarg  :metadata
     :accessor metadata)
    (adjust-rows-strategy
-    :initform #'adjust-rows-select-first
+    :initform #'adjust-rows-noop
     :initarg  :adjust-rows-strategy
     :accessor adjust-rows-strategy)
    (text-starting-column

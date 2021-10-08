@@ -229,21 +229,17 @@
   (when (rows window)
     (select-first-row window)))
 
+(defun adjust-rows-noop (window)
+  window)
+
 (defun adjust-rows-select-last (window)
   (with-accessors ((rows rows)) window
     (when rows
       (let ((height (win-height-no-border window)))
-        (when (not (< (rows-length window) height))
+        (when (>= (rows-length window) height)
           (select-row window (- (rows-length window)
                                 height))))))
   window)
-
-(defmethod adjust-selected-rows ((object row-oriented-widget) (strategy function))
-  (with-accessors ((row-selected-index row-selected-index)) object
-    (when (< row-selected-index
-             (rows-length object))
-      (funcall strategy object)))
-  object)
 
 (defmethod selected-row ((object row-oriented-widget))
   "Return the current selected row"

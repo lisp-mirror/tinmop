@@ -1935,6 +1935,7 @@
    :unselect-all
    :select-row
    :select-first-row
+   :adjust-rows-noop
    :adjust-rows-select-first
    :adjust-rows-select-last
    :adjust-selected-rows
@@ -2074,7 +2075,6 @@
    :row-get-original-object
    :viewport-width
    :draw-downloading-animation
-   :adjust-selected-rows
    :visible-rows
    :row-vertical-space-p
    :row-preformatted-p
