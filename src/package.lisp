@@ -1935,6 +1935,7 @@
    :unselect-all
    :select-row
    :select-first-row
+   :adjust-selected-rows
    :adjust-rows-noop
    :adjust-rows-select-first
    :adjust-rows-select-last
@@ -2702,7 +2703,9 @@
    :gempub-library-window-go-up
    :gempub-library-window-go-down
    :gempub-library-window-close
-   :gempub-open-file))
+   :gempub-open-file
+   :message-window-lock-scrolling
+   :message-window-unlock-scrolling))
 
 (defpackage :scheduled-events
   (:use

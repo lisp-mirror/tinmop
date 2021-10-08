@@ -2274,3 +2274,11 @@ gemini page the program is rendering."
   (when-let* ((fields (line-oriented-window:selected-row-fields *gempub-library-window*))
               (iri-to-open (db:row-local-uri fields)))
     (gemini-viewer:load-gemini-url iri-to-open :give-focus-to-message-window t)))
+
+(defun message-window-lock-scrolling ()
+  (setf (message-window:adjust-rows-strategy specials:*message-window*)
+        #'line-oriented-window:adjust-rows-noop))
+
+(defun message-window-unlock-scrolling ()
+  (setf (message-window:adjust-rows-strategy specials:*message-window*)
+        #'line-oriented-window:adjust-rows-select-last))

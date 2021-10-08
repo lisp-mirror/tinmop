@@ -173,6 +173,10 @@
 
 (define-key "M-up"      #'pass-focus-on-top)
 
+(define-key "M-l"       #'message-window-lock-scrolling)
+
+(define-key "M-u"       #'message-window-unlock-scrolling)
+
 ;; focus
 
 (define-key "f1"        #'focus-to-tags-window)

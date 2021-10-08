@@ -1491,6 +1491,8 @@
       (message-window:scroll-end specials:*message-window*)
       (setf (message-window:metadata specials:*message-window*)
             chat)
+      (line-oriented-window:adjust-selected-rows specials:*message-window*
+                                                 #'line-oriented-window:adjust-rows-select-last)
       (windows:draw specials:*message-window*))))
 
 (defclass chat-post-message-event (program-event)

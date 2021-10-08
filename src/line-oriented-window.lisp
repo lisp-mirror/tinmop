@@ -135,6 +135,8 @@
 
 (defgeneric select-first-row (object))
 
+(defgeneric adjust-selected-rows (object strategy))
+
 (defgeneric selected-row (object))
 
 (defgeneric selected-row-fields (object))
@@ -240,6 +242,10 @@
           (select-row window (- (rows-length window)
                                 height))))))
   window)
+
+(defmethod adjust-selected-rows ((object row-oriented-widget) (strategy function))
+  (funcall strategy object)
+  object)
 
 (defmethod selected-row ((object row-oriented-widget))
   "Return the current selected row"
