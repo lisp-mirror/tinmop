@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tinmop 0.0.1\n"
 "Report-Msgid-Bugs-To: https://notabug.org/cage/tinmop/\n"
-"POT-Creation-Date: 2021-10-08 14:35+0200\n"
+"POT-Creation-Date: 2021-10-10 13:12+0200\n"
 "PO-Revision-Date: 2021-10-08 14:37+0200\n"
 "Last-Translator: cage <cage@invalid.org>\n"
 "Language-Team: Italian\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: modules/share-gemini-link.lisp:30 src/ui-goodies.lisp:2203
+#: modules/share-gemini-link.lisp:30 src/ui-goodies.lisp:2219
 msgid "The window is not displaying a gemini document"
 msgstr "La finestra non sta mostrando un documento gemini"
 
@@ -204,7 +204,7 @@ msgstr "diretta"
 msgid "home"
 msgstr "home"
 
-#: src/db.lisp:3165
+#: src/db.lisp:3172
 msgid "no description"
 msgstr "nessuna descrizione"
 
@@ -460,7 +460,7 @@ msgstr ""
 "pleroma; in questo caso il file va riempito in accordo con la "
 "documentazione: vedi la manpage ~a(1)."
 
-#: src/main.lisp:158
+#: src/main.lisp:159
 #, lisp-format
 msgid "Unable to load module ~a"
 msgstr "Non posso caricare il modulo ~a"
@@ -1284,29 +1284,29 @@ msgstr "Manda al comando: "
 msgid "Send message to command: "
 msgstr "Manda il messaggio al comando: "
 
-#: src/ui-goodies.lisp:2026
+#: src/ui-goodies.lisp:2032
 #, lisp-format
 msgid "Index ~a out of range"
 msgstr "L'indice ~a supera i limiti"
 
-#: src/ui-goodies.lisp:2028
+#: src/ui-goodies.lisp:2034
 msgid "Tour saved"
 msgstr "Il tour è stato salvato."
 
-#: src/ui-goodies.lisp:2049
+#: src/ui-goodies.lisp:2055
 msgid "link indices: "
 msgstr "indice dei link: "
 
-#: src/ui-goodies.lisp:2056
+#: src/ui-goodies.lisp:2062
 msgid "Tour completed"
 msgstr "Tour completato"
 
-#: src/ui-goodies.lisp:2076
+#: src/ui-goodies.lisp:2083
 #, lisp-format
 msgid "~s saved in tour"
 msgstr "~s salvato nel tour"
 
-#: src/ui-goodies.lisp:2120
+#: src/ui-goodies.lisp:2136
 #, lisp-format
 msgid ""
 "Host ~s signature changed! This is a potential security risk! Ignore this "
@@ -1315,89 +1315,89 @@ msgstr ""
 "La firma dell'host ~s è cambiata! Questo è un potenziale problema di "
 "sicurezza! Proseguire? [s/N]"
 
-#: src/ui-goodies.lisp:2131
+#: src/ui-goodies.lisp:2147
 msgid "Empty path"
 msgstr "Percorso vuoto"
 
-#: src/ui-goodies.lisp:2134
+#: src/ui-goodies.lisp:2150
 #, lisp-format
 msgid "No such file ~s"
 msgstr "Nono esiste il file ~s"
 
-#: src/ui-goodies.lisp:2137
+#: src/ui-goodies.lisp:2153
 #, lisp-format
 msgid "File ~s is empty"
 msgstr "Il file ~s è vuoto"
 
-#: src/ui-goodies.lisp:2144
+#: src/ui-goodies.lisp:2160
 msgid "Insert certificate key file: "
 msgstr "Inserisci il percorso del file che contiene la chiave: "
 
-#: src/ui-goodies.lisp:2148
+#: src/ui-goodies.lisp:2164
 msgid "Insert the gemini IRI where where credential are valid: "
 msgstr "Inserisci l'indirizzo gemini per il quale le credenziali sono valide: "
 
-#: src/ui-goodies.lisp:2171
+#: src/ui-goodies.lisp:2187
 #, lisp-format
 msgid "Certificate imported for ~s"
 msgstr "Certificato importato per ~s"
 
-#: src/ui-goodies.lisp:2173
+#: src/ui-goodies.lisp:2189
 #, lisp-format
 msgid "~s is not a valid gemini address"
 msgstr "~s non è un indirizzo gemini valido"
 
-#: src/ui-goodies.lisp:2176
+#: src/ui-goodies.lisp:2192
 msgid "Insert certificate file: "
 msgstr "Inserisci il percorso del file che contiene il certificato: "
 
-#: src/ui-goodies.lisp:2187
+#: src/ui-goodies.lisp:2203
 msgid "Empty description"
 msgstr "Descrizione vuota"
 
-#: src/ui-goodies.lisp:2191
+#: src/ui-goodies.lisp:2207
 msgid "Insert bookmark section: "
 msgstr "Inserisci la sezione del segnalibro: "
 
-#: src/ui-goodies.lisp:2199
+#: src/ui-goodies.lisp:2215
 #, lisp-format
 msgid "Added ~s in bookmark"
 msgstr "Aggiunto ~s come segnalibro"
 
-#: src/ui-goodies.lisp:2201
+#: src/ui-goodies.lisp:2217
 msgid "Insert bookmark description: "
 msgstr "Inserisci l adescrizione del segnalibro: "
 
-#: src/ui-goodies.lisp:2208
+#: src/ui-goodies.lisp:2224
 #, lisp-format
 msgid "My bookmark~2%"
 msgstr "I miei segnalibri~%"
 
-#: src/ui-goodies.lisp:2213
+#: src/ui-goodies.lisp:2229
 msgid "Uncategorized"
 msgstr "Senza categoria"
 
-#: src/ui-goodies.lisp:2235
+#: src/ui-goodies.lisp:2251
 msgid "No entry selected"
 msgstr "Nessuna voce selezionata"
 
-#: src/ui-goodies.lisp:2240
+#: src/ui-goodies.lisp:2256
 msgid "Delete bookmark: "
 msgstr "Canvella il segnalibro: "
 
-#: src/ui-goodies.lisp:2255
+#: src/ui-goodies.lisp:2271
 msgid "Search criteria: "
 msgstr "Criterio di ricerca: "
 
-#: src/ui-goodies.lisp:2282
+#: src/ui-goodies.lisp:2298
 msgid "Message window scrolling locked"
 msgstr "Scorrimento della finestra dei messaggi bloccato"
 
-#: src/ui-goodies.lisp:2290
+#: src/ui-goodies.lisp:2306
 msgid "Message window scrolling unlocked"
 msgstr "Scorrimento della finestra dei messaggi sbloccato"
 
-#: src/ui-goodies.lisp:2304
+#: src/ui-goodies.lisp:2320
 msgid "eval: "
 msgstr "eval: "
 

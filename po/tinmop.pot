@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tinmop 0.8.3\n"
 "Report-Msgid-Bugs-To: https://notabug.org/cage/tinmop/\n"
-"POT-Creation-Date: 2021-10-08 14:35+0200\n"
+"POT-Creation-Date: 2021-10-10 13:12+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-#: modules/share-gemini-link.lisp:30 src/ui-goodies.lisp:2203
+#: modules/share-gemini-link.lisp:30 src/ui-goodies.lisp:2219
 msgid "The window is not displaying a gemini document"
 msgstr ""
 
@@ -198,7 +198,7 @@ msgstr ""
 msgid "home"
 msgstr ""
 
-#: src/db.lisp:3165
+#: src/db.lisp:3172
 msgid "no description"
 msgstr ""
 
@@ -447,7 +447,7 @@ msgid ""
 "the file must be properly filled.~%Consult the manpage ~a(1) for more details"
 msgstr ""
 
-#: src/main.lisp:158
+#: src/main.lisp:159
 #, lisp-format
 msgid "Unable to load module ~a"
 msgstr ""
@@ -1264,118 +1264,118 @@ msgstr ""
 msgid "Send message to command: "
 msgstr ""
 
-#: src/ui-goodies.lisp:2026
+#: src/ui-goodies.lisp:2032
 #, lisp-format
 msgid "Index ~a out of range"
 msgstr ""
 
-#: src/ui-goodies.lisp:2028
+#: src/ui-goodies.lisp:2034
 msgid "Tour saved"
 msgstr ""
 
-#: src/ui-goodies.lisp:2049
+#: src/ui-goodies.lisp:2055
 msgid "link indices: "
 msgstr ""
 
-#: src/ui-goodies.lisp:2056
+#: src/ui-goodies.lisp:2062
 msgid "Tour completed"
 msgstr ""
 
-#: src/ui-goodies.lisp:2076
+#: src/ui-goodies.lisp:2083
 #, lisp-format
 msgid "~s saved in tour"
 msgstr ""
 
-#: src/ui-goodies.lisp:2120
+#: src/ui-goodies.lisp:2136
 #, lisp-format
 msgid ""
 "Host ~s signature changed! This is a potential security risk! Ignore this "
 "warning? [y/N] "
 msgstr ""
 
-#: src/ui-goodies.lisp:2131
+#: src/ui-goodies.lisp:2147
 msgid "Empty path"
 msgstr ""
 
-#: src/ui-goodies.lisp:2134
+#: src/ui-goodies.lisp:2150
 #, lisp-format
 msgid "No such file ~s"
 msgstr ""
 
-#: src/ui-goodies.lisp:2137
+#: src/ui-goodies.lisp:2153
 #, lisp-format
 msgid "File ~s is empty"
 msgstr ""
 
-#: src/ui-goodies.lisp:2144
+#: src/ui-goodies.lisp:2160
 msgid "Insert certificate key file: "
 msgstr ""
 
-#: src/ui-goodies.lisp:2148
+#: src/ui-goodies.lisp:2164
 msgid "Insert the gemini IRI where where credential are valid: "
 msgstr ""
 
-#: src/ui-goodies.lisp:2171
+#: src/ui-goodies.lisp:2187
 #, lisp-format
 msgid "Certificate imported for ~s"
 msgstr ""
 
-#: src/ui-goodies.lisp:2173
+#: src/ui-goodies.lisp:2189
 #, lisp-format
 msgid "~s is not a valid gemini address"
 msgstr ""
 
-#: src/ui-goodies.lisp:2176
+#: src/ui-goodies.lisp:2192
 msgid "Insert certificate file: "
 msgstr ""
 
-#: src/ui-goodies.lisp:2187
+#: src/ui-goodies.lisp:2203
 msgid "Empty description"
 msgstr ""
 
-#: src/ui-goodies.lisp:2191
+#: src/ui-goodies.lisp:2207
 msgid "Insert bookmark section: "
 msgstr ""
 
-#: src/ui-goodies.lisp:2199
+#: src/ui-goodies.lisp:2215
 #, lisp-format
 msgid "Added ~s in bookmark"
 msgstr ""
 
-#: src/ui-goodies.lisp:2201
+#: src/ui-goodies.lisp:2217
 msgid "Insert bookmark description: "
 msgstr ""
 
-#: src/ui-goodies.lisp:2208
+#: src/ui-goodies.lisp:2224
 #, lisp-format
 msgid "My bookmark~2%"
 msgstr ""
 
-#: src/ui-goodies.lisp:2213
+#: src/ui-goodies.lisp:2229
 msgid "Uncategorized"
 msgstr ""
 
-#: src/ui-goodies.lisp:2235
+#: src/ui-goodies.lisp:2251
 msgid "No entry selected"
 msgstr ""
 
-#: src/ui-goodies.lisp:2240
+#: src/ui-goodies.lisp:2256
 msgid "Delete bookmark: "
 msgstr ""
 
-#: src/ui-goodies.lisp:2255
+#: src/ui-goodies.lisp:2271
 msgid "Search criteria: "
 msgstr ""
 
-#: src/ui-goodies.lisp:2282
+#: src/ui-goodies.lisp:2298
 msgid "Message window scrolling locked"
 msgstr ""
 
-#: src/ui-goodies.lisp:2290
+#: src/ui-goodies.lisp:2306
 msgid "Message window scrolling unlocked"
 msgstr ""
 
-#: src/ui-goodies.lisp:2304
+#: src/ui-goodies.lisp:2320
 msgid "eval: "
 msgstr ""
 

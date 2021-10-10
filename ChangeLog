@@ -1,3 +1,93 @@
+2021-10-10 cage
+
+        * doc/man.org,
+        * doc/tinmop.man,
+        * etc/init.lisp,
+        * src/db.lisp,
+        * src/gemini/gemini-parser.lisp,
+        * src/gemini/package.lisp,
+        * src/main.lisp,
+        * src/package.lisp,
+        * src/program-events.lisp,
+        * src/ui-goodies.lisp:
+
+        - added 'gemini-all-unread-posts', 'shuffle-tour',
+        'gemlog-add-unread-posts-tour', 'clear-tour'
+        'gemini-all-unread-posts'  give  user  the  choice to  add  all  the
+        currently unread post to the link tour.
+        - added  a section  related to  'tour mode'  in the  manual plus  some
+        minor, cosmetic, changes.
+
+2021-10-08 cage
+
+        * etc/init.lisp,
+        * po/it.po,
+        * po/tinmop.pot,
+        * src/line-oriented-window.lisp,
+        * src/message-window.lisp,
+        * src/package.lisp,
+        * src/program-events.lisp,
+        * src/ui-goodies.lisp:
+
+        - fixed adjusting strategy functions when drawing gemini text.
+        - forced scrolling to the last message when a new message has been
+        posted on the chat window;
+        - added 'message-window-lock-scrolling' and
+        'message-window-unlock-scrolling' allowing users to choose their
+        preferered way to render the gemini text (this is useful for gemini
+        streaming services, like chat or similar).
+        - fixed 'adjust-rows-select-last';
+        - rewinded selected row to first one when a new gemin page is loaded.
+        - added 'eval-command';
+        - added docstrings for scroll lock related functions.
+        updated italian translation.
+
+2021-10-07 cage
+
+        * src/main.lisp,
+        * src/modules.lisp:
+
+        - ignored error when trying to open a shared configuration file (lisp
+        code) on program start; search for a file in the user's home instead.
+        - ensured, when program starts, that the init file in the user's home
+        is loaded (if such init file exists).
+
+2021-10-04 cage
+
+        * src/gemini-page-toc.lisp,
+        * src/gemini-viewer.lisp:
+
+        - [gemini] prevented crash happening when trying to render a TOC from
+        an empty gemtext.
+        - [gemini] prevented signalling a condition  when quitting the program
+        and a gemini text is streaming;
+        if   there   is   some    gemini   text   streaming   the   function
+        'ui:clean-temporary-file' will  remove the  file that  the streaming
+        thread is  using for  caching. So when  the gemini  rendering thread
+        returns will  try to remove the  already deleted file, leading  to a
+        crash.
+
+2021-09-27 cage
+
+        * Makefile.in,
+        * aclocal.m4,
+        * configure,
+        * configure.ac,
+        * quick_quicklisp.sh.in,
+        * src/os-utils.lisp,
+        * tinmop.asd:
+
+        - updated building scripts;
+        - removed useless variable from 'configure.ac'
+        - changed dependency to cl-ppcre-unicode;
+        - fixed reader macro for 'os-utils:run-external-program'.
+
+2021-09-26 cage
+
+        * ChangeLog:
+
+        - improved Changelog.
+
 2021-09-12 cage
 
 	* src/os-utils.lisp,
