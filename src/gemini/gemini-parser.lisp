@@ -87,7 +87,7 @@
           text
           +preformatted-prefix+))
 
-(defun make-gemini-link (url title)
+(defun render-gemini-link (url title)
   (format nil "~a ~a"
           (geminize-link url)
           title))
@@ -232,6 +232,9 @@
     :initform nil
     :initarg  :name
     :accessor name)))
+
+(defun make-gemini-link (target link-name)
+  (make-instance 'gemini-link :target target :name link-name))
 
 (defmethod print-object ((object gemini-link) stream)
   (print-unreadable-object (object stream :type t :identity t)

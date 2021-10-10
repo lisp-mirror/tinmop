@@ -1102,7 +1102,7 @@
                                         (text-utils:strcat path " " dir-symbol)
                                         path))
              (encoded-path          (gemini-client::percent-encode-path path))
-             (link                  (gemini-parser:make-gemini-link encoded-path link-label)))
+             (link                  (gemini-parser:render-gemini-link encoded-path link-label)))
         (push link link-lines)))
     (setf link-lines (sort link-lines #'string<))
     (text-utils:join-with-strings (append (list raw-text) link-lines)
@@ -1354,7 +1354,7 @@
                                    (seenp (db-utils:db-not-nil-p (db:row-post-seenp entry))))
                               (format stream
                                       (_ "~a ~:[(not opened)~;(opened)~]~%")
-                                      (gemini-parser:make-gemini-link link
+                                      (gemini-parser:render-gemini-link link
                                                                       title)
                                       seenp)))))
            (url      (iri:iri-parse gemlog-url))

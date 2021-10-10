@@ -3055,6 +3055,13 @@ than `days-in-the-past' days (default: `(swconf:config-purge-cache-days-offset)'
               (rows  (fetch-all-rows query)))
     rows))
 
+(defun gemini-all-unread-posts ()
+  (when-let* ((query (select (:title :url)
+                       (from +table-gemlog-entries+)
+                       (where (:= :seenp (prepare-for-db nil :to-integer t)))))
+              (rows  (fetch-all-rows query)))
+    rows))
+
 (defun gemini-cancel-subscription (gemlog-url)
   (query (delete-from +table-gemini-subscription+ (where (:= :url gemlog-url)))))
 

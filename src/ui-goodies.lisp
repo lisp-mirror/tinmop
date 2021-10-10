@@ -1986,7 +1986,12 @@ gemini://gemini.circumlunar.space/docs/companion/subscription.gmi
 
 (let ((tour ()))
 
+  (defun shuffle-tour ()
+    "Shuffle the links in the tour"
+    (setf tour (shuffle tour)))
+
   (defun clean-tour (regex)
+    "Remove links from the tour matching `regex'"
     (let ((scanner (create-scanner regex :case-insensitive-mode t)))
       (setf tour
             (remove-if (lambda (a)
@@ -1995,6 +2000,7 @@ gemini://gemini.circumlunar.space/docs/companion/subscription.gmi
                        tour))))
 
   (defun clean-all-tour ()
+    "Remove all links from the tour"
     (clean-tour ".*"))
 
   (defun add-links-to-tour (links)
@@ -2056,6 +2062,7 @@ gemini://gemini.circumlunar.space/docs/companion/subscription.gmi
           (error-message (_ "Tour completed"))
           (let ((url (gemini-parser:target link)))
             (setf tour (reverse (rest queue)))
+            (focus-to-message-window)
             (open-message-link-window:open-message-link url nil)))))
 
   (defun show-tour-links ()
@@ -2073,7 +2080,16 @@ gemini://gemini.circumlunar.space/docs/companion/subscription.gmi
                      (label          (or (gemini-parser:name   selected-link)
                                          (gemini-parser:target selected-link))))
            (push selected-link tour)
-           (info-message (format nil (_ "~s saved in tour") label))))))))
+           (info-message (format nil (_ "~s saved in tour") label)))))))
+
+  (defun gemlog-add-unread-posts-tour ()
+    "Add all the unread gemlog posts to the tour"
+    (when-let* ((unread-posts (db:gemini-all-unread-posts))
+                (links        (mapcar (lambda (row)
+                                        (gemini-parser:make-gemini-link (db:row-url   row)
+                                                                        (db:row-title row)))
+                                      unread-posts)))
+      (add-links-to-tour links))))
 
 (defun open-gemini-toc ()
   "Opend a windows that contains a  generated table of contents of the

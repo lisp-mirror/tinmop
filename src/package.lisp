@@ -1041,6 +1041,7 @@
    :row-seen-count
    :row-unseen-count
    :find-gemlog-entry
+   :gemini-all-unread-posts
    :gemini-cancel-subscription
    :add-gemlog-entries
    :gemlog-mark-as-seen
@@ -2675,13 +2676,15 @@
    :gemlog-cancel-subscription
    :send-to-pipe
    :send-message-to-pipe
-   :clean-all-tour
+   :shuffle-tour
    :clean-tour
+   :clean-all-tour
    :add-links-to-tour
    :tour-mode-link
    :next-tour-link
    :show-tour-links
    :save-selected-message-in-tour
+   :gemlog-add-unread-posts-tour
    :open-gemini-toc
    :gemini-toc-scroll-up
    :gemini-toc-scroll-down

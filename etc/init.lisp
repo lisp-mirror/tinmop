@@ -157,6 +157,8 @@
 
 (define-key "M-g s r"   #'gemlog-refresh-all)
 
+(define-key "M-g s t a" #'gemlog-add-unread-posts-tour)
+
 (define-key "M-g c i"   #'import-gemini-certificate)
 
 (define-key "M-g c s"   #'gemini-open-certificates-window)
@@ -164,6 +166,14 @@
 (define-key "M-g g l"   #'open-gempub-library)
 
 (define-key "M-g g b s" #'display-bookmark)
+
+(define-key "M-t t"     #'next-tour-link)
+
+(define-key "M-t s"     #'show-tour-links)
+
+(define-key "M-t S"     #'shuffle-tour)
+
+(define-key "M-t c"     #'clean-all-tour)
 
 (define-key "M-right"   #'pass-focus-on-right)
 

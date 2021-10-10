@@ -49,10 +49,11 @@
    :geminize-quote
    :geminize-link
    :geminize-preformatted
-   :make-gemini-link
+   :render-gemini-link
    :gemini-link
    :target
    :name
+   :make-gemini-link
    :path-last-dir
    :gemini-response
    :status-code

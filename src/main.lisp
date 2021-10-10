@@ -114,6 +114,7 @@ etc.) happened"
     (swconf:load-config-file swconf:+conf-filename+)))
 
 (defun shared-init ()
+  (num:lcg-set-seed)
   (load-configuration-files)
   (init-db))
 
