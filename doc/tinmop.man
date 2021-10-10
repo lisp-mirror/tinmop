@@ -15,8 +15,8 @@ information about this topic can be found on the
 official website (\fIhttps://docs.joinmastodon.org/\fP).
 
 .PP
-Tinmop proposes a terminal interface to connect with Pleroma
-social network and as client for the gemini protocol
+Tinmop  proposes an  extensible terminal  interface to  connect with
+Pleroma social network or for the gemini protocol
 
 .PP
 gemini://gemini.circumlunar.space/
@@ -124,33 +124,33 @@ The command  window has  a few hardcoded  command keys  to interact
 with it:
 
 .IP \(em 4
-the \fIleft\fP and \fIright\fP arrow keys move the cursor;
+the \fBleft\fP and \fBright\fP arrow keys move the cursor;
 .IP \(em 4
-the key \fIhome\fP and \fIend\fP move the cursor to the start and end of
+the key \fBhome\fP and \fBend\fP move the cursor to the start and end of
 the input respectively;
 .IP \(em 4
-\fIcanc\fP and  \fIbackspace\fP delete  the next and  previous character
+\fBcanc\fP and  \fBbackspace\fP delete  the next and  previous character
 respectively;
 .IP \(em 4
-the \fInew line\fP (often called \fIenter\fP  key) send the input to the
+the \fBnew line\fP (often called \fBenter\fP  key) send the input to the
 program;
 .IP \(em 4
-\fIC-k\fP (that is:  "press 'control' and while pressed  press 'k')
+\fBC-k\fP (that is:  "press 'control' and while pressed  press 'k')
 \fIkills\fP (deletes) the text from the  cursor position to the end of
 the input previously typed;
 .IP \(em 4
-press \fIM-left\fP and  \fIM-right\fP (\fIleft alt\fP and  \fIleft\fP or \fIright\fP
+press \fBM-left\fP and  \fBM-right\fP (\fBleft alt\fP and  \fBleft\fP or \fBright\fP
 arrow together)  to browse pages  of the suggestion  window; the
 suggestion window is  a window that holds  a previously inputted
 data that are compatible with the string the user is typing into
 the command window;
 .IP \(em 4
-if suggestions are  gemini URI press \fITAB\fP to  input the current
+if suggestions are  gemini URI press \fBTAB\fP to  input the current
 selected  suggestion;
 .IP \(em 4
-if suggestion window  is \fBnot\fP rendered, pressing  \fIup\fP and \fIdown\fP
+if suggestion window  is \fBnot\fP rendered, pressing  \fBup\fP and \fBdown\fP
 arrow keys will cycle through input  history, if there is not a
-suggestion window rendered pressing  \fIup\fP and \fIdown\fP will scroll
+suggestion window rendered pressing  \fBup\fP and \fBdown\fP will scroll
 on suggestions.
 
 .SS "Folders"
@@ -251,9 +251,7 @@ and paste code from untrusted sources as this could results in a
 Again in the configuration directory there is a (commented) file
 named \fCinit.lisp\fP that user can use as their starting point to
 write their files. A custom init file, or other module files, must
-be located into the directory \fC$HOME/.local/share/tinmop/\fP or
-\fC$HOME/.config/tinmop/\fP (because, you know, data is code and code
-is data) to be successfully loaded.
+be located into the directory \fC$HOME/.local/share/tinmop/\fP.
 
 .PP
 However there is no need to write their own init file if user is
@@ -262,11 +260,139 @@ happy with the provided one by the package maintainers.
 .SH "First time start"
 .PP
 After the configuration the program can be started but we are not
-ready to join the network yet because tinmop need to be \fItrusted\fP by
+ready to join the fediverse yet because tinmop need to be \fItrusted\fP by
 the server. Just follows the instruction on screen to register the
 application with your instance. This procedure should be followed
 once: when the program starts for the first time (but please note
 that there must be a file with valid credentials available).
+
+.PP
+There  is no  additional steps  to  follow to  connect to  gemspace,
+instead.
+
+.SH "Gempub support"
+.PP
+Tinmop  maintains a  gempub  library scanning  a  directory on  your
+file system (library  directory); the  library directory path  can be
+set using the configuration directive:
+
+.RS
+.nf
+\fC
+gempub.directory.library = /absolute/path/to/your/gempub/library
+
+\fP
+.fi
+.RE
+
+.PP
+the  default  value  is  \fC$XDG_DATA_HOME\fP  (usually  something  like
+\fC$HOME/.local/share/tinmop/\fP).
+
+.PP
+Using \fB'M-g g l'\fP the  library can be  inspected using a  simple query
+language (similar to SQL) that search  in the metadata of the gempub
+files, example of query follows:
+
+.RS
+.nf
+\fC
+where author like "calvino" and published < "1980"
+
+where author like "cal%" or published = "1980"
+
+\fP
+.fi
+.RE
+
+.PP
+Valid search keys are:
+
+.IP \(em 4
+title;
+.IP \(em 4
+author;
+.IP \(em 4
+language;
+.IP \(em 4
+description;
+.IP \(em 4
+publish-date;
+.IP \(em 4
+revision-date;
+.IP \(em 4
+published;
+.IP \(em 4
+copyright.
+
+.PP
+You can use \fC<  > = != <= >= like\fP operators  for comparison and the
+two logical  operator \fCand\fP and \fCor\fP,  the character \fC%\fP act  like a
+wildcard and means: \fI'any sequence of character'\fP.
+
+.PP
+Note that  the right hand side  of the operator must  be wrapped in
+quotes.
+
+.PP
+After the  search is performed a  window with the results  is shown,
+selecting an item  of this window will open the  gempub and will add
+all its table of  contents on the tour mode, so  that the book could
+be browsed.
+
+.PP
+For more information  on tour mode see below or  use
+\fB'C-h A <enter> tour mode'\fP.
+
+.SH "Tour mode"
+.PP
+Tinmop maintains  a queue of  links that can  be then visited  by the
+user, this queue is called \fBtour\fP.
+
+.PP
+There are two ways to add a link to the tour:
+
+.IP \(em 4
+when a link  window is open and focused pressing  \fBt\fP will start a
+prompt for link indices to be saved in the tour; the prompt expect
+a simple, comma or space separated, list of indices or  index range, index
+range is a couple of index separated by a dash, example below:
+
+.RS
+.nf
+\fC1 2 5 8-12
+\fP
+.fi
+.RE
+
+The string above will save the link index number 1, 2, 3, 5, 8, 9,
+10, 11, 12 to the tour.
+
+.PP
+The  other  way to  add  links  to the  tour  is  using the  command
+\fB'gemlog-add-unread-posts-tour'\fP (default  keychord: \fB'M-g s t a'\fP)
+that will add all the unread posts to the tour.
+
+.PP
+There are a few more useful command to manipulate the tour:
+
+.TP
+\fBnext-tour-link\fP
+(\fB'M-t t'\fP or just 't' if a gemini window is focused)
+follows the next link in the tour;
+
+.TP
+\fBshow-tour-links\fP
+(\fB'M-t s'\fP or just \fB'T'\fP if a gemini window is focused)
+shows the contents of the tour in a link window
+
+.TP
+\fBclean-all-tour\fP
+(\fB'M-t c'\fP)
+
+.TP
+\fBshuffle-tour  \fP
+(\fB'M-t S'\fP) shuffle the contents of the tour
 
 .SH "How to get more help"
 .PP
@@ -313,7 +439,7 @@ See also the file CONTRIBUTE.org
 
 .SS "Debug mode"
 .PP
-If you decomment the line:
+If you uncomment the line:
 
 .RS
 .nf

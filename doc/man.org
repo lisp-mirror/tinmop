@@ -12,8 +12,8 @@
   information about this topic can be found on the
   official website ([[https://docs.joinmastodon.org/]]).
 
-  Tinmop proposes a terminal interface to connect with Pleroma
-  social network and as client for the gemini protocol
+  Tinmop  proposes an  extensible terminal  interface to  connect with
+  Pleroma social network or for the gemini protocol
 
   gemini://gemini.circumlunar.space/
 
@@ -86,26 +86,26 @@
    The command  window has  a few hardcoded  command keys  to interact
    with it:
 
-    - the /left/ and /right/ arrow keys move the cursor;
-    - the key /home/ and /end/ move the cursor to the start and end of
+    - the *left* and *right* arrow keys move the cursor;
+    - the key *home* and *end* move the cursor to the start and end of
       the input respectively;
-    - /canc/ and  /backspace/ delete  the next and  previous character
+    - *canc* and  *backspace* delete  the next and  previous character
       respectively;
-    - the /new line/ (often called /enter/  key) send the input to the
+    - the *new line* (often called *enter*  key) send the input to the
       program;
-    - /C-k/ (that is:  "press 'control' and while pressed  press 'k')
+    - *C-k* (that is:  "press 'control' and while pressed  press 'k')
       /kills/ (deletes) the text from the  cursor position to the end of
       the input previously typed;
-    - press /M-left/ and  /M-right/ (/left alt/ and  /left/ or /right/
+    - press *M-left* and  *M-right* (*left alt* and  *left* or *right*
       arrow together)  to browse pages  of the suggestion  window; the
       suggestion window is  a window that holds  a previously inputted
       data that are compatible with the string the user is typing into
       the command window;
-    - if suggestions are  gemini URI press /TAB/ to  input the current
+    - if suggestions are  gemini URI press *TAB* to  input the current
       selected  suggestion;
-    - if suggestion window  is *not* rendered, pressing  /up/ and /down/
+    - if suggestion window  is *not* rendered, pressing  *up* and *down*
       arrow keys will cycle through input  history, if there is not a
-      suggestion window rendered pressing  /up/ and /down/ will scroll
+      suggestion window rendered pressing  *up* and *down* will scroll
       on suggestions.
 
 ** Folders
@@ -221,9 +221,9 @@
   #+END_SRC
 
   the  default  value  is  ~$XDG_DATA_HOME~  (usually  something  like
-  ~%HOME/.local/share/tinmop/~).
+  ~$HOME/.local/share/tinmop/~).
 
-  Using /M-g  g l/ the  library can be  inspected using a  simple query
+  Using *'M-g g l'* the  library can be  inspected using a  simple query
   language (similar to SQL) that search  in the metadata of the gempub
   files, example of query follows:
 
@@ -237,14 +237,14 @@
 
   Valid search keys are:
 
-  - title
-  - author
-  - language
-  - description
-  - publish-date
-  - revision-date
-  - published
-  - copyright
+  - title;
+  - author;
+  - language;
+  - description;
+  - publish-date;
+  - revision-date;
+  - published;
+  - copyright.
 
   You can use ~<  > = != <= >= like~ operators  for comparison and the
   two logical  operator ~and~ and ~or~,  the character ~%~ act  like a
@@ -258,7 +258,43 @@
   all its table of  contents on the tour mode, so  that the book could
   be browsed.
 
-  For more information on tour mode use /'C-h A <enter> tour mode'/.
+  For more information  on tour mode see below or  use
+  *'C-h A <enter> tour mode'*.
+
+* Tour mode
+
+  Tinmop maintains  a queue of  links that can  be then visited  by the
+  user, this queue is called *tour*.
+
+  There are two ways to add a link to the tour:
+
+  - when a link  window is open and focused pressing  *t* will start a
+    prompt for link indices to be saved in the tour; the prompt expect
+    a simple, comma or space separated, list of indices or  index range, index
+    range is a couple of index separated by a dash, example below:
+
+    #+BEGIN_SRC text
+     1 2 5 8-12
+    #+END_SRC
+
+    The string above will save the link index number 1, 2, 3, 5, 8, 9,
+    10, 11, 12 to the tour.
+
+  The  other  way to  add  links  to the  tour  is  using the  command
+  *'gemlog-add-unread-posts-tour'* (default  keychord: *'M-g s t a'*)
+  that will add all the unread posts to the tour.
+
+  There are a few more useful command to manipulate the tour:
+
+  - next-tour-link :: (*'M-t t'* or just 't' if a gemini window is focused)
+    follows the next link in the tour;
+
+  - show-tour-links :: (*'M-t s'* or just *'T'* if a gemini window is focused)
+    shows the contents of the tour in a link window
+
+  - clean-all-tour :: (*'M-t c'*)
+
+  - shuffle-tour   :: (*'M-t S'*) shuffle the contents of the tour
 
 * How to get more help
 
