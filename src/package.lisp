@@ -1214,6 +1214,7 @@
    :tree-config-rendering-values
    :make-tree-colormap
    :left-arrow
+   :config-post-allowed-language
    :config-purge-history-days-offset
    :config-purge-cage-days-offset
    :config-notification-life

@@ -375,11 +375,15 @@
       (loop for status in statuses do
         (let ((account-id (tooter:id (tooter:account status)))
               (status-id  (tooter:id status))
+              (language   (tooter:language status))
               (skip-this-status nil))
           (when force-saving-of-ignored-status-p
             (db:remove-from-status-ignored status-id folder timeline-type))
           (when (or (and (db:user-ignored-p account-id)
                          (not (db:status-skipped-p status-id folder timeline-type)))
+                    (and language
+                         (cl-ppcre:scan (swconf:config-post-allowed-language)
+                                        language))
                     (hooks:run-hook-until-success 'hooks:*skip-message-hook*
                                                   status
                                                   timeline-type

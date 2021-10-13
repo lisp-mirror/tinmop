@@ -25,11 +25,13 @@
 ;;                          | SERVER-ASSIGN
 ;;                          | USERNAME-ASSIGN
 ;;                          | OPEN-LINK-HELPER
+;;                          | POST-ALLOWED-LANGUAGE
 ;;                          | GENERIC-ASSIGN)
 ;;                         COMMENT*
 ;; SERVER-ASSIGN         := SERVER-KEY BLANKS ASSIGN BLANKS GENERIC-VALUE BLANKS
 ;; USERNAME-ASSIGN       := USERNAME-KEY BLANKS WITH BLANKS GENERIC-VALUE BLANKS
-;; OPEN-LINK-HELPER      := OPEN-LINK-HELPER-KEY BLANKS ASSIGN BLANKS REGEXP PROGRAM-NAME BLANKS USE-CACHE? NOWAIT?
+;; OPEN-LINK-HELPER      := OPEN-LINK-HELPER-KEY BLANKS ASSIGN BLANKS
+;;                          REGEXP PROGRAM-NAME BLANKS USE-CACHE? NOWAIT?
 ;; GENERIC-ASSIGN        := (and key blanks assign blanks
 ;;                           (or quoted-string
 ;;                               hexcolor
@@ -39,6 +41,7 @@
 ;; IGNORE-USER-RE-ASSIGN := IGNORE-USER-RE-KEY ASSIGN REGEXP
 ;; COLOR-RE-ASSIGN       := COLOR-RE-KEY ASSIGN REGEXP FG-COLOR (? ATTRIBUTE-VALUE)
 ;; USE-FILE              := (AND USE BLANKS FILEPATH BLANKS)
+;; POST-ALLOWED-LANGUAGE := "post-allowed-language" BLANKS ASSIGN REGEXP
 ;; KEY                   := FIELD (FIELD-SEPARATOR KEY)*
 ;; BLANKS                := (BLANK)*
 ;; FILEPATH              := QUOTED-STRING
@@ -360,6 +363,10 @@
                                             (elt args 6)
                                             (elt args 8)
                                             :wait (not (elt args 9)))))))
+
+(defrule post-allowed-language (and "post-allowed-language" blanks assign regexp)
+  (:function remove-if-null))
+
 (defrule filepath quoted-string)
 
 (defparameter *already-included-files* ())
@@ -382,6 +389,7 @@
              server-assign
              username-assign
              open-link-helper
+             post-allowed-language
              generic-assign)
          (* comment))
   (:function second))
@@ -537,6 +545,7 @@
                    password-echo-character
                    color-re
                    ignore-user-re
+                   post-allowed-language
                    purge-history-days-offset
                    purge-cache-days-offset)
 
@@ -556,7 +565,8 @@
         (cond
           ((or (eq +key-color-re+ key)
                (eq +key-ignore-user-re+ key)
-               (eq +key-open-link-helper+ key))
+               (eq +key-open-link-helper+ key)
+               (eq +key-post-allowed-language+ key))
            (setf (access:accesses *software-configuration* key)
                  (append (access:accesses *software-configuration* key)
                          (list value))))
@@ -878,6 +888,11 @@
   `(defun ,(misc:format-fn-symbol t "config-~a" fn-name) ()
      (,transform-value-fn (access:accesses *software-configuration*
                                            ,@keys))))
+
+(gen-simple-access (post-allowed-language
+                    :transform-value-fn
+                    (lambda (a) (cl-ppcre:create-scanner a :case-insensitive-mode t)))
+                   +key-post-allowed-language+)
 
 (gen-simple-access (purge-history-days-offset
                     :transform-value-fn
@@ -1369,6 +1384,7 @@
                    #'message-window-locked-account-mark
                    #'message-window-unlocked-account-mark
                    #'message-window-line-mark-values
-                   #'message-window-attachments-header)
+                   #'message-window-attachments-header
+                   #'config-post-allowed-language)
         do
            (funcall fn)))
