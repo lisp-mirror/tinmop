@@ -1568,6 +1568,7 @@
    :send-status
    :get-status-context
    :search-user
+   :find-results
    :follow-user
    :unfollow-user
    :follow-requests
@@ -1583,6 +1584,7 @@
    :expand-conversations-tree
    :make-report
    :delete-conversation
+   :delete-status
    :get-activity
    :application-credentials
    :bookmarks

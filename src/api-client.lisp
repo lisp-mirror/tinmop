@@ -298,14 +298,17 @@ Returns nil if the user did not provided a server in the configuration file"
 - min-id starts getting messages newer than this id
 - since-id cut the messages got starting from this id
 - limit gets a maimum of messages up to this value."
-   (tooter:timeline *client*
-                    kind
-                    :local      local
-                    :only-media only-media
-                    :max-id     max-id
-                    :since-id   since-id
-                    :min-id     min-id
-                    :limit      limit))
+  (misc:dbg "kind?? ~a" kind)
+  (assert (or (string-equal kind db:+federated-timeline+)
+              (string-equal kind db:+home-timeline+)))
+  (tooter:timeline *client*
+                   kind
+                   :local      local
+                   :only-media only-media
+                   :max-id     max-id
+                   :since-id   since-id
+                   :min-id     min-id
+                   :limit      limit))
 
 (defun status-id< (a b)
   (string< (tooter:id a)
@@ -476,6 +479,30 @@ database."
   "Find user identified by username"
   (tooter:search-accounts *client* username :limit limit :resolve resolve))
 
+(defun-api-call find-results (query
+                              &key
+                              (account-id         nil)
+                              (max-id             nil)
+                              (min-id             nil)
+                              (kind               "statuses")
+                              (exclude-unreviewed nil)
+                              (resolve            t)
+                              (limit             20)
+                              (offset             0)
+                              (following          nil))
+  "Search stuff, default statuses"
+  (tooter:find-results *client*
+                       query
+                       :account-id         account-id
+                       :max-id             max-id
+                       :min-id             min-id
+                       :kind               kind
+                       :exclude-unreviewed exclude-unreviewed
+                       :resolve            resolve
+                       :limit              limit
+                       :offset             offset
+                       :following          following))
+
 (defun-api-call follow-user (user-id)
   "Follow user identified by user-id"
   (tooter:follow *client* user-id))
@@ -583,6 +610,9 @@ i.e. `message-root-id' is root for said tree."
 (defun-api-call delete-conversation (conversation-id)
   "Delete a conversation identified by `conversation-id'"
   (tooter:delete-conversation *client* conversation-id))
+
+(defun-api-call delete-status (status-id)
+  (tooter:delete-status *client* status-id))
 
 (defun-api-call make-report (account-id status-id comment forward)
   "Report    an   user    (identified   by    `account-id')   and    a
