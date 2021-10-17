@@ -1218,6 +1218,7 @@
    :config-purge-history-days-offset
    :config-purge-cage-days-offset
    :config-notification-life
+   :config-gemini-fragment-as-regex-p
    :config-notify-window-geometry
    :config-notification-icon
    :config-server-name

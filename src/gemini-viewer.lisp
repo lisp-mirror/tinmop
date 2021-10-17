@@ -441,7 +441,15 @@
                   (progn
                     (maybe-render-toc)
                     (ui:notify (_ "Gemini document downloading completed"))
-                    (setf (stream-status wrapper-object) :completed)))
+                    (setf (stream-status wrapper-object) :completed)
+                    (when (and fragment
+                               (swconf:config-gemini-fragment-as-regex-p))
+                      (let ((regex    (if (text-utils:percent-encoded-p fragment)
+                                          (text-utils:percent-encode    fragment)
+                                          fragment))
+                            (priority program-events:+standard-event-priority+))
+                        (ui::message-search-regex-callback regex
+                                                           :priority priority)))))
               ;; (allow-downloading wrapper-object)
               (gemini-client:close-ssl-socket download-socket))))))))
 ;;        (fs:delete-file-if-exists support-file)))))

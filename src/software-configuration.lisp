@@ -421,7 +421,9 @@
      ,@(loop for name in names collect
              `(gen-key-constant ,name))))
 
-(gen-key-constants background
+(gen-key-constants experimental
+                   regex
+                   background
                    foreground
                    title
                    start
@@ -541,6 +543,8 @@
                    directory
                    fetch
                    update
+                   iri
+                   fragment
                    close-after-select
                    password-echo-character
                    color-re
@@ -921,6 +925,14 @@
                                                        100))))
                    +key-notify-window+
                    +key-life+)
+
+(gen-simple-access (gemini-fragment-as-regex-p
+                    :transform-value-fn (lambda (a) (not (false-value-p a))))
+                   +key-experimental+
+                   +key-gemini+
+                   +key-iri+
+                   +key-fragment+
+                   +key-regex+)
 
 (defun config-notify-window-geometry ()
   (values (access:accesses  *software-configuration*

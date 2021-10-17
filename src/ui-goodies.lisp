@@ -394,14 +394,16 @@ Metadata includes:
 (defun message-scroll-previous-page ()
   (message-window:scroll-previous-page *message-window*))
 
+(defun message-search-regex-callback (regex &key (priority +maximum-event-priority+))
+  (let ((event (make-instance 'search-regex-message-content-event
+                              :priority priority
+                              :payload  regex)))
+    (push-event event)))
+
 (defun message-search-regex ()
   "Search regular expression in message"
-  (flet ((on-input-complete (regex)
-           (let ((event (make-instance 'search-regex-message-content-event
-                                       :priority +maximum-event-priority+
-                                       :payload  regex)))
-             (push-event event))))
-    (ask-string-input #'on-input-complete :prompt (_ "Search key: "))))
+  (ask-string-input #'message-search-regex-callback
+                    :prompt (_ "Search key: ")))
 
 (defun message-toggle-preformatted-block ()
   "Toggles on/of preformatted block from text and shows alt text, if exists"
