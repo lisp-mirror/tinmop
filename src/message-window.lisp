@@ -374,8 +374,10 @@
 (defgeneric collect-lines-from-ir (object window &key &allow-other-keys))
 
 (defmethod collect-lines-from-ir ((object gemini-parser:with-lines) (window message-window)
-                                  &key &allow-other-keys)
-  (let ((colorized-lines (colorize-lines (%fit-lines window (gemini-parser:lines object)))))
+                                  &key (width (win-width-no-border window)) &allow-other-keys)
+  (let ((colorized-lines (colorize-lines (%fit-lines window
+                                                     (gemini-parser:lines object)
+                                                     width))))
     (loop for text in colorized-lines
           collect
           (let ((res-line (make-instance 'line
@@ -386,7 +388,12 @@
             res-line))))
 
 (defmethod text->rendered-lines-rows (window (text gemini-parser:quoted-lines))
-  (collect-lines-from-ir text window))
+  (let* ((rows (collect-lines-from-ir text window :width (1- (win-width-no-border window)))))
+    (loop for row in rows do
+      (setf (normal-text row)
+            (colorize-lines (strcat (gemini-parser::prefix text)
+                                    (tui-string->chars-string (normal-text row))))))
+    rows))
 
 (defmethod text->rendered-lines-rows (window (text gemini-parser:header-line))
   (collect-lines-from-ir text window))
@@ -404,7 +411,7 @@
   (let ((lines (split-lines text)))
     (%fit-lines window lines)))
 
-(defun %fit-lines (window lines)
+(defun %fit-lines (window lines &optional (width (win-width-no-border window)))
   (let ((res   ()))
     (loop for line in lines do
       (cond
@@ -413,8 +420,7 @@
          (push (make-render-vspace-row) res))
         (t
          (loop for fitted-line
-                 in (flush-left-mono-text (split-words line)
-                                          (win-width-no-border window))
+                 in (flush-left-mono-text (split-words line) width)
                do
                   (push fitted-line res)))))
     (reverse res)))

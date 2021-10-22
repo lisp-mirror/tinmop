@@ -427,12 +427,17 @@
 (defun make-pre-end ()
   (make-instance 'pre-end))
 
-(defclass quoted-lines (with-group-id with-lines) ())
+(defclass quoted-lines (with-group-id with-lines)
+  ((prefix
+    :initform "@ "
+    :initarg  :prefix
+    :accessor prefix)))
 
-(defun make-quoted-lines (text-lines group-id)
+(defun make-quoted-lines (text group-id prefix)
   (make-instance 'quoted-lines
-                 :group-id  group-id
-                 :lines     (split-lines text-lines)))
+                 :prefix   prefix
+                 :group-id group-id
+                 :lines    (list text)))
 
 (defclass pre-line (with-group-id with-pre-group-id with-lines with-alt-text) ())
 
@@ -509,122 +514,110 @@
                  :group-id  header-group-id))
 
 (defun sexp->text-rows (parsed-gemini theme)
-  (let ((win-width (message-window:viewport-width (viewport theme))))
-    (labels ((header-prefix (prefix header)
-               (strcat prefix header))
-             (header-prefix-h1 (header)
-               (header-prefix (h1-prefix theme) header))
-             (header-prefix-h2 (header)
-               (header-prefix (h2-prefix theme) header))
-             (header-prefix-h3 (header)
-               (header-prefix (h3-prefix theme) header))
-             (build-underline (text underline-char)
-               (let* ((size      (length text))
-                      (underline (build-string size underline-char)))
-                 underline))
-             (make-header (level text underline-char)
-               (let ((underline (build-underline text underline-char))
-                     (header-group-id (next-header-group-id)))
-                 (list (make-header-line text header-group-id level)
-                       (make-header-line underline header-group-id level))))
-             (trim (a)
-               (trim-blanks a))
-             (text-value (node &key (trim t))
-               (let ((text (first (html-utils:children node))))
-                 (if trim
-                     (trim text)
-                     text)))
-             (linkify (link-name link-value)
-               (let ((raw-link-text (if (gemini-link-iri-p link-value)
-                                        (if (text-utils:starting-emoji link-name)
-                                            (format nil "~a" link-name)
-                                            (format nil
-                                                    "~a~a"
-                                                    (link-prefix-gemini theme)
-                                                    link-name))
-                                        (format nil
-                                                "~a~a"
-                                                (link-prefix-other  theme)
-                                                link-name))))
-                 (tui:make-tui-string raw-link-text
-                                      :attributes (link-attributes theme)
-                                      :fgcolor    (link-fg         theme)
-                                      :bgcolor    (link-bg         theme))))
-             (fit-quote-lines (line win-width)
-               (let* ((words        (split-words line))
-                      (quote-prefix (quote-prefix theme))
-                      (justified    (flush-left-mono-text words
-                                                       (- win-width
-                                                          (length quote-prefix))))
-                      (lines     (if justified
-                                     (mapcar (lambda (a) (strcat quote-prefix a))
-                                             justified)
-                                     quote-prefix))
-                      (header-group-id (current-header-group-id)))
-                 (make-quoted-lines (join-with-strings lines (format nil "~%"))
-                                    header-group-id)))
-             (pre-alt-text (node)
-               (trim (html-utils:attribute-value (html-utils:find-attribute :alt node))))
-             (build-rows ()
-               (loop for node in parsed-gemini
-                     collect
-                     (cond
-                       ((null node)
-                        (make-instance 'vertical-space
-                                       :group-id (current-header-group-id))) ;(format nil "~%"))
-                       ((html-utils:tag= :as-is node)
-                        (let* ((line           (text-value node :trim nil))
-                               (fg             (preformatted-fg theme))
-                               (line           (tui:make-tui-string (format nil "~a" line)
-                                                                    :fgcolor fg)))
-                          (make-pre-line (list line)
-                                         (current-header-group-id)
-                                         (current-pre-group-id)
-                                         (current-pre-alt-text))))
-                       ((html-utils:tag= :text node)
-                        (make-simple-line (format nil "~a~%" (text-value node))
-                                          (current-header-group-id)))
-                       ((html-utils:tag= :h1 node)
-                        (make-header 1
-                                     (header-prefix-h1 (text-value node))
-                                     +h1-underline+))
-                       ((html-utils:tag= :h2 node)
-                        (make-header 2
-                                     (header-prefix-h2 (text-value node))
-                                     +h2-underline+))
-                       ((html-utils:tag= :h3 node)
-                        (make-header 3
-                                     (header-prefix-h3 (text-value node))
-                                     +h3-underline+))
-                       ((html-utils:tag= :li node)
-                        (let ((text (format nil
-                                            "~a ~a"
-                                            (bullet-prefix theme)
-                                            (text-value node))))
-                          (make-unordered-list-line text (current-header-group-id))))
-                       ((html-utils:tag= :quote node)
-                        (fit-quote-lines (text-value node :trim nil)
-                                         win-width))
-                       ((html-utils:tag= :pre node)
-                        (let ((current-alt-text (pre-alt-text node))
-                              (pre-group-id     (next-pre-group-id))
-                              (current-group-id (current-header-group-id))
-                              (fg               (preformatted-fg theme)))
-                          (set-pre-alt-text current-alt-text)
-                          (make-pre-start current-alt-text current-group-id pre-group-id fg)))
-                       ((html-utils:tag= :pre-end node)
-                        (make-pre-end))
-                       ((html-utils:tag= :a node)
-                        (let* ((link-name       (text-value node :trim nil))
-                               (link-value      (html-utils:attribute-value
-                                                 (html-utils:find-attribute :href
-                                                                            node)))
-                               (link-text       (if link-name
-                                                    (linkify link-name  link-value)
-                                                    (linkify link-value link-value)))
-                               (header-group-id (current-header-group-id)))
-                          (make-link-line link-text link-name link-value header-group-id)))))))
-      (flatten (build-rows)))))
+  (labels ((header-prefix (prefix header)
+             (strcat prefix header))
+           (header-prefix-h1 (header)
+             (header-prefix (h1-prefix theme) header))
+           (header-prefix-h2 (header)
+             (header-prefix (h2-prefix theme) header))
+           (header-prefix-h3 (header)
+             (header-prefix (h3-prefix theme) header))
+           (build-underline (text underline-char)
+             (let* ((size      (length text))
+                    (underline (build-string size underline-char)))
+               underline))
+           (make-header (level text underline-char)
+             (let ((underline (build-underline text underline-char))
+                   (header-group-id (next-header-group-id)))
+               (list (make-header-line text header-group-id level)
+                     (make-header-line underline header-group-id level))))
+           (trim (a)
+             (trim-blanks a))
+           (text-value (node &key (trim t))
+             (let ((text (first (html-utils:children node))))
+               (if trim
+                   (trim text)
+                   text)))
+           (linkify (link-name link-value)
+             (let ((raw-link-text (if (gemini-link-iri-p link-value)
+                                      (if (text-utils:starting-emoji link-name)
+                                          (format nil "~a" link-name)
+                                          (format nil
+                                                  "~a~a"
+                                                  (link-prefix-gemini theme)
+                                                  link-name))
+                                      (format nil
+                                              "~a~a"
+                                              (link-prefix-other  theme)
+                                              link-name))))
+               (tui:make-tui-string raw-link-text
+                                    :attributes (link-attributes theme)
+                                    :fgcolor    (link-fg         theme)
+                                    :bgcolor    (link-bg         theme))))
+           (pre-alt-text (node)
+             (trim (html-utils:attribute-value (html-utils:find-attribute :alt node))))
+           (build-rows ()
+             (loop for node in parsed-gemini
+                   collect
+                   (cond
+                     ((null node)
+                      (make-instance 'vertical-space
+                                     :group-id (current-header-group-id))) ;(format nil "~%"))
+                     ((html-utils:tag= :as-is node)
+                      (let* ((line           (text-value node :trim nil))
+                             (fg             (preformatted-fg theme))
+                             (line           (tui:make-tui-string (format nil "~a" line)
+                                                                  :fgcolor fg)))
+                        (make-pre-line (list line)
+                                       (current-header-group-id)
+                                       (current-pre-group-id)
+                                       (current-pre-alt-text))))
+                     ((html-utils:tag= :text node)
+                      (make-simple-line (format nil "~a~%" (text-value node))
+                                        (current-header-group-id)))
+                     ((html-utils:tag= :h1 node)
+                      (make-header 1
+                                   (header-prefix-h1 (text-value node))
+                                   +h1-underline+))
+                     ((html-utils:tag= :h2 node)
+                      (make-header 2
+                                   (header-prefix-h2 (text-value node))
+                                   +h2-underline+))
+                     ((html-utils:tag= :h3 node)
+                      (make-header 3
+                                   (header-prefix-h3 (text-value node))
+                                   +h3-underline+))
+                     ((html-utils:tag= :li node)
+                      (let ((text (format nil
+                                          "~a ~a"
+                                          (bullet-prefix theme)
+                                          (text-value node))))
+                        (make-unordered-list-line text (current-header-group-id))))
+                     ((html-utils:tag= :quote node)
+                      (let* ((line         (text-value node :trim nil))
+                             (quote-prefix (quote-prefix theme))
+                             (header-group-id (current-header-group-id)))
+                        (make-quoted-lines line header-group-id quote-prefix)))
+                     ((html-utils:tag= :pre node)
+                      (let ((current-alt-text (pre-alt-text node))
+                            (pre-group-id     (next-pre-group-id))
+                            (current-group-id (current-header-group-id))
+                            (fg               (preformatted-fg theme)))
+                        (set-pre-alt-text current-alt-text)
+                        (make-pre-start current-alt-text current-group-id pre-group-id fg)))
+                     ((html-utils:tag= :pre-end node)
+                      (make-pre-end))
+                     ((html-utils:tag= :a node)
+                      (let* ((link-name       (text-value node :trim nil))
+                             (link-value      (html-utils:attribute-value
+                                               (html-utils:find-attribute :href
+                                                                          node)))
+                             (link-text       (if link-name
+                                                  (linkify link-name  link-value)
+                                                  (linkify link-value link-value)))
+                             (header-group-id (current-header-group-id)))
+                        (make-link-line link-text link-name link-value header-group-id)))))))
+    (flatten (build-rows))))
 
 (defun parse-gemini-file (data)
   (let* ((lines (if (string= (format nil "~%") data)
