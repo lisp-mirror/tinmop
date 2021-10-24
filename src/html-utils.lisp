@@ -29,7 +29,9 @@
 
 (defun make-tag-node (tag attributes value)
   "create a node"
-  (list tag attributes value))
+  (if (listp value)
+      (append (list tag attributes) value)
+      (list tag attributes value)))
 
 (defun tag (node)
   "Given a node returns the tag part"
@@ -46,6 +48,9 @@
 (defun attribute-value (attribute)
   "Given an attribute the value part"
   (second attribute))
+
+(defun make-attribute (attribute-name attribute-value)
+  (list attribute-name attribute-value))
 
 (defun children (node)
   "Return children of this nodes if exists"
@@ -74,6 +79,12 @@
   "find position of tag on a node list, does not descend into children"
   (position-if (lambda (a) (tag= tag a))
                node))
+
+(defun add-attribute (attribute-name attribute-value node)
+  (make-tag-node (tag node)
+                 (append (list (make-attribute attribute-name attribute-value))
+                         (attributes node))
+                 (children node)))
 
 (defun node->link (node)
   (html-utils:attribute-value (html-utils:find-attribute :href node)))

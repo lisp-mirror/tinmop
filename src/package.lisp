@@ -418,6 +418,7 @@
    :attributes
    :attribute-key
    :attribute-value
+   :add-attribute
    :children
    :tag=
    :find-attribute

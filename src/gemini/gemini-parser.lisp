@@ -386,6 +386,12 @@
     :initform nil
     :accessor viewport)))
 
+(defclass with-raw-text ()
+  ((raw-text
+    :initform nil
+    :initarg  :raw-text
+    :accessor raw-text)))
+
 (defclass with-group-id ()
   ((group-id
     :initform nil
@@ -410,7 +416,7 @@
     :initarg  :pre-group-id
     :accessor pre-group-id)))
 
-(defclass pre-start (with-group-id with-pre-group-id with-alt-text) ())
+(defclass pre-start (with-group-id with-pre-group-id with-alt-text with-raw-text) ())
 
 (defmethod print-object ((object pre-start) stream)
   (print-unreadable-object (object stream :type t :identity t)
@@ -427,7 +433,7 @@
 (defun make-pre-end ()
   (make-instance 'pre-end))
 
-(defclass quoted-lines (with-group-id with-lines)
+(defclass quoted-lines (with-group-id with-lines with-raw-text)
   ((prefix
     :initform "@ "
     :initarg  :prefix
@@ -439,7 +445,7 @@
                  :group-id group-id
                  :lines    (list text)))
 
-(defclass pre-line (with-group-id with-pre-group-id with-lines with-alt-text) ())
+(defclass pre-line (with-group-id with-pre-group-id with-lines with-alt-text with-raw-text) ())
 
 (defmethod print-object ((object pre-line) stream)
   (print-unreadable-object (object stream :type t)
@@ -462,7 +468,7 @@
     :initarg  :size
     :accessor size)))
 
-(defclass header-line (with-group-id with-lines)
+(defclass header-line (with-group-id with-lines with-raw-text)
   ((level
     :initform nil
     :initarg :level
@@ -474,14 +480,14 @@
                  :group-id gid
                  :level    level))
 
-(defclass unordered-list-line (with-group-id with-lines) ())
+(defclass unordered-list-line (with-group-id with-lines with-raw-text) ())
 
 (defun make-unordered-list-line (text header-group-id)
   (make-instance 'unordered-list-line
                  :group-id header-group-id
                  :lines    (list text)))
 
-(defclass link-line (with-group-id)
+(defclass link-line (with-group-id with-raw-text)
   ((link-text
     :initarg  :link-text
     :initform nil
@@ -502,13 +508,13 @@
                  :link-name  link-name
                  :link-value link-value))
 
-(defclass simple-line (with-group-id)
+(defclass simple-line (with-group-id with-raw-text)
   ((text-line
     :initarg :text-line
     :initform nil
     :accessor text-line)))
 
-(defun make-simple-line (text header-group-id)
+(defun make-simple-line (text header-group-id raw-text)
   (make-instance 'simple-line
                  :text-line text
                  :group-id  header-group-id))
@@ -573,8 +579,10 @@
                                        (current-pre-group-id)
                                        (current-pre-alt-text))))
                      ((html-utils:tag= :text node)
-                      (make-simple-line (format nil "~a~%" (text-value node))
-                                        (current-header-group-id)))
+                      (let ((text (text-value node)))
+                        (make-simple-line (format nil "~a~%" text)
+                                          (current-header-group-id)
+                                          text)))
                      ((html-utils:tag= :h1 node)
                       (make-header 1
                                    (header-prefix-h1 (text-value node))
@@ -588,7 +596,7 @@
                                    (header-prefix-h3 (text-value node))
                                    +h3-underline+))
                      ((html-utils:tag= :li node)
-                      (let ((text (format nil
+                      (let* ((text (format nil
                                           "~a ~a"
                                           (bullet-prefix theme)
                                           (text-value node))))
@@ -620,23 +628,28 @@
     (flatten (build-rows))))
 
 (defun parse-gemini-file (data)
-  (let* ((lines (if (string= (format nil "~%") data)
-                    (list (format nil "~%"))
-                    (mapcar (lambda (a)
-                              (strcat a (string #\Newline)))
-                            (split-lines data)))))
-    (loop for line in lines
-          collect
-          (let ((was-raw-mode *raw-mode-data*)
-                (parsed-line (parse 'gemini-file line :junk-allowed t)))
-            (if was-raw-mode
-                (if *raw-mode-data*
-                    (let ((*blanks* '(#\Newline #\Linefeed #\Return)))
-                      (html-utils:make-tag-node :as-is
-                                                (list (list :alt *raw-mode-data*))
-                                                (trim-blanks line)))
-                    parsed-line)
-                parsed-line)))))
+  (let* ((lines  (if (string= (format nil "~%") data)
+                     (list (format nil "~%"))
+                     (mapcar (lambda (a)
+                               (strcat a (string #\Newline)))
+                             (split-lines data))))
+         (parsed (loop for line in lines
+                       collect
+                       (let ((was-raw-mode *raw-mode-data*)
+                             (parsed-line (parse 'gemini-file line :junk-allowed t)))
+                         (if was-raw-mode
+                             (if *raw-mode-data*
+                                 (let ((*blanks* '(#\Newline #\Linefeed #\Return)))
+                                   (html-utils:make-tag-node :as-is
+                                                             (list (list :alt *raw-mode-data*))
+                                                             (trim-blanks line)))
+                                 parsed-line)
+                             parsed-line)))))
+    (mapcar (lambda (a b)
+              (when b
+                (html-utils:add-attribute :source-line a b)))
+            lines parsed)
+    parsed))
 
 ;; response header
 
