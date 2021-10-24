@@ -1583,7 +1583,7 @@
 	- changed link color when printed in link windows;
         - cleaned a bit reults of 'prepend-pwd'.
 
-2021-03-27
+2021-03-27 cage
 
 	* src/filesystem-utils.lisp,
 	* src/gemini/client.lisp,
