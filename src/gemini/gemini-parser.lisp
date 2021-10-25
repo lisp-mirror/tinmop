@@ -514,7 +514,7 @@
     :initform nil
     :accessor text-line)))
 
-(defun make-simple-line (text header-group-id raw-text)
+(defun make-simple-line (text header-group-id)
   (make-instance 'simple-line
                  :text-line text
                  :group-id  header-group-id))
@@ -581,8 +581,7 @@
                      ((html-utils:tag= :text node)
                       (let ((text (text-value node)))
                         (make-simple-line (format nil "~a~%" text)
-                                          (current-header-group-id)
-                                          text)))
+                                          (current-header-group-id))))
                      ((html-utils:tag= :h1 node)
                       (make-header 1
                                    (header-prefix-h1 (text-value node))
