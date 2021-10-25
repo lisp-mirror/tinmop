@@ -374,10 +374,14 @@
 (defgeneric collect-lines-from-ir (object window &key &allow-other-keys))
 
 (defmethod collect-lines-from-ir ((object gemini-parser:with-lines) (window message-window)
-                                  &key (width (win-width-no-border window)) &allow-other-keys)
+                                  &key
+                                    (width (win-width-no-border window))
+                                    (empty-line-transform-fn (lambda () (make-render-vspace-row)))
+                                  &allow-other-keys)
   (let ((colorized-lines (colorize-lines (%fit-lines window
                                                      (gemini-parser:lines object)
-                                                     width))))
+                                                     :width width
+                                                     :empty-line-transform-fn empty-line-transform-fn))))
     (loop for text in colorized-lines
           collect
           (let ((res-line (make-instance 'line
@@ -388,7 +392,9 @@
             res-line))))
 
 (defmethod text->rendered-lines-rows (window (text gemini-parser:quoted-lines))
-  (let* ((rows (collect-lines-from-ir text window :width (1- (win-width-no-border window)))))
+  (let* ((rows (collect-lines-from-ir text window
+                                      :width (1- (win-width-no-border window))
+                                      :empty-line-transform-fn (lambda () ""))))
     (loop for row in rows do
       (setf (normal-text row)
             (colorize-lines (strcat (gemini-parser::prefix text)
@@ -411,13 +417,16 @@
   (let ((lines (split-lines text)))
     (%fit-lines window lines)))
 
-(defun %fit-lines (window lines &optional (width (win-width-no-border window)))
+(defun %fit-lines (window lines
+                   &key
+                     (width (win-width-no-border window))
+                     (empty-line-transform-fn (lambda () (make-render-vspace-row))))
   (let ((res   ()))
     (loop for line in lines do
       (cond
         ((or (string-empty-p line)
              (string= line (format nil "~%")))
-         (push (make-render-vspace-row) res))
+         (push (funcall empty-line-transform-fn) res))
         (t
          (loop for fitted-line
                  in (flush-left-mono-text (split-words line) width)
