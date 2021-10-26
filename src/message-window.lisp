@@ -381,11 +381,11 @@
   (let ((colorized-lines (colorize-lines (%fit-lines window
                                                      (gemini-parser:lines object)
                                                      :width width
-                                                     :empty-line-transform-fn empty-line-transform-fn))))
+                                                     :empty-line-transform-fn
+                                                     empty-line-transform-fn))))
     (loop for text in colorized-lines
           collect
-          (let ((res-line (make-instance 'line
-                                         :normal-text text))
+          (let ((res-line (text->line text))
                 (group-id (gemini-parser:group-id object)))
             (row-add-original-object res-line object)
             (row-add-group-id res-line group-id)
@@ -434,22 +434,25 @@
                   (push fitted-line res)))))
     (reverse res)))
 
+(defgeneric text->line (object))
+
+(defmethod text->line ((object line))
+  object)
+
+(defmethod text->line (object)
+  (make-instance 'line
+                 :normal-text object))
+
 (defmethod text->rendered-lines-rows (window (text string))
   (let* ((fitted-lines (%fit-text window text))
          (new-rows     (colorize-lines fitted-lines)))
-    (mapcar (lambda (text-line)
-              (if (typep text-line 'line)
-                  text-line
-                  (make-instance 'line
-                                 :normal-text text-line)))
-            new-rows)))
+    (mapcar #'text->line new-rows)))
 
 (defmethod text->rendered-lines-rows (window (text gemini-parser:simple-line))
   (let* ((fitted-lines (%fit-text window (gemini-parser:text-line text)))
          (new-rows     (colorize-lines fitted-lines)))
     (mapcar (lambda (text-line)
-              (let ((res (make-instance 'line
-                                        :normal-text text-line)))
+              (let ((res (text->line text-line)))
                 (row-add-original-object res text)
                 (row-add-group-id        res (gemini-parser:group-id text))))
             new-rows)))
