@@ -562,13 +562,15 @@
                                     :bgcolor    (link-bg         theme))))
            (pre-alt-text (node)
              (trim (html-utils:attribute-value (html-utils:find-attribute :alt node))))
+           (make-vertical-space ()
+             (make-instance 'vertical-space
+                            :group-id (current-header-group-id)))
            (build-rows ()
              (loop for node in parsed-gemini
                    collect
                    (cond
                      ((null node)
-                      (make-instance 'vertical-space
-                                     :group-id (current-header-group-id))) ;(format nil "~%"))
+                      (make-vertical-space))
                      ((html-utils:tag= :as-is node)
                       (let* ((line           (text-value node :trim nil))
                              (fg             (preformatted-fg theme))
@@ -579,9 +581,11 @@
                                        (current-pre-group-id)
                                        (current-pre-alt-text))))
                      ((html-utils:tag= :text node)
-                      (let ((text (text-value node)))
-                        (make-simple-line (format nil "~a~%" text)
-                                          (current-header-group-id))))
+                      (let ((text (text-value node :trim t)))
+                        (if (string-not-empty-p text)
+                            (make-simple-line (format nil "~a~%" text)
+                                              (current-header-group-id))
+                            (make-vertical-space))))
                      ((html-utils:tag= :h1 node)
                       (make-header 1
                                    (header-prefix-h1 (text-value node))
