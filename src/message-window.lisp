@@ -424,14 +424,11 @@
   (let ((res   ()))
     (loop for line in lines do
       (cond
-        ((or (string-empty-p line)
-             (string= line (format nil "~%")))
+        ((string-empty-p (trim-blanks line))
          (push (funcall empty-line-transform-fn) res))
         (t
-         (loop for fitted-line
-                 in (flush-left-mono-text (split-words line) width)
-               do
-                  (push fitted-line res)))))
+         (loop for fitted-line in (flush-left-mono-text (split-words line) width)  do
+           (push fitted-line res)))))
     (reverse res)))
 
 (defgeneric text->line (object))
