@@ -2099,6 +2099,8 @@
    :toggle-default-preformatted-visibility
    :toggle-preformatted-block
    :text->rendered-lines-rows
+   :row-find-original-object
+   :extract-original-object
    :prepare-for-display-status-mode
    :prepare-for-rendering
    :scroll-down
@@ -2602,6 +2604,7 @@
    :open-message-link-go-down
    :open-message-link-perform-opening
    :open-message-link-open-enqueue
+   :open-next-visible-link
    :close-open-message-link-window
    :attach-go-up
    :attach-go-down

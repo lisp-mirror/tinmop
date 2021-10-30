@@ -215,6 +215,8 @@
 
 (defgeneric row-add-original-object (lines original-object))
 
+(defgeneric row-find-original-object (object thing))
+
 (defmethod row-add-original-object ((lines line) original-object)
   (push original-object
         (fields lines))
@@ -222,10 +224,20 @@
         (fields lines))
   lines)
 
+(defun extract-original-object (row)
+  (getf (fields row) :original-object))
+
 (defmethod row-add-original-object ((lines list) original-object)
   (mapcar (lambda (a) (row-add-original-object a original-object))
           lines)
   lines)
+
+(defmethod row-find-original-object ((object message-window) (thing symbol))
+  (rows-find-if object (lambda (a) (typep (extract-original-object a) thing))))
+
+(defmethod row-find-original-object ((object list) (thing symbol))
+  (find-if (lambda (a) (typep (extract-original-object a) thing))
+           object))
 
 (defun row-get-original-object (line)
   (getf (fields line) :original-object))

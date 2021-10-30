@@ -1211,6 +1211,15 @@ Browse and optionally open the links the text of the message window contains."
         (open-message-link-window:init (db:row-message-status-id selected-message))
         (focus-to-open-message-link-window))))
 
+(defun open-next-visible-link ()
+  "Open next visible ink in the window"
+  (when-let* ((visible-rows (message-window:visible-rows *message-window*))
+              (link-line    (message-window:row-find-original-object  visible-rows
+                                                                      'gemini-parser:link-line))
+              (link-object  (message-window:extract-original-object link-line))
+              (uri          (gemini-parser::link-value link-object)))
+    (open-message-link-window:open-message-link uri nil)))
+
 (defun line-window-move (win amount)
   (ignore-errors
     (line-oriented-window:unselect-all win)

@@ -409,6 +409,8 @@
 
 (define-key "|"         #'send-to-pipe                               *gemini-message-keymap*)
 
+(define-key "C-l n"     #'open-next-visible-link                     *gemini-message-keymap*)
+
 ;; gemini page table of contents keymap
 
 (define-key "up"        #'gemini-toc-scroll-up                       *gemini-toc-keymap*)

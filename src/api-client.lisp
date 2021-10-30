@@ -298,7 +298,6 @@ Returns nil if the user did not provided a server in the configuration file"
 - min-id starts getting messages newer than this id
 - since-id cut the messages got starting from this id
 - limit gets a maimum of messages up to this value."
-  (misc:dbg "kind?? ~a" kind)
   (assert (or (string-equal kind db:+federated-timeline+)
               (string-equal kind db:+home-timeline+)))
   (tooter:timeline *client*
