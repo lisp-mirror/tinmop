@@ -405,6 +405,9 @@
     :initarg  :source-line-id
     :accessor source-line-id)))
 
+(defmethod print-object ((object with-raw-text) stream)
+  (format stream "sid: ~a raw-text: ~a" (source-line-id object) (raw-text object)))
+
 (defclass with-group-id ()
   ((group-id
     :initform nil

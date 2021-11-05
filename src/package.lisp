@@ -403,6 +403,7 @@
    :maybe-percent-encode
    :display-corrupting-utf8-p
    :remove-corrupting-utf8-chars
+   :match-words
    :emojip
    :starting-emoji))
 

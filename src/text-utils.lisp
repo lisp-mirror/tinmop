@@ -759,3 +759,12 @@ printed in the box column by column; in the example above the results are:
 
 (defmethod remove-corrupting-utf8-chars ((object sequence))
   (remove-if #'display-corrupting-utf8-p object))
+
+(defun match-words (words probe &optional (test #'string=))
+  (loop for start-words = words then (rest start-words)
+        while start-words do
+          (if (<= (length probe)
+                  (length start-words))
+              (let ((slice (subseq start-words 0 (length probe))))
+                (tree-equal slice probe :test test))
+              (return-from match-words nil))))

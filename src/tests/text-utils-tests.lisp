@@ -45,3 +45,12 @@
                   '(((((:a . "1") (:b . "12") (:c . "1")) ((:a . "2") (:b . "3") (:c . "4 ")))
                      (((:a . " 5") (:b . "6") (:c . "7")) ((:padding . "    ")))))
                   :test #'string=)))
+
+(deftest match-words (text-utils-suite)
+  (assert-true  (match-words '("a" "b" "c") '("a" "b" "c")))
+  (assert-true  (match-words '("a" "b" "c" "d") '("a" "b" "c")))
+  (assert-true  (match-words '("a" "foo" "bar" "d") '("foo" "bar")))
+  (assert-true  (match-words '("a" "b" "c" "d") '("c" "d")))
+  (assert-false (match-words '("a" "b" "c" "d") '("b" "a")))
+  (assert-false (match-words '("a" "b" "c" "d") '("a" "b" "x")))
+  (assert-false (match-words '("a" "b" "c" "d") '("a" "b" "c" "d" "e"))))
