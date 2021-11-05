@@ -385,9 +385,7 @@
                      (subseq res 1)
                      res))))
       (lambda ()
-        (let ((gemini-parser:*pre-group-id*    -1)
-              (gemini-parser:*header-group-id* -1)
-              (gemini-parser:*pre-alt-text*    ""))
+        (gemini-parser:with-initialized-parser
           (when-let ((extension (fs:get-extension path)))
             (setf support-file (fs:temporary-file :extension extension)))
           (with-open-support-file (file-stream support-file character)

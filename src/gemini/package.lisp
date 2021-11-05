@@ -42,6 +42,7 @@
    :*pre-group-id*
    :*pre-alt-text*
    :*header-group-id*
+   :*source-line-id*
    :geminize-h1
    :geminize-h2
    :geminize-h3
@@ -94,7 +95,8 @@
    :sexp->text
    :parse-gemini-response-header
    :gemini-iri-p
-   :gemini-first-h1))
+   :gemini-first-h1
+   :with-initialized-parser))
 
 (defpackage :gemini-client
   (:use

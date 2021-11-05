@@ -103,16 +103,6 @@ completed) and the common prefix of the completion string."
   (lambda (a)
     (text-utils:string-starts-with-p hint a)))
 
-(defun contains-clsr (hint)
-  (handler-case
-      (let ((scanner (cl-ppcre:create-scanner hint)))
-        (lambda (a)
-          (cl-ppcre:scan scanner a)))
-    (error ()
-      (let ((scanner (cl-ppcre:create-scanner `(:sequence ,hint))))
-        (lambda (a)
-          (cl-ppcre:scan scanner a))))))
-
 (defun remove-if-hidden (candidates)
   (remove-if #'db:hidden-recipient-p candidates))
 
@@ -200,10 +190,12 @@ list af all possible candidtae for completion."
   (let ((strings  '())
         (indices  '())
         (ordering ()))
-    (loop for candidate in bag when (<= (length template)
-                                        (length candidate))
+    (loop for candidate in bag when (and template
+                                         (<= (length template)
+                                             (length candidate)))
           do
-             (when-let ((indices-matched (cl-i18n-utils:fuzzy-match template candidate
+             (when-let ((indices-matched (cl-i18n-utils:fuzzy-match template
+                                                                    candidate
                                                                     :similarity-match     5
                                                                     :similarity-mismatch -5
                                                                     :penalty-weight       1)))
@@ -244,7 +236,7 @@ list af all possible candidtae for completion."
               (uri-matcher hint bag)
             (when matched-strings
               (values matched-strings
-                      nil         ;for fuzzy search common prefix does
+                      nil               ;for fuzzy search common prefix does
                                         ;not  makes  sense; note  also  that
                                         ;setting  this  to  nil  will  force
                                         ;selecting   the   first   item   in
@@ -265,8 +257,21 @@ list af all possible candidtae for completion."
 (with-simple-complete bookmark-section-complete
   (lambda () (remove-if #'null (db:bookmark-all-sections))))
 
+(defun quote-hint (a)
+  (cl-ppcre:quote-meta-chars a))
+
+(defun contains-clsr (hint)
+  (handler-case
+      (let ((scanner (cl-ppcre:create-scanner (quote-hint hint))))
+        (lambda (a)
+          (cl-ppcre:scan scanner a)))
+    (error ()
+      (let ((scanner (cl-ppcre:create-scanner `(:sequence ,hint))))
+        (lambda (a)
+          (cl-ppcre:scan scanner a))))))
+
 (defun bookmark-description-complete-clsr (type)
   (lambda (hint)
-    (when-let ((matched (remove-if-not (lambda (a) (cl-ppcre:scan hint a))
+    (when-let ((matched (remove-if-not (contains-clsr hint)
                                        (db:bookmark-description-for-complete type))))
       (values matched (reduce-to-common-prefix matched)))))

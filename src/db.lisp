@@ -3176,7 +3176,7 @@ days in the past"
                         (type  value  section  description now)))))
 
 (defun bookmark-all-sections ()
-  (let ((rows (query (select :section (from +table-bookmark+)))))
+  (let ((rows (query (select :section (from +table-bookmark+) (group-by :section)))))
     (mapcar #'second rows)))
 
 (defun bookmark-complete->id (description)
