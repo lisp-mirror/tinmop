@@ -1429,6 +1429,7 @@
    :fetch-remote-status-event
    :process-event
    :search-next-event
+   :search-message-gemini-fragment-event
    :search-regex-message-content-event
    :thread-search-message-body-event
    :search-direction
@@ -2118,7 +2119,8 @@
    :generate-gemini-toc
    :gemini-toc-entry
    :gemini-toc-group-id
-   :init))
+   :init
+   :search-gemini-fragment))
 
 (defpackage :open-attach-window
   (:use

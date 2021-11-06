@@ -442,12 +442,14 @@
                     (setf (stream-status wrapper-object) :completed)
                     (when (and fragment
                                (swconf:config-gemini-fragment-as-regex-p))
-                      (let ((regex    (if (text-utils:percent-encoded-p fragment)
-                                          (text-utils:percent-encode    fragment)
-                                          fragment))
-                            (priority program-events:+standard-event-priority+))
-                        (ui::message-search-regex-callback regex
-                                                           :priority priority)))))
+                      (let* ((regex    (if (text-utils:percent-encoded-p fragment)
+                                           (text-utils:percent-decode    fragment)
+                                           fragment))
+                             (priority program-events:+standard-event-priority+)
+                             (event    (make-instance 'program-events:search-message-gemini-fragment-event
+                                                      :priority priority
+                                                      :payload  regex)))
+                        (program-events:push-event event)))))
               ;; (allow-downloading wrapper-object)
               (gemini-client:close-ssl-socket download-socket))))))))
 ;;        (fs:delete-file-if-exists support-file)))))
@@ -727,10 +729,7 @@
                    :as-error t))
       #-debug-mode
       (error (e)
-        (ui:notify (format nil
-                           (_ "Error getting ~s: ~a")
-                           url
-                           e)
+        (ui:notify (format nil (_ "Error getting ~s: ~a") url e)
                    :as-error t)))))
 
 (defun history-back (window)

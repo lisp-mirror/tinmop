@@ -741,7 +741,7 @@ fragment matches- move the window to the line when matching occurred."
                      finally (setf rest-blanks (subseq blanks ct)))
                (values (reverse res) rest-blanks))))
     (with-accessors ((row-selected-index   row-selected-index)) window
-      (let ((rest-rows                (rows-safe-subseq window row-selected-index))
+      (let ((rest-rows                (rest (rows-safe-subseq window row-selected-index)))
             (matching-source-line     nil)
             (matching-source-id       nil)
             (matching-source-position nil)
@@ -772,7 +772,7 @@ fragment matches- move the window to the line when matching occurred."
                  (reconstructed-rows (reconstruct-source-lines text-rows matching-source-blanks))
                  (line-matched (loop
                                  for reconstructed-row in reconstructed-rows
-                                 for line from 0
+                                 for line from 1
                                  for length-accum = (length reconstructed-row)
                                    then (+ length-accum
                                            (length reconstructed-row))

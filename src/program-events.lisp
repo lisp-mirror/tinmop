@@ -453,6 +453,12 @@
         (cl-ppcre:ppcre-syntax-error ()
           (ui:error-message (_ "Invalid regular expression")))))))
 
+(defclass search-message-gemini-fragment-event (search-event) ())
+
+(defmethod process-event ((object search-message-gemini-fragment-event))
+  (let ((fragment (payload object)))
+    (message-window:search-gemini-fragment specials:*message-window* fragment)))
+
 (defclass thread-search-event (search-event)
   ((search-direction
     :initform nil
