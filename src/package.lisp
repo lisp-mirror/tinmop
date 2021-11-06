@@ -371,6 +371,7 @@
    :join-with-strings
    :join-with-strings*
    :split-words
+   :extract-blanks
    :split-lines
    :strip-prefix
    :strip-withespaces

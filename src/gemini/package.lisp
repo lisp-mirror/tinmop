@@ -71,6 +71,10 @@
    :h3-prefix
    :quote-prefix
    :bullet-prefix
+   :raw-text
+   :source-line-id
+   :artificialp
+   :artificial
    :with-lines
    :with-pre-group-id
    :pre-group-id

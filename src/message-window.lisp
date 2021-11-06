@@ -691,3 +691,92 @@
     (refresh-config *message-window*)
     (draw *message-window*)
     *message-window*))
+
+(defun original-source-metadata (row)
+  (let* ((original-line   (row-get-original-object      row))
+         (source-line     (gemini-parser:raw-text       original-line))
+         (source-line-id  (gemini-parser:source-line-id original-line))
+         (artificialp     (gemini-parser:artificialp    original-line)))
+    (values source-line-id source-line artificialp)))
+
+(defun search-gemini-fragment (window fragment)
+  (labels ((prefix-diff (text-rows source-line)
+             (- (length (first (split-words (first text-rows))))
+                (length (first (split-words source-line)))))
+           (reconstruct-source-lines (text-rows blanks &optional (accum '()))
+             (if (null text-rows)
+                 (mapcar (lambda (a) (reduce #'strcat a)) accum)
+                 (let ((text-rows-words (remove-if #'string-empty-p
+                                                   (split-words (first text-rows)))))
+                   (multiple-value-bind (reconstructed rest-blanks)
+                       (reconstruct-source-line text-rows-words blanks)
+                     (reconstruct-source-lines (rest text-rows)
+                                               rest-blanks
+                                               (append accum (list reconstructed)))))))
+           (quoted-line-p (row)
+             (typep (row-get-original-object row) 'gemini-parser:quoted-lines))
+           (strip-prefix-from-quoted-lines (text-rows prefix)
+             (append (list (first text-rows))
+                     (mapcar (lambda (a) (regex-replace prefix a ""))
+                             (rest text-rows))))
+           (rows->text-rows (rows)
+             (let ((text-rows (mapcar (lambda (a)
+                                        (tui-string->chars-string (normal-text a)))
+                                      rows)))
+               (if (quoted-line-p (first rows))
+                   (let ((prefix (gemini-parser::prefix (row-get-original-object (first rows)))))
+                     (strip-prefix-from-quoted-lines text-rows prefix))
+                   text-rows)))
+           (reconstruct-source-line (words blanks)
+             (let ((rest-blanks '())
+                   (res         '()))
+               (loop for word in words
+                     for blank in blanks
+                     for ct from 1
+                     do
+                        (push word  res)
+                        (push blank res)
+                     finally (setf rest-blanks (subseq blanks ct)))
+               (values (reverse res) rest-blanks))))
+    (with-accessors ((row-selected-index   row-selected-index)) window
+      (let ((rest-rows                (rows-safe-subseq window row-selected-index))
+            (matching-source-line     nil)
+            (matching-source-id       nil)
+            (matching-source-position nil)
+            (starting-match-row-pos   nil))
+        (loop named sid-loop
+              for i from 0 below (length rest-rows)
+              for count-line-to-start-matching from 0
+              for current-row in rest-rows do
+                (multiple-value-bind (source-line-id source-line)
+                    (original-source-metadata current-row)
+                  (let* ((matching-string-pos (scan fragment source-line)))
+                    (when matching-string-pos
+                      (setf starting-match-row-pos   count-line-to-start-matching)
+                      (setf matching-source-line     source-line)
+                      (setf matching-source-id       source-line-id)
+                      (setf matching-source-position matching-string-pos)
+                      (return-from sid-loop t)))))
+        (when matching-source-id
+          (let* ((matching-rows   (remove-if-not (lambda (a)
+                                                   (multiple-value-bind (source-line-id x artificialp)
+                                                       (original-source-metadata a)
+                                                     (declare (ignore x))
+                                                     (and (not artificialp)
+                                                          (= source-line-id matching-source-id))))
+                                                 rest-rows))
+                 (text-rows       (rows->text-rows matching-rows))
+                 (matching-source-blanks (extract-blanks matching-source-line))
+                 (reconstructed-rows (reconstruct-source-lines text-rows matching-source-blanks))
+                 (line-matched (loop
+                                 for reconstructed-row in reconstructed-rows
+                                 for line from 0
+                                 for length-accum = (length reconstructed-row)
+                                   then (+ length-accum
+                                           (length reconstructed-row))
+                                 while (<= (- length-accum
+                                              (prefix-diff text-rows matching-source-line))
+                                           matching-source-position)
+                                 finally (return line))))
+            (row-move window (+ starting-match-row-pos line-matched))
+            (draw window)))))))

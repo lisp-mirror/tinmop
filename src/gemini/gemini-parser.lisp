@@ -403,7 +403,12 @@
    (source-line-id
     :initform nil
     :initarg  :source-line-id
-    :accessor source-line-id)))
+    :accessor source-line-id)
+   (artificial
+    :initform nil
+    :initarg  :artificial
+    :reader   artificialp
+    :writer   (setf artificial))))
 
 (defmethod print-object ((object with-raw-text) stream)
   (format stream "sid: ~a raw-text: ~a" (source-line-id object) (raw-text object)))
@@ -490,11 +495,12 @@
     :initarg :level
     :accessor level)))
 
-(defun make-header-line (text gid level)
+(defun make-header-line (text gid level artificial)
   (make-instance 'header-line
-                 :lines    (list text)
-                 :group-id gid
-                 :level    level))
+                 :lines      (list text)
+                 :group-id   gid
+                 :level      level
+                 :artificial artificial))
 
 (defclass unordered-list-line (with-group-id with-lines with-raw-text) ())
 
@@ -551,8 +557,8 @@
            (make-header (level text underline-char)
              (let ((underline (build-underline text underline-char))
                    (header-group-id (next-header-group-id)))
-               (list (make-header-line text header-group-id level)
-                     (make-header-line underline header-group-id level))))
+               (list (make-header-line text header-group-id level nil)
+                     (make-header-line underline header-group-id level t))))
            (extract-source-line (node)
              (html-utils:attribute-value (html-utils:find-attribute :source-line node)))
            (trim (a)

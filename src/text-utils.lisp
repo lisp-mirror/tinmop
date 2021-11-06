@@ -161,6 +161,9 @@
 (defun split-words (text)
   (cl-ppcre:split "\\p{White_Space}" text))
 
+(defun extract-blanks (text)
+  (remove-if #'string-empty-p (cl-ppcre:split "\\P{White_Space}" text)))
+
 (defun split-lines (text)
   (let ((res ()))
     (flex:with-input-from-sequence (stream (babel:string-to-octets text))
@@ -761,10 +764,22 @@ printed in the box column by column; in the example above the results are:
   (remove-if #'display-corrupting-utf8-p object))
 
 (defun match-words (words probe &optional (test #'string=))
+  "Returns the  starting position  of list of  strings `probe'  in the
+list of string `words' or nil if probe is not in words under predicate
+`test'."
   (loop for start-words = words then (rest start-words)
+        for word-start-count from 0
         while start-words do
           (if (<= (length probe)
                   (length start-words))
-              (let ((slice (subseq start-words 0 (length probe))))
-                (tree-equal slice probe :test test))
+              (let* ((slice     (subseq start-words 0 (length probe)))
+                     (mismatchp (loop named mismatch-loop
+                                      for i in slice
+                                      for j in probe
+                                      do
+                                         (if (not (funcall test i j))
+                                             (return-from mismatch-loop t)
+                                             nil))))
+                (when (not mismatchp)
+                  (return-from match-words word-start-count)))
               (return-from match-words nil))))
