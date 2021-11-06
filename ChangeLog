@@ -1,3 +1,127 @@
+2021-11-06 cage
+
+        * etc/shared.conf,
+        * src/gemini-viewer.lisp,
+        * src/gemini/gemini-parser.lisp,
+        * src/gemini/package.lisp,
+        * src/message-window.lisp,
+        * src/package.lisp,
+        * src/program-events.lisp,
+        * src/tests/text-utils-tests.lisp,
+        * src/text-utils.lisp:
+
+        - added 'search-gemini-fragment'
+        - changed 'raw-text' to 'source-line';
+        - added ocstring to 'search-gemini-fragment'.
+        - [gemini] added 'search-message-gemini-fragment-event'
+        When  a fragment  is present  in a  uri/iri it  is used  as a  regular
+        expression to search in the *source* of the text, the window's content
+        is moved to shows the *rendered* line where matching occurred.
+
+2021-11-05 cage
+
+        * src/complete.lisp,
+        * src/db.lisp,
+        * src/gemini-viewer.lisp,
+        * src/gemini/gemini-parser.lisp,
+        * src/gemini/package.lisp,
+        * src/package.lisp,
+        * src/tests/text-utils-tests.lisp,
+        * src/text-utils.lisp:
+
+        - fixed crash when completing an empty command line (pressing tab with
+        no string typed on the command line);
+        - fixed crash when completing bookmark  entry with non word character
+        (e.g. '[');
+        - added macro 'gemini-parser:with-initialized-parser';
+        - added source  metadata (sourceline and source-line-id  to results of
+        gemini parsing to IR (see: sexp->text-rows).
+        - added 'match-words'.
+
+2021-10-30 cage
+
+        * etc/init.lisp,
+        * src/api-client.lisp,
+        * src/message-window.lisp,
+        * src/package.lisp,
+        * src/ui-goodies.lisp:
+
+        - added command 'open-next-visible-link';
+        - removed debug message.
+
+2021-10-27 cage
+
+        * src/message-window.lisp:
+
+        - transform any line made from blank characters in vertical-space.
+
+2021-10-26 cage
+
+        * src/gemini/gemini-parser.lisp,
+        * src/message-window.lisp:
+
+        - ensured a line is not added to a line in the slot 'normal-text'.
+        - [gemini/parsing] transformed to vertical space a text line made from
+        blank characters only.
+
+2021-10-25 cage
+
+        * src/gemini/gemini-parser.lisp,
+        * src/message-window.lisp:
+
+        - removed unused argument.
+        - [gemini] fixed crash occurred when rendering an empty quote line.
+
+2021-10-24 cage
+
+        * ChangeLog,
+        * src/gemini/gemini-parser.lisp,
+        * src/html-utils.lisp,
+        * src/package.lisp:
+
+        - added missing author to Changelog.
+        - [gemini] attached source line to each parsed gemtext node.
+
+2021-10-22 cage
+
+        * src/gemini/gemini-parser.lisp,
+        * src/message-window.lisp:
+
+        - [gemini] moved fitting of quoted lines to message window routines.
+
+2021-10-17 cage
+
+        * etc/shared.conf,
+        * scripts/delete-old-posts.lisp,
+        * src/gemini-viewer.lisp,
+        * src/package.lisp,
+        * src/software-configuration.lisp,
+        * src/ui-goodies.lisp:
+
+        - [experimental][gemini] used URI's fragment as a search criteria for
+        the gemini page (disabled by default).
+        - prompted for older threshold instead of using a constant.
+
+2021-10-15 cage
+
+        * Makefile.am,
+        * Makefile.in,
+        * scripts/delete-old-posts.lisp,
+        * src/api-client.lisp,
+        * src/package.lisp:
+
+        - added a script to delete old posts.
+        - updated build script to install 'delete-old-posts.lisp'
+
+2021-10-13 cage
+
+        * etc/shared.conf,
+        * src/package.lisp,
+        * src/program-events.lisp,
+        * src/software-configuration.lisp:
+
+        - allowed skipping posts using language type.
+
 2021-10-10 cage
 
         * doc/man.org,
