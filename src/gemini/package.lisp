@@ -71,7 +71,7 @@
    :h3-prefix
    :quote-prefix
    :bullet-prefix
-   :raw-text
+   :source-line
    :source-line-id
    :artificialp
    :artificial

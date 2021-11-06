@@ -694,12 +694,14 @@
 
 (defun original-source-metadata (row)
   (let* ((original-line   (row-get-original-object      row))
-         (source-line     (gemini-parser:raw-text       original-line))
+         (source-line     (gemini-parser:source-line    original-line))
          (source-line-id  (gemini-parser:source-line-id original-line))
          (artificialp     (gemini-parser:artificialp    original-line)))
     (values source-line-id source-line artificialp)))
 
 (defun search-gemini-fragment (window fragment)
+  "Search `fragment' in the source lines  of the gemini steams and -if
+fragment matches- move the window to the line when matching occurred."
   (labels ((prefix-diff (text-rows source-line)
              (- (length (first (split-words (first text-rows))))
                 (length (first (split-words source-line)))))

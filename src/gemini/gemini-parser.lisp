@@ -395,11 +395,11 @@
     :initform nil
     :accessor viewport)))
 
-(defclass with-raw-text ()
-  ((raw-text
+(defclass with-source-line ()
+  ((source-line
     :initform nil
-    :initarg  :raw-text
-    :accessor raw-text)
+    :initarg  :source-line
+    :accessor source-line)
    (source-line-id
     :initform nil
     :initarg  :source-line-id
@@ -410,8 +410,8 @@
     :reader   artificialp
     :writer   (setf artificial))))
 
-(defmethod print-object ((object with-raw-text) stream)
-  (format stream "sid: ~a raw-text: ~a" (source-line-id object) (raw-text object)))
+(defmethod print-object ((object with-source-line) stream)
+  (format stream "sid: ~a source-line: ~a" (source-line-id object) (source-line object)))
 
 (defclass with-group-id ()
   ((group-id
@@ -437,7 +437,7 @@
     :initarg  :pre-group-id
     :accessor pre-group-id)))
 
-(defclass pre-start (with-group-id with-pre-group-id with-alt-text with-raw-text) ())
+(defclass pre-start (with-group-id with-pre-group-id with-alt-text with-source-line) ())
 
 (defmethod print-object ((object pre-start) stream)
   (print-unreadable-object (object stream :type t :identity t)
@@ -449,12 +449,12 @@
                  :group-id     group-id
                  :pre-group-id pre-group-id))
 
-(defclass pre-end (with-raw-text) ())
+(defclass pre-end (with-source-line) ())
 
 (defun make-pre-end ()
   (make-instance 'pre-end))
 
-(defclass quoted-lines (with-group-id with-lines with-raw-text)
+(defclass quoted-lines (with-group-id with-lines with-source-line)
   ((prefix
     :initform "@ "
     :initarg  :prefix
@@ -466,7 +466,7 @@
                  :group-id group-id
                  :lines    (list text)))
 
-(defclass pre-line (with-group-id with-pre-group-id with-lines with-alt-text with-raw-text) ())
+(defclass pre-line (with-group-id with-pre-group-id with-lines with-alt-text with-source-line) ())
 
 (defmethod print-object ((object pre-line) stream)
   (print-unreadable-object (object stream :type t)
@@ -483,13 +483,13 @@
                  :pre-group-id pre-group-id
                  :alt-text     alt-text))
 
-(defclass vertical-space (with-group-id with-raw-text)
+(defclass vertical-space (with-group-id with-source-line)
   ((size
     :initform 1
     :initarg  :size
     :accessor size)))
 
-(defclass header-line (with-group-id with-lines with-raw-text)
+(defclass header-line (with-group-id with-lines with-source-line)
   ((level
     :initform nil
     :initarg :level
@@ -502,14 +502,14 @@
                  :level      level
                  :artificial artificial))
 
-(defclass unordered-list-line (with-group-id with-lines with-raw-text) ())
+(defclass unordered-list-line (with-group-id with-lines with-source-line) ())
 
 (defun make-unordered-list-line (text header-group-id)
   (make-instance 'unordered-list-line
                  :group-id header-group-id
                  :lines    (list text)))
 
-(defclass link-line (with-group-id with-raw-text)
+(defclass link-line (with-group-id with-source-line)
   ((link-text
     :initarg  :link-text
     :initform nil
@@ -530,7 +530,7 @@
                  :link-name  link-name
                  :link-value link-value))
 
-(defclass simple-line (with-group-id with-raw-text)
+(defclass simple-line (with-group-id with-source-line)
   ((text-line
     :initarg :text-line
     :initform nil
@@ -594,12 +594,12 @@
                ((typep thing 'list)
                 (mapcar (lambda (a)
                           (setf (source-line-id a) source-line-id)
-                          (setf (raw-text       a) source-line)
+                          (setf (source-line    a) source-line)
                           a)
                         thing))
                (t
                 (setf (source-line-id thing) source-line-id)
-                (setf (raw-text       thing) source-line)
+                (setf (source-line    thing) source-line)
                 thing)))
            (build-row (node)
              (let ((source-line    (extract-source-line node))
