@@ -395,7 +395,7 @@
 
 (defun request-dispatch (url manage-functions &key (certificate nil) (certificate-key nil))
   (let ((parsed-iri (iri:iri-parse url)))
-    (multiple-value-bind (actual-iri host path query port fragment)
+    (multiple-value-bind (actual-iri host path query port)
         (displace-iri parsed-iri)
       (multiple-value-bind (status code-description meta response socket)
           (gemini-client:request host
@@ -404,7 +404,7 @@
                                  :client-certificate certificate
                                  :query              query
                                  :port               port
-                                 :fragment           fragment)
+                                 :fragment           nil)
         (flet ((call-appropriate-function (response-type)
                  (funcall (getf manage-functions
                                 response-type
