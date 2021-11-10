@@ -498,7 +498,8 @@
                                (force-output file-stream)
                                (setf (stream-status wrapper-object) :completed)
                                (gemini-client:close-ssl-socket socket)
-                               (when wait-for-download
+                               (when (or wait-for-download
+                                         partial-content-not-opened)
                                  (os-utils:open-resource-with-external-program support-file
                                                                                nil)))
                              (progn
