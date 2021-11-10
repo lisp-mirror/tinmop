@@ -19,11 +19,8 @@
 
 (defparameter *gemini-db-streams-lock* (bt:make-recursive-lock))
 
-(define-constant +read-buffer-size+ 2048
+(define-constant +read-buffer-size+ 2048 :test #'=
   :documentation "Chunk's size of the buffer when reading non gemini contents from stream")
-
-(define-constant +buffer-minimum-size-to-open+ 4096
-  :documentation "Minimum size of the saved contents (non gemini text) before attempt to opening with an user defined program: see configuration directive 'use program foo *no wait*'")
 
 (defparameter *gemini-streams-db* ())
 
@@ -480,7 +477,10 @@
         (labels ((download-completed-p (buffer read-so-far)
                    (< read-so-far (length buffer)))
                  (opening-partial-contents-p (read-so-far)
-                   (> read-so-far +buffer-minimum-size-to-open+))
+                   (let ((buffer-size (swconf:link-regex->program-to-use-buffer-size path)))
+                     (if buffer-size
+                         (> read-so-far buffer-size)
+                         (> read-so-far swconf:+buffer-minimum-size-to-open+))))
                  (%fill-buffer ()
                    (declare (optimize (debug 0) (speed 3)))
                    (when (downloading-allowed-p wrapper-object)

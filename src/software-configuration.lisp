@@ -47,7 +47,7 @@
 ;; FILEPATH              := QUOTED-STRING
 ;; PROGRAM-NAME          := QUOTED-STRING
 ;; USE-CACHE             := USE BLANKS CACHE
-;; NOWAIT                := NO BLANKS WAIT
+;; NOWAIT                := NO BLANKS WAIT BLANKS (BUFFER-LABEL BLANKS DIGIT+)?
 ;; NO                    := "no"
 ;; WAIT                  := "wait"
 ;; CACHE                 := "cache"
@@ -59,6 +59,7 @@
 ;; OPEN                  := "open"
 ;; OPEN-LINK-HELPER-KEY  := OPEN
 ;; WITH-KEY              := "with"
+;; BUFFER-LABEL          := "buffer"
 ;; REGEXP                := QUOTED-STRING
 ;; QUOTED-STRING         := #\" (not #\") #\"
 ;; FIELD                 := ( (or ESCAPED-CHARACTER
@@ -80,6 +81,7 @@
 ;; HEX-DIGIT             := (and (character-ranges #\0 #\9)
 ;;                              (character-ranges #\a #\f)
 ;;                              (character-ranges #\A #\f)
+;; DIGIT                 := (character-ranges #\0 #\9)
 ;; ATTRIBUTE-VALUE       := "bold"
 ;;                         | "italic"
 ;;                         | "underline"
@@ -116,6 +118,9 @@
   (:constant nil))
 
 (defrule hexcolor-prefix #\#)
+
+(defrule digit (character-ranges (#\0 #\9))
+  (:text t))
 
 (defrule hex-digit
     (or (character-ranges (#\0 #\9))
@@ -289,6 +294,11 @@
     (and username-key blanks assign blanks generic-value blanks)
   (:function remove-if-null))
 
+(define-constant +buffer-minimum-size-to-open+ (expt 1024 2) :test #'=
+  :documentation "Minimum size of the saved contents (non gemini text)
+  before  attempt  to  opening  with  an  user  defined  program:  see
+  configuration directive 'use program foo *no wait*'")
+
 (defclass open-link-helper ()
   ((re
     :initform nil
@@ -304,27 +314,40 @@
     :reader   use-cache-p
     :writer   (setf use-cache))
    (wait
-    :initform t
-    :initarg  :wait
-    :reader   waitp
-    :writer   (setf wait)))
+    :initform  t
+    :initarg   :wait
+    :reader    waitp
+    :writer    (setf wait))
+   (buffer-size
+    :initform  +buffer-minimum-size-to-open+
+    :initarg   :buffer-size
+    :accessor   buffer-size))
   (:documentation "When a gemini link matches `re' try to open it with 'program-name'"))
 
 (defmethod print-object ((object open-link-helper) stream)
   (print-unreadable-object (object stream :type t :identity nil)
     (with-accessors ((re           re)
                      (program-name program-name)
-                     (use-cache-p  use-cache-p)) object
-      (format stream "re: ~s program: ~s use cache? ~a" re program-name use-cache-p))))
+                     (use-cache-p  use-cache-p)
+                     (waitp        waitp)
+                     (buffer-size  buffer-size)) object
+      (format stream
+              "re: ~s program: ~s use cache? ~a wait? ~a buffer size: ~a"
+              re program-name use-cache-p waitp buffer-size))))
 
-(defun make-open-link-helper (re program-name use-cache &key (wait t))
+(defun make-open-link-helper (re program-name use-cache
+                              &key (wait t) (buffer-size +buffer-minimum-size-to-open+))
+
   (assert (stringp program-name))
   (assert (stringp re))
+  (assert (integerp buffer-size))
+  (assert (> buffer-size 0))
   (make-instance 'open-link-helper
                  :re           re
                  :program-name program-name
                  :use-cache    use-cache
-                 :wait         wait))
+                 :wait         wait
+                 :buffer-size  buffer-size))
 
 (defrule use "use"
   (:text t))
@@ -336,6 +359,9 @@
   (:text t))
 
 (defrule wait "wait"
+  (:text t))
+
+(defrule buffer-label "buffer"
   (:text t))
 
 (defrule use-cache (and use blanks cache)
@@ -355,14 +381,30 @@
          blanks
          (? (and use-cache ; 8 use cache?
                  blanks))
-         (? (and no-wait ; 9 wait download?
+         (? (and no-wait ; 9 wait download? Buffer size?
+                 blanks
+                 (? (and buffer-label blanks (+ digit)))
                  blanks)))
   (:function (lambda (args)
-               (list :open-link-helper
-                     (make-open-link-helper (elt args 2)
-                                            (elt args 6)
-                                            (elt args 8)
-                                            :wait (not (elt args 9)))))))
+               (let* ((use-cache       (elt args 8))
+                      (wait-parameters (elt args 9))
+                      (waitp           (not (and wait-parameters (elt wait-parameters 0))))
+                      (buffer-size     (if (and wait-parameters
+                                                (elt wait-parameters 2))
+                                           (let* ((buffer-parameters  (elt wait-parameters 2))
+                                                  (buffer-string-list (elt buffer-parameters 2))
+                                                  (mebibyte-string    (reduce #'strcat
+                                                                              buffer-string-list))
+                                                  (mebimytes   (parse-integer mebibyte-string))
+                                                  (bytes       (* 1024 1024 mebimytes)))
+                                             (abs bytes))
+                                           swconf:+buffer-minimum-size-to-open+)))
+                 (list :open-link-helper
+                       (make-open-link-helper (elt args 2)
+                                              (elt args 6)
+                                              use-cache
+                                              :wait        waitp
+                                              :buffer-size buffer-size))))))
 
 (defrule post-allowed-language (and "post-allowed-language" blanks assign regexp)
   (:function remove-if-null))
@@ -964,13 +1006,20 @@
 
 (gen-simple-access (all-link-open-program) +key-open-link-helper+)
 
+(defun link-regex->program-to-use-parameters (link)
+  (find-if (lambda (a) (cl-ppcre:scan (re a) link))
+           (config-all-link-open-program)))
+
 (defun link-regex->program-to-use (link)
-  (when-let ((found (find-if (lambda (a)
-                               (cl-ppcre:scan (re a) link))
-                             (config-all-link-open-program))))
+  (when-let ((found (link-regex->program-to-use-parameters link)))
     (values (program-name found)
             (use-cache-p  found)
-            (waitp        found))))
+            (waitp        found)
+            (buffer-size  found))))
+
+(defun link-regex->program-to-use-buffer-size (link)
+  (when-let ((found (link-regex->program-to-use-parameters link)))
+    (buffer-size  found)))
 
 (defun use-tinmop-as-external-program-p (program)
   (cl-ppcre:scan "(^me$)|(^internal$)|(tinmop)" program))

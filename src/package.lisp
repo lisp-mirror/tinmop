@@ -1159,6 +1159,7 @@
    :+key-data+
    :+key-data-leaf+
    :+key-purge-history-days-offset+
+   :+buffer-minimum-size-to-open+
    :*allowed-status-visibility*
    :*allowed-attachment-type*
    :*software-configuration*
@@ -1229,6 +1230,7 @@
    :config-password-echo-character
    :config-win-focus-mark
    :link-regex->program-to-use
+   :link-regex->program-to-use-buffer-size
    :use-tinmop-as-external-program-p
    :thread-message-symbol
    :thread-message-read-colors
