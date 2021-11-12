@@ -2262,7 +2262,8 @@ gemini page the program is rendering."
     (push-event event)))
 
 (defun generate-latest-visited-url ()
-  (let ((history (db:history-prompt->values (gemini-open-url-prompt))))
+  (let ((history (remove-duplicates (db:history-prompt->values (gemini-open-url-prompt))
+                                    :test #'string=)))
     (with-output-to-string (stream)
       (format stream (gemini-parser:geminize-h1 (_ "Latest visited addresses~2%")))
       (loop for iri in history when (gemini-client:absolute-gemini-url-p iri) do
