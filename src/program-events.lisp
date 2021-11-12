@@ -313,6 +313,17 @@
   (let ((win (payload object)))
     (mtree:remove-child specials:*main-window* win)))
 
+(defclass change-window-title-event (program-event)
+  ((window
+    :initform nil
+    :initarg  :window
+    :accessor window)))
+
+(defmethod process-event ((object change-window-title-event))
+  (with-accessors ((title  payload)
+                   (window window)) object
+    (setf (message-window::title window) title)))
+
 (define-constant +max-recover-count+ 3)
 
 (defclass save-timeline-in-db-event (program-event)

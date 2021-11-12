@@ -72,7 +72,7 @@
 (defgeneric generate-toc (object))
 
 (defun gemini-window-p* (window)
-  (gemini-viewer:gemini-metadata-p (message-window:metadata window)))
+  (display-gemini-text-p window))
 
 (defun gemini-window-p ()
   (gemini-window-p* specials:*message-window*))

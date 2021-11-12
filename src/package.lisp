@@ -1426,6 +1426,7 @@
    :user-input-string-event
    :notify-user-event
    :remove-notify-user-event
+   :change-window-title-event
    :save-timeline-in-db-event
    :timeline-type
    :localp

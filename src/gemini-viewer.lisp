@@ -362,6 +362,9 @@
     (labels ((maybe-render-line (line-event)
                (when (eq (stream-status wrapper-object) :rendering)
                  (program-events:push-event line-event)))
+             (maybe-change-title (title-event)
+               (when (eq (stream-status wrapper-object) :rendering)
+                 (program-events:push-event title-event)))
              (maybe-render-toc ()
                (when (eq (stream-status wrapper-object) :rendering)
                  (ui:open-gemini-toc)))
@@ -403,10 +406,13 @@
                    (url-event               (make-instance 'program-events:gemini-got-line-event
                                                            :wrapper-object  wrapper-object
                                                            :payload         url-response
-                                                           :append-text     nil)))
-
+                                                           :append-text     nil))
+                   (new-title-event         (make-instance 'program-events:change-window-title-event
+                                                           :payload url-header
+                                                           :window *message-window*)))
               (write-sequence url-header file-stream)
               (increment-bytes-count wrapper-object url-header :convert-to-octects t)
+              (maybe-change-title new-title-event)
               (maybe-render-line url-event)
               (maybe-render-preformat-wrapper file-stream wrapper-object)
               (loop

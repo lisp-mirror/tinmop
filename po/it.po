@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tinmop 0.0.1\n"
 "Report-Msgid-Bugs-To: https://notabug.org/cage/tinmop/\n"
-"POT-Creation-Date: 2021-11-12 15:48+0100\n"
-"PO-Revision-Date: 2021-11-12 15:49+0100\n"
+"POT-Creation-Date: 2021-11-12 18:58+0100\n"
+"PO-Revision-Date: 2021-11-12 18:57+0100\n"
 "Last-Translator: cage <cage@invalid.org>\n"
 "Language-Team: Italian\n"
 "Language: it\n"
@@ -241,7 +241,7 @@ msgstr "Certificati generati"
 msgid "Table of contents"
 msgstr "Indice"
 
-#: src/gemini-subscription-window.lisp:50 src/program-events.lisp:1355
+#: src/gemini-subscription-window.lisp:50 src/program-events.lisp:1366
 msgid "No subtitle"
 msgstr "Nessun sottotitolo"
 
@@ -433,7 +433,7 @@ msgid "invalid regular expression ~s ~a"
 msgstr "Espressione regolare non valida ~s ~a"
 
 #: src/line-oriented-window.lisp:325 src/open-message-link-window.lisp:194
-#: src/program-events.lisp:454
+#: src/program-events.lisp:465
 msgid "Invalid regular expression"
 msgstr "Espressione regolare non valida"
 
@@ -556,11 +556,11 @@ msgstr "È ammessa una sola scelta"
 msgid "The poll has expired"
 msgstr "Il sondaggio è scaduto"
 
-#: src/message-window.lisp:701
+#: src/message-window.lisp:703
 msgid "Gemini stream"
 msgstr "Flussi di dati gemini"
 
-#: src/message-window.lisp:702
+#: src/message-window.lisp:704
 msgid "Messages"
 msgstr "Messaggi"
 
@@ -601,60 +601,60 @@ msgstr "Il file ~s non esiste"
 msgid "Destination directory ~s does not exists"
 msgstr "La directory di destinazione ~s non esiste"
 
-#: src/program-events.lisp:565
+#: src/program-events.lisp:576
 msgid "No message selected!"
 msgstr "Nessun messaggio selezionato!"
 
-#: src/program-events.lisp:745
+#: src/program-events.lisp:756
 msgid "Message sent."
 msgstr "Messaggio spedito"
 
-#: src/program-events.lisp:769
+#: src/program-events.lisp:780
 #, lisp-format
 msgid "Unable to find user ~a"
 msgstr "Non trovo l'utente ~a"
 
-#: src/program-events.lisp:819
+#: src/program-events.lisp:830
 #, lisp-format
 msgid "Downloaded new messages for tag ~a"
 msgstr "Scaricati nuovi messaggi per l'etichetta ~a."
 
-#: src/program-events.lisp:934
+#: src/program-events.lisp:945
 #, lisp-format
 msgid "Got ~a notification"
 msgid_plural "Got ~a notifications"
 msgstr[0] "Hai ~a notifica"
 msgstr[1] "Hai ~a notifiche"
 
-#: src/program-events.lisp:1104
+#: src/program-events.lisp:1115
 #, lisp-format
 msgid "Index of local directory ~a~2%"
 msgstr "Indice della directory locale ~a~2%"
 
-#: src/program-events.lisp:1137
+#: src/program-events.lisp:1148
 msgid "Empty address"
 msgstr "Indirizzo vuoto"
 
-#: src/program-events.lisp:1310
+#: src/program-events.lisp:1321
 #, lisp-format
 msgid "Unable to subscribe to ~s"
 msgstr "Non posso abbonarmi a ~s: "
 
-#: src/program-events.lisp:1366
+#: src/program-events.lisp:1377
 #, lisp-format
 msgid "~a ~:[(not opened)~;(opened)~]~%"
 msgstr "~a ~:[(non aperto)~;(aperto)~]~%"
 
-#: src/program-events.lisp:1390
+#: src/program-events.lisp:1401
 #, lisp-format
 msgid "updating gemlog ~a"
 msgstr "Aggiornamento del gemlog ~a."
 
-#: src/program-events.lisp:1437
+#: src/program-events.lisp:1448
 msgid "TOC can be shown for gemini windows only."
 msgstr "L'indice può essere generato solo per le pagine gemini."
 
-#: src/program-events.lisp:1546
+#: src/program-events.lisp:1557
 msgid "no label"
 msgstr "nessuna etichetta"
 
@@ -1392,7 +1392,7 @@ msgstr "Senza categoria"
 #: src/ui-goodies.lisp:2268
 #, lisp-format
 msgid "Latest visited addresses~2%"
-msgstr "Ultimi indirizzi visitati~2%."
+msgstr "Ultimi indirizzi visitati~2%"
 
 #: src/ui-goodies.lisp:2282
 msgid "No entry selected"

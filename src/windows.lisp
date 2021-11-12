@@ -686,7 +686,7 @@ insetred by the user"
     :accessor title
     :documentation "The actual title")
    (title-padding-left
-    :initform " "
+    :initform 3
     :initarg  :title-padding-left
     :accessor title-padding-left
     :documentation "left padding text for title")
@@ -713,6 +713,20 @@ insetred by the user"
       (setf title-padding-left padding)
       (setf left-stopper       left-mark)
       (setf right-stopper      right-mark)))
+  object)
+
+(defmethod (setf title) ((new-title string) (object title-window))
+  (with-slots (title) object
+    (with-accessors ((left-stopper       left-stopper)
+                     (right-stopper      right-stopper)
+                     (title-padding-left title-padding-left)) object
+      (let ((clean-title (ellipsize (trim-blanks new-title)
+                                    (truncate (/ (- (win-width object)
+                                                    (length left-stopper)
+                                                    (length right-stopper)
+                                                    title-padding-left)
+                                                 2)))))
+        (setf title clean-title))))
   object)
 
 (defmethod draw :after ((object title-window))

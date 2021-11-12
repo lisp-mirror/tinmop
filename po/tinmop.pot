@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tinmop 0.8.3\n"
 "Report-Msgid-Bugs-To: https://notabug.org/cage/tinmop/\n"
-"POT-Creation-Date: 2021-11-12 15:48+0100\n"
+"POT-Creation-Date: 2021-11-12 18:58+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -232,7 +232,7 @@ msgstr ""
 msgid "Table of contents"
 msgstr ""
 
-#: src/gemini-subscription-window.lisp:50 src/program-events.lisp:1355
+#: src/gemini-subscription-window.lisp:50 src/program-events.lisp:1366
 msgid "No subtitle"
 msgstr ""
 
@@ -424,7 +424,7 @@ msgid "invalid regular expression ~s ~a"
 msgstr ""
 
 #: src/line-oriented-window.lisp:325 src/open-message-link-window.lisp:194
-#: src/program-events.lisp:454
+#: src/program-events.lisp:465
 msgid "Invalid regular expression"
 msgstr ""
 
@@ -543,11 +543,11 @@ msgstr ""
 msgid "The poll has expired"
 msgstr ""
 
-#: src/message-window.lisp:701
+#: src/message-window.lisp:703
 msgid "Gemini stream"
 msgstr ""
 
-#: src/message-window.lisp:702
+#: src/message-window.lisp:704
 msgid "Messages"
 msgstr ""
 
@@ -586,60 +586,60 @@ msgstr ""
 msgid "Destination directory ~s does not exists"
 msgstr ""
 
-#: src/program-events.lisp:565
+#: src/program-events.lisp:576
 msgid "No message selected!"
 msgstr ""
 
-#: src/program-events.lisp:745
+#: src/program-events.lisp:756
 msgid "Message sent."
 msgstr ""
 
-#: src/program-events.lisp:769
+#: src/program-events.lisp:780
 #, lisp-format
 msgid "Unable to find user ~a"
 msgstr ""
 
-#: src/program-events.lisp:819
+#: src/program-events.lisp:830
 #, lisp-format
 msgid "Downloaded new messages for tag ~a"
 msgstr ""
 
-#: src/program-events.lisp:934
+#: src/program-events.lisp:945
 #, lisp-format
 msgid "Got ~a notification"
 msgid_plural "Got ~a notifications"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/program-events.lisp:1104
+#: src/program-events.lisp:1115
 #, lisp-format
 msgid "Index of local directory ~a~2%"
 msgstr ""
 
-#: src/program-events.lisp:1137
+#: src/program-events.lisp:1148
 msgid "Empty address"
 msgstr ""
 
-#: src/program-events.lisp:1310
+#: src/program-events.lisp:1321
 #, lisp-format
 msgid "Unable to subscribe to ~s"
 msgstr ""
 
-#: src/program-events.lisp:1366
+#: src/program-events.lisp:1377
 #, lisp-format
 msgid "~a ~:[(not opened)~;(opened)~]~%"
 msgstr ""
 
-#: src/program-events.lisp:1390
+#: src/program-events.lisp:1401
 #, lisp-format
 msgid "updating gemlog ~a"
 msgstr ""
 
-#: src/program-events.lisp:1437
+#: src/program-events.lisp:1448
 msgid "TOC can be shown for gemini windows only."
 msgstr ""
 
-#: src/program-events.lisp:1546
+#: src/program-events.lisp:1557
 msgid "no label"
 msgstr ""
 
