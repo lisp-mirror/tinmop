@@ -1094,7 +1094,7 @@
   (uri:normalize-path (fs:prepend-pwd path)))
 
 (defun render-directory-as-gemini-text (root-directory)
-  (let* ((index-path ( relative-path->absolute root-directory))
+  (let* ((index-path (relative-path->absolute root-directory))
          (all-paths  (mapcar #'uri:normalize-path
                              (fs:collect-children index-path)))
          (link-lines ())

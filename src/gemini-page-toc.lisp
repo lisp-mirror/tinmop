@@ -36,8 +36,10 @@
            (bg          (swconf:background          theme-style))
            (selected-fg (swconf:selected-foreground theme-style))
            (selected-bg (swconf:selected-background theme-style))
-           (width       (- (win-width *main-window*)
-                           (win-width *thread-window*)))
+           (width       (if command-line:*gemini-full-screen-mode*
+                            (truncate (* 1/4 (win-width *main-window*)))
+                            (- (win-width *main-window*)
+                               (win-width *thread-window*))))
            (raw-height  (swconf:win-height swconf:+key-gemini-toc-window+))
            (height      (- (main-window:parse-subwin-h raw-height)
                            (win-height *command-window*)))
@@ -112,4 +114,7 @@
     (hooks:add-hook 'hooks:*before-rendering-message-visible-rows*
                     #'highlight-current-section)
     (draw *gemini-toc-window*)
+    (when command-line:*gemini-full-screen-mode*
+      (refresh-config specials:*message-window*)
+      (draw *message-window*))
     *gemini-toc-window*))

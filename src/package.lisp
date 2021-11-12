@@ -931,6 +931,7 @@
    :row-license
    :row-version
    :row-cover
+   :row-input
    :next-status-tree
    :previous-status-tree
    :message-tree-root-equal
@@ -2716,6 +2717,7 @@
    :bookmark-gemini-page
    :display-bookmark
    :delete-gemini-bookmark
+   :display-latest-visited-urls
    :open-gempub-library
    :gempub-library-window-move
    :gempub-library-window-go-up

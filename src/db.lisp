@@ -853,7 +853,8 @@ than (swconf:config-purge-history-days-offset) days in the past"
   (mapcar #'second
           (query (select :input
                    (from +table-input-history+)
-                   (where (:= :prompt prompt))))))
+                   (where (:= :prompt prompt))
+                   (order-by (:desc :id))))))
 
 (defmethod prepare-for-db ((object tooter:application) &key &allow-other-keys)
   (tooter:name object))
@@ -1888,6 +1889,8 @@ row."
 (gen-access-message-row version                     :version)
 
 (gen-access-message-row cover                       :cover)
+
+(gen-access-message-row input                       :input)
 
 (defun row-votes-count (row)
   (and row (db-getf row :votes-count :default 0)))

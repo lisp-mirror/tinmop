@@ -533,7 +533,10 @@ current has focus"
 (gen-focus-to-window message-window
                      *message-window*
                      :documentation      "Move focus on message window"
-                     :info-change-focus-message (_ "Focus passed on message window"))
+                     :info-change-focus-message
+                     (if (message-window:gemini-window-p)
+                         (_ "Focus passed on gemini stream window")
+                         (_ "Focus passed on message window")))
 
 (gen-focus-to-window send-message-window
                      *send-message-window*
@@ -2126,7 +2129,9 @@ gemini page the program is rendering."
 (defun gemini-toc-close ()
   (hooks:remove-hook 'hooks:*before-rendering-message-visible-rows*
                      #'gemini-page-toc:highlight-current-section)
-  (close-window-and-return-to-message *gemini-toc-window*))
+  (close-window-and-return-to-message *gemini-toc-window*)
+  (windows:refresh-config *message-window*)
+  (windows:draw *message-window*))
 
 (defun gemini-toc-scroll-down-page ()
   (message-window:scroll-down *message-window*))
@@ -2251,6 +2256,20 @@ gemini page the program is rendering."
 
 (defun display-bookmark ()
   (let* ((bookmark-page (generate-bookmark-page))
+         (event         (make-instance 'gemini-display-data-page
+                                       :window *message-window*
+                                       :payload bookmark-page)))
+    (push-event event)))
+
+(defun generate-latest-visited-url ()
+  (let ((history (db:history-prompt->values (gemini-open-url-prompt))))
+    (with-output-to-string (stream)
+      (format stream (gemini-parser:geminize-h1 (_ "Latest visited addresses~2%")))
+      (loop for iri in history when (gemini-client:absolute-gemini-url-p iri) do
+        (format stream "~a~%" (gemini-parser:geminize-link iri))))))
+
+(defun display-latest-visited-urls ()
+  (let* ((bookmark-page (generate-latest-visited-url))
          (event         (make-instance 'gemini-display-data-page
                                        :window *message-window*
                                        :payload bookmark-page)))

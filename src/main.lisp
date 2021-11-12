@@ -136,18 +136,24 @@ etc.) happened"
     (main-window:init)
     (keybindings-window:init)
     (command-window:init)
-    (thread-window:init)
+    (when (not command-line:*gemini-full-screen-mode*)
+      (thread-window:init))
     ;; the size  of message  and tag  window depends  from the  sizes of
     ;; thread-window  and  command window,  so  the  first two  must  be
     ;; initialized after the latter
     (message-window:init)
-    (tags-window:init)
+    (when (not command-line:*gemini-full-screen-mode*)
+      (tags-window:init)
+      (conversations-window:init))
     (gemini-client:init-default-gemini-theme specials:*message-window*)
-    (conversations-window:init)
     (setup-bindings)
     ;; ... and init-keyboard-mapping-for last
     (keybindings:init-keyboard-mapping)
-    (ui:focus-to-thread-window)
+    (if command-line:*gemini-full-screen-mode*
+        (progn
+          (ui:display-latest-visited-urls)
+          (ui:focus-to-message-window))
+        (ui:focus-to-thread-window))
     ;; now init the client
     (client:init)
     (client:authorize)

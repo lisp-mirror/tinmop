@@ -100,19 +100,35 @@
                            :bgcolor mark-bg))))
 
 (defmethod refresh-config :after ((object message-window))
-  (refresh-config-colors object swconf:+key-message-window+)
-  (refresh-line-mark-config object)
-  (let* ((thread-window-width   (win-width  *thread-window*))
-         (thread-window-height  (win-height *thread-window*))
-         (command-window-height (win-height *command-window*))
-         (main-window-height    (win-height *main-window*))
-         (height                (- main-window-height
-                                   command-window-height
-                                   thread-window-height))
-         (width                 thread-window-width)
-         (x                     (win-x *thread-window*))
-         (y                     (+ (win-y *thread-window*)
-                                   thread-window-height)))
+    (refresh-config-colors object swconf:+key-message-window+)
+   (refresh-line-mark-config object)
+  (let* ((reference-window        (if command-line:*gemini-full-screen-mode*
+                                      *main-window*
+                                      *thread-window*))
+         (reference-window-width  (if (and command-line:*gemini-full-screen-mode*
+                                           *gemini-toc-window*)
+                                      (- (win-width *main-window*)
+                                         (win-width *gemini-toc-window*))
+                                      (win-width  reference-window)))
+         (reference-window-height (win-height reference-window))
+         (command-window-height   (win-height *command-window*))
+         (main-window-height      (win-height *main-window*))
+         (height                  (if (eq reference-window *thread-window*)
+                                      (- main-window-height
+                                         command-window-height
+                                         reference-window-height)
+                                      (- main-window-height
+                                         command-window-height)))
+         (width                   reference-window-width)
+         (x                       (if (and command-line:*gemini-full-screen-mode*
+                                           *gemini-toc-window*)
+                                      (win-width *gemini-toc-window*)
+                                      (win-x reference-window)))
+         (y                       (if (or command-line:*gemini-full-screen-mode*
+                                          *gemini-toc-window*)
+                                      0
+                                      (+ (win-y reference-window)
+                                         reference-window-height))))
     (win-resize object width height)
     (win-move   object x y)))
 
@@ -680,11 +696,16 @@
 (defun gemini-toc-group-id (fields)
   (getf fields :group-id))
 
+(defun message-window-title ()
+  (if command-line:*gemini-full-screen-mode*
+      (_ "Gemini stream")
+      (_ "Messages")))
+
 (defun init ()
   (let* ((low-level-window (make-croatoan-window :enable-function-keys t)))
     (setf *message-window*
           (make-instance 'message-window
-                         :title           (_ "Messages")
+                         :title           (message-window-title)
                          :keybindings     keybindings:*message-keymap*
                          :key-config      swconf:+key-message-window+
                          :croatoan-window low-level-window))
