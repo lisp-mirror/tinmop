@@ -477,6 +477,9 @@
                    width
                    height
                    position
+                   exclusive
+                   mode
+                   toc
                    downloading
                    animation
                    x
@@ -934,6 +937,14 @@
   `(defun ,(misc:format-fn-symbol t "config-~a" fn-name) ()
      (,transform-value-fn (access:accesses *software-configuration*
                                            ,@keys))))
+
+(gen-simple-access (gemini-fullscreen-toc-width
+                    :transform-value-fn main-window:parse-subwin-w)
+                    +key-gemini+
+                    +key-exclusive+
+                    +key-mode+
+                    +key-toc+
+                    +key-width+)
 
 (gen-simple-access (post-allowed-language
                     :transform-value-fn

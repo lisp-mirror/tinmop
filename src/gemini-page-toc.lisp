@@ -37,7 +37,7 @@
            (selected-fg (swconf:selected-foreground theme-style))
            (selected-bg (swconf:selected-background theme-style))
            (width       (if command-line:*gemini-full-screen-mode*
-                            (truncate (* 1/4 (win-width *main-window*)))
+                            (swconf:config-gemini-fullscreen-toc-width)
                             (- (win-width *main-window*)
                                (win-width *thread-window*))))
            (raw-height  (swconf:win-height swconf:+key-gemini-toc-window+))
