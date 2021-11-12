@@ -72,7 +72,6 @@
      (:name :gemini-full-screen-mode
             :description               (_ "Start as gemini client only.")
             :short                     #\G
-            :arg-parser                #'identity
             :long                      "gemini-client-only")
      (:name :load-module
             :description               (_ "Load a module")
