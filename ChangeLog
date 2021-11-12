@@ -13,7 +13,7 @@
 
         - added command-line option for gemini fullscreen mode;
         - cleaned up command line switch management.
-        - removed argument for ommand line switch 'gemini-client-only'.
+        - removed argument for command line switch: 'gemini-client-only'.
         - added exclusive gemini client UI layout.
         - removed duplicates in url history when printing gemini startpage in
         gemini full screen mode.
