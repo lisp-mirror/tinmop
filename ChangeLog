@@ -1,3 +1,49 @@
+2021-11-12 cage
+
+        * po/it.po,
+        * po/tinmop.pot,
+        * src/command-line.lisp,
+        * src/db.lisp,
+        * src/gemini-page-toc.lisp,
+        * src/main.lisp,
+        * src/message-window.lisp,
+        * src/package.lisp,
+        * src/program-events.lisp,
+        * src/ui-goodies.lisp:
+
+        - added command-line option for gemini fullscreen mode;
+        - cleaned up command line switch management.
+        - removed argument for ommand line switch 'gemini-client-only'.
+        - added exclusive gemini client UI layout.
+        - removed duplicates in url history when printing gemini startpage in
+        gemini full screen mode.
+        -updated italian translation.
+
+2021-11-10 cage
+
+        * etc/shared.conf,
+        * src/gemini-viewer.lisp,
+        * src/package.lisp,
+        * src/software-configuration.lisp:
+
+        - [gemini] added customizable buffer  size when opening partial gemini
+        content with an external program.
+        using  "no wait"  directive  can  be followed  by  "buffer NUMBER"  to
+        customize the cache  (in Mib) to be cached before  opening the partial
+        downloaded data.
+        - [gemini] ensured opening files with an external program if the size
+        of the file is smaller than the cache size.
+        - fixed default in config file.
+
+2021-11-07 cage
+
+        * etc/default-theme.conf,
+        * etc/shared.conf,
+        * src/gemini/client.lisp:
+
+        - [gemini] prevented sending fragment part of the IRI to server;
+        - chaged prefix for links in gemini streams.
+
 2021-11-06 cage
 
         * etc/shared.conf,
