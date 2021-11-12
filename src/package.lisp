@@ -1334,6 +1334,7 @@
    :*notify-mentions*
    :*gemini-url*
    :*update-timeline-climb-message-tree*
+   :*gemini-full-screen-mode*
    :manage-opts))
 
 (defpackage :specials

@@ -68,7 +68,12 @@
             :description               (_ "Open gemini url")
             :short                     #\o
             :arg-parser                #'identity
-            :long                      "open-gemini-url")
+             :long                      "open-gemini-url")
+     (:name :gemini-full-screen-mode
+            :description               (_ "Start as gemini client only.")
+            :short                     #\G
+            :arg-parser                #'identity
+            :long                      "gemini-client-only")
      (:name :load-module
             :description               (_ "Load a module")
             :short                     #\M
@@ -96,9 +101,17 @@
 
 (defparameter *update-timeline-climb-message-tree* nil)
 
+(defparameter *gemini-full-screen-mode*            nil)
+
 (defun exit-on-error (e)
   (format *error-output* "~a~%" e)
   (os-utils:exit-program 1))
+
+(defmacro set-option-variable (options option-name option-variable)
+  (with-gensyms (option-value)
+    `(let ((,option-value (getf ,options ,option-name)))
+       (when ,option-value
+         (setf ,option-variable ,option-value)))))
 
 (defun manage-opts ()
   (handler-bind ((opts:unknown-option          #'exit-on-error)
@@ -115,21 +128,13 @@
       (when (getf options :version)
         (print-version)
         (os-utils:exit-program))
-      (when (getf options :folder)
-        (setf *start-folder* (getf options :folder)))
-      (when (getf options :open-gemini-url)
-        (setf *gemini-url* (getf options :open-gemini-url)))
-      (when (getf options :timeline)
-        (setf *start-timeline* (getf options :timeline)))
-      (when (getf options :reset-timeline-pagination)
-        (setf *reset-timeline-pagination* t))
-      (when (getf options :update-timeline)
-        (setf *update-timeline* t))
-      (when (getf options :execute)
-        (setf *script-file* (getf options :execute)))
-      (when (getf options :load-module)
-        (setf *module-file* (getf options :load-module)))
-      (when (getf options :check-follows-requests)
-        (setf *check-follow-requests* (getf options :check-follows-requests)))
-      (when (getf options :notify-mentions)
-        (setf *notify-mentions* (getf options :notify-mentions))))))
+      (set-option-variable options :folder                     *start-folder*)
+      (set-option-variable options :open-gemini-url            *gemini-url*)
+      (set-option-variable options :timeline                   *start-timeline*)
+      (set-option-variable options :reset-timeline-pagination  *reset-timeline-pagination*)
+      (set-option-variable options :update-timeline            *update-timeline*)
+      (set-option-variable options :execute                    *script-file*)
+      (set-option-variable options :load-module                *module-file*)
+      (set-option-variable options :check-follows-requests     *check-follow-requests*)
+      (set-option-variable options :gemini-full-screen-mode    *gemini-full-screen-mode*)
+      (set-option-variable options :notify-mentions            *notify-mentions*))))
