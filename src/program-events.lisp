@@ -1204,15 +1204,17 @@
              (ui:add-links-to-tour local-links)
              (gemini-viewer:push-url-to-history window local-path)))
           (t
-           (let* ((file-string (fs:slurp-file local-path))
-                  (parent-dir  (fs:parent-dir-path local-path))
-                  (event       (make-instance 'gemini-display-data-page
-                                              :local-path parent-dir
-                                              :window     window
-                                              :payload    file-string)))
-             (let ((*process-events-immediately* t))
-               (push-event event))
-             (gemini-viewer:push-url-to-history window local-path))))))))
+           (handler-case
+               (let* ((file-string (fs:slurp-file local-path))
+                      (parent-dir  (fs:parent-dir-path local-path))
+                      (event       (make-instance 'gemini-display-data-page
+                                                  :local-path parent-dir
+                                                  :window     window
+                                                  :payload    file-string)))
+                 (let ((*process-events-immediately* t))
+                   (push-event event))
+                 (gemini-viewer:push-url-to-history window local-path))
+             (error (e) (ui:error-message (format nil "~a" e))))))))))
 
 (defclass gemini-back-event (program-event) ())
 
