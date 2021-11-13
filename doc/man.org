@@ -28,6 +28,7 @@
     Reset the timeline pagination. By default the new toots are fetched
     starting from the last one downloaded from the instance, this switch
     will force the program to fetch the last message posted by users
+  + -G, --gemini-client-only         :: Start as gemini client only
   + -c, --check-follows-requests     :: Checks for follow request at start
   + -e, --execute-script SCRIPT-FILE :: Execute a script file
   + -f, --folder FOLDER-NAME         :: Start on that folder

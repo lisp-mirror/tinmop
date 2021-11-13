@@ -38,6 +38,9 @@ Reset the timeline pagination. By default the new toots are fetched
 starting from the last one downloaded from the instance, this switch
 will force the program to fetch the last message posted by users
 .TP
+\fB-G, --gemini-client-only        \fP
+Start as gemini client only
+.TP
 \fB-c, --check-follows-requests    \fP
 Checks for follow request at start
 .TP
