@@ -1545,7 +1545,8 @@
    :get-chat-messages
    :get-chats
    :post-on-chat
-   :create-new-chat))
+   :create-new-chat
+   :get-following))
 
 (defpackage :api-client
   (:use

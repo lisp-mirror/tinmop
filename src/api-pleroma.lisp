@@ -117,5 +117,29 @@ media `media'. Returns a `chat-message' instance"
       (api-pleroma:post-chat-message api-client:*client* chat-id nil message)
       (api-pleroma:post-chat-message api-client:*client* chat-id message nil)))
 
+(defmethod get-following-accounts ((client tooter:client) (id string)
+                                   &key
+                                     (max-id   nil)
+                                     (min-id   nil)
+                                     (since-id nil)
+                                     (limit     10)
+                                     (offset     0))
+  (decode-account (tooter:query client
+                                (format nil "/api/v1/accounts/~a/following" id)
+                                :max-id   max-id
+                                :min-id   min-id
+                                :since-id since-id
+                                :limit    limit
+                                :offset   offset)))
+
 (api-client:defun-api-call create-new-chat (user-id)
   (create-chat api-client:*client* user-id))
+
+(api-client:defun-api-call get-following (user-id &optional (min-id nil) (accum '()))
+  "Get a list of accounts that user is following"
+  (let ((partial (api-client:sort-id< (get-following-accounts api-client:*client*
+                                                              user-id
+                                                              :max-id min-id))))
+    (if partial
+        (get-following user-id (tooter:id (first partial)) (append partial accum))
+        accum)))

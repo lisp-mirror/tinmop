@@ -511,7 +511,7 @@ database."
   (tooter:unfollow *client* user-id))
 
 (defun-api-call follow-requests ()
-  "Gets the request tio follow the user of this client"
+  "Gets the request to follow the user of this client"
   (let ((requests (tooter:follow-requests *client*)))
     (values requests
             (mapcar #'tooter:account-name requests))))
