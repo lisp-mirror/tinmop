@@ -541,7 +541,8 @@ TODO: Add client certificate."
   (labels ((redirect-dispatch (status code-description meta response socket iri parsed-iri)
              (declare (ignore status code-description response socket parsed-iri))
              (when (< redirect-count +maximum-redirections+)
-               (slurp-gemini-url (build-redirect-iri meta iri) (1+ redirect-count))))
+               (when-let ((iri-redirect (build-redirect-iri meta iri)))
+                 (slurp-gemini-url iri-redirect (1+ redirect-count)))))
            (success-dispatch (status code-description meta response socket iri parsed-iri)
              (declare (ignorable code-description iri meta parsed-iri))
              (debug-gemini "success response data: ~s ~s ~s ~s ~s ~s"

@@ -641,8 +641,8 @@
              (flet ((on-input-complete (maybe-accepted)
                       (when (ui::boolean-input-accepted-p maybe-accepted)
                         (pop-url-from-history specials:*message-window*)
-                        (let ((new-url (gemini-client:build-redirect-iri meta
-                                                                         parsed-iri)))
+                        (when-let ((new-url (gemini-client:build-redirect-iri meta
+                                                                              parsed-iri)))
                           (db-utils:with-ready-database (:connect nil)
                             (request new-url
                                      :enqueue         enqueue
