@@ -513,11 +513,18 @@
 (defgeneric build-redirect-iri (meta iri-from))
 
 (defmethod build-redirect-iri (meta (iri-from iri:iri))
-  (let ((new-url (gemini-parser:absolutize-link meta
-                                                (uri:host iri-from)
-                                                (uri:port iri-from)
-                                                (uri:path iri-from))))
-    new-url))
+  (let* ((meta-url        (ignore-errors (iri:iri-parse meta))))
+    (when meta-url
+      (let* ((meta-query      (uri:query     meta-url))
+             (meta-path       (uri:path      meta-url))
+             (meta-path-query (if meta-query
+                                  (strcat meta-path "?" meta-query)
+                                  meta-path))
+             (new-url    (gemini-parser:absolutize-link meta-path-query
+                                                        (uri:host iri-from)
+                                                        (uri:port iri-from)
+                                                        (uri:path iri-from))))
+        new-url))))
 
 (defmethod build-redirect-iri (meta (iri-from string))
   (build-redirect-iri meta (iri:iri-parse iri-from)))
