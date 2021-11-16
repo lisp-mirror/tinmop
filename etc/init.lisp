@@ -189,6 +189,8 @@
 
 (define-key "M-e"       #'eval-command)
 
+(define-key "M-l"       #'load-script-file)
+
 ;; focus
 
 (define-key "f1"        #'focus-to-tags-window)

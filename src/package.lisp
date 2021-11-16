@@ -2729,7 +2729,8 @@
    :gempub-open-file
    :message-window-lock-scrolling
    :message-window-unlock-scrolling
-   :eval-command))
+   :eval-command
+   :load-script-file))
 
 (defpackage :scheduled-events
   (:use

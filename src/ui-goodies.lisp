@@ -2349,3 +2349,27 @@ example)."
                                                                 `(lambda () ,(read stream))))))))))))
     (ui:ask-string-input #'on-input-completed
                          :prompt (format nil (_ "eval: ")))))
+
+(defun load-script-callback-event (script-file)
+  (lambda ()
+    (tui:with-notify-errors
+      (db-utils:with-ready-database (:connect nil)
+        (let ((output (with-output-to-string (stream)
+                        (let ((*standard-output* stream))
+                          (load script-file
+                                :verbose           nil
+                                :print             nil
+                                :if-does-not-exist :error)))))
+          (push-event (make-instance 'gemini-display-data-page
+                                     :window *message-window*
+                                     :payload output)))))))
+(defun load-script-file ()
+  "Asks for a lisp file and execute (in lisp jargon, \"load\") it, the
+output of the  script (that is the standard output  is redirected, and
+printed, on the main window."
+  (flet ((on-input-completed (query)
+           (push-event (make-instance 'function-event
+                                      :payload (load-script-callback-event query)))))
+    (ui:ask-string-input #'on-input-completed
+                         :prompt (format nil (_ "load file: "))
+                         :complete-fn #'complete:directory-complete)))
