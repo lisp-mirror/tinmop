@@ -4,18 +4,24 @@
   tinmop - a client for gemini or pleroma social network
 
 * Synopsis
-  tinmop [OPTION]...
+
+  tinmop [OPTION]…
 
 * Description
 
   This document assumes basic knowledge of how fediverse works. More
-  information about this topic can be found on the
-  official website ([[https://docs.joinmastodon.org/]]).
+  information about this topic can be found on the following websites:
 
-  Tinmop  proposes an  extensible terminal  interface to  connect with
+  - [[https://en.wikipedia.org/wiki/Fediverse]] ;
+  - [[https://pleroma.social/]] ;
+  - [[https://docs.joinmastodon.org/]] .
+
+
+  Tinmop proposes an extensible terminal interface to connect with
   Pleroma social network or for the gemini protocol
 
-  gemini://gemini.circumlunar.space/
+  - gemini://gemini.circumlunar.space/
+  - [[https://gemini.circumlunar.space/docs/]]
 
 * Options
 
@@ -66,7 +72,7 @@
 
   - tag window :: shows the tag users subscribed for and available messages for each tag;
 
-  - threads window :: for a given timeline and folder (see  [[Folders]]) show the discussions saved in user's local database;
+  - threads window :: for a given timeline and folder (see [[Folders]]) show the discussions saved in user's local database;
 
   - conversations window :: show the /private/ conversations the user is having with others;
 
@@ -74,40 +80,58 @@
 
   - command window :: the window where the user instruct the software to perform commands
 
-  The main way to interact with the program is using the keyboard.  By
-  default you  can move  focus to each  window (except  command window
-  that can  not get focus  explicitly) using *'M-arrow key'*  (meta is
-  *ALT* on many  keyboards).  There is a contextual  help that appears
-  when the  user input data  that provide  hints about commands  and a
-  quick  help  window that  can  be  shown  by  hitting ~?~  (if  this
+
+  Using the program in gemini exclusive mode (option *"-G"*) the program layout is simplified:
+
+  #+NAME: screen-layout-gemini-fullscreen
+  #+BEGIN_SRC text
+
+     +------------------------------------------+
+     |                                          |
+     |               main window                |
+     |                                          |
+     |                                          |
+     |                                          |
+     +------------------------------------------+
+     |              command window              |
+     +------------------------------------------+
+
+  #+END_SRC
+
+  The main way to interact with the program is using the keyboard. By
+  default you can move focus to each window (except command window
+  that can not get focus explicitly) using *'M-arrow key'* (meta is
+  *ALT* on many keyboards). There is a contextual help that appears
+  when the user input data that provide hints about commands and a
+  quick help window that can be shown by hitting ~?~ (if this
   keybinding has not been customized).
 
 ** Command window keys
 
-   The command  window has  a few hardcoded  command keys  to interact
+   The command window has a few hardcoded command keys to interact
    with it:
 
-    - the *left* and *right* arrow keys move the cursor;
-    - the key *home* and *end* move the cursor to the start and end of
-      the input respectively;
-    - *canc* and  *backspace* delete  the next and  previous character
-      respectively;
-    - the *new line* (often called *enter*  key) send the input to the
-      program;
-    - *C-k* (that is:  "press 'control' and while pressed  press 'k')
-      /kills/ (deletes) the text from the  cursor position to the end of
-      the input previously typed;
-    - press *M-left* and  *M-right* (*left alt* and  *left* or *right*
-      arrow together)  to browse pages  of the suggestion  window; the
-      suggestion window is  a window that holds  a previously inputted
-      data that are compatible with the string the user is typing into
-      the command window;
-    - if suggestions are  gemini URI press *TAB* to  input the current
-      selected  suggestion;
-    - if suggestion window  is *not* rendered, pressing  *up* and *down*
-      arrow keys will cycle through input  history, if there is not a
-      suggestion window rendered pressing  *up* and *down* will scroll
-      on suggestions.
+   - the *left* and *right* arrow keys move the cursor;
+   - the key *home* and *end* move the cursor to the start and end of
+   the input respectively;
+   - *canc* and *backspace* delete the next and previous character
+   respectively;
+   - the *new line* (often called *enter* key) send the input to the
+   program;
+   - *C-k* (that is: "press 'control' and while pressed press 'k')
+   /kills/ (deletes) the text from the cursor position to the end of
+   the input previously typed;
+   - press *M-left* and *M-right* (*left alt* and *left* or *right*
+   arrow together) to browse pages of the suggestion window; the
+   suggestion window is a window that holds a previously inputted
+   data that are compatible with the string the user is typing into
+   the command window;
+   - if suggestions are gemini URI press *TAB* to input the current
+   selected suggestion;
+   - if suggestion window is *not* rendered, pressing *up* and *down*
+   arrow keys will cycle through input history, if there is not a
+   suggestion window rendered pressing *up* and *down* will scroll
+   on suggestions.
 
 ** Folders
 
@@ -150,10 +174,10 @@
 
    #+END_SRC
 
-   Not  incidentally the  information  in the  example  above are  the
-   absolute minimum the user has  to provide before starts the program
-   and connect to  pleroma (to use tinmop as a  gemini browser only an
-   empty file  will suffice):  the name  you chose  when you  made the
+   Not incidentally the information in the example above are the
+   absolute minimum the user has to provide before starts the program
+   and connect to pleroma (to use tinmop as a gemini browser only an
+   empty file will suffice): the name you chose when you made the
    account on the server and the address of the server.
 
    As you can see a line starting with a *#* is considered comment and
@@ -207,13 +231,13 @@
   once: when the program starts for the first time (but please note
   that there must be a file with valid credentials available).
 
-  There  is no  additional steps  to  follow to  connect to  gemspace,
+  There is no additional steps to follow to connect to gemspace,
   instead.
 
 * Gempub support
 
-  Tinmop  maintains a  gempub  library scanning  a  directory on  your
-  file system (library  directory); the  library directory path  can be
+  Tinmop maintains a gempub library scanning a directory on your
+  file system (library directory); the library directory path can be
   set using the configuration directive:
 
   #+BEGIN_SRC text
@@ -222,11 +246,11 @@
 
   #+END_SRC
 
-  the  default  value  is  ~$XDG_DATA_HOME~  (usually  something  like
+  the default value is ~$XDG_DATA_HOME~ (usually something like
   ~$HOME/.local/share/tinmop/~).
 
-  Using *'M-g g l'* the  library can be  inspected using a  simple query
-  language (similar to SQL) that search  in the metadata of the gempub
+  Using *'M-g g l'* the library can be inspected using a simple query
+  language (similar to SQL) that search in the metadata of the gempub
   files, example of query follows:
 
   #+BEGIN_SRC text
@@ -248,55 +272,55 @@
   - published;
   - copyright.
 
-  You can use ~<  > = != <= >= like~ operators  for comparison and the
-  two logical  operator ~and~ and ~or~,  the character ~%~ act  like a
+  You can use ~< > = != <= >= like~ operators for comparison and the
+  two logical operator ~and~ and ~or~, the character ~%~ act like a
   wildcard and means: /'any sequence of character'/.
 
-  Note that  the right hand side  of the operator must  be wrapped in
+  Note that the right hand side of the operator must be wrapped in
   quotes.
 
-  After the  search is performed a  window with the results  is shown,
-  selecting an item  of this window will open the  gempub and will add
-  all its table of  contents on the tour mode, so  that the book could
+  After the search is performed a window with the results is shown,
+  selecting an item of this window will open the gempub and will add
+  all its table of contents on the tour mode, so that the book could
   be browsed.
 
-  For more information  on tour mode see below or  use
+  For more information on tour mode see below or use
   *'C-h A <enter> tour mode'*.
 
 * Tour mode
 
-  Tinmop maintains  a queue of  links that can  be then visited  by the
+  Tinmop maintains a queue of links that can be then visited by the
   user, this queue is called *tour*.
 
   There are two ways to add a link to the tour:
 
-  - when a link  window is open and focused pressing  *t* will start a
-    prompt for link indices to be saved in the tour; the prompt expect
-    a simple, comma or space separated, list of indices or  index range, index
-    range is a couple of index separated by a dash, example below:
+  - when a link window is open and focused pressing *t* will start a
+  prompt for link indices to be saved in the tour; the prompt expect
+  a simple, comma or space separated, list of indices or index range, index
+  range is a couple of index separated by a dash, example below:
 
-    #+BEGIN_SRC text
-     1 2 5 8-12
-    #+END_SRC
+  #+BEGIN_SRC text
+   1 2 5 8-12
+  #+END_SRC
 
-    The string above will save the link index number 1, 2, 3, 5, 8, 9,
-    10, 11, 12 to the tour.
+  The string above will save the link index number 1, 2, 3, 5, 8, 9,
+  10, 11, 12 to the tour.
 
-  The  other  way to  add  links  to the  tour  is  using the  command
-  *'gemlog-add-unread-posts-tour'* (default  keychord: *'M-g s t a'*)
+  The other way to add links to the tour is using the command
+  *'gemlog-add-unread-posts-tour'* (default keychord: *'M-g s t a'*)
   that will add all the unread posts to the tour.
 
   There are a few more useful command to manipulate the tour:
 
   - next-tour-link :: (*'M-t t'* or just 't' if a gemini window is focused)
-    follows the next link in the tour;
+  follows the next link in the tour;
 
   - show-tour-links :: (*'M-t s'* or just *'T'* if a gemini window is focused)
-    shows the contents of the tour in a link window
+  shows the contents of the tour in a link window
 
   - clean-all-tour :: (*'M-t c'*)
 
-  - shuffle-tour   :: (*'M-t S'*) shuffle the contents of the tour
+  - shuffle-tour :: (*'M-t S'*) shuffle the contents of the tour
 
 * How to get more help
 
@@ -308,17 +332,18 @@
 
   $ tinmop -o gemini://gemini.circumlunar.space
 
-  The program has an inline help (default binding for help is "?")
-
-  You can search the help strings with a command (default: "C-h a").
+  The program has an inline help (default binding for help is "?"), a
+  manpage (default binding to view the manpage is "C-h m") and inline
+  help can be searched (default: "C-h A").
 
   Moreover you can have some useful hint at the program web page:
 
   [https://www.autistici.org/interzona/tinmop/]
 
 * BUGS
-  There are many, totally unknown, hiding in the code! Please help the
-  programmer to nail them using the
+
+  There are many, totally unknown, hiding in the code; this is scary!
+  😱 Please help the programmer to nail them using the
   [[https://notabug.org/cage/tinmop/issues/][issue tracker]].
 
 * Contributing
@@ -356,11 +381,11 @@
 
 * Privacy
 
-  The author of  this software collects no user  data information with
+  The author of this software collects no user data information with
   this software.
 
   But this software is a client to connect and interact to one or more
-  remote computer.  So potentially it could share a lot of information
+  remote computer. So potentially it could share a lot of information
   with other actors but just after the user allowed it to do so.
 
   It is the user responsibility to checks the privacy conditions of the
@@ -369,8 +394,8 @@
   By default, pressing "!" will contact the remote service located at:
   "gemini://houston.coder.town/search".
 
-  Moreover    launching     ~quick_quicklisp.sh~     will     contact
-  [[https://www.quicklisp.org/]],               check              the
+  Moreover launching ~quick_quicklisp.sh~ will contact
+  [[https://www.quicklisp.org/]], check the
   [[https://beta.quicklisp.org/quicklisp.lisp][quicklisp sources]] for
   details.
 

@@ -6,20 +6,29 @@ tinmop - a client for gemini or pleroma social network
 
 .SH "Synopsis"
 .PP
-tinmop [OPTION]...
+tinmop [OPTION]…
 
 .SH "Description"
 .PP
 This document assumes basic knowledge of how fediverse works. More
-information about this topic can be found on the
-official website (\fIhttps://docs.joinmastodon.org/\fP).
+information about this topic can be found on the following websites:
+
+.IP \(em 4
+\fIhttps://en.wikipedia.org/wiki/Fediverse\fP ;
+.IP \(em 4
+\fIhttps://pleroma.social/\fP ;
+.IP \(em 4
+\fIhttps://docs.joinmastodon.org/\fP .
+
 
 .PP
-Tinmop  proposes an  extensible terminal  interface to  connect with
+Tinmop proposes an extensible terminal interface to connect with
 Pleroma social network or for the gemini protocol
 
-.PP
+.IP \(em 4
 gemini://gemini.circumlunar.space/
+.IP \(em 4
+\fIhttps://gemini.circumlunar.space/docs/\fP
 
 .SH "Options"
 .PP
@@ -98,7 +107,7 @@ shows the tag users subscribed for and available messages for each tag;
 
 .TP
 \fBthreads window\fP
-for a given timeline and folder (see  \fIFolders\fP) show the discussions saved in user's local database;
+for a given timeline and folder (see \fIFolders\fP) show the discussions saved in user's local database;
 
 .TP
 \fBconversations window\fP
@@ -112,48 +121,76 @@ show the body of the message selected in the tag window or gemini page
 \fBcommand window\fP
 the window where the user instruct the software to perform commands
 
+
 .PP
-The main way to interact with the program is using the keyboard.  By
-default you  can move  focus to each  window (except  command window
-that can  not get focus  explicitly) using \fB'M-arrow key'\fP  (meta is
-\fBALT\fP on many  keyboards).  There is a contextual  help that appears
-when the  user input data  that provide  hints about commands  and a
-quick  help  window that  can  be  shown  by  hitting \fC?\fP  (if  this
+Using the program in gemini exclusive mode (option \fB"-G"\fP) the program layout is simplified:
+
+.RS
+.nf
+\fC
++------------------------------------------+
+|                                          |
+|               main window                |
+|                                          |
+|                                          |
+|                                          |
++------------------------------------------+
+|              command window              |
++------------------------------------------+
+
+\fP
+.fi
+.RE
+
+.PP
+The main way to interact with the program is using the keyboard. By
+default you can move focus to each window (except command window
+that can not get focus explicitly) using \fB'M-arrow key'\fP (meta is
+\fBALT\fP on many keyboards). There is a contextual help that appears
+when the user input data that provide hints about commands and a
+quick help window that can be shown by hitting \fC?\fP (if this
 keybinding has not been customized).
 
 .SS "Command window keys"
 .PP
-The command  window has  a few hardcoded  command keys  to interact
+The command window has a few hardcoded command keys to interact
 with it:
 
 .IP \(em 4
 the \fBleft\fP and \fBright\fP arrow keys move the cursor;
 .IP \(em 4
 the key \fBhome\fP and \fBend\fP move the cursor to the start and end of
+.PP
 the input respectively;
 .IP \(em 4
-\fBcanc\fP and  \fBbackspace\fP delete  the next and  previous character
+\fBcanc\fP and \fBbackspace\fP delete the next and previous character
+.PP
 respectively;
 .IP \(em 4
-the \fBnew line\fP (often called \fBenter\fP  key) send the input to the
+the \fBnew line\fP (often called \fBenter\fP key) send the input to the
+.PP
 program;
 .IP \(em 4
-\fBC-k\fP (that is:  "press 'control' and while pressed  press 'k')
-\fIkills\fP (deletes) the text from the  cursor position to the end of
+\fBC-k\fP (that is: "press 'control' and while pressed press 'k')
+.PP
+\fIkills\fP (deletes) the text from the cursor position to the end of
 the input previously typed;
 .IP \(em 4
-press \fBM-left\fP and  \fBM-right\fP (\fBleft alt\fP and  \fBleft\fP or \fBright\fP
-arrow together)  to browse pages  of the suggestion  window; the
-suggestion window is  a window that holds  a previously inputted
+press \fBM-left\fP and \fBM-right\fP (\fBleft alt\fP and \fBleft\fP or \fBright\fP
+.PP
+arrow together) to browse pages of the suggestion window; the
+suggestion window is a window that holds a previously inputted
 data that are compatible with the string the user is typing into
 the command window;
 .IP \(em 4
-if suggestions are  gemini URI press \fBTAB\fP to  input the current
-selected  suggestion;
+if suggestions are gemini URI press \fBTAB\fP to input the current
+.PP
+selected suggestion;
 .IP \(em 4
-if suggestion window  is \fBnot\fP rendered, pressing  \fBup\fP and \fBdown\fP
-arrow keys will cycle through input  history, if there is not a
-suggestion window rendered pressing  \fBup\fP and \fBdown\fP will scroll
+if suggestion window is \fBnot\fP rendered, pressing \fBup\fP and \fBdown\fP
+.PP
+arrow keys will cycle through input history, if there is not a
+suggestion window rendered pressing \fBup\fP and \fBdown\fP will scroll
 on suggestions.
 
 .SS "Folders"
@@ -205,10 +242,10 @@ username = username
 .RE
 
 .PP
-Not  incidentally the  information  in the  example  above are  the
-absolute minimum the user has  to provide before starts the program
-and connect to  pleroma (to use tinmop as a  gemini browser only an
-empty file  will suffice):  the name  you chose  when you  made the
+Not incidentally the information in the example above are the
+absolute minimum the user has to provide before starts the program
+and connect to pleroma (to use tinmop as a gemini browser only an
+empty file will suffice): the name you chose when you made the
 account on the server and the address of the server.
 
 .PP
@@ -271,13 +308,13 @@ once: when the program starts for the first time (but please note
 that there must be a file with valid credentials available).
 
 .PP
-There  is no  additional steps  to  follow to  connect to  gemspace,
+There is no additional steps to follow to connect to gemspace,
 instead.
 
 .SH "Gempub support"
 .PP
-Tinmop  maintains a  gempub  library scanning  a  directory on  your
-file system (library  directory); the  library directory path  can be
+Tinmop maintains a gempub library scanning a directory on your
+file system (library directory); the library directory path can be
 set using the configuration directive:
 
 .RS
@@ -290,12 +327,12 @@ gempub.directory.library = /absolute/path/to/your/gempub/library
 .RE
 
 .PP
-the  default  value  is  \fC$XDG_DATA_HOME\fP  (usually  something  like
+the default value is \fC$XDG_DATA_HOME\fP (usually something like
 \fC$HOME/.local/share/tinmop/\fP).
 
 .PP
-Using \fB'M-g g l'\fP the  library can be  inspected using a  simple query
-language (similar to SQL) that search  in the metadata of the gempub
+Using \fB'M-g g l'\fP the library can be inspected using a simple query
+language (similar to SQL) that search in the metadata of the gempub
 files, example of query follows:
 
 .RS
@@ -330,36 +367,37 @@ published;
 copyright.
 
 .PP
-You can use \fC<  > = != <= >= like\fP operators  for comparison and the
-two logical  operator \fCand\fP and \fCor\fP,  the character \fC%\fP act  like a
+You can use \fC< > = != <= >= like\fP operators for comparison and the
+two logical operator \fCand\fP and \fCor\fP, the character \fC%\fP act like a
 wildcard and means: \fI'any sequence of character'\fP.
 
 .PP
-Note that  the right hand side  of the operator must  be wrapped in
+Note that the right hand side of the operator must be wrapped in
 quotes.
 
 .PP
-After the  search is performed a  window with the results  is shown,
-selecting an item  of this window will open the  gempub and will add
-all its table of  contents on the tour mode, so  that the book could
+After the search is performed a window with the results is shown,
+selecting an item of this window will open the gempub and will add
+all its table of contents on the tour mode, so that the book could
 be browsed.
 
 .PP
-For more information  on tour mode see below or  use
+For more information on tour mode see below or use
 \fB'C-h A <enter> tour mode'\fP.
 
 .SH "Tour mode"
 .PP
-Tinmop maintains  a queue of  links that can  be then visited  by the
+Tinmop maintains a queue of links that can be then visited by the
 user, this queue is called \fBtour\fP.
 
 .PP
 There are two ways to add a link to the tour:
 
 .IP \(em 4
-when a link  window is open and focused pressing  \fBt\fP will start a
+when a link window is open and focused pressing \fBt\fP will start a
+.PP
 prompt for link indices to be saved in the tour; the prompt expect
-a simple, comma or space separated, list of indices or  index range, index
+a simple, comma or space separated, list of indices or index range, index
 range is a couple of index separated by a dash, example below:
 
 .RS
@@ -369,12 +407,13 @@ range is a couple of index separated by a dash, example below:
 .fi
 .RE
 
+.PP
 The string above will save the link index number 1, 2, 3, 5, 8, 9,
 10, 11, 12 to the tour.
 
 .PP
-The  other  way to  add  links  to the  tour  is  using the  command
-\fB'gemlog-add-unread-posts-tour'\fP (default  keychord: \fB'M-g s t a'\fP)
+The other way to add links to the tour is using the command
+\fB'gemlog-add-unread-posts-tour'\fP (default keychord: \fB'M-g s t a'\fP)
 that will add all the unread posts to the tour.
 
 .PP
@@ -383,11 +422,13 @@ There are a few more useful command to manipulate the tour:
 .TP
 \fBnext-tour-link\fP
 (\fB'M-t t'\fP or just 't' if a gemini window is focused)
+.PP
 follows the next link in the tour;
 
 .TP
 \fBshow-tour-links\fP
 (\fB'M-t s'\fP or just \fB'T'\fP if a gemini window is focused)
+.PP
 shows the contents of the tour in a link window
 
 .TP
@@ -395,7 +436,7 @@ shows the contents of the tour in a link window
 (\fB'M-t c'\fP)
 
 .TP
-\fBshuffle-tour  \fP
+\fBshuffle-tour\fP
 (\fB'M-t S'\fP) shuffle the contents of the tour
 
 .SH "How to get more help"
@@ -412,10 +453,9 @@ For information about gemini:
 $ tinmop -o gemini://gemini.circumlunar.space
 
 .PP
-The program has an inline help (default binding for help is "?")
-
-.PP
-You can search the help strings with a command (default: "C-h a").
+The program has an inline help (default binding for help is "?"), a
+manpage (default binding to view the manpage is "C-h m") and inline
+help can be searched (default: "C-h A").
 
 .PP
 Moreover you can have some useful hint at the program web page:
@@ -425,8 +465,8 @@ Moreover you can have some useful hint at the program web page:
 
 .SH "BUGS"
 .PP
-There are many, totally unknown, hiding in the code! Please help the
-programmer to nail them using the
+There are many, totally unknown, hiding in the code; this is scary!
+😱 Please help the programmer to nail them using the
 https://notabug.org/cage/tinmop/issues/ \fBat\fP \fIissue tracker\fP.
 
 .SH "Contributing"
@@ -477,12 +517,12 @@ in the directory \fC$HOME/.local/share/tinmop/\fP.
 
 .SH "Privacy"
 .PP
-The author of  this software collects no user  data information with
+The author of this software collects no user data information with
 this software.
 
 .PP
 But this software is a client to connect and interact to one or more
-remote computer.  So potentially it could share a lot of information
+remote computer. So potentially it could share a lot of information
 with other actors but just after the user allowed it to do so.
 
 .PP
@@ -494,8 +534,8 @@ By default, pressing "!" will contact the remote service located at:
 "gemini://houston.coder.town/search".
 
 .PP
-Moreover    launching     \fCquick_quicklisp.sh\fP     will     contact
-\fIhttps://www.quicklisp.org/\fP,               check              the
+Moreover launching \fCquick_quicklisp.sh\fP will contact
+\fIhttps://www.quicklisp.org/\fP, check the
 https://beta.quicklisp.org/quicklisp.lisp \fBat\fP \fIquicklisp sources\fP for
 details.
 
