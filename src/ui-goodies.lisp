@@ -2373,3 +2373,11 @@ printed, on the main window."
     (ui:ask-string-input #'on-input-completed
                          :prompt (format nil (_ "load file: "))
                          :complete-fn #'complete:directory-complete)))
+
+(defun view-user-avatar ()
+  "View the Avatar (AKA propic) image for this user"
+  (when-let* ((selected-row (line-oriented-window:selected-row-fields *thread-window*))
+              (username     (db:row-message-username selected-row))
+              (account      (db:acct->user username))
+              (avatar-url   (db-utils:db-getf account :avatar)))
+    (open-attach-window:open-attachment avatar-url)))

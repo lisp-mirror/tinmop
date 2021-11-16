@@ -309,6 +309,8 @@
 
 (define-key "C-u u"     #'unfollow-user                               *thread-keymap*)
 
+(define-key "C-u v a"   #'view-user-avatar                            *thread-keymap*)
+
 (define-key "C-u c k i" #'crypto-import-key                           *thread-keymap*)
 
 (define-key "C-u c k s" #'crypto-export-key                           *thread-keymap*)

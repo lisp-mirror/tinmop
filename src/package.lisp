@@ -2730,7 +2730,8 @@
    :message-window-lock-scrolling
    :message-window-unlock-scrolling
    :eval-command
-   :load-script-file))
+   :load-script-file
+   :view-user-avatar))
 
 (defpackage :scheduled-events
   (:use
