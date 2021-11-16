@@ -171,7 +171,8 @@
    information, as they are extensively commented.
 
    Is worth mentioning again that, without an user configuration file,
-   the program can be used as gemini client.
+   the program can be used as gemini client (see the "-G" command line
+   switch on top of this manual).
 
 ** Lisp program
 
