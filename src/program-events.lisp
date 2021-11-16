@@ -768,7 +768,8 @@
             username)))
 
 (defmacro with-process-follower ((username user-id
-                                  &optional (local-complete-username-fn #'db:all-unfollowed-usernames))
+                                  &optional
+                                    (local-complete-username-fn #'db:all-unfollowed-usernames))
                                  &body body)
   `(tui:with-notify-errors
      (let ((,user-id nil))
@@ -782,16 +783,20 @@
 (defclass follow-user-event (program-event) ())
 
 (defmethod process-event ((object follow-user-event))
-  (with-process-follower ((payload object) user-id db:all-followed-usernames)
-    (client:follow-user  user-id)
-    (db:add-to-followers user-id)))
+  (with-accessors ((username payload)) object
+    (with-process-follower (username user-id db:all-followed-usernames)
+      (client:follow-user  user-id)
+      (db:add-to-followers user-id)
+      (ui:notify (format nil (_ "Followed  ~a") username)))))
 
 (defclass unfollow-user-event (program-event) ())
 
 (defmethod process-event ((object unfollow-user-event))
-  (with-process-follower ((payload object) user-id db:all-followed-usernames)
-    (client:unfollow-user  user-id)
-    (db:remove-from-followers user-id)))
+  (with-accessors ((username payload)) object
+    (with-process-follower (username user-id db:all-followed-usernames)
+      (client:unfollow-user  user-id)
+      (db:remove-from-followers user-id)
+      (ui:notify (format nil (_ "Unfollowed  ~a") username)))))
 
 (defclass open-follow-requests-window-event (program-event) ())
 

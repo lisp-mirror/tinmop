@@ -1351,12 +1351,12 @@ certificate).
                             notify-ending-message)
   (flet ((on-input-complete (username)
            (when (string-not-empty-p username)
-             (with-blocking-notify-procedure
-                 ((format nil notify-starting-message username)
-                  (format nil notify-ending-message   username))
-               (let ((event (make-instance event
-                                           :payload username)))
-                 (push-event event))))))
+             (progn
+              (notify (format nil notify-starting-message username))
+              (let ((event (make-instance event :payload username)))
+                (push-event event))
+              (when notify-ending-message
+                (notify (format nil notify-ending-message username)))))))
     (ask-string-input #'on-input-complete
                       :prompt      prompt
                       :complete-fn complete-function)))
@@ -1366,7 +1366,7 @@ certificate).
                        #'complete:unfollowed-user-complete
                        'follow-user-event
                        (_ "Following ~a")
-                       (_ "Followed  ~a")))
+                       nil))
 
 (defun unfollow-user ()
   "Unfollow user"
@@ -1374,7 +1374,7 @@ certificate).
                        #'complete:followed-user-complete
                        'unfollow-user-event
                        (_ "Unfollowing ~a")
-                       (_ "Unfollowed  ~a")))
+                       nil))
 
 (defun follow-request-move (amount)
   (ignore-errors
