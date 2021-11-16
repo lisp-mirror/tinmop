@@ -784,7 +784,7 @@
 
 (defmethod process-event ((object follow-user-event))
   (with-accessors ((username payload)) object
-    (with-process-follower (username user-id db:all-followed-usernames)
+    (with-process-follower (username user-id db:all-unfollowed-usernames)
       (client:follow-user  user-id)
       (db:add-to-followers user-id)
       (ui:notify (format nil (_ "Followed  ~a") username)))))
