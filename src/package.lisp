@@ -893,6 +893,7 @@
    :row-message-reblog-id
    :row-lockedp
    :row-user-username
+   :row-avatar
    :row-tag-got-new-message
    :row-conversation-folder
    :row-conversation-root-status-id

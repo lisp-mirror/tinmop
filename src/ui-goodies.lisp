@@ -2379,5 +2379,5 @@ printed, on the main window."
   (when-let* ((selected-row (line-oriented-window:selected-row-fields *thread-window*))
               (username     (db:row-message-username selected-row))
               (account      (db:acct->user username))
-              (avatar-url   (db-utils:db-getf account :avatar)))
+              (avatar-url   (db:row-avatar account)))
     (open-attach-window:open-attachment avatar-url)))

@@ -1812,6 +1812,8 @@ row."
 
 (gen-access-message-row user-username               :acct)
 
+(gen-access-message-row avatar                      :avatar)
+
 (gen-access-message-row tag-got-new-message         :got-new-message-p)
 
 (gen-access-message-row conversation-folder         :folder)
