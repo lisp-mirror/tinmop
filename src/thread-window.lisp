@@ -814,9 +814,9 @@ db:renumber-timeline-message-index."
                              (suggested-message-index nil)
                              (suggested-status-id     nil))
   (with-accessors ((row-selected-index row-selected-index)
-                   (rows             rows)
-                   (timeline-folder timeline-folder)
-                   (timeline-type   timeline-type)) object
+                   (rows               rows)
+                   (timeline-folder    timeline-folder)
+                   (timeline-type      timeline-type)) object
     (when-window-shown (object)
       (cond
         (suggested-status-id
@@ -827,8 +827,8 @@ db:renumber-timeline-message-index."
         (suggested-message-index
          (update-thread-window object suggested-message-index))
         (t
-         (let* ((selected-row  (selected-row object))
-                (message-index (db:row-message-index (fields selected-row))))
+         (when-let* ((selected-row  (selected-row object))
+                     (message-index (db:row-message-index (fields selected-row))))
            (update-thread-window object message-index))))
       (when redraw
         (draw object))))

@@ -45,6 +45,10 @@
 
 (load-module "expand-abbrev-command-window.lisp")
 
+;; delete posts using a regeula expression
+
+(load-module "delete-by-regex.lisp")
+
 ;; keybindings syntax:
 
 ;; a command is executed after a sequence  of one or more keys.  a key

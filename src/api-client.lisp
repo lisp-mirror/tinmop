@@ -284,11 +284,13 @@ Returns nil if the user did not provided a server in the configuration file"
   (tooter:unreblog *client*
                    status-id))
 
+(define-constant +public-timeline+ "public" :test #'string=)
+
 (defun-api-call get-timeline (kind &key local only-media max-id since-id min-id (limit 20))
   "Get messages (status) belonging to a timeline
 
 - kind: one of
-     db:+federated-timeline+
+     api-client:+public-timeline+
      db:+home-timeline+
 
 - local: get status local to the instance the client is connected to
@@ -298,7 +300,7 @@ Returns nil if the user did not provided a server in the configuration file"
 - min-id starts getting messages newer than this id
 - since-id cut the messages got starting from this id
 - limit gets a maimum of messages up to this value."
-  (assert (or (string-equal kind db:+federated-timeline+)
+  (assert (or (string-equal kind +public-timeline+)
               (string-equal kind db:+home-timeline+)))
   (tooter:timeline *client*
                    kind
