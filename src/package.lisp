@@ -864,6 +864,7 @@
    :all-chat-links
    :last-chat-message-id
    :update-db
+   :all-messages-timeline-folder
    :message-root
    :message-children
    :message-root->tree

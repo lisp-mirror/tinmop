@@ -19,28 +19,30 @@
 (defun mark-message-deleted-by-regex (regex)
   (when-let ((scanner (ignore-errors (create-scanner regex))))
     (with-accessors ((row-selected-index row-selected-index)
-                     (rows               rows)
                      (timeline-type      thread-window:timeline-type)
                      (timeline-folder    thread-window:timeline-folder)) *thread-window*
+
       (let ((event-payload
               (lambda ()
-                (line-oriented-window:map-rows specials:*thread-window*
-                                               (lambda (a)
-                                                 (let* ((fields    (line-oriented-window:fields a))
-                                                        (user      (db:row-message-username  fields))
-                                                        (subject   (db:row-message-subject   fields))
-                                                        (status-id (db:row-message-status-id fields)))
-                                                   (when (or (scan scanner user)
-                                                             (scan scanner subject))
-                                                     (db:mark-status-deleted-p timeline-type
-                                                                               timeline-folder
-                                                                               status-id)))))
-                (line-oriented-window:resync-rows-db *thread-window* :redraw t))))
+                (db-utils:with-ready-database (:connect nil)
+                  (let ((rows (db:all-messages-timeline-folder timeline-type
+                                                               timeline-folder)))
+                    (mapcar (lambda (row)
+                              (let* ((user      (db:row-message-username  row))
+                                     (subject   (db:row-message-subject   row))
+                                     (status-id (db:row-message-status-id row)))
+                                (when (or (scan scanner user)
+                                          (scan scanner subject))
+                                  (db:mark-status-deleted-p timeline-type
+                                                            timeline-folder
+                                                            status-id))))
+                            rows)
+                    (line-oriented-window:resync-rows-db *thread-window* :redraw t))))))
         (push-event (make-instance 'function-event
                                    :payload event-payload))))))
 
 (defun delete-post-using-regex ()
-  "Delete all posts matching (in field username or subject) a regual expression."
+  "Delete all posts matching (in field username or subject) a regular expression."
   (flet ((on-input-complete (regex)
            (mark-message-deleted-by-regex regex)))
     (ask-string-input #'on-input-complete

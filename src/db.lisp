@@ -1640,7 +1640,7 @@ that identify a single message in table :status"
   `(:= :status.timeline ,timeline)
   `(:= :in-reply-to-id  ,status-id)
 
-   the two cluasuses will be connectd by :AND by default
+   the two claususes will be connectd by :AND by default
 
   `(:or :like :spoiler-text
         ,actual-text-looking-for)
@@ -1708,6 +1708,12 @@ that identify a single message in table :status"
                                                            `(:= :status.timeline ,timeline)
                                                            `(:= :in-reply-to-id  ,status-id))))
     (fetch-all-rows query)))
+
+(defun all-messages-timeline-folder (timeline folder)
+  (fetch-all-rows (make-filtered-message-select nil
+                                                timeline
+                                                folder
+                                                nil)))
 
 (defun message-id->tree (timeline folder status-id)
   "Return an instance of  `mtree-utils:m-tree' filled with status that

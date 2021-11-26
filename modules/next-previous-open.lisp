@@ -33,11 +33,3 @@
 (defun delete-and-move-previous ()
   (ui:thread-mark-delete-selected-message)
   (ui:thread-open-selected-message))
-
-(define-key "right" #'open-next                *thread-keymap*)
-
-(define-key "left"  #'open-previous            *thread-keymap*)
-
-(define-key "d"     #'delete-and-move-next     *thread-keymap*)
-
-(define-key "M-u"   #'delete-and-move-previous *thread-keymap*)

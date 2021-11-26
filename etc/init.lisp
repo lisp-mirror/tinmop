@@ -249,6 +249,16 @@
 
 (define-key "U"         #'thread-mark-prevent-delete-selected-message *thread-keymap*)
 
+(define-key "right"     #'open-next                                   *thread-keymap*)
+
+(define-key "left"      #'open-previous                               *thread-keymap*)
+
+(define-key "d"         #'delete-and-move-next                        *thread-keymap*)
+
+(define-key "M-u"       #'delete-and-move-previous                    *thread-keymap*)
+
+(define-key "D"         #'delete-post-using-regex                     *thread-keymap*)
+
 (define-key "g"         #'thread-goto-message                         *thread-keymap*)
 
 (define-key "/ b"       #'thread-search-next-message-body             *thread-keymap*)
