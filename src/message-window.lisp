@@ -233,6 +233,8 @@
 
 (defgeneric row-find-original-object (object thing))
 
+(defgeneric row-position-original-object (object thing &key start from-end end))
+
 (defmethod row-add-original-object ((lines line) original-object)
   (push original-object
         (fields lines))
@@ -254,6 +256,26 @@
 (defmethod row-find-original-object ((object list) (thing symbol))
   (find-if (lambda (a) (typep (extract-original-object a) thing))
            object))
+
+(defmethod row-position-original-object ((object message-window) (thing symbol)
+                                         &key (start 0) (from-end nil) (end nil))
+  (when (and (>= start 0)
+             (< start (rows-length object))
+             (or (null end)
+                 (and (< end (rows-length object))
+                      (>= end start))))
+    (rows-position-if object (lambda (a) (typep (extract-original-object a) thing))
+                      :start    start
+                      :end      end
+                      :from-end from-end)))
+
+(defmethod row-position-original-object ((object list) (thing symbol)
+                                         &key (start 0) (from-end nil) (end nil))
+  (position-if (lambda (a) (typep (extract-original-object a) thing))
+               object
+               :start    start
+               :end      end
+               :from-end from-end))
 
 (defun row-get-original-object (line)
   (getf (fields line) :original-object))

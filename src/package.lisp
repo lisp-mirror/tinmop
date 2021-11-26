@@ -2112,6 +2112,7 @@
    :toggle-preformatted-block
    :text->rendered-lines-rows
    :row-find-original-object
+   :row-position-original-object
    :extract-original-object
    :prepare-for-display-status-mode
    :prepare-for-rendering
@@ -2618,6 +2619,8 @@
    :open-message-link-perform-opening
    :open-message-link-open-enqueue
    :open-next-visible-link
+   :go-to-next-link
+   :go-to-previous-link
    :close-open-message-link-window
    :attach-go-up
    :attach-go-down

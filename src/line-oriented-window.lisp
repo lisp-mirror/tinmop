@@ -371,7 +371,7 @@ this exact quantity would go beyond the length or rows or zero."
   (first-elt (rows object)))
 
 (defmethod rows-position-if ((object row-oriented-widget) (predicate function)
-                             &key from-end start end key &allow-other-keys)
+                             &key from-end (start 0) end key &allow-other-keys)
   (position-if predicate
                (rows object)
                :from-end from-end

@@ -1223,6 +1223,25 @@ Browse and optionally open the links the text of the message window contains."
               (uri          (gemini-parser::link-value link-object)))
     (open-message-link-window:open-message-link uri nil)))
 
+(defun go-to-next-link ()
+  (when-let* ((win                *message-window*)
+              (1+selected-row-pos (1+ (line-oriented-window:row-selected-index win)))
+              (link-line-pos      (message-window:row-position-original-object win
+                                                                             'gemini-parser:link-line
+                                                                             :start 1+selected-row-pos)))
+    (line-oriented-window:row-move win (- link-line-pos (1- 1+selected-row-pos)))
+    (windows:draw win)))
+
+(defun go-to-previous-link ()
+  (when-let* ((win              *message-window*)
+              (selected-row-pos (line-oriented-window:row-selected-index win))
+              (link-line-pos    (message-window:row-position-original-object win
+                                                                             'gemini-parser:link-line
+                                                                             :end selected-row-pos
+                                                                             :from-end t)))
+    (line-oriented-window:row-move win (- link-line-pos selected-row-pos))
+    (windows:draw win)))
+
 (defun line-window-move (win amount)
   (ignore-errors
     (line-oriented-window:unselect-all win)
