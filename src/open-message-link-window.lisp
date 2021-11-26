@@ -88,7 +88,8 @@
                                       :enqueue                      enqueue
                                       :use-cached-file-if-exists    t))
       ((fs:dirp decoded-path)
-       (gemini-viewer:load-gemini-url decoded-path :give-focus-to-message-window nil))
+       (gemini-viewer:load-gemini-url decoded-path
+                                      :give-focus-to-message-window nil))
       (t
        (os-utils:open-resource-with-external-program decoded-path nil)))))
 
