@@ -9,7 +9,7 @@
       - added a bookmark of gemini addresses;
       - added a procedure to import tls certificates.
     - [pleroma]
-      - added a script to export a list of people that user is
+      - added two scripts to export and import a list of people that user is
         following;
       - added a module to delete posts matching a regular expression
         form the timeline the user is exploring;

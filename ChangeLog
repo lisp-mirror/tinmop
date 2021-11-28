@@ -1,3 +1,22 @@
+2021-11-28 cage
+
+        * ChangeLog,
+        * Makefile.am,
+        * Makefile.in,
+        * NEWS.org,
+        * aclocal.m4,
+        * configure,
+        * configure.ac,
+        * scripts/import-following.lisp,
+        * tinmop.asd:
+
+        - updated Changelog and NEWS.org.
+        - increased version number;
+        - added a missing script in makefile.
+        - updated building scripts;
+        - removed wrong backslash from Makefile.am.
+        - added script: 'import-following.lisp'.
+
 2021-11-27 cage
 
 	* etc/init.lisp:
