@@ -44,10 +44,12 @@ dist_conf_DATA       = etc/init.lisp etc/default-theme.conf etc/shared.conf
 
 dist_pkgdata_DATA    = scripts/welcome-bot.lisp  \
 scripts/delete-old-posts.lisp                    \
+scripts/get-following.lisp                       \
 modules/next-previous-open.lisp                  \
 modules/share-gemini-link.lisp                   \
 modules/rewrite-message-urls.lisp                \
-modules/expand-abbrev-command-window.lisp
+modules/expand-abbrev-command-window.lisp        \
+
 
 dist_man1_MANS       = doc/tinmop.man
 
@@ -61,7 +63,7 @@ $(CONF_PATH_FILE):
 	grep "^;" $(CONF_PATH_FILE_IN)                          >  $(CONF_PATH_FILE)
 	echo -e "(in-package :config)\n"                        >> $(CONF_PATH_FILE);
 	echo "(alexandria:define-constant +sys-data-dir+"       >> $(CONF_PATH_FILE);
-	echo -e "\"$(pkgdatadir)\" :test #'string=)\n"  >> $(CONF_PATH_FILE);
+	echo -e "\"$(pkgdatadir)\" :test #'string=)\n"          >> $(CONF_PATH_FILE);
 
 	echo "(alexandria:define-constant +sys-conf-dir+"       >> $(CONF_PATH_FILE);
 	echo -e  "\"$(confdir)\" :test #'string=)\n"            >> $(CONF_PATH_FILE);
