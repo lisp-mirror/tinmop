@@ -48,7 +48,7 @@ scripts/get-following.lisp                       \
 modules/next-previous-open.lisp                  \
 modules/share-gemini-link.lisp                   \
 modules/rewrite-message-urls.lisp                \
-modules/expand-abbrev-command-window.lisp        \
+modules/expand-abbrev-command-window.lisp
 
 
 dist_man1_MANS       = doc/tinmop.man
