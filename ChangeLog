@@ -1,23 +1,125 @@
+2021-11-27 cage
+
+	* etc/init.lisp:
+
+	- [gemini] changed keychords for searching and opening links in the
+	mainwindow.
+
+2021-11-26 cage
+
+	* etc/init.lisp,
+	* modules/delete-by-regex.lisp,
+	* modules/next-previous-open.lisp,
+	* src/db.lisp,
+	* src/line-oriented-window.lisp,
+	* src/message-window.lisp,
+	* src/open-message-link-window.lisp,
+	* src/package.lisp,
+	* src/ui-goodies.lisp:
+
+	- fixed module  delete-post-using-regex; the procedure delete  all the
+	rows matching a regex not only the visible ones in thread window;
+	- moved keybinding from  modules/next-previous-open.lisp into the main
+	init file.
+	- [gemini] added commands: 'go-to-previous-link' and
+	'go-to-next-link'.
+	- [gemini] fixed command 'open-next-visible-link'.
+
+2021-11-20 cage
+
+	* etc/init.lisp,
+	* modules/delete-by-regex.lisp,
+	* src/api-client.lisp,
+	* src/thread-window.lisp:
+
+	- added new module: 'delete-by-regex.lisp';
+	- fixed bug that prevented to update local and federated timeline;
+	- prevented crash when syncing thread window that contains no posts;
+
+2021-11-19 cage
+
+	* src/db.lisp,
+	* src/package.lisp,
+	* src/ui-goodies.lisp:
+
+	- refactored some code in a function: 'db:row-avatar'.
+
+2021-11-16 cage
+
+	* doc/man.org,
+	* doc/tinmop.man,
+	* etc/init.lisp,
+	* src/package.lisp,
+	* src/program-events.lisp,
+	* src/ui-goodies.lisp:
+
+	- prevented sending a successful notification when the procedure to
+	follow or unfollow an user failed.
+	- fixed function's name.
+	- added load-script-file.
+	- mentioned again "-G" command line switch in the manpage.
+	- updated manpage.
+	- added command 'view-user-avatar'.
+
+2021-11-15 cage
+
+	* src/gemini-viewer.lisp,
+	* src/gemini/client.lisp:
+
+	- added query to redirect if present in the redirect iri.
+	- skipped redirect if parsing of iri failed.
+
+2021-11-14 cage
+
+	* scripts/get-following.lisp,
+	* src/api-client.lisp,
+	* src/api-pleroma.lisp,
+	* src/package.lisp:
+
+	- added a script to get a list of people user is following.
+	- fixed typo.
+
+2021-11-13 cage
+
+	* doc/man.org,
+	* doc/tinmop.man:
+
+	- updated manpage.
+
 2021-11-12 cage
 
-        * po/it.po,
-        * po/tinmop.pot,
-        * src/command-line.lisp,
-        * src/db.lisp,
-        * src/gemini-page-toc.lisp,
-        * src/main.lisp,
-        * src/message-window.lisp,
-        * src/package.lisp,
-        * src/program-events.lisp,
-        * src/ui-goodies.lisp:
+	* ChangeLog,
+	* etc/shared.conf,
+	* po/it.po,
+	* po/tinmop.pot,
+	* src/command-line.lisp,
+	* src/db.lisp,
+	* src/gemini-page-toc.lisp,
+	* src/gemini-viewer.lisp,
+	* src/main.lisp,
+	* src/message-window.lisp,
+	* src/package.lisp,
+	* src/program-events.lisp,
+	* src/software-configuration.lisp,
+	* src/ui-goodies.lisp,
+	* src/windows.lisp:
 
-        - added command-line option for gemini fullscreen mode;
-        - cleaned up command line switch management.
-        - removed argument for command line switch: 'gemini-client-only'.
-        - added exclusive gemini client UI layout.
-        - removed duplicates in url history when printing gemini startpage in
-        gemini full screen mode.
-        -updated italian translation.
+	- added command-line option for gemini fullscreen mode;
+	- cleaned up command line switch management.
+	- removed argument for ommand line switch 'gemini-client-only'.
+	- added exclusive gemini client UI layout.
+	- removed duplicates in url history when printing gemini startpage in
+	gemini full screen mode.
+	-updated italian translation.
+	-updated Changelog.
+	- fixed typo in changelog.
+	- changed logic to guess if the window is displaying gemini contents;
+	- replaced window'stitle with the IRI of the gemini content streaming;
+	- fixed italian translation.
+	- used an error message instead of a notification when opening a file
+	that does not exists (thanks op\!).
+	- made width of TOC customizable (when using tinmop in gemini
+	fullscreen mode).
 
 2021-11-10 cage
 
@@ -792,13 +894,22 @@
           message-window;
 	- fixed 'adjust-selected-rows', was never actually called.
 
-2021-07-26  cage
+2021-07-26 cage
 
+        * ChangeLog,
+        * src/9p-client/client.lisp,
+        * src/constants.lisp,
+        * src/line-oriented-window.lisp,
+        * src/message-window.lisp,
+        * src/package.lisp:
 
-
-2021-07-26  cage
-
-
+        - wrapped function in '(eval-when..'.
+        - updated/fixed Changelog.
+        - added adjust-strategy-last to show text in message-window;
+        - removed call to 'adjust-selected-rows' when redrawing
+        message-window;
+        - fixed 'adjust-selected-rows', wa never actually called.
+        - added client.lisp
 
 2021-07-25  cage
 

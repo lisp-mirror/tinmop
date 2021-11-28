@@ -1,3 +1,45 @@
+* 2021-11-28 version 0.9.0
+
+  - New Features
+    - [gemini]
+      - support for gempub ebook format:
+        https://codeberg.org/oppenlab/gempub ;
+      - Added a command line switch to use the program exclusively as
+        a gemini client ("-G");
+      - added a bookmark of gemini addresses;
+      - added a procedure to import tls certificates.
+    - [pleroma]
+      - added a script to export a list of people that user is
+        following;
+      - added a module to delete posts matching a regular expression
+        form the timeline the user is exploring;
+    - added a command to load a script, the output of the script is
+      printed on the main window (if such output does exists).
+    - implemented cut line from point (using "^K") in command window;
+    - added a module to expand abbreviation on command line (e.g. "!g"
+      → "gemini://").
+  - Improvements
+    - [gemini]
+      - improved tour mode: the tour entries can be shuffled;
+      - added a command to jump to (and open) links in a gemtext;
+      - the URI of the capsule is shown in the title of the window;
+      - added "no wait" directive when downloading non gemini
+        text format from gemini: allow opening file before it is
+        downloaded completely;
+      - used fuzzy matching when looking for URI in history;
+        - made gemlog's updating non blocking.
+    - Bugfix
+      - [gemini]
+        - never send the fragment part of an URI to the server;
+        - fixed crash when completing an empty command line (pressing tab with
+        no string typed on the command line).
+      - [pleroma]
+        - fixed bug that prevented to update local and federated timeline.
+      - prevented crash when teminal height was to small to fits suggestion
+        window.
+
+   More information is available in the [[./ChangeLog][changelog file]]
+
 * 2021-06-29 version 0.8.3
 
   Most important changes are:
