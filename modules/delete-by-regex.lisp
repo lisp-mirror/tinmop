@@ -33,6 +33,9 @@
                                      (status-id (db:row-message-status-id row)))
                                 (when (or (scan scanner user)
                                           (scan scanner subject))
+                                  (db:mark-status-red-p     timeline-type
+                                                            timeline-folder
+                                                            status-id)
                                   (db:mark-status-deleted-p timeline-type
                                                             timeline-folder
                                                             status-id))))
