@@ -2151,7 +2151,7 @@ reblogged (if exists)."
 (defun mark-status-unread (timeline folder status-id)
   (mark-status-boolean-value timeline folder status-id :redp +db-false+))
 
-(defun mark-status-deleted-p (timeline folder status-id)
+(defun mark-status-deleted (timeline folder status-id)
   "Mark status as need to be deleted."
   (mark-status-boolean-value timeline folder status-id :deletedp +db-true+))
 

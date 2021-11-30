@@ -946,7 +946,7 @@
    :all-attachments-urls-to-status
    :mark-status-read
    :mark-status-unread
-   :mark-status-deleted-p
+   :mark-status-deleted
    :mark-status-prevent-deletion
    :count-status-redp
    :count-status

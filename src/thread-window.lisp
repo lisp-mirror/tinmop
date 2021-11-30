@@ -898,7 +898,7 @@ db:renumber-timeline-message-index."
                                             &key (move-down-selected-message nil))
   (if (selected-row object)
       (progn
-        (mark-selected-status-boolean-value object #'db:mark-status-deleted-p)
+        (mark-selected-status-boolean-value object #'db:mark-status-deleted)
         (resync-rows-db object :redraw t)
         (when move-down-selected-message
           (go-message-down object)))

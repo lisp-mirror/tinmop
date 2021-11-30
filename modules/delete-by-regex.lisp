@@ -33,12 +33,12 @@
                                      (status-id (db:row-message-status-id row)))
                                 (when (or (scan scanner user)
                                           (scan scanner subject))
-                                  (db:mark-status-read      timeline-type
-                                                            timeline-folder
-                                                            status-id)
-                                  (db:mark-status-deleted-p timeline-type
-                                                            timeline-folder
-                                                            status-id))))
+                                  (db:mark-status-read    timeline-type
+                                                          timeline-folder
+                                                          status-id)
+                                  (db:mark-status-deleted timeline-type
+                                                          timeline-folder
+                                                          status-id))))
                             rows)
                     (line-oriented-window:resync-rows-db *thread-window* :redraw t))))))
         (push-event (make-instance 'function-event
