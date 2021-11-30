@@ -944,7 +944,7 @@
    :all-attachments-to-status
    :attachment-to-chat-message
    :all-attachments-urls-to-status
-   :mark-status-red-p
+   :mark-status-read
    :mark-status-unread
    :mark-status-deleted-p
    :mark-status-prevent-deletion

@@ -2145,7 +2145,7 @@ reblogged (if exists)."
                               (:= :status-id status-id))))))
     (query query)))
 
-(defun mark-status-red-p (timeline folder status-id)
+(defun mark-status-read (timeline folder status-id)
   (mark-status-boolean-value timeline folder status-id :redp +db-true+))
 
 (defun mark-status-unread (timeline folder status-id)

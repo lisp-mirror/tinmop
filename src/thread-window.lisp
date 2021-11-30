@@ -878,7 +878,7 @@ db:renumber-timeline-message-index."
                                                           actual-body
                                                           poll-text
                                                           actual-attachments))
-            (db:mark-status-red-p timeline-type timeline-folder status-id)
+            (db:mark-status-read timeline-type timeline-folder status-id)
             (resync-rows-db object :redraw t)
             (program-events:push-event refresh-event)
             (draw *message-window*)))))))
