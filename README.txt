@@ -90,6 +90,7 @@ Table of Contents
     • SBCL compiler;
     • xdg-open;
     • openssl;
+    • unzip (command line utitlity to decompress zip file);
     • your favourite editor (default: nano).
 
   All the dependencies above should be available using the package
