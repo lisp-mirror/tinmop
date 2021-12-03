@@ -1,3 +1,31 @@
+021-12-03 cage
+
+        * Makefile.am,
+        * README.org,
+        * README.txt:
+
+        - added missing reference to module 'delete-by-regex.lisp' in
+        Makefile.am
+        - updated documentation.
+
+2021-12-01 cage
+
+        * README.org,
+        * README.txt:
+
+        - mentioned 'zip' as dependency in README.
+
+2021-11-30 cage
+
+        * modules/delete-by-regex.lisp,
+        * src/db.lisp,
+        * src/package.lisp,
+        * src/thread-window.lisp:
+
+        - [modules] marked post as read.
+        - fixed function name.
+        - renamed function 'db:mark-status-deleted-p'.
+
 2021-11-28 cage
 
         * ChangeLog,
