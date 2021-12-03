@@ -104,7 +104,7 @@ manager of your distribution (~apt~, ~yum~ etc).
    Using [[https://guix.gnu.org/][guix]] is the simpler way to install this software:
 
    #+BEGIN_SRC sh
-   $ guix install tinmop
+   $ guix pull && guix package -u && guix install tinmop
    #+END_SRC
 
    Guix can be installed on debian (testing or sid):

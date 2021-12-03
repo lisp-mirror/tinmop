@@ -152,7 +152,7 @@ Table of Contents
   Using [guix] is the simpler way to install this software:
 
   ┌────
-  │ $ guix install tinmop
+  │ $ guix pull && guix package -u && guix install tinmop
   └────
 
   Guix can be installed on debian (testing or sid):
