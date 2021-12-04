@@ -245,6 +245,18 @@
 
 (defclass iri (uri:uri) ())
 
+(defmethod print-object ((object iri) stream)
+  (print-unreadable-object (object stream)
+    (format stream
+            "~s ~s ~s ~s ~s ~s ~s"
+            (uri:scheme    object)
+            (uri:user-info object)
+            (uri:host      object)
+            (uri:port      object)
+            (uri:path      object)
+            (uri:query     object)
+            (uri:fragment  object))))
+
 (defun make-iri (&optional scheme user-info host port path query fragment)
   (make-instance 'iri
                  :scheme    scheme

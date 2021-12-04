@@ -1219,16 +1219,17 @@ Browse and optionally open the links the text of the message window contains."
   (when-let* ((visible-rows (message-window:visible-rows *message-window*))
               (link-line    (message-window:row-find-original-object  visible-rows
                                                                       'gemini-parser:link-line))
-              (link-object  (message-window:extract-original-object link-line))
-              (uri          (gemini-parser::link-value link-object))
-              (current-url  (iri:iri-parse (gemini-viewer:current-gemini-url)))
-              (absolute-uri (if (iri:absolute-url-p uri)
-                                uri
-                                (gemini-parser:absolutize-link uri
-                                                               (uri:host current-url)
-                                                               (uri:port current-url)
-                                                               nil))))
-    (open-message-link-window:open-message-link absolute-uri nil)))
+              (link-object  (message-window:extract-original-object link-line)))
+    (let* ((uri          (gemini-parser::link-value link-object))
+           (current-url  (ignore-errors (iri:iri-parse (gemini-viewer:current-gemini-url))))
+           (absolute-uri (if (or (null current-url)
+                                 (iri:absolute-url-p uri))
+                             uri
+                             (gemini-parser:absolutize-link uri
+                                                            (uri:host current-url)
+                                                            (uri:port current-url)
+                                                            (uri:path current-url)))))
+      (open-message-link-window:open-message-link absolute-uri nil))))
 
 (defun go-to-next-link ()
   (when-let* ((win                *message-window*)
