@@ -933,10 +933,12 @@ to the array"
 ;; http
 
 (defun get-url-content (url)
-  (drakma:http-request url
-                       :want-stream         t
-                       :verify              :required
-                       :external-format-out :utf8))
+  (multiple-value-bind (stream response-code)
+      (drakma:http-request url
+                           :want-stream         t
+                           :verify              :required
+                           :external-format-out :utf8)
+    (values stream response-code)))
 
 ;; profiling
 
@@ -947,3 +949,74 @@ to the array"
 
 (defmacro with-debug-print-profile-time ((&optional prefix) &body body)
   `(misc:dbg "~a ~a" ,prefix (with-profile-time ,@body)))
+
+;; package building utils
+
+(defun ql-system-equals (a b)
+  (string= (ql::short-description a)
+           (ql::short-description b)))
+
+(defun remove-system-duplicates-test (ql-systems)
+  (remove-duplicates (alexandria:flatten ql-systems)
+                     :test #'ql-system-equals))
+
+(defun all-dependencies (system-name)
+  (flet ((get-direct-dependencies (system-name)
+           (remove-system-duplicates-test (ql::dependency-tree system-name))))
+    (let* ((direct  (get-direct-dependencies system-name))
+           (results (copy-list direct)))
+      (loop for i in direct do
+        (let ((dependencies (get-direct-dependencies i)))
+          (loop for j in dependencies do
+            (pushnew j results :test #'ql-system-equals))))
+      results)))
+
+(alexandria:define-constant +github-quicklisp-source-url-template+
+  "https://raw.githubusercontent.com/quicklisp/quicklisp-projects/master/projects/~a/source.txt"
+  :test #'string=)
+
+(defun get-quicklisp-original-file (system-name)
+  (multiple-value-bind (stream response-code)
+      (get-url-content (format nil
+                               +github-quicklisp-source-url-template+
+                               system-name))
+    (when (or (< response-code 400)
+              (> response-code 499))
+      (let* ((line   (babel:octets-to-string (read-line-into-array stream)))
+             (fields (text-utils:split-words line)))
+        fields))))
+
+(defun asdf-depends-on ()
+  (let ((symbol-system (alexandria:symbolicate (string-upcase config:+program-name+))))
+    (asdf:system-depends-on (asdf:find-system symbol-system))))
+
+(defun all-program-dependencies ()
+  (let* ((starting-system-names (asdf-depends-on))
+         (dependencies          (alexandria:flatten (mapcar #'all-dependencies
+                                                            starting-system-names)))
+         (clean-dependencies    (mapcar #'ql::short-description
+                                        (remove-system-duplicates-test dependencies))))
+    (setf clean-dependencies
+          (mapcar (lambda (a)
+                    (cond
+                      ((string= a "sqlite")
+                       "cl-sqlite")
+                      ((string= a "marshal")
+                       "cl-marshal")
+                      (t
+                       a)))
+                  clean-dependencies))
+    (loop for system-name in (sort clean-dependencies #'string<) do
+      (let ((fields (get-quicklisp-original-file system-name)))
+        (sleep 1)
+        (if fields
+            (cond
+              ((string= (first fields) "ediware-http")
+               (format t "~a ~a ~a~%" system-name "git"
+                       (format nil "https://github.com/edicl/~a.git" system-name)))
+              ((string= (first fields) "kmr-git")
+               (format t "~a ~a ~a~%" system-name "git"
+                       (format nil "http://git.kpe.io/~A.git" system-name)))
+              (t
+               (format t "~a ~a ~a~%" system-name (first fields) (second fields))))
+            (format t "!error: ~a~%" system-name))))))

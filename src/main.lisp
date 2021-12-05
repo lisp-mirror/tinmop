@@ -207,11 +207,15 @@ etc.) happened"
     (init-i18n)
     (res:init)
     (command-line:manage-opts)
-    (if command-line:*script-file*
-        (load-script-file)
-        (let ((croatoan::*debugger-hook* #'(lambda (c h)
+    (cond
+      (command-line:*print-lisp-dependencies*
+       (misc:all-program-dependencies))
+      (command-line:*script-file*
+       (load-script-file))
+      (t
+       (let ((croatoan::*debugger-hook* #'(lambda (c h)
                                              (declare (ignore h))
                                              (end-screen)
                                              (print c))))
-          (init)
-          (run first-time-starting)))))
+         (init)
+         (run first-time-starting))))))

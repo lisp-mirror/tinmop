@@ -78,7 +78,11 @@
             :short                     #\M
             :meta-var                  (_ "MODULE-FILE")
             :arg-parser                #'identity
-            :long                      "load-module")))
+            :long                      "load-module")
+     (:name :print-lisp-dependencies
+            :description               "Print lisp's libraries locations"
+            :short                     #\X
+            :long                      "lisp-dependencies-uris")))
 
 (defparameter *start-folder*                       nil)
 
@@ -101,6 +105,8 @@
 (defparameter *update-timeline-climb-message-tree* nil)
 
 (defparameter *gemini-full-screen-mode*            nil)
+
+(defparameter *print-lisp-dependencies*            nil)
 
 (defun exit-on-error (e)
   (format *error-output* "~a~%" e)
@@ -136,4 +142,5 @@
       (set-option-variable options :load-module                *module-file*)
       (set-option-variable options :check-follows-requests     *check-follow-requests*)
       (set-option-variable options :gemini-full-screen-mode    *gemini-full-screen-mode*)
-      (set-option-variable options :notify-mentions            *notify-mentions*))))
+      (set-option-variable options :notify-mentions            *notify-mentions*)
+      (set-option-variable options :print-lisp-dependencies    *print-lisp-dependencies*))))

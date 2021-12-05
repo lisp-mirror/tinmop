@@ -111,6 +111,7 @@
                (:file "suggestions-window")
                (:file "complete-window")
                (:file "keybindings-window")
+               (:file "filesystem-tree-window")
                (:file "point-tracker")
                (:file "modeline-window")
                (:file "line-oriented-window")

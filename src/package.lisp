@@ -235,7 +235,8 @@
    :with-lock
    :get-url-content
    :with-profile-time
-   :with-debug-print-profile-time))
+   :with-debug-print-profile-time
+   :all-program-dependencies))
 
 (defpackage :box
   (:use
@@ -1339,6 +1340,7 @@
    :*gemini-url*
    :*update-timeline-climb-message-tree*
    :*gemini-full-screen-mode*
+   :*print-lisp-dependencies*
    :manage-opts))
 
 (defpackage :specials
@@ -1838,6 +1840,30 @@
    :init))
 
 (defpackage :keybindings-window
+  (:use
+   :cl
+   :alexandria
+   :cl-ppcre
+   :croatoan
+   :config
+   :constants
+   :text-utils
+   :misc
+   :mtree
+   :keybindings
+   :specials
+   :windows
+   :suggestions-window
+   :tui-utils)
+  (:shadowing-import-from :text-utils :split-lines)
+  (:shadowing-import-from :misc :random-elt :shuffle)
+  (:export
+   :keybindings-window
+   :keybindings-tree
+   :update-keybindings-tree
+   :init))
+
+(defpackage :filesystem-tree-window
   (:use
    :cl
    :alexandria
