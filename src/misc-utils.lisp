@@ -1016,7 +1016,7 @@ to the array"
                        (format nil "https://github.com/edicl/~a.git" system-name)))
               ((string= (first fields) "kmr-git")
                (format t "~a ~a ~a~%" system-name "git"
-                       (format nil "http://git.kpe.io/~A.git" system-name)))
+                       (format nil "http://git.kpe.io/~a.git" system-name)))
               (t
                (format t "~a ~a ~a~%" system-name (first fields) (second fields))))
             (format t "!error: ~a~%" system-name))))))
