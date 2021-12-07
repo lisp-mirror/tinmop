@@ -940,6 +940,12 @@ to the array"
                            :external-format-out :utf8)
     (values stream response-code)))
 
+(defun get-url-content-body (url)
+  (drakma:http-request url
+                       :want-stream         nil
+                       :verify              :required
+                       :external-format-out :utf8))
+
 ;; profiling
 
 (defmacro with-profile-time (&body body)
@@ -956,20 +962,9 @@ to the array"
   (string= (ql::short-description a)
            (ql::short-description b)))
 
-(defun remove-system-duplicates-test (ql-systems)
-  (remove-duplicates (alexandria:flatten ql-systems)
-                     :test #'ql-system-equals))
-
-(defun all-dependencies (system-name)
-  (flet ((get-direct-dependencies (system-name)
-           (remove-system-duplicates-test (ql::dependency-tree system-name))))
-    (let* ((direct  (get-direct-dependencies system-name))
-           (results (copy-list direct)))
-      (loop for i in direct do
-        (let ((dependencies (get-direct-dependencies i)))
-          (loop for j in dependencies do
-            (pushnew j results :test #'ql-system-equals))))
-      results)))
+(defun remove-system-duplicates-test (systems)
+  (remove-duplicates systems
+                     :test #'string=))
 
 (alexandria:define-constant +github-quicklisp-source-url-template+
   "https://raw.githubusercontent.com/quicklisp/quicklisp-projects/master/projects/~a/source.txt"
@@ -986,37 +981,59 @@ to the array"
              (fields (text-utils:split-words line)))
         fields))))
 
-(defun asdf-depends-on ()
-  (let ((symbol-system (alexandria:symbolicate (string-upcase config:+program-name+))))
+(defun asdf-depends-on (&optional (system-name config:+program-name+))
+  (let ((symbol-system (alexandria:symbolicate (string-upcase system-name))))
     (asdf:system-depends-on (asdf:find-system symbol-system))))
 
-(defun all-program-dependencies ()
-  (let* ((starting-system-names (asdf-depends-on))
-         (dependencies          (alexandria:flatten (mapcar #'all-dependencies
-                                                            starting-system-names)))
-         (clean-dependencies    (mapcar #'ql::short-description
-                                        (remove-system-duplicates-test dependencies))))
-    (setf clean-dependencies
-          (mapcar (lambda (a)
-                    (cond
-                      ((string= a "sqlite")
-                       "cl-sqlite")
-                      ((string= a "marshal")
-                       "cl-marshal")
-                      (t
-                       a)))
-                  clean-dependencies))
-    (loop for system-name in (sort clean-dependencies #'string<) do
-      (let ((fields (get-quicklisp-original-file system-name)))
-        (sleep 1)
-        (if fields
-            (cond
-              ((string= (first fields) "ediware-http")
-               (format t "~a ~a ~a~%" system-name "git"
-                       (format nil "https://github.com/edicl/~a.git" system-name)))
-              ((string= (first fields) "kmr-git")
-               (format t "~a ~a ~a~%" system-name "git"
-                       (format nil "http://git.kpe.io/~a.git" system-name)))
-              (t
-               (format t "~a ~a ~a~%" system-name (first fields) (second fields))))
-            (format t "!error: ~a~%" system-name))))))
+(defun all-dependencies (system-name)
+  (flet ((get-direct-dependencies (system-name)
+           (remove-system-duplicates-test (asdf-depends-on system-name))))
+    (let* ((direct  (get-direct-dependencies system-name))
+           (results (copy-list direct)))
+      (loop for i in direct do
+        (let ((dependencies (get-direct-dependencies i)))
+          (loop for j in dependencies do
+            (pushnew j results :test #'string=)
+            (all-dependencies i))))
+      (sort results #'string<))))
+
+(defun all-program-dependencies (&optional download)
+  (let* ((dependencies          (all-dependencies config:+program-name+))
+         (clean-dependencies    (mapcar (lambda (a)
+                                          (cond
+                                            ((string= a "sqlite")
+                                             "cl-sqlite")
+                                            ((string= a "marshal")
+                                             "cl-marshal")
+                                            (t
+                                             a)))
+                                        dependencies)))
+    (flet ((download-package (fields)
+             (if (cl-ppcre:scan "git" (first fields))
+                 (os-utils:run-external-program "git"
+                                                (list "clone" (second fields))
+                                                :search t)
+                 (let ((data (get-url-content-body (second fields))))
+                   (with-open-file (out-stream (fs:path-last-element (second fields))
+                                               :direction :output
+                                               :element-type '(unsigned-byte 8))
+                     (write-sequence data out-stream))))))
+      (loop for system-name in (sort clean-dependencies #'string<) do
+        (let ((fields (get-quicklisp-original-file system-name)))
+          (if fields
+              (cond
+                ((string= (first fields) "ediware-http")
+                 (let ((url (format nil "https://github.com/edicl/~a.git" system-name)))
+                   (format t "~a ~a ~a~%" system-name "git" url)
+                   (when download
+                     (download-package (list "git" url)))))
+                ((string= (first fields) "kmr-git")
+                 (let ((url (format nil "http://git.kpe.io/~a.git" system-name)))
+                   (format t "~a ~a ~a~%" system-name "git" url)
+                   (when download
+                     (download-package (list (first fields) url)))))
+                (t
+                 (format t "~a ~a ~a~%" system-name (first fields) (second fields))
+                 (when download
+                   (download-package fields))))
+              (format t "!error: ~a~%" system-name)))))))

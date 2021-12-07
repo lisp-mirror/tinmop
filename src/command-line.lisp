@@ -80,7 +80,7 @@
             :arg-parser                #'identity
             :long                      "load-module")
      (:name :print-lisp-dependencies
-            :description               "Print lisp's libraries locations"
+            :description               "Download lisp libraries (useful for packaging only)."
             :short                     #\X
             :long                      "lisp-dependencies-uris")))
 

@@ -209,7 +209,7 @@ etc.) happened"
     (command-line:manage-opts)
     (cond
       (command-line:*print-lisp-dependencies*
-       (misc:all-program-dependencies))
+       (misc:all-program-dependencies t))
       (command-line:*script-file*
        (load-script-file))
       (t
