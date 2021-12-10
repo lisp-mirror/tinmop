@@ -49,6 +49,8 @@
     :accessor render-vertical-line-value)))
 
 (defun refresh-config-color-map (window config-win-key)
+  (assert window)
+  (assert config-win-key)
   (with-accessors ((tree-color-map tree-color-map)) window
     (setf tree-color-map
           (swconf:make-tree-colormap config-win-key))))
@@ -674,6 +676,13 @@ insetred by the user"
   (and window
        (typep window 'border-window)
        (uses-border-p window)))
+
+(defgeneric usable-window-width (object))
+
+(defmethod  usable-window-width ((object border-window))
+  (if (uses-border-p object)
+      (win-width-no-border object)
+      (win-width           object)))
 
 (defmethod draw :after ((object border-window))
   (when (uses-border-p object)

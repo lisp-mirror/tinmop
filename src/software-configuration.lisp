@@ -557,6 +557,7 @@
                    open-gemini-stream-window
                    gemini-certificates-window
                    command-window
+                   file-explorer
                    command-separator
                    gemini
                    gemlog
@@ -1105,6 +1106,7 @@
                               +key-left-arrow+))
 
 (defun tree-config-colors (tree-win-holder)
+  (assert tree-win-holder)
   (values (access:accesses *software-configuration*
                            tree-win-holder
                            +key-tree+
@@ -1159,6 +1161,7 @@
                                       +key-value+)))
 
 (defun make-tree-colormap (window-key)
+  (assert window-key)
   (let ((tree-color-map ()))
     (flet ((add-color-pair (key color)
              (setf tree-color-map (acons key color tree-color-map))))

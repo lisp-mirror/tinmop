@@ -69,3 +69,5 @@
 
 (defparameter *gempub-library-window* nil
   "The window that shows the gempub library.")
+
+(defparameter *filesystem-explorer-window* nil)

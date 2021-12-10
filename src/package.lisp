@@ -273,6 +273,7 @@
    :*directory-sep-regexp*
    :*directory-sep*
    :copy-a-file
+   :rename-a-file
    :file-size
    :slurp-file
    :dump-sequence-to-file
@@ -284,6 +285,8 @@
    :add-extension
    :do-directory
    :collect-children
+   :backreference-dir-p
+   :loopback-reference-dir-p
    :collect-files/dirs
    :prepend-pwd
    :search-matching-file
@@ -1148,6 +1151,7 @@
    :+key-keybindings-window+
    :+key-suggestions-window+
    :+key-command-window+
+   :+key-file-explorer+
    :+key-editor+
    :+key-username+
    :+key-server+
@@ -1366,7 +1370,8 @@
    :*gemini-subscription-window*
    :*gemini-toc-window*
    :*chats-list-window*
-   :*gempub-library-window*))
+   :*gempub-library-window*
+   :*filesystem-explorer-window*))
 
 (defpackage :complete
   (:use
@@ -1486,6 +1491,9 @@
    :report-status-event
    :add-crypto-data-event
    :poll-vote-event
+   :add-pagination-status-event
+   :status-id
+   :timeline
    :gemini-display-data-page
    :gemini-request-event
    :gemini-back-event
@@ -1511,12 +1519,10 @@
    :search-link-event
    :help-apropos-event
    :redraw-window-event
-   :function-event
    :send-to-pipe-event
-   :dispatch-program-events
-   :add-pagination-status-event
-   :status-id
-   :timeline))
+   :function-event
+   :with-enqueued-process
+   :dispatch-program-events))
 
 (defpackage :api-pleroma
   (:use
@@ -1674,6 +1680,7 @@
    :*gemlog-subscription-keymap*
    :*gemini-toc-keymap*
    :*gempub-library-keymap*
+   :*filesystem-explorer-keymap*
    :define-key
    :init-keyboard-mapping
    :find-keymap-node
@@ -1766,6 +1773,7 @@
    :in-focus-p
    :border-window
    :uses-border-p
+   :usable-window-width
    :window-uses-border-p
    :title-window))
 
@@ -1840,30 +1848,6 @@
    :init))
 
 (defpackage :keybindings-window
-  (:use
-   :cl
-   :alexandria
-   :cl-ppcre
-   :croatoan
-   :config
-   :constants
-   :text-utils
-   :misc
-   :mtree
-   :keybindings
-   :specials
-   :windows
-   :suggestions-window
-   :tui-utils)
-  (:shadowing-import-from :text-utils :split-lines)
-  (:shadowing-import-from :misc :random-elt :shuffle)
-  (:export
-   :keybindings-window
-   :keybindings-tree
-   :update-keybindings-tree
-   :init))
-
-(defpackage :filesystem-tree-window
   (:use
    :cl
    :alexandria
@@ -1994,6 +1978,9 @@
    :append-new-rows
    :map-rows
    :rows-map-raw
+   :do-rows
+   :do-rows-raw
+   :loop-rows
    :rows-length
    :rows-empty-p
    :rows-remove-if
@@ -2013,6 +2000,35 @@
    :unselected-line-fg
    :resync-rows-db
    :make-blocking-list-dialog-window))
+
+(defpackage :filesystem-tree-window
+  (:use
+   :cl
+   :alexandria
+   :cl-ppcre
+   :croatoan
+   :config
+   :constants
+   :text-utils
+   :misc
+   :mtree
+   :keybindings
+   :specials
+   :windows
+   :line-oriented-window
+   :tui-utils)
+  (:shadowing-import-from :text-utils :split-lines)
+  (:shadowing-import-from :misc :random-elt :shuffle)
+  (:export
+   :filesystem-tree-window
+   :filesystem-root
+   :tree-path
+   :tree-dir-p
+   :close-treenode
+   :expand-treenode
+   :rename-treenode
+   :resync-rows-db
+   :init))
 
 (defpackage :message-rendering-utils
   (:use
@@ -2559,6 +2575,7 @@
   (:nicknames :ui)
   (:shadowing-import-from :text-utils :split-lines)
   (:shadowing-import-from :misc :random-elt :shuffle)
+  (:local-nicknames (:fstree :filesystem-tree-window))
   (:export
    :delete-message-status-marked-to-delete
    :open-manual
@@ -2762,7 +2779,13 @@
    :message-window-unlock-scrolling
    :eval-command
    :load-script-file
-   :view-user-avatar))
+   :view-user-avatar
+   :open-file-explorer
+   :file-explorer-expand
+   :file-explorer-close
+   :file-explorer-rename
+   :file-explorer-go-down
+   :file-explorer-go-up))
 
 (defpackage :scheduled-events
   (:use

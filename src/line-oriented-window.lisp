@@ -345,6 +345,17 @@ this exact quantity would go beyond the length or rows or zero."
                      &key &allow-other-keys)
   (mapcar function (slot-value object 'rows)))
 
+(defmacro do-rows ((object row) &body body)
+  `(map nil (lambda (,row) (progn ,@body)) (rows ,object)))
+
+(defmacro do-rows-raw ((object row) &body body)
+  `(map nil (lambda (,row) (progn ,@body)) (slot-value ,object 'rows)))
+
+(defmacro loop-rows ((object row &rest loop-clauses) &body body)
+  `(loop for ,row in (rows ,object)
+         ,@loop-clauses
+         ,@body))
+
 (defmethod rows-length ((object row-oriented-widget) &key &allow-other-keys)
   (length (rows object)))
 

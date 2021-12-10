@@ -821,8 +821,8 @@ db:renumber-timeline-message-index."
       (cond
         (suggested-status-id
          (let ((message-index (message-tuple-id->message-index timeline-type
-                                                        timeline-folder
-                                                        suggested-status-id)))
+                                                               timeline-folder
+                                                               suggested-status-id)))
            (update-thread-window object message-index)))
         (suggested-message-index
          (update-thread-window object suggested-message-index))

@@ -137,6 +137,8 @@
 
 ;; global keymap
 
+(define-key "y y"       #'open-file-explorer)
+
 (define-key "q"         #'quit)  ; here we  are  calling the  custom
                                  ; function defined above
 (define-key "C-a"       #'show-about-window)
@@ -591,6 +593,18 @@
 (define-key "ppage"     #'message-scroll-previous-page                  *chat-message-keymap*)
 
 (define-key "a"         #'open-chat-link-window                         *chat-message-keymap*)
+
+;; file explorer
+
+(define-key "x"         #'file-explorer-expand   *filesystem-explorer-keymap*)
+
+(define-key "c"         #'file-explorer-close    *filesystem-explorer-keymap*)
+
+(define-key "m"         #'file-explorer-rename   *filesystem-explorer-keymap*)
+
+(define-key "up"        #'file-explorer-go-up    *filesystem-explorer-keymap*)
+
+(define-key "down"      #'file-explorer-go-down  *filesystem-explorer-keymap*)
 
 ;;;; hooks
 

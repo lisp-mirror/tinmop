@@ -598,6 +598,11 @@ current has focus"
                      :documentation      "Move focus on gempub library window"
                      :info-change-focus-message (_ "Focus passed on gempub library window"))
 
+(gen-focus-to-window filesystem-explorer-window
+                     *filesystem-explorer-window*
+                     :documentation      "Move focus on filesystem explorer window"
+                     :info-change-focus-message (_ "Focus passed on file explorer window"))
+
 (defun print-quick-help ()
   "Print a quick help"
   (keybindings:print-help *main-window*))
@@ -2408,3 +2413,48 @@ printed, on the main window."
               (account      (db:acct->user username))
               (avatar-url   (db:row-avatar account)))
     (open-attach-window:open-attachment avatar-url)))
+
+(defun open-file-explorer ()
+  (push-event (make-instance 'function-event
+                             :payload (lambda ()
+                                        (filesystem-tree-window:init "/")
+                                        (focus-to-filesystem-explorer-window)))))
+
+(defun file-explorer-expand ()
+  (when-let* ((win    *filesystem-explorer-window*)
+              (fields (line-oriented-window:selected-row-fields win))
+              (path   (fstree:tree-path  fields))
+              (dirp   (fstree:tree-dir-p fields)))
+    (fstree:expand-treenode win path)))
+
+(defun file-explorer-close ()
+  (when-let* ((win    *filesystem-explorer-window*)
+              (fields (line-oriented-window:selected-row-fields win))
+              (path   (fstree:tree-path  fields))
+              (dirp   (fstree:tree-dir-p fields)))
+    (fstree:close-treenode win path)))
+
+(defun file-explorer-rename ()
+  "Rename (or move) a file or directory"
+  (when-let* ((win    *filesystem-explorer-window*)
+              (fields (line-oriented-window:selected-row-fields win))
+              (path   (fstree:tree-path  fields)))
+    (flet ((on-input-complete (new-path)
+             (with-enqueued-process ()
+               (fstree:rename-treenode win path new-path))))
+      (ask-string-input #'on-input-complete
+                        :prompt
+                        (format nil (_ "rename ~a to: ") path)))))
+
+(defun file-explorer-move (amount)
+  (ignore-errors
+    (line-oriented-window:unselect-all *filesystem-explorer-window*)
+    (line-oriented-window:row-move     *filesystem-explorer-window* amount)
+    (win-clear *filesystem-explorer-window*)
+    (draw *filesystem-explorer-window*)))
+
+(defun file-explorer-go-down ()
+  (file-explorer-move 1))
+
+(defun file-explorer-go-up ()
+  (file-explorer-move -1))

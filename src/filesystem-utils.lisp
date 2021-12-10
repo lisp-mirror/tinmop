@@ -39,6 +39,9 @@
         out)
       nil))
 
+(defun rename-a-file (old new)
+  (nix:rename old new))
+
 (defun file-size (filename)
   (with-open-file (stream filename :direction :input :element-type '(unsigned-byte 8)
                           :if-does-not-exist nil)
@@ -110,7 +113,10 @@
   (text-utils:strcat file "." extension))
 
 (defun cat-parent-dir (parent direntry)
-  (format nil "~a~a~a" parent *directory-sep* direntry))
+  (if (or (backreference-dir-p direntry)
+          (loopback-reference-dir-p direntry))
+      (format nil "~a~a" parent direntry)
+      (format nil "~a~a~a" parent *directory-sep* direntry)))
 
 (defmacro do-directory ((var) root &body body)
   (with-gensyms (dir)
@@ -133,6 +139,12 @@
     (setf all-paths (sort all-paths #'string<))
     all-paths))
 
+(defun backreference-dir-p (path)
+  (string= (path-last-element path) ".."))
+
+(defun loopback-reference-dir-p (path)
+  (string= (path-last-element path) "."))
+
 (defun collect-files/dirs (root)
   (let ((all-files '())
         (all-dirs  '()))
@@ -142,8 +154,8 @@
                         (files        (remove-if #'directory-exists-p all-children))
                         (directories  (remove-if (lambda (a)
                                                    (or (file-exists-p a)
-                                                       (string= (path-last-element a) ".")
-                                                       (string= (path-last-element a) "..")))
+                                                       (backreference-dir-p a)
+                                                       (loopback-reference-dir-p a)))
                                                  all-children)))
                    (setf all-files (append all-files files))
                    (setf all-dirs  (append all-dirs directories))

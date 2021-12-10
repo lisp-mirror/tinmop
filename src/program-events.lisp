@@ -1637,6 +1637,11 @@
     (assert (functionp payload))
     (funcall payload)))
 
+(defmacro with-enqueued-process ((&optional (priority +standard-event-priority+)) &body body)
+  `(push-event (make-instance 'function-event
+                              :payload  (lambda () ,@body)
+                              :priority ,priority)))
+
 ;;;; end events
 
 (defun dispatch-program-events ()

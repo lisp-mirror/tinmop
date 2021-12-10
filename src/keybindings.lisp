@@ -273,6 +273,9 @@ produces a tree and graft the latter on `existing-tree'"
 (defparameter *gempub-library-keymap* (make-starting-comand-tree)
   "The keymap for gempub library of publication.")
 
+(defparameter *filesystem-explorer-keymap* (make-starting-comand-tree)
+  "The keymap for gempub library of publication.")
+
 (defparameter *all-keymaps* '(*global-keymap*
                               *thread-keymap*
                               *message-keymap*
@@ -290,7 +293,8 @@ produces a tree and graft the latter on `existing-tree'"
                               *chat-message-keymap*
                               *gemlog-subscription-keymap*
                               *gemini-toc-keymap*
-                              *gempub-library-keymap*))
+                              *gempub-library-keymap*
+                              *filesystem-explorer-keymap*))
 
 (defun define-key (key-sequence function &optional (existing-keymap *global-keymap*))
   "Define a key sequence that trigger a function:
