@@ -288,6 +288,9 @@
 (defun delete-file-if-exists (f)
   (uiop:delete-file-if-exists f))
 
+(defun delete-directory-if-empty (d)
+  (uiop:delete-empty-directory d))
+
 (defun file-length-if-exists (f)
   (when (file-exists-p f)
     (with-open-file (stream f :element-type '(unsigned-byte 8))
@@ -354,18 +357,23 @@
       (push directory-path *temporary-directories-created*)
       directory-path)))
 
+(defun recursive-delete (path)
+  (if (regular-file-p path)
+      (delete-file-if-exists path)
+      (let ((children (collect-children path)))
+        (dolist (file-or-dir children)
+          (cond
+            ((file-exists-p file-or-dir)
+             (delete-file-if-exists file-or-dir))
+            ((and (directory-exists-p file-or-dir)
+                  (not (or (loopback-reference-dir-p file-or-dir)
+                           (backreference-dir-p      file-or-dir))))
+             (recursive-delete file-or-dir))))
+        (delete-directory-if-empty path))))
+
 (defun clean-temporary-directories ()
   (dolist (temporary-directory *temporary-directories-created*)
-    (labels ((recursive-delete (dir)
-               (let ((children (collect-children dir)))
-                 (dolist (file-or-dir children)
-                   (cond
-                     ((file-exists-p file-or-dir)
-                      (delete-file-if-exists file-or-dir))
-                     ((and (directory-exists-p file-or-dir)
-                           (not (cl-ppcre:scan "\\.$" file-or-dir)))
-                      (recursive-delete file-or-dir)))))))
-      (recursive-delete temporary-directory))))
+    (recursive-delete temporary-directory)))
 
 (defun has-file-permission-p (file permission)
   (find permission (osicat:file-permissions file) :test #'eq))

@@ -50,6 +50,10 @@
   (filesystem-rename-function
     :initform  #'rename-local-filesystem-node
     :accessor  filesystem-rename-function
+    :type      function)
+    (filesystem-delete-function
+    :initform  #'delete-local-filesystem-node
+    :accessor  filesystem-delete-function
     :type      function))
   (:documentation "A window that shows and allow intercating with a hierarchical filesystem"))
 
@@ -116,6 +120,11 @@
   (let ((path (tree-path (data matching-node))))
     (assert path)
     (fs:rename-a-file path new-path)))
+
+(defun delete-local-filesystem-node (matching-node)
+  (let ((path (tree-path (data matching-node))))
+    (assert path)
+    (fs:recursive-delete path)))
 
 (defun %expand-treenode (root path-to-expand expand-fn)
   (when-let ((matching-node (first (mtree:find-child-if root
@@ -248,6 +257,18 @@
     (expand-treenode window (tree-path (data parent-node)))
     (win-clear window :redraw nil)
     (resync-rows-db window :redraw t :selected-path new-path)))
+
+(defun delete-treenode (window path)
+  (when-let* ((root-node     (filesystem-root window))
+              (matching-node (find-node root-node path))
+              (parent-node   (find-node root-node
+                                        (fs:parent-dir-path (tree-path (data matching-node))))))
+    (funcall (filesystem-delete-function window)
+             matching-node)
+    (remove-all-children parent-node)
+    (expand-treenode window (tree-path (data parent-node)))
+    (win-clear window :redraw nil)
+    (resync-rows-db window :redraw t :selected-path path)))
 
 (defmethod draw :after ((object filesystem-tree-window))
   (when-window-shown (object)

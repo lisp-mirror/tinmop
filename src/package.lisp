@@ -313,6 +313,7 @@
    :clean-temporary-files
    :*temporary-directories-created*
    :temporary-directory
+   :recursive-delete
    :clean-temporary-directories
    :with-anaphoric-temp-file
    :temp-file
@@ -2027,6 +2028,7 @@
    :close-treenode
    :expand-treenode
    :rename-treenode
+   :delete-treenode
    :resync-rows-db
    :init))
 
@@ -2784,6 +2786,7 @@
    :file-explorer-expand
    :file-explorer-close
    :file-explorer-rename
+   :file-explorer-delete-path
    :file-explorer-go-down
    :file-explorer-go-up))
 

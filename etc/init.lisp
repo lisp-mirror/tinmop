@@ -596,15 +596,17 @@
 
 ;; file explorer
 
-(define-key "x"         #'file-explorer-expand   *filesystem-explorer-keymap*)
+(define-key "x"         #'file-explorer-expand      *filesystem-explorer-keymap*)
 
-(define-key "c"         #'file-explorer-close    *filesystem-explorer-keymap*)
+(define-key "c"         #'file-explorer-close       *filesystem-explorer-keymap*)
 
-(define-key "m"         #'file-explorer-rename   *filesystem-explorer-keymap*)
+(define-key "m"         #'file-explorer-rename      *filesystem-explorer-keymap*)
 
-(define-key "up"        #'file-explorer-go-up    *filesystem-explorer-keymap*)
+(define-key "d"         #'file-explorer-delete-path *filesystem-explorer-keymap*)
 
-(define-key "down"      #'file-explorer-go-down  *filesystem-explorer-keymap*)
+(define-key "up"        #'file-explorer-go-up       *filesystem-explorer-keymap*)
+
+(define-key "down"      #'file-explorer-go-down     *filesystem-explorer-keymap*)
 
 ;;;; hooks
 

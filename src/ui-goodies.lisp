@@ -2434,6 +2434,19 @@ printed, on the main window."
               (dirp   (fstree:tree-dir-p fields)))
     (fstree:close-treenode win path)))
 
+(defun file-explorer-delete-path ()
+  (when-let* ((win    *filesystem-explorer-window*)
+              (fields (line-oriented-window:selected-row-fields win))
+              (path   (fstree:tree-path  fields)))
+    (flet ((on-input-complete (maybe-accepted)
+             (with-valid-yes-at-prompt (maybe-accepted y-pressed-p)
+               (when y-pressed-p
+                 (with-enqueued-process ()
+                   (fstree:delete-treenode win path))))))
+      (ask-string-input #'on-input-complete
+                        :prompt
+                        (format nil (_ "delete ~a? ") path)))))
+
 (defun file-explorer-rename ()
   "Rename (or move) a file or directory"
   (when-let* ((win    *filesystem-explorer-window*)
