@@ -2453,11 +2453,26 @@ printed, on the main window."
               (fields (line-oriented-window:selected-row-fields win))
               (path   (fstree:tree-path  fields)))
     (flet ((on-input-complete (new-path)
-             (with-enqueued-process ()
-               (fstree:rename-treenode win path new-path))))
+             (when (string-not-empty-p new-path)
+               (with-enqueued-process ()
+                 (fstree:rename-treenode win path new-path)))))
       (ask-string-input #'on-input-complete
                         :prompt
                         (format nil (_ "rename ~a to: ") path)))))
+
+(defun file-explorer-create-path ()
+  "create a file or directory"
+  (when-let* ((win    *filesystem-explorer-window*)
+              (fields (line-oriented-window:selected-row-fields win))
+              (path   (fstree:tree-path  fields)))
+    (flet ((on-input-complete (new-path)
+             (when (string-not-empty-p new-path)
+               (with-enqueued-process ()
+                 (let ((dirp (fs:extension-dir-p new-path)))
+                   (fstree:create-treenode win new-path dirp))))))
+      (ask-string-input #'on-input-complete
+                        :prompt        (_ "create: ")
+                        :initial-value path))))
 
 (defun file-explorer-move (amount)
   (ignore-errors

@@ -272,6 +272,7 @@
    :+s-isgid+
    :*directory-sep-regexp*
    :*directory-sep*
+   :create-a-file
    :copy-a-file
    :rename-a-file
    :file-size
@@ -281,6 +282,7 @@
    :cat-parent-dir
    :has-extension
    :get-extension
+   :extension-dir-p
    :strip-extension
    :add-extension
    :do-directory
@@ -2029,6 +2031,7 @@
    :expand-treenode
    :rename-treenode
    :delete-treenode
+   :create-treenode
    :resync-rows-db
    :init))
 
@@ -2787,6 +2790,7 @@
    :file-explorer-close
    :file-explorer-rename
    :file-explorer-delete-path
+   :file-explorer-create-path
    :file-explorer-go-down
    :file-explorer-go-up))
 

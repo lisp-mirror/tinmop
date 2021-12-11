@@ -39,6 +39,9 @@
         out)
       nil))
 
+(defun create-a-file (path)
+  (open path :direction :probe :if-does-not-exist :create))
+
 (defun rename-a-file (old new)
   (nix:rename old new))
 
@@ -93,6 +96,10 @@
 
 (defun has-extension (path ext)
   (let ((re (concatenate 'string ext "$")))
+    (cl-ppcre:scan re path)))
+
+(defun extension-dir-p (path)
+  (let ((re (concatenate 'string *directory-sep-regexp* "$")))
     (cl-ppcre:scan re path)))
 
 (defun strip-extension (file &key (strip-all nil))

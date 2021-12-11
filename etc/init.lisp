@@ -604,9 +604,13 @@
 
 (define-key "d"         #'file-explorer-delete-path *filesystem-explorer-keymap*)
 
+(define-key "a"         #'file-explorer-create-path *filesystem-explorer-keymap*)
+
 (define-key "up"        #'file-explorer-go-up       *filesystem-explorer-keymap*)
 
 (define-key "down"      #'file-explorer-go-down     *filesystem-explorer-keymap*)
+
+
 
 ;;;; hooks
 
