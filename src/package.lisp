@@ -1452,6 +1452,7 @@
    :thread-search-message-body-event
    :search-direction
    :thread-search-message-meta-event
+   :filesystem-tree-search-message-event
    :thread-goto-message
    :delete-all-status-event
    :quit-program-event
@@ -2797,7 +2798,8 @@
    :file-explorer-delete-path
    :file-explorer-create-path
    :file-explorer-go-down
-   :file-explorer-go-up))
+   :file-explorer-go-up
+   :file-explorer-search))
 
 (defpackage :scheduled-events
   (:use

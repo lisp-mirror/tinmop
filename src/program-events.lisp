@@ -494,6 +494,12 @@
         (thread-window:search-next-message-meta     specials:*thread-window* text-looking-for)
         (thread-window:search-previous-message-meta specials:*thread-window* text-looking-for))))
 
+(defclass filesystem-tree-search-message-event (search-event) ())
+
+(defmethod process-event ((object filesystem-tree-search-message-event))
+  (let ((text-looking-for (payload          object)))
+    (line-oriented-window::search-row  specials:*filesystem-explorer-window* text-looking-for)))
+
 (defclass thread-goto-message (program-event) ())
 
 (defmethod process-event ((object thread-goto-message))

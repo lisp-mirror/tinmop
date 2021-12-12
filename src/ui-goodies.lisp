@@ -2535,3 +2535,11 @@ printed, on the main window."
 
 (defun file-explorer-go-up ()
   (file-explorer-move -1))
+
+(defun file-explorer-search ()
+  (flet ((on-input-complete (re)
+           (when (string-not-empty-p re)
+             (push-event (make-instance 'filesystem-tree-search-message-event
+                                        :payload re)))))
+    (ask-string-input #'on-input-complete
+                      :prompt (_ "search for: "))))

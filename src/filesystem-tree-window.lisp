@@ -356,6 +356,23 @@
     (win-clear window :redraw nil)
     (resync-rows-db window :redraw t :selected-path parent-path)))
 
+(defmethod search-row ((object filesystem-tree-window) regex &key (redraw t))
+  (handler-case
+      (with-accessors ((row-selected-index row-selected-index)) object
+        (when-let* ((scanner         (create-scanner regex :case-insensitive-mode nil))
+                    (position-header (rows-position-if object
+                                                       (lambda (a)
+                                                         (scan scanner (tree-path (fields a))))
+                                                       :start (1+ row-selected-index))))
+          (resync-rows-db object :redraw nil)
+          (unselect-all object)
+          (select-row object position-header)
+          (when redraw
+            (win-clear object :redraw nil)
+            (draw object))))
+    (error ()
+      (ui:error-message (_ "Invalid regular expression")))))
+
 (defmethod draw :after ((object filesystem-tree-window))
   (when-window-shown (object)
     (let* ((window-width  (usable-window-width object))
