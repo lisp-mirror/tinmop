@@ -2478,6 +2478,37 @@ printed, on the main window."
                         :prompt        (format nil (_ "download ~a to: ") path)
                         :initial-value output-file))))
 
+(defun file-explorer-upload-path ()
+  "Upload a file"
+  (when-let* ((win              *filesystem-explorer-window*)
+              (fields           (line-oriented-window:selected-row-fields win))
+              (destination-file (fstree:tree-path  fields)))
+    (labels ((build-actual-destination-file (source destination)
+               (if (fs:extension-dir-p destination)
+                   (fs:cat-parent-dir destination
+                                      (fs:path-last-element source))
+                   destination))
+             (on-input-complete (source-file)
+               (cond
+                 ((fs:dirp source-file)
+                  (error-message (format nil "~a is a directory" source-file)))
+                 ((not (fs:file-exists-p source-file))
+                  (error-message (format nil "~a does not exists" source-file)))
+                 (t
+                  (when (and (string-not-empty-p source-file)
+                             (not (fs:dirp destination-file)))
+                    (with-enqueued-process ()
+                      (with-blocking-notify-procedure
+                          ((format nil (_ "Staring upload of ~a") source-file)
+                           (format nil (_ "Upload completed in ~a") destination-file))
+                        (fstree:download-treenode win source-file
+                                                  (build-actual-destination-file source-file
+                                                                                 destination-file))
+                        (info-message destination-file))))))))
+      (ask-string-input #'on-input-complete
+                        :prompt        (_ "upload: ")
+                        :complete-fn #'complete:directory-complete))))
+
 (defun file-explorer-create-path ()
   "create a file or directory"
   (when-let* ((win    *filesystem-explorer-window*)

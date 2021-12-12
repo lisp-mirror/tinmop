@@ -608,6 +608,8 @@
 
 (define-key "d"         #'file-explorer-download-path *filesystem-explorer-keymap*)
 
+(define-key "u"         #'file-explorer-upload-path   *filesystem-explorer-keymap*)
+
 (define-key "up"        #'file-explorer-go-up         *filesystem-explorer-keymap*)
 
 (define-key "down"      #'file-explorer-go-down       *filesystem-explorer-keymap*)

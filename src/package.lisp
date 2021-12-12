@@ -2033,6 +2033,7 @@
    :delete-treenode
    :create-treenode
    :download-treenode
+   :upload-treenode
    :resync-rows-db
    :init))
 
@@ -2791,6 +2792,8 @@
    :file-explorer-close-path
    :file-explorer-rename-path
    :file-explorer-download-path
+   :file-explorer-upload-path
+   :file-explorer-upload-path
    :file-explorer-delete-path
    :file-explorer-create-path
    :file-explorer-go-down

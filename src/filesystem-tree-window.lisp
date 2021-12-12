@@ -62,8 +62,12 @@
    (filesystem-download-function
     :initform  #'download-local-filesystem-node
     :accessor  filesystem-download-function
+    :type      function)
+   (filesystem-upload-function
+    :initform  #'upload-local-filesystem-node
+    :accessor  filesystem-upload-function
     :type      function))
-  (:documentation "A window that shows and allow intercating with a hierarchical filesystem"))
+  (:documentation "A window that shows and allow interacting with a hierarchical filesystem"))
 
 (defmethod refresh-config :after ((object filesystem-tree-window))
   (with-croatoan-window (croatoan-window object)
@@ -87,9 +91,7 @@
 
 (gen-tree-data-fetcher dir-p :dirp)
 
-(gen-tree-data-fetcher rename-to :rename-to)
-
-(gen-tree-data-fetcher delete :delete)
+(gen-tree-data-fetcher marked-p :markedp)
 
 (defun build-data-for-print (data)
   (tree-path data))
@@ -163,6 +165,25 @@
                  (when (< read-so-far +download-buffer+)
                    (return-from write-loop t))))))
   destination-file)
+
+(defun upload-local-filesystem-node (source-path matching-node)
+  (with-open-file (input-stream source-path
+                                :direction    :input
+                                :element-type +octect-type+)
+    (with-open-file (output-stream (tree-path (data matching-node))
+                                   :direction         :output
+                                   :if-exists         :error
+                                   :if-does-not-exist :create
+                                   :element-type      +octect-type+)
+      (let* ((buffer (misc:make-array-frame +download-buffer+ 0 '(unsigned-byte 8) t)))
+        (loop named write-loop
+              for read-so-far = (read-sequence buffer input-stream)
+                then (read-sequence buffer input-stream)
+              do
+                 (write-sequence buffer output-stream :start 0 :end read-so-far)
+                 (when (< read-so-far +download-buffer+)
+                   (return-from write-loop t))))))
+  (tree-path (data matching-node)))
 
 (defun %expand-treenode (root path-to-expand expand-fn)
   (when-let ((matching-node (first (mtree:find-child-if root
@@ -322,6 +343,18 @@
   (when-let* ((root-node     (filesystem-root window))
               (matching-node (find-node root-node remote-path)))
     (funcall (filesystem-download-function window) matching-node destination-file)))
+
+(defun upload-treenode (window source-file remote-path)
+  (when-let* ((root-node     (filesystem-root window))
+              (matching-node (find-node root-node remote-path))
+              (filep         (not (tree-dir-p (data matching-node))))
+              (parent-node   (find-node root-node (fs:parent-dir-path remote-path)))
+              (parent-path   (tree-path (data parent-node))))
+    (funcall (filesystem-download-function window) source-file matching-node)
+    (remove-all-children parent-node)
+    (expand-treenode window parent-path)
+    (win-clear window :redraw nil)
+    (resync-rows-db window :redraw t :selected-path parent-path)))
 
 (defmethod draw :after ((object filesystem-tree-window))
   (when-window-shown (object)
