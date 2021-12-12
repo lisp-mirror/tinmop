@@ -2787,9 +2787,9 @@
    :load-script-file
    :view-user-avatar
    :open-file-explorer
-   :file-explorer-expand
-   :file-explorer-close
-   :file-explorer-rename
+   :file-explorer-expand-path
+   :file-explorer-close-path
+   :file-explorer-rename-path
    :file-explorer-download-path
    :file-explorer-delete-path
    :file-explorer-create-path

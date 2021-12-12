@@ -596,11 +596,11 @@
 
 ;; file explorer
 
-(define-key "x"         #'file-explorer-expand        *filesystem-explorer-keymap*)
+(define-key "x"         #'file-explorer-expand-path   *filesystem-explorer-keymap*)
 
-(define-key "c"         #'file-explorer-close         *filesystem-explorer-keymap*)
+(define-key "c"         #'file-explorer-close-path    *filesystem-explorer-keymap*)
 
-(define-key "m"         #'file-explorer-rename        *filesystem-explorer-keymap*)
+(define-key "m"         #'file-explorer-rename-path   *filesystem-explorer-keymap*)
 
 (define-key "D"         #'file-explorer-delete-path   *filesystem-explorer-keymap*)
 

@@ -2420,14 +2420,14 @@ printed, on the main window."
                                         (filesystem-tree-window:init "/")
                                         (focus-to-filesystem-explorer-window)))))
 
-(defun file-explorer-expand ()
+(defun file-explorer-expand-path ()
   (when-let* ((win    *filesystem-explorer-window*)
               (fields (line-oriented-window:selected-row-fields win))
               (path   (fstree:tree-path  fields))
               (dirp   (fstree:tree-dir-p fields)))
     (fstree:expand-treenode win path)))
 
-(defun file-explorer-close ()
+(defun file-explorer-close-path ()
   (when-let* ((win    *filesystem-explorer-window*)
               (fields (line-oriented-window:selected-row-fields win))
               (path   (fstree:tree-path  fields))
@@ -2447,7 +2447,7 @@ printed, on the main window."
                         :prompt
                         (format nil (_ "delete ~a? ") path)))))
 
-(defun file-explorer-rename ()
+(defun file-explorer-rename-path ()
   "Rename (or move) a file or directory"
   (when-let* ((win    *filesystem-explorer-window*)
               (fields (line-oriented-window:selected-row-fields win))
