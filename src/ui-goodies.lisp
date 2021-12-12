@@ -2460,6 +2460,24 @@ printed, on the main window."
                         :prompt
                         (format nil (_ "rename ~a to: ") path)))))
 
+(defun file-explorer-download-path ()
+  "Download a file"
+  (when-let* ((win         *filesystem-explorer-window*)
+              (fields      (line-oriented-window:selected-row-fields win))
+              (path        (fstree:tree-path  fields))
+              (output-file (fs:temporary-file)))
+    (flet ((on-input-complete (destination-file)
+             (when (string-not-empty-p destination-file)
+               (with-enqueued-process ()
+                 (with-blocking-notify-procedure
+                     ((format nil (_ "Staring download of ~a") path)
+                      (format nil (_ "Download completed in ~a") destination-file))
+                   (fstree:download-treenode win path destination-file)
+                   (info-message destination-file))))))
+      (ask-string-input #'on-input-complete
+                        :prompt        (format nil (_ "download ~a to: ") path)
+                        :initial-value output-file))))
+
 (defun file-explorer-create-path ()
   "create a file or directory"
   (when-let* ((win    *filesystem-explorer-window*)

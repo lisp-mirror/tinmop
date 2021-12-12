@@ -58,6 +58,10 @@
    (filesystem-create-function
     :initform  #'create-local-filesystem-node
     :accessor  filesystem-create-function
+    :type      function)
+   (filesystem-download-function
+    :initform  #'download-local-filesystem-node
+    :accessor  filesystem-download-function
     :type      function))
   (:documentation "A window that shows and allow intercating with a hierarchical filesystem"))
 
@@ -135,6 +139,30 @@
   (let ((path (tree-path (data matching-node))))
     (assert path)
     (fs:recursive-delete path)))
+
+(define-constant +download-buffer+ (expt 2 24)         :test #'=)
+
+(define-constant +octect-type+     '(unsigned-byte 8) :test #'equalp)
+
+(defun download-local-filesystem-node (matching-node
+                                       &optional (destination-file (fs:temporary-file)))
+  (with-open-file (input-stream (tree-path (data matching-node))
+                                :direction    :input
+                                :element-type +octect-type+)
+    (with-open-file (output-stream destination-file
+                                   :direction         :output
+                                   :if-exists         :supersede
+                                   :if-does-not-exist :create
+                                   :element-type      +octect-type+)
+      (let* ((buffer (misc:make-array-frame +download-buffer+ 0 '(unsigned-byte 8) t)))
+        (loop named write-loop
+              for read-so-far = (read-sequence buffer input-stream)
+                then (read-sequence buffer input-stream)
+              do
+                 (write-sequence buffer output-stream :start 0 :end read-so-far)
+                 (when (< read-so-far +download-buffer+)
+                   (return-from write-loop t))))))
+  destination-file)
 
 (defun %expand-treenode (root path-to-expand expand-fn)
   (when-let ((matching-node (first (mtree:find-child-if root
@@ -288,6 +316,12 @@
     (expand-treenode window (tree-path (data parent-node)))
     (win-clear window :redraw nil)
     (resync-rows-db window :redraw t :selected-path path)))
+
+(defun download-treenode (window remote-path
+                          &optional (destination-file (fs:temporary-file)))
+  (when-let* ((root-node     (filesystem-root window))
+              (matching-node (find-node root-node remote-path)))
+    (funcall (filesystem-download-function window) matching-node destination-file)))
 
 (defmethod draw :after ((object filesystem-tree-window))
   (when-window-shown (object)
