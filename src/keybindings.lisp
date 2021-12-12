@@ -537,7 +537,8 @@ and `make-blocking-list-dialog-window') showing the full docstring for a command
                            (*chat-message-keymap*        . (_ "Chat window keymap"))
                            (*gemlog-subscription-keymap* . (_ "Gemlog subscription window keymap"))
                            (*gemini-toc-keymap*          . (_ "Gemini page TOC keymap"))
-                           (*gempub-library-keymap*      . (_ "Gempub library window keymap"))))
+                           (*gempub-library-keymap*      . (_ "Gempub library window keymap"))
+                           (*filesystem-explorer-keymap* . (_ "Filesystem explorer"))))
 
 
 (defun print-help (main-window &key (regex ".*") (global-search nil))
