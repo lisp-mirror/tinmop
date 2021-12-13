@@ -331,7 +331,8 @@
    :pathname->namestring
    :namestring->pathname
    :read-single-form
-   :eq-filename))
+   :eq-filename
+   :octects->units))
 
 (defpackage :os-utils
   (:use
@@ -2035,6 +2036,7 @@
    :create-treenode
    :download-treenode
    :upload-treenode
+   :filesystem-query-treenode
    :resync-rows-db
    :init))
 

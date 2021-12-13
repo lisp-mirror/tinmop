@@ -66,7 +66,14 @@
    (filesystem-upload-function
     :initform  #'upload-local-filesystem-node
     :accessor  filesystem-upload-function
-    :type      function))
+    :type      function)
+   (filesystem-query-path-function
+    :initform  #'query-local-filesystem-path
+    :accessor  filesystem-query-path-function
+    :type      function
+    :documentation "function with two parameter the path and a feature to query
+Valid feature vaule are :size.
+Returns nil if Returns nil if the path does not point to an actual file."))
   (:documentation "A window that shows and allow interacting with a hierarchical filesystem"))
 
 (defmethod refresh-config :after ((object filesystem-tree-window))
@@ -104,6 +111,14 @@
   (tui-string-apply-colors (treenode->text data window)
                            (bgcolor window)
                            (fgcolor window)))
+
+(defun query-local-filesystem-path (path what)
+  (case what
+    (:size
+     (and (fs:file-exists-p path)
+          (fs:file-size     path)))
+    (otherwise
+     nil)))
 
 (defun expand-local-filesystem-node (matching-node)
   (let ((path (tree-path (data matching-node))))
@@ -355,6 +370,23 @@
     (expand-treenode window parent-path)
     (win-clear window :redraw nil)
     (resync-rows-db window :redraw t :selected-path parent-path)))
+
+(defun filesystem-query-treenode (window path what)
+  (assert (member what '(:size)))
+  (when-let* ((root-node     (filesystem-root window))
+              (matching-node (find-node root-node path))
+              (filep         (not (tree-dir-p (data matching-node))))
+              (octects       (funcall (filesystem-query-path-function window)
+                                      (tree-path (data matching-node))
+                                      what)))
+    (flet ((to-string (octects-data units)
+             (multiple-value-bind (size unit-measurement)
+                 (fs:octects->units octects-data units)
+               (format nil "~,2f~a" size unit-measurement))))
+      (values octects
+              (to-string octects :kib)
+              (to-string octects :mib)
+              (to-string octects :gib)))))
 
 (defmethod search-row ((object filesystem-tree-window) regex &key (redraw t))
   (handler-case

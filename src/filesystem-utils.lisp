@@ -477,3 +477,15 @@
   (flet ((strip (a) (strip-dirs-from-path (pathname->namestring a))))
     (string= (strip a)
              (strip b))))
+
+(define-constant +file-size-units+ '("KiB" "MiB" "GiB") :test #'equalp)
+
+(defun octects->units (octects units)
+  (let* ((exponent (case units
+                     (:kib 1)
+                     (:mib 2)
+                     (:gib 3)
+                     (otherwise 1)))
+         (scaled (/ octects (expt 1024 exponent))))
+      (values scaled
+              (elt +file-size-units+ (1- exponent)))))
