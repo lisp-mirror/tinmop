@@ -425,6 +425,9 @@ latter has a length equals to `total-size'"))
         (setf (bgcolor char) bgcolor)))
     results))
 
+(defun copy-tui-string (text)
+  (croatoan::copy-complex-string text))
+
 (defgeneric apply-attributes (object index attributes))
 
 (defmethod apply-attributes ((object complex-string) (index fixnum) attributes)

@@ -2543,3 +2543,12 @@ printed, on the main window."
                                         :payload re)))))
     (ask-string-input #'on-input-complete
                       :prompt (_ "search for: "))))
+
+(defun file-explorer-mark-entry ()
+  (when-let* ((win    *filesystem-explorer-window*)
+              (fields (line-oriented-window:selected-row-fields win))
+              (path   (fstree:tree-path  fields)))
+    (with-enqueued-process ()
+      (fstree:mark-node win path)
+      (windows:win-clear win)
+      (windows:draw win))))

@@ -21,11 +21,11 @@
     ((or (fs:backreference-dir-p  path)
          (fs:loopback-reference-dir-p path)
          (not dirp))
-     (list :path path :dirp dirp))
+     (list :path path :dirp dirp :markedp nil))
     (dirp
      (if (scan "/$" path)
-         (list :path path :dirp t)
-         (list :path (strcat path "/") :dirp t)))))
+         (list :path path :dirp t :markedp nil)
+         (list :path (strcat path "/") :dirp t :markedp nil)))))
 
 (defun make-root-tree (&optional (path "/"))
   (mtree:make-node (make-node-data path t)))
@@ -88,11 +88,13 @@ Returns nil if Returns nil if the path does not point to an actual file."))
 (defmethod calculate :after ((object filesystem-tree-window) dt)
   (declare (ignore object dt)))
 
-(defmethod draw :after ((object filesystem-tree-window)))
-
 (defmacro gen-tree-data-fetcher (name key)
-  `(defun ,(misc:format-fn-symbol t "tree-~a" name) (data)
-     (getf data ,key)))
+  (let ((fn-name (misc:format-fn-symbol t "tree-~a" name)))
+    `(progn
+       (defun ,fn-name (data)
+         (getf data ,key))
+       (defsetf ,fn-name (data) (val)
+         `(setf (getf ,data ,,key) ,val)))))
 
 (gen-tree-data-fetcher path :path)
 
@@ -206,10 +208,6 @@ Returns nil if Returns nil if the path does not point to an actual file."))
                                                           (string= (tree-path (data a))
                                                                    path-to-expand))))))
     (funcall expand-fn matching-node)))
-
-(defmethod draw :around ((object filesystem-tree-window))
-  (when-window-shown (object)
-    (call-next-method)))
 
 (defun %build-annotated-tree-rows (window root-node)
   (with-accessors ((render-arrow-value         render-arrow-value)
@@ -419,11 +417,29 @@ Returns nil if Returns nil if the path does not point to an actual file."))
         for y from y-start by 1
         for ct from 0
         for row in rows do
-          (if (selectedp row)
-              (print-text object (text-ellipsis (selected-text row) window-width)
-                          x y)
-              (print-text object (text-ellipsis (normal-text row) window-width)
-                          x y))))))
+          (cond
+            ((selectedp row)
+             (let ((text (tui:copy-tui-string (selected-text row))))
+               (print-text object (text-ellipsis text window-width) x y)))
+            ((tree-marked-p (fields row))
+             (let ((text (tui:copy-tui-string (normal-text row))))
+               (print-text object
+                           (tui:apply-attributes (text-ellipsis text window-width)
+                                                 :all
+                                                 (tui:combine-attributes (tui:attribute-reverse)
+                                                                         (tui:attribute-bold)))
+                           x y)))
+            (t
+             (let ((text (tui:copy-tui-string (normal-text row))))
+               (print-text object (text-ellipsis text window-width) x y))))))))
+
+(defun mark-node (window path &key (toggle t))
+  (when-let* ((root-node     (filesystem-root window))
+              (matching-node (find-node root-node path)))
+    (if toggle
+        (setf (tree-marked-p (data matching-node))
+              (not (tree-marked-p (data matching-node))))
+        (setf (tree-marked-p (data matching-node)) t))))
 
 (defun init (root)
   "Initialize the window"

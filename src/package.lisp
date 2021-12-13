@@ -1324,6 +1324,7 @@
    :make-tui-char
    :make-tui-string
    :tui-string-apply-colors
+   :copy-tui-string
    :apply-attributes))
 
 (defpackage :command-line
@@ -2037,6 +2038,7 @@
    :download-treenode
    :upload-treenode
    :filesystem-query-treenode
+   :mark-node
    :resync-rows-db
    :init))
 
@@ -2801,7 +2803,8 @@
    :file-explorer-create-path
    :file-explorer-go-down
    :file-explorer-go-up
-   :file-explorer-search))
+   :file-explorer-search
+   :file-explorer-mark-entry))
 
 (defpackage :scheduled-events
   (:use

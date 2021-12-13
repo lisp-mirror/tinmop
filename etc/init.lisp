@@ -614,6 +614,8 @@
 
 (define-key "N"         #'repeat-search               *filesystem-explorer-keymap*)
 
+(define-key "m"         #'file-explorer-mark-entry   *filesystem-explorer-keymap*)
+
 (define-key "up"        #'file-explorer-go-up         *filesystem-explorer-keymap*)
 
 (define-key "down"      #'file-explorer-go-down       *filesystem-explorer-keymap*)
