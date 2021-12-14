@@ -2550,5 +2550,39 @@ printed, on the main window."
               (path   (fstree:tree-path  fields)))
     (with-enqueued-process ()
       (fstree:mark-node win path)
-      (windows:win-clear win)
-      (windows:draw win))))
+      (file-explorer-go-down))))
+
+(defun file-explorer-delete-tree ()
+    (when-let* ((win    *filesystem-explorer-window*)
+              (fields (line-oriented-window:selected-row-fields win))
+              (path   (fstree:tree-path  fields)))
+    (flet ((on-input-complete (maybe-accepted)
+             (with-valid-yes-at-prompt (maybe-accepted y-pressed-p)
+               (when y-pressed-p
+                 (with-enqueued-process ()
+                   (fstree:recursive-delete-node win path)
+                   (fstree:resync-rows-db win
+                                          :selected-path (fs:parent-dir-path path)
+                                          :redraw nil)
+                   (windows:win-clear win)
+                   (windows:draw win))))))
+      (ask-string-input #'on-input-complete
+                        :prompt
+                        (format nil (_ "delete ~a? ") path)))))
+
+(defun file-explorer-delete-marked ()
+  (when-let* ((win    *filesystem-explorer-window*))
+    (flet ((on-input-complete (maybe-accepted)
+             (with-valid-yes-at-prompt (maybe-accepted y-pressed-p)
+               (when y-pressed-p
+                 (line-oriented-window:loop-rows
+                     (win row
+                          when (fstree:tree-marked-p (line-oriented-window:fields row)) do)
+                   (let ((path (fstree:tree-path (line-oriented-window:fields row))))
+                     (fstree:recursive-delete-node win path)))
+                 (let ((root (fstree:tree-path (mtree:data (fstree:filesystem-root win)))))
+                 (fstree:resync-rows-db win
+                                        :selected-path root
+                                        :redraw t))))))
+      (ask-string-input #'on-input-complete
+                        :prompt (_ "delete marked items? ")))))

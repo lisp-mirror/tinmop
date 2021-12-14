@@ -203,10 +203,7 @@ Returns nil if Returns nil if the path does not point to an actual file."))
   (tree-path (data matching-node)))
 
 (defun %expand-treenode (root path-to-expand expand-fn)
-  (when-let ((matching-node (first (mtree:find-child-if root
-                                                        (lambda (a)
-                                                          (string= (tree-path (data a))
-                                                                   path-to-expand))))))
+  (when-let ((matching-node (find-node root path-to-expand)))
     (funcall expand-fn matching-node)))
 
 (defun %build-annotated-tree-rows (window root-node)
@@ -368,6 +365,24 @@ Returns nil if Returns nil if the path does not point to an actual file."))
     (expand-treenode window parent-path)
     (win-clear window :redraw nil)
     (resync-rows-db window :redraw t :selected-path parent-path)))
+
+(defun recursive-delete-node (window path)
+  (with-accessors ((root-node                  filesystem-root)
+                   (filesystem-expand-function filesystem-expand-function)) window
+    (let* ((matching-node (find-node root-node path))
+           (filep         (not (tree-dir-p (data matching-node)))))
+      (if filep
+          (delete-treenode window path)
+          (when (not (or (fs:loopback-reference-dir-p path)
+                         (fs:backreference-dir-p      path)))
+            (%expand-treenode root-node
+                              (tree-path (data matching-node))
+                              filesystem-expand-function)
+            (setf matching-node (find-node root-node path))
+            (do-children (child matching-node)
+              (let ((path-to-recurse (tree-path (data child))))
+                (recursive-delete-node window path-to-recurse)))
+            (delete-treenode window path))))))
 
 (defun filesystem-query-treenode (window path what)
   (assert (member what '(:size)))

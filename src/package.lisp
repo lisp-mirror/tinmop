@@ -2030,6 +2030,7 @@
    :filesystem-root
    :tree-path
    :tree-dir-p
+   :tree-marked-p
    :close-treenode
    :expand-treenode
    :rename-treenode
@@ -2037,6 +2038,7 @@
    :create-treenode
    :download-treenode
    :upload-treenode
+   :recursive-delete-node
    :filesystem-query-treenode
    :mark-node
    :resync-rows-db
@@ -2804,7 +2806,9 @@
    :file-explorer-go-down
    :file-explorer-go-up
    :file-explorer-search
-   :file-explorer-mark-entry))
+   :file-explorer-mark-entry
+   :file-explorer-delete-tree
+   :file-explorer-delete-marked))
 
 (defpackage :scheduled-events
   (:use

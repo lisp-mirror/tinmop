@@ -602,7 +602,9 @@
 
 (define-key "m"         #'file-explorer-rename-path   *filesystem-explorer-keymap*)
 
-(define-key "D"         #'file-explorer-delete-path   *filesystem-explorer-keymap*)
+(define-key "D"         #'file-explorer-delete-tree   *filesystem-explorer-keymap*)
+
+(define-key "X"         #'file-explorer-delete-marked *filesystem-explorer-keymap*)
 
 (define-key "a"         #'file-explorer-create-path   *filesystem-explorer-keymap*)
 
