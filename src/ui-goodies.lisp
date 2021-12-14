@@ -2445,7 +2445,7 @@ printed, on the main window."
                    (fstree:delete-treenode win path))))))
       (ask-string-input #'on-input-complete
                         :prompt
-                        (format nil (_ "delete ~a? ") path)))))
+                        (format nil (_ "Delete ~a? ") path)))))
 
 (defun file-explorer-rename-path ()
   "Rename (or move) a file or directory"
@@ -2458,7 +2458,7 @@ printed, on the main window."
                  (fstree:rename-treenode win path new-path)))))
       (ask-string-input #'on-input-complete
                         :prompt
-                        (format nil (_ "rename ~a to: ") path)))))
+                        (format nil (_ "Rename ~a to: ") path)))))
 
 (defun file-explorer-download-path ()
   "Download a file"
@@ -2475,7 +2475,7 @@ printed, on the main window."
                    (fstree:download-treenode win path destination-file)
                    (info-message destination-file))))))
       (ask-string-input #'on-input-complete
-                        :prompt        (format nil (_ "download ~a to: ") path)
+                        :prompt        (format nil (_ "Download ~a to: ") path)
                         :initial-value output-file))))
 
 (defun file-explorer-upload-path ()
@@ -2499,14 +2499,14 @@ printed, on the main window."
                              (not (fs:dirp destination-file)))
                     (with-enqueued-process ()
                       (with-blocking-notify-procedure
-                          ((format nil (_ "Staring upload of ~a") source-file)
+                          ((format nil (_ "Starting upload of ~a") source-file)
                            (format nil (_ "Upload completed in ~a") destination-file))
                         (fstree:download-treenode win source-file
                                                   (build-actual-destination-file source-file
                                                                                  destination-file))
                         (info-message destination-file))))))))
       (ask-string-input #'on-input-complete
-                        :prompt        (_ "upload: ")
+                        :prompt        (_ "Upload: ")
                         :complete-fn #'complete:directory-complete))))
 
 (defun file-explorer-create-path ()
@@ -2520,7 +2520,7 @@ printed, on the main window."
                  (let ((dirp (fs:extension-dir-p new-path)))
                    (fstree:create-treenode win new-path dirp))))))
       (ask-string-input #'on-input-complete
-                        :prompt        (_ "create: ")
+                        :prompt        (_ "Create: ")
                         :initial-value path))))
 
 (defun file-explorer-move (amount)
@@ -2542,7 +2542,7 @@ printed, on the main window."
              (push-event (make-instance 'filesystem-tree-search-message-event
                                         :payload re)))))
     (ask-string-input #'on-input-complete
-                      :prompt (_ "search for: "))))
+                      :prompt (_ "Search for: "))))
 
 (defun file-explorer-mark-entry ()
   (when-let* ((win    *filesystem-explorer-window*)
@@ -2568,7 +2568,7 @@ printed, on the main window."
                    (windows:draw win))))))
       (ask-string-input #'on-input-complete
                         :prompt
-                        (format nil (_ "delete ~a? ") path)))))
+                        (format nil (_ "Delete ~a? ") path)))))
 
 (defun file-explorer-delete-marked ()
   (when-let* ((win    *filesystem-explorer-window*))
@@ -2585,4 +2585,4 @@ printed, on the main window."
                                         :selected-path root
                                         :redraw t))))))
       (ask-string-input #'on-input-complete
-                        :prompt (_ "delete marked items? ")))))
+                        :prompt (_ "Delete marked items? ")))))
