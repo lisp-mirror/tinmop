@@ -1,12 +1,121 @@
-021-12-03 cage
+2021-12-14 cage
 
-        * Makefile.am,
-        * README.org,
-        * README.txt:
+	* etc/init.lisp,
+	* po/it.po,
+	* po/tinmop.pot,
+	* src/filesystem-tree-window.lisp,
+	* src/package.lisp,
+	* src/ui-goodies.lisp:
 
-        - added missing reference to module 'delete-by-regex.lisp' in
-        Makefile.am
-        - updated documentation.
+	- implemented mark and deletion of tree in filesystem window.
+	- updated italian translation.
+
+2021-12-13 cage
+
+	* etc/init.lisp,
+	* src/filesystem-tree-window.lisp,
+	* src/filesystem-utils.lisp,
+	* src/package.lisp,
+	* src/tui-utils.lisp,
+	* src/ui-goodies.lisp:
+
+	- implemented querying file's metadata in filesystem window.
+	- added marking of entries in file explorer window.
+
+2021-12-12 cage
+
+	* etc/init.lisp,
+	* src/filesystem-tree-window.lisp,
+	* src/keybindings.lisp,
+	* src/package.lisp,
+	* src/program-events.lisp,
+	* src/ui-goodies.lisp:
+
+	- implemented downloading file in filesystem window.
+	- renamed a few filesystem-window's related functions.
+	- implemented uploading file in filesystem window.
+	- added a translation header (for printing help) to
+	'*filesystem-explorer-keymap*'.
+	- added search in file explorer window.
+
+2021-12-11 cage
+
+	* etc/init.lisp,
+	* src/filesystem-tree-window.lisp,
+	* src/filesystem-utils.lisp,
+	* src/package.lisp,
+	* src/ui-goodies.lisp:
+
+	- implemented creating paths in filesystem window.
+
+2021-12-10 cage
+
+	* etc/default-theme.conf,
+	* etc/init.lisp,
+	* src/filesystem-tree-window.lisp,
+	* src/filesystem-utils.lisp,
+	* src/keybindings.lisp,
+	* src/line-oriented-window.lisp,
+	* src/package.lisp,
+	* src/program-events.lisp,
+	* src/software-configuration.lisp,
+	* src/specials.lisp,
+	* src/thread-window.lisp,
+	* src/ui-goodies.lisp,
+	* src/windows.lisp,
+	* tinmop.asd:
+
+	- implemented some features of tree filesystem window:
+	expanding/closing nodes and renaming files or directory.
+	- implemented deleting of paths in filesystem window.
+
+2021-12-07 cage
+
+	* src/command-line.lisp,
+	* src/main.lisp,
+	* src/misc-utils.lisp:
+
+	- added download of lisp libraries.
+
+2021-12-05 cage
+
+	* LICENSES.org,
+	* src/command-line.lisp,
+	* src/filesystem-tree-window.lisp,
+	* src/main.lisp,
+	* src/misc-utils.lisp,
+	* src/package.lisp,
+	* tinmop.asd:
+
+	- added -X option;
+	- starting with filesystem explorer window.
+	- added license;
+	- fixed copyright year.
+
+2021-12-04 cage
+
+	* src/iri-parser.lisp,
+	* src/ui-goodies.lisp:
+
+	- [gemini] fixed building of URI in 'open-next-visible-link'.
+
+2021-12-03 cage
+
+	* ChangeLog,
+	* Makefile.am,
+	* Makefile.in,
+	* README.org,
+	* README.txt,
+	* configure,
+	* configure.ac,
+	* tinmop.asd:
+
+	- added missing reference to module 'delete-by-regex.lisp' in
+	Makefile.am
+	- updated documentation.
+	- increased version number;
+	- updated building scripts;
+	- updated ChangeLog.
 
 2021-12-01 cage
 
