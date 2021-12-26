@@ -96,13 +96,15 @@ as argument `complex-string'."
   (length (complex-char-array complex-string)))
 
 (defun decode-key-event (event)
-  (cond
-    ((characterp event)
-     (key-to-string event))
-    ((symbolp event)
-     (symbol-name event))
-    (t
-     (error (_ "Unknown event ~a") event))))
+  (let* ((key           (croatoan:event-key event))
+         (decoded-event (cond
+                          ((characterp key)
+                           (key-to-string key))
+                          ((symbolp key)
+                           (symbol-name key))
+                          (t
+                           (error (_ "Unknown key event ~a") key)))))
+    (values decoded-event key)))
 
 (defun colorize-tree-element (color-map annotated-element)
   "Colormap is an alist like:
