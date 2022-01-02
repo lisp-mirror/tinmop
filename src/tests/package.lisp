@@ -118,3 +118,11 @@
         :text-utils
         :all-tests)
   (:export))
+
+(defpackage :kami-tests
+  (:use :cl
+        :clunit
+        :misc
+        :kami
+        :all-tests)
+  (:export))
