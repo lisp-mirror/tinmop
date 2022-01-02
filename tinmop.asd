@@ -31,6 +31,7 @@
                :sqlite
                :sxql
                :sxql-composer
+               :purgatory
                :marshal
                :bordeaux-threads
                :cl-base64
@@ -86,17 +87,15 @@
                (:file "date-formatter")
                (:file "software-configuration")
                (:file "tui-utils")
-               (:module 9p-client
-                        :components ((:file "package")
-                                     (:file "message-types")
-                                     (:file "conditions")
-                                     (:file "client")))
                (:module gemini
-                        :components ((:file "package")
-                                     (:file "gemini-constants")
-                                     (:file "gemini-parser")
-                                     (:file "client")
-                                     (:file "subscription")))
+                :components ((:file "package")
+                             (:file "gemini-constants")
+                             (:file "gemini-parser")
+                             (:file "client")
+                             (:file "subscription")))
+               (:module kami
+                :components ((:file "package")
+                             (:file "client")))
                (:file "command-line")
                (:file "specials")
                (:file "keybindings")
