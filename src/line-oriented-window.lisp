@@ -527,7 +527,7 @@ will fire the `callback' function (with the selected field from `all-fields'
       (select-row high-level-window 0)
       (draw)
       (loop named inner
-         for c = (get-wide-event low-level-window)
+         for c = (tui:decode-key-event (get-wide-event low-level-window))
          while (string/= c "q")
          do
            (cond
@@ -537,7 +537,7 @@ will fire the `callback' function (with the selected field from `all-fields'
              ((string= c :down)
               (unselect-all high-level-window)
               (row-move high-level-window 1))
-             ((string= c #\Newline)
+             ((string= c "^J")
               (let ((selected-fields (selected-row-fields high-level-window))
                     (selected-text   (selected-text (selected-row high-level-window))))
                 (funcall callback selected-text selected-fields))))
