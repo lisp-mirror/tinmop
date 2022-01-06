@@ -172,8 +172,7 @@
         (cond
           ((swconf:use-editor-as-external-program-p program)
            (croatoan:end-screen)
-           (tui:with-notify-errors
-             (os-utils:open-with-editor resource)))
+           (os-utils:open-with-editor resource))
           ((swconf:use-tinmop-as-external-program-p program)
            (gemini-viewer:load-gemini-url resource
                                           :give-focus-to-message-window

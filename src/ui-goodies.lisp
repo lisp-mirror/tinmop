@@ -1220,7 +1220,7 @@ Browse and optionally open the links the text of the message window contains."
         (focus-to-open-message-link-window))))
 
 (defun open-next-visible-link ()
-  "Open next visible ink in the window"
+  "Open next visible link in the window"
   (when-let* ((visible-rows (message-window:visible-rows *message-window*))
               (link-line    (message-window:row-find-original-object  visible-rows
                                                                       'gemini-parser:link-line))
@@ -1240,8 +1240,8 @@ Browse and optionally open the links the text of the message window contains."
   (when-let* ((win                *message-window*)
               (1+selected-row-pos (1+ (line-oriented-window:row-selected-index win)))
               (link-line-pos      (message-window:row-position-original-object win
-                                                                             'gemini-parser:link-line
-                                                                             :start 1+selected-row-pos)))
+                                                                               'gemini-parser:link-line
+                                                                               :start 1+selected-row-pos)))
     (line-oriented-window:row-move win (- link-line-pos (1- 1+selected-row-pos)))
     (windows:draw win)))
 
@@ -2414,9 +2414,9 @@ printed, on the main window."
               (avatar-url   (db:row-avatar account)))
     (open-attach-window:open-attachment avatar-url)))
 
-(defun open-file-explorer ()
+(defun open-file-explorer (&optional (root "/"))
   (with-enqueued-process ()
-    (filesystem-tree-window:init "/")
+    (filesystem-tree-window:init root)
     (focus-to-filesystem-explorer-window)))
 
 (defun file-explorer-expand-path ()

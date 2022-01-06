@@ -1164,21 +1164,7 @@
                                   :enqueue                   enqueue
                                   :use-cached-file-if-exists use-cached-file-if-exists))
           ((fs:dirp local-path)
-           (let* ((index-path (relative-path->absolute local-path))
-                  (raw-text   (render-directory-as-gemini-text local-path))
-                  (parsed     (gemini-parser:parse-gemini-file raw-text))
-                  (links      (gemini-parser:sexp->links parsed
-                                                         nil
-                                                         nil
-                                                         ""
-                                                         :comes-from-local-file t))
-                  (ir         (gemini-parser:sexp->text-rows parsed
-                                                             gemini-client:*gemini-page-theme*)))
-             (gemini-viewer:bury-download-stream)
-             (gemini-viewer:maybe-initialize-metadata window)
-             (gemini-viewer:push-url-to-history window index-path)
-             (refresh-gemini-message-window links raw-text ir nil)
-             (windows:draw window)))
+           (ui:open-file-explorer local-path))
           ((gempub:gempub-file-p local-path :ignore-errors t)
            (let ((temp-directory (fs:temporary-directory)))
              (os-utils:unzip-file local-path temp-directory)
