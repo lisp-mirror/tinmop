@@ -626,6 +626,8 @@
 
 (define-key "end"       #'file-explorer-scroll-end    *filesystem-explorer-keymap*)
 
+(define-key "q"         #'file-explorer-close-window  *filesystem-explorer-keymap*)
+
 ;;;; hooks
 
 ;; this module  will install an  hook to  rewrite urls; By  default it

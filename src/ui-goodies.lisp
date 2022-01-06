@@ -2415,10 +2415,9 @@ printed, on the main window."
     (open-attach-window:open-attachment avatar-url)))
 
 (defun open-file-explorer ()
-  (push-event (make-instance 'function-event
-                             :payload (lambda ()
-                                        (filesystem-tree-window:init "/")
-                                        (focus-to-filesystem-explorer-window)))))
+  (with-enqueued-process ()
+    (filesystem-tree-window:init "/")
+    (focus-to-filesystem-explorer-window)))
 
 (defun file-explorer-expand-path ()
   (when-let* ((win    *filesystem-explorer-window*)
@@ -2600,3 +2599,6 @@ printed, on the main window."
       (line-oriented-window:select-row win (1- (line-oriented-window:rows-length win)))
       (windows:win-clear win)
       (windows:draw win))))
+
+(defun file-explorer-close-window ()
+  (close-window-and-return-to-message *filesystem-explorer-window*))

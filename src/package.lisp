@@ -2810,7 +2810,8 @@
    :file-explorer-delete-tree
    :file-explorer-delete-marked
    :file-explorer-scroll-begin
-   :file-explorer-scroll-end))
+   :file-explorer-scroll-end
+   :file-explorer-close-window))
 
 (defpackage :scheduled-events
   (:use
