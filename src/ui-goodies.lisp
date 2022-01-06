@@ -2416,8 +2416,9 @@ printed, on the main window."
 
 (defun open-file-explorer (&optional (root "/"))
   (with-enqueued-process ()
-    (filesystem-tree-window:init root)
-    (focus-to-filesystem-explorer-window)))
+    (let ((actual-root (fs:prepend-pwd root)))
+      (filesystem-tree-window:init actual-root)
+      (focus-to-filesystem-explorer-window))))
 
 (defun file-explorer-expand-path ()
   (when-let* ((win    *filesystem-explorer-window*)
