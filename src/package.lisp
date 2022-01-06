@@ -2041,6 +2041,7 @@
    :recursive-delete-node
    :filesystem-query-treenode
    :mark-node
+   :open-node
    :resync-rows-db
    :init))
 
@@ -2811,7 +2812,8 @@
    :file-explorer-delete-marked
    :file-explorer-scroll-begin
    :file-explorer-scroll-end
-   :file-explorer-close-window))
+   :file-explorer-close-window
+   :file-explorer-open-node))
 
 (defpackage :scheduled-events
   (:use

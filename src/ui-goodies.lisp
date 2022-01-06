@@ -2552,7 +2552,7 @@ printed, on the main window."
       (file-explorer-go-down))))
 
 (defun file-explorer-delete-tree ()
-    (when-let* ((win    *filesystem-explorer-window*)
+  (when-let* ((win    *filesystem-explorer-window*)
               (fields (line-oriented-window:selected-row-fields win))
               (path   (fstree:tree-path  fields)))
     (flet ((on-input-complete (maybe-accepted)
@@ -2602,3 +2602,9 @@ printed, on the main window."
 
 (defun file-explorer-close-window ()
   (close-window-and-return-to-message *filesystem-explorer-window*))
+
+(defun file-explorer-open-node ()
+  (when-let* ((win    *filesystem-explorer-window*)
+              (fields (line-oriented-window:selected-row-fields win))
+              (path   (fstree:tree-path  fields)))
+    (fstree:open-node win path)))

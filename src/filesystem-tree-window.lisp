@@ -71,15 +71,19 @@
     :accessor  filesystem-download-function
     :type      function
     :documentation "A  function to download a  remote file, parameters
-    are - node (remote file) - destination-file (local file, note that
-    this   should    be   an    optional   parameter    with   default
-    : (fs:temporary-file).")
+    are:
+
+    - node (remote file)
+    - destination-file (local file, note that
+      this   should    be   an   optional   parameter    with   default:
+      (make-temporary-file-from-node node).
+
+    Must returns the path of the downloaded file.")
    (filesystem-upload-function
     :initform  #'upload-local-filesystem-node
     :accessor  filesystem-upload-function
     :type      function
     :documentation "A  function to upload a  local file, parameters:
-
      - source-path  (local path)
      - matching-node (remote directory).")
    (filesystem-query-path-function
@@ -87,10 +91,10 @@
     :accessor  filesystem-query-path-function
     :type      function
     :documentation "function with two parameter the path and a feature
-to query Valid  feature values are :size.  Returns nil  if Returns nil
-if the path does not point to an actual file."))
+    to query Valid  feature values are :size.  Returns  nil if Returns
+    nil if the path does not point to an actual file."))
   (:documentation "A  window that shows  and allow interacting  with a
-  hierarchical filesystem"))
+   hierarchical filesystem"))
 
 (defmethod refresh-config :after ((object filesystem-tree-window))
   (with-croatoan-window (croatoan-window object)
@@ -179,8 +183,18 @@ if the path does not point to an actual file."))
 
 (define-constant +octect-type+     '(unsigned-byte 8) :test #'equalp)
 
+(defun make-temporary-file-from-path (path)
+  (let ((extension (fs:get-extension path)))
+    (fs:temporary-file :extension extension)))
+
+(defun make-temporary-file-from-node (node)
+  (let ((path (tree-path (data node))))
+    (make-temporary-file-from-path path)))
+
 (defun download-local-filesystem-node (matching-node
-                                       &optional (destination-file (fs:temporary-file)))
+                                       &optional
+                                         (destination-file
+                                          (make-temporary-file-from-node matching-node)))
   (with-open-file (input-stream (tree-path (data matching-node))
                                 :direction    :input
                                 :element-type +octect-type+)
@@ -365,7 +379,8 @@ if the path does not point to an actual file."))
     (resync-rows-db window :redraw t :selected-path path)))
 
 (defun download-treenode (window remote-path
-                          &optional (destination-file (fs:temporary-file)))
+                          &optional
+                            (destination-file (make-temporary-file-from-path remote-path)))
   (when-let* ((root-node     (filesystem-root window))
               (matching-node (find-node root-node remote-path)))
     (funcall (filesystem-download-function window) matching-node destination-file)))
@@ -471,6 +486,16 @@ if the path does not point to an actual file."))
         (setf (tree-marked-p (data matching-node))
               (not (tree-marked-p (data matching-node))))
         (setf (tree-marked-p (data matching-node)) t))))
+
+(defun open-node (window path)
+  (when-let* ((root-node     (filesystem-root window))
+              (matching-node (find-node root-node path))
+              (node-data     (data matching-node))
+              (node-path     (tree-path node-data)))
+    (if (tree-dir-p node-data)
+        (expand-treenode window node-path)
+        (let ((downloaded-path (download-treenode window node-path)))
+          (os-utils:open-resource-with-external-program downloaded-path nil)))))
 
 (defun init (root)
   "Initialize the window"
