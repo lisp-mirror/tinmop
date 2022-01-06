@@ -2604,6 +2604,8 @@ printed, on the main window."
   (close-window-and-return-to-message *filesystem-explorer-window*))
 
 (defun file-explorer-open-node ()
+  "Download in a temporary file and open the eselected file, or expand
+if the selected item represents a directory."
   (when-let* ((win    *filesystem-explorer-window*)
               (fields (line-oriented-window:selected-row-fields win))
               (path   (fstree:tree-path  fields)))
