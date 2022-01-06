@@ -307,7 +307,7 @@
 
 (defun jump-to-parent-node (window path)
   (when (fs:backreference-dir-p path)
-    (let ((parent-path (fs:parent-dir-path (uri:normalize-path path))))
+    (let ((parent-path (uri:normalize-path path)))
       (win-clear window :redraw nil)
       (resync-rows-db window :selected-path parent-path :redraw t))))
 
