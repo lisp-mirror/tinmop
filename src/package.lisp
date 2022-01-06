@@ -1245,6 +1245,7 @@
    :link-regex->program-to-use
    :link-regex->program-to-use-buffer-size
    :use-tinmop-as-external-program-p
+   :use-editor-as-external-program-p
    :thread-message-symbol
    :thread-message-read-colors
    :thread-message-unread-colors

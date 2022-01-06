@@ -169,11 +169,17 @@
 (defun open-resource-with-external-program (resource give-focus-to-message-window)
   (let ((program (swconf:link-regex->program-to-use resource)))
     (if program
-        (if (swconf:use-tinmop-as-external-program-p program)
-            (gemini-viewer:load-gemini-url resource
-                                           :give-focus-to-message-window
-                                           give-focus-to-message-window)
-            (os-utils:open-link-with-program program resource))
+        (cond
+          ((swconf:use-editor-as-external-program-p program)
+           (croatoan:end-screen)
+           (tui:with-notify-errors
+             (os-utils:open-with-editor resource)))
+          ((swconf:use-tinmop-as-external-program-p program)
+           (gemini-viewer:load-gemini-url resource
+                                          :give-focus-to-message-window
+                                          give-focus-to-message-window))
+          (t
+           (os-utils:open-link-with-program program resource)))
         (os-utils:xdg-open resource))))
 
 (defun unzip-file (zip-file destination-dir)
