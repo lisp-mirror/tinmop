@@ -2571,7 +2571,7 @@ printed, on the main window."
                         (format nil (_ "Delete ~a? ") path)))))
 
 (defun file-explorer-delete-marked ()
-  (when-let* ((win    *filesystem-explorer-window*))
+  (when-let* ((win *filesystem-explorer-window*))
     (flet ((on-input-complete (maybe-accepted)
              (with-valid-yes-at-prompt (maybe-accepted y-pressed-p)
                (when y-pressed-p
@@ -2586,3 +2586,17 @@ printed, on the main window."
                                         :redraw t))))))
       (ask-string-input #'on-input-complete
                         :prompt (_ "Delete marked items? ")))))
+
+(defun file-explorer-scroll-begin ()
+  (when-let* ((win *filesystem-explorer-window*))
+    (when (not (line-oriented-window:rows-empty-p win))
+      (line-oriented-window:select-row win 0)
+      (windows:win-clear win)
+      (windows:draw win))))
+
+(defun file-explorer-scroll-end ()
+  (when-let* ((win *filesystem-explorer-window*))
+    (when (not (line-oriented-window:rows-empty-p win))
+      (line-oriented-window:select-row win (1- (line-oriented-window:rows-length win)))
+      (windows:win-clear win)
+      (windows:draw win))))

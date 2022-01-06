@@ -2808,7 +2808,9 @@
    :file-explorer-search
    :file-explorer-mark-entry
    :file-explorer-delete-tree
-   :file-explorer-delete-marked))
+   :file-explorer-delete-marked
+   :file-explorer-scroll-begin
+   :file-explorer-scroll-end))
 
 (defpackage :scheduled-events
   (:use

@@ -46,35 +46,51 @@
    (filesystem-expand-function
     :initform  #'expand-local-filesystem-node
     :accessor  filesystem-expand-function
-    :type      function)
+    :type      function
+    :documentation "A function with the node as parameter. Will modify
+    the argument appending its children")
    (filesystem-rename-function
     :initform  #'rename-local-filesystem-node
     :accessor  filesystem-rename-function
-    :type      function)
+    :type      function
+    :documentation "A function with two parameters: a node and the new
+    name for the path of the matching node")
    (filesystem-delete-function
     :initform  #'delete-local-filesystem-node
     :accessor  filesystem-delete-function
-    :type      function)
+    :type      function
+    :documentation "A function with the node as parameter.")
    (filesystem-create-function
     :initform  #'create-local-filesystem-node
     :accessor  filesystem-create-function
-    :type      function)
+    :type      function
+    :documentation "A function  with two parameter the  path to create
+    and a boolean thah values true if a directory must be created")
    (filesystem-download-function
     :initform  #'download-local-filesystem-node
     :accessor  filesystem-download-function
-    :type      function)
+    :type      function
+    :documentation "A  function to download a  remote file, parameters
+    are - node (remote file) - destination-file (local file, note that
+    this   should    be   an    optional   parameter    with   default
+    : (fs:temporary-file).")
    (filesystem-upload-function
     :initform  #'upload-local-filesystem-node
     :accessor  filesystem-upload-function
-    :type      function)
+    :type      function
+    :documentation "A  function to upload a  local file, parameters:
+
+     - source-path  (local path)
+     - matching-node (remote directory).")
    (filesystem-query-path-function
     :initform  #'query-local-filesystem-path
     :accessor  filesystem-query-path-function
     :type      function
-    :documentation "function with two parameter the path and a feature to query
-Valid feature vaule are :size.
-Returns nil if Returns nil if the path does not point to an actual file."))
-  (:documentation "A window that shows and allow interacting with a hierarchical filesystem"))
+    :documentation "function with two parameter the path and a feature
+to query Valid  feature values are :size.  Returns nil  if Returns nil
+if the path does not point to an actual file."))
+  (:documentation "A  window that shows  and allow interacting  with a
+  hierarchical filesystem"))
 
 (defmethod refresh-config :after ((object filesystem-tree-window))
   (with-croatoan-window (croatoan-window object)
@@ -115,12 +131,10 @@ Returns nil if Returns nil if the path does not point to an actual file."))
                            (fgcolor window)))
 
 (defun query-local-filesystem-path (path what)
-  (case what
+  (ecase what
     (:size
      (and (fs:file-exists-p path)
-          (fs:file-size     path)))
-    (otherwise
-     nil)))
+          (fs:file-size     path)))))
 
 (defun expand-local-filesystem-node (matching-node)
   (let ((path (tree-path (data matching-node))))
