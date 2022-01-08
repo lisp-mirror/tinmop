@@ -219,7 +219,7 @@
                                 :element-type +octect-type+)
     (with-open-file (output-stream (tree-path (data matching-node))
                                    :direction         :output
-                                   :if-exists         :error
+                                   :if-exists         :supersede
                                    :if-does-not-exist :create
                                    :element-type      +octect-type+)
       (let* ((buffer (misc:make-array-frame +download-buffer+ 0 '(unsigned-byte 8) t)))
@@ -391,7 +391,7 @@
               (filep         (not (tree-dir-p (data matching-node))))
               (parent-node   (find-node root-node (fs:parent-dir-path remote-path)))
               (parent-path   (tree-path (data parent-node))))
-    (funcall (filesystem-download-function window) source-file matching-node)
+    (funcall (filesystem-upload-function window) source-file matching-node)
     (remove-all-children parent-node)
     (expand-treenode window parent-path)
     (win-clear window :redraw nil)
@@ -497,6 +497,19 @@
         (let ((downloaded-path (download-treenode window node-path)))
           (os-utils:open-resource-with-external-program downloaded-path nil)))))
 
+(defun edit-node (window path)
+  (when-let* ((root-node     (filesystem-root window))
+              (matching-node (find-node root-node path))
+              (node-data     (data matching-node))
+              (node-path     (tree-path node-data)))
+    (if (tree-dir-p node-data)
+        (expand-treenode window node-path)
+        (let ((downloaded-path (download-treenode window node-path)))
+          (croatoan:end-screen)
+          (os-utils:open-resource-with-external-program downloaded-path nil :open-for-edit t)
+          (upload-treenode window
+                           downloaded-path
+                           node-path)))))
 (defun init (root)
   "Initialize the window"
   (let* ((low-level-window  (make-croatoan-window :border t))

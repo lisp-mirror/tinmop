@@ -2501,9 +2501,10 @@ printed, on the main window."
                       (with-blocking-notify-procedure
                           ((format nil (_ "Starting upload of ~a") source-file)
                            (format nil (_ "Upload completed in ~a") destination-file))
-                        (fstree:download-treenode win source-file
-                                                  (build-actual-destination-file source-file
-                                                                                 destination-file))
+                        (fstree:upload-treenode win
+                                                source-file
+                                                (build-actual-destination-file source-file
+                                                                               destination-file))
                         (info-message destination-file))))))))
       (ask-string-input #'on-input-complete
                         :prompt        (_ "Upload: ")
@@ -2611,3 +2612,9 @@ if the selected item represents a directory."
               (fields (line-oriented-window:selected-row-fields win))
               (path   (fstree:tree-path  fields)))
     (fstree:open-node win path)))
+
+(defun file-explorer-edit-file ()
+  (let* ((win    *filesystem-explorer-window*)
+         (fields (line-oriented-window:selected-row-fields win))
+         (path   (fstree:tree-path  fields)))
+    (fstree:edit-node win path)))

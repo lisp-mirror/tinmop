@@ -2043,6 +2043,7 @@
    :filesystem-query-treenode
    :mark-node
    :open-node
+   :edit-node
    :resync-rows-db
    :init))
 
@@ -2814,7 +2815,8 @@
    :file-explorer-scroll-begin
    :file-explorer-scroll-end
    :file-explorer-close-window
-   :file-explorer-open-node))
+   :file-explorer-open-node
+   :file-explorer-edit-file))
 
 (defpackage :scheduled-events
   (:use

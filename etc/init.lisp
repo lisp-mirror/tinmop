@@ -630,6 +630,8 @@
 
 (define-key "C-J"       #'file-explorer-open-node     *filesystem-explorer-keymap*)
 
+(define-key "e"         #'file-explorer-edit-file     *filesystem-explorer-keymap*)
+
 ;;;; hooks
 
 ;; this module  will install an  hook to  rewrite urls; By  default it

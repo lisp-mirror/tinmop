@@ -154,7 +154,7 @@
                             :output t
                             :error  t))))
 
-(defun open-link-with-program (program-and-args link)
+(defun open-link-with-program (program-and-args link &key (wait nil))
   (let* ((command-line-splitted (text-utils:split-words program-and-args))
          (program               (first command-line-splitted))
          (args                  (append (rest command-line-splitted)
@@ -162,24 +162,28 @@
     (run-external-program program
                           args
                           :search t
-                          :wait nil
+                          :wait   wait
                           :output nil
                           :error  :output)))
 
-(defun open-resource-with-external-program (resource give-focus-to-message-window)
+(defun open-resource-with-external-program (resource give-focus-to-message-window
+                                            &key (open-for-edit nil))
   (let ((program (swconf:link-regex->program-to-use resource)))
     (if program
         (cond
           ((swconf:use-editor-as-external-program-p program)
            (croatoan:end-screen)
            (os-utils:open-with-editor resource))
-          ((swconf:use-tinmop-as-external-program-p program)
+          ((and (null open-for-edit)
+                (swconf:use-tinmop-as-external-program-p program))
            (gemini-viewer:load-gemini-url resource
                                           :give-focus-to-message-window
                                           give-focus-to-message-window))
           (t
-           (os-utils:open-link-with-program program resource)))
-        (os-utils:xdg-open resource))))
+           (os-utils:open-link-with-program program resource :wait open-for-edit)))
+        (if open-for-edit
+            (error (_ "No editor program defined in config file"))
+            (os-utils:xdg-open resource)))))
 
 (defun unzip-file (zip-file destination-dir)
   (cond
