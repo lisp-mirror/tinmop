@@ -168,22 +168,25 @@
 
 (defun open-resource-with-external-program (resource give-focus-to-message-window
                                             &key (open-for-edit nil))
-  (let ((program (swconf:link-regex->program-to-use resource)))
-    (if program
-        (cond
-          ((swconf:use-editor-as-external-program-p program)
+  (flet ((edit (file)
            (croatoan:end-screen)
-           (os-utils:open-with-editor resource))
-          ((and (null open-for-edit)
-                (swconf:use-tinmop-as-external-program-p program))
-           (gemini-viewer:load-gemini-url resource
-                                          :give-focus-to-message-window
-                                          give-focus-to-message-window))
-          (t
-           (os-utils:open-link-with-program program resource :wait open-for-edit)))
-        (if open-for-edit
-            (error (_ "No editor program defined in config file"))
-            (os-utils:xdg-open resource)))))
+           (os-utils:open-with-editor file)))
+    (let ((program (swconf:link-regex->program-to-use resource)))
+      (if program
+          (cond
+            ((swconf:use-editor-as-external-program-p program)
+             (edit resource))
+            ((swconf:use-tinmop-as-external-program-p program)
+             (if open-for-edit
+                 (edit resource)
+                 (gemini-viewer:load-gemini-url resource
+                                                :give-focus-to-message-window
+                                                give-focus-to-message-window)))
+            (t
+             (os-utils:open-link-with-program program resource :wait open-for-edit)))
+          (if open-for-edit
+              (error (_ "No program defined in configuration file to edit this kind of files."))
+              (os-utils:xdg-open resource))))))
 
 (defun unzip-file (zip-file destination-dir)
   (cond
