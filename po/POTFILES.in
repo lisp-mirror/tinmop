@@ -1,8 +1,4 @@
 modules/share-gemini-link.lisp
-src/9p-client/client.lisp
-src/9p-client/conditions.lisp
-src/9p-client/message-types.lisp
-src/9p-client/package.lisp
 src/api-client.lisp
 src/api-pleroma-entities.lisp
 src/api-pleroma.lisp
@@ -25,6 +21,7 @@ src/db-utils.lisp
 src/db.lisp
 src/emoji-matcher.lisp
 src/emoji-shortcodes.lisp
+src/filesystem-tree-window.lisp
 src/filesystem-utils.lisp
 src/follow-requests.lisp
 src/gemini-client-certificates-window.lisp
@@ -43,6 +40,8 @@ src/html-utils.lisp
 src/idn.lisp
 src/interfaces.lisp
 src/iri-parser.lisp
+src/kami/client.lisp
+src/kami/package.lisp
 src/keybindings-window.lisp
 src/keybindings.lisp
 src/line-oriented-window.lisp
@@ -78,6 +77,7 @@ src/tests/box-tests.lisp
 src/tests/gemini-parser-tests.lisp
 src/tests/idn-tests.lisp
 src/tests/iri-tests.lisp
+src/tests/kami-tests.lisp
 src/tests/misc-tests.lisp
 src/tests/mtree-tests.lisp
 src/tests/numeric-tests.lisp

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tinmop 0.9.2\n"
 "Report-Msgid-Bugs-To: https://notabug.org/cage/tinmop/\n"
-"POT-Creation-Date: 2021-12-14 13:11+0100\n"
+"POT-Creation-Date: 2022-01-09 14:48+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -206,6 +206,15 @@ msgstr ""
 msgid "no description"
 msgstr ""
 
+#: src/filesystem-tree-window.lisp:475 src/line-oriented-window.lisp:325
+#: src/open-message-link-window.lisp:194 src/program-events.lisp:465
+msgid "Invalid regular expression"
+msgstr ""
+
+#: src/filesystem-tree-window.lisp:543
+msgid "File explorer"
+msgstr ""
+
 #: src/follow-requests.lisp:67
 msgid ""
 "Please evaluate the following requests, only items shown below will be "
@@ -232,7 +241,7 @@ msgstr ""
 msgid "Table of contents"
 msgstr ""
 
-#: src/gemini-subscription-window.lisp:50 src/program-events.lisp:1379
+#: src/gemini-subscription-window.lisp:50 src/program-events.lisp:1365
 msgid "No subtitle"
 msgstr ""
 
@@ -258,7 +267,7 @@ msgstr ""
 msgid "Redirects to ~s, follows redirect? [y/N] "
 msgstr ""
 
-#: src/gemini-viewer.lisp:732 src/tui-utils.lisp:500 src/tui-utils.lisp:510
+#: src/gemini-viewer.lisp:732 src/tui-utils.lisp:502 src/tui-utils.lisp:512
 #, lisp-format
 msgid "Error: ~a"
 msgstr ""
@@ -427,11 +436,6 @@ msgstr ""
 msgid "invalid regular expression ~s ~a"
 msgstr ""
 
-#: src/line-oriented-window.lisp:325 src/open-message-link-window.lisp:195
-#: src/program-events.lisp:465
-msgid "Invalid regular expression"
-msgstr ""
-
 #: src/line-oriented-window.lisp:478 src/ui-goodies.lisp:140
 #: src/ui-goodies.lisp:157
 msgid "Information"
@@ -572,20 +576,24 @@ msgid_plural "~a pending"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/open-message-link-window.lisp:61 src/open-message-link-window.lisp:203
+#: src/open-message-link-window.lisp:61 src/open-message-link-window.lisp:202
 msgid "Links"
 msgstr ""
 
-#: src/open-message-link-window.lisp:267
+#: src/open-message-link-window.lisp:266
 msgid "Chat attachments"
 msgstr ""
 
-#: src/os-utils.lisp:182
+#: src/os-utils.lisp:188
+msgid "No program defined in configuration file to edit this kind of files."
+msgstr ""
+
+#: src/os-utils.lisp:194
 #, lisp-format
 msgid "File ~s does not exists"
 msgstr ""
 
-#: src/os-utils.lisp:184
+#: src/os-utils.lisp:196
 #, lisp-format
 msgid "Destination directory ~s does not exists"
 msgstr ""
@@ -634,26 +642,26 @@ msgstr ""
 msgid "Empty address"
 msgstr ""
 
-#: src/program-events.lisp:1334
+#: src/program-events.lisp:1320
 #, lisp-format
 msgid "Unable to subscribe to ~s"
 msgstr ""
 
-#: src/program-events.lisp:1390
+#: src/program-events.lisp:1376
 #, lisp-format
 msgid "~a ~:[(not opened)~;(opened)~]~%"
 msgstr ""
 
-#: src/program-events.lisp:1414
+#: src/program-events.lisp:1400
 #, lisp-format
 msgid "updating gemlog ~a"
 msgstr ""
 
-#: src/program-events.lisp:1461
+#: src/program-events.lisp:1447
 msgid "TOC can be shown for gemini windows only."
 msgstr ""
 
-#: src/program-events.lisp:1570
+#: src/program-events.lisp:1556
 msgid "no label"
 msgstr ""
 
@@ -775,9 +783,9 @@ msgstr ""
 msgid "Threads"
 msgstr ""
 
-#: src/tui-utils.lisp:105
+#: src/tui-utils.lisp:106
 #, lisp-format
-msgid "Unknown event ~a"
+msgid "Unknown key event ~a"
 msgstr ""
 
 #: src/ui-goodies.lisp:21
@@ -1408,54 +1416,54 @@ msgstr ""
 msgid "load file: "
 msgstr ""
 
-#: src/ui-goodies.lisp:2448 src/ui-goodies.lisp:2571
+#: src/ui-goodies.lisp:2466 src/ui-goodies.lisp:2588
 #, lisp-format
 msgid "Delete ~a? "
 msgstr ""
 
-#: src/ui-goodies.lisp:2461
+#: src/ui-goodies.lisp:2479
 #, lisp-format
 msgid "Rename ~a to: "
 msgstr ""
 
-#: src/ui-goodies.lisp:2473
+#: src/ui-goodies.lisp:2491
 #, lisp-format
 msgid "Staring download of ~a"
 msgstr ""
 
-#: src/ui-goodies.lisp:2474
+#: src/ui-goodies.lisp:2492
 #, lisp-format
 msgid "Download completed in ~a"
 msgstr ""
 
-#: src/ui-goodies.lisp:2478
+#: src/ui-goodies.lisp:2496
 #, lisp-format
 msgid "Download ~a to: "
 msgstr ""
 
-#: src/ui-goodies.lisp:2502
+#: src/ui-goodies.lisp:2519
 #, lisp-format
 msgid "Starting upload of ~a"
 msgstr ""
 
-#: src/ui-goodies.lisp:2503
+#: src/ui-goodies.lisp:2520
 #, lisp-format
 msgid "Upload completed in ~a"
 msgstr ""
 
-#: src/ui-goodies.lisp:2509
+#: src/ui-goodies.lisp:2526
 msgid "Upload: "
 msgstr ""
 
-#: src/ui-goodies.lisp:2523
+#: src/ui-goodies.lisp:2540
 msgid "Create: "
 msgstr ""
 
-#: src/ui-goodies.lisp:2545
+#: src/ui-goodies.lisp:2562
 msgid "Search for: "
 msgstr ""
 
-#: src/ui-goodies.lisp:2588
+#: src/ui-goodies.lisp:2605
 msgid "Delete marked items? "
 msgstr ""
 
