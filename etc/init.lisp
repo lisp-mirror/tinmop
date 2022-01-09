@@ -137,7 +137,7 @@
 
 ;; global keymap
 
-(define-key "y y"       #'open-file-explorer)
+(define-key "y y"       #'open-remote-file-explorer)
 
 (define-key "q"         #'quit)  ; here we  are  calling the  custom
                                  ; function defined above
@@ -600,7 +600,7 @@
 
 (define-key "c"         #'file-explorer-close-path    *filesystem-explorer-keymap*)
 
-(define-key "m"         #'file-explorer-rename-path   *filesystem-explorer-keymap*)
+(define-key "r"         #'file-explorer-rename-path   *filesystem-explorer-keymap*)
 
 (define-key "D"         #'file-explorer-delete-tree   *filesystem-explorer-keymap*)
 

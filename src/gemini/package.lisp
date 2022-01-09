@@ -154,6 +154,7 @@
    :close-ssl-socket
    :make-client-certificate
    :debug-gemini
+   :open-tls-socket
    :request
    :gemini-file-stream-p
    :text-file-stream-p

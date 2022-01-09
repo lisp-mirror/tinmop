@@ -2420,6 +2420,17 @@ printed, on the main window."
       (filesystem-tree-window:init actual-root)
       (focus-to-filesystem-explorer-window))))
 
+
+(defun open-remote-file-explorer (&optional (root "/"))
+  (with-enqueued-process ()
+    (let ((handlers (kami:generate-filesystem-window-handlers root
+                                                              *host*
+                                                              *port*
+                                                              *client-certificate*
+                                                              *certificate-key*)))
+      (filesystem-tree-window:init root handlers)
+      (focus-to-filesystem-explorer-window))))
+
 (defun file-explorer-expand-path ()
   (when-let* ((win    *filesystem-explorer-window*)
               (fields (line-oriented-window:selected-row-fields win))
@@ -2482,7 +2493,7 @@ printed, on the main window."
   "Upload a file"
   (when-let* ((win              *filesystem-explorer-window*)
               (fields           (line-oriented-window:selected-row-fields win))
-              (destination-file (fstree:tree-path  fields)))
+              (destination-dir (fstree:tree-path  fields)))
     (labels ((build-actual-destination-file (source destination)
                (if (fs:extension-dir-p destination)
                    (fs:cat-parent-dir destination
@@ -2495,17 +2506,15 @@ printed, on the main window."
                  ((not (fs:file-exists-p source-file))
                   (error-message (format nil "~a does not exists" source-file)))
                  (t
-                  (when (and (string-not-empty-p source-file)
-                             (not (fs:dirp destination-file)))
+                  (when (string-not-empty-p source-file)
                     (with-enqueued-process ()
                       (with-blocking-notify-procedure
                           ((format nil (_ "Starting upload of ~a") source-file)
-                           (format nil (_ "Upload completed in ~a") destination-file))
-                        (fstree:upload-treenode win
-                                                source-file
-                                                (build-actual-destination-file source-file
-                                                                               destination-file))
-                        (info-message destination-file))))))))
+                           (format nil (_ "Upload completed in ~a") destination-dir))
+                        (let ((destination-file  (build-actual-destination-file source-file
+                                                                                destination-dir)))
+                          (fstree:upload-treenode win source-file destination-file)
+                          (info-message destination-file)))))))))
       (ask-string-input #'on-input-complete
                         :prompt        (_ "Upload: ")
                         :complete-fn #'complete:directory-complete))))

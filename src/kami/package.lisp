@@ -3,5 +3,9 @@
    :cl
    :config
    :constants
-   :purgatory)
-  (:export))
+   :mtree
+   :filesystem-tree-window)
+  (:local-nicknames (:9p :purgatory)
+                    (:a  :alexandria))
+  (:export
+   :generate-filesystem-window-handlers))

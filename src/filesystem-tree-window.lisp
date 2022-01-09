@@ -92,9 +92,35 @@
     :type      function
     :documentation "function with two parameter the path and a feature
     to query Valid  feature values are :size.  Returns  nil if Returns
-    nil if the path does not point to an actual file."))
-  (:documentation "A  window that shows  and allow interacting  with a
+    nil if the path does not point to an actual file.")
+   (filesystem-close-connection-function
+    :initform  (lambda (stream) (declare (ignore stream)))
+    :accessor  filesystem-close-connection-function
+    :type      function
+    :documentation "function with a signle parameter the connection stream to be closed."))
+   (:documentation "A  window that shows  and allow interacting  with a
    hierarchical filesystem"))
+
+(defmethod initialize-instance :after ((object filesystem-tree-window)
+                                       &key (handlers-plist nil) &allow-other-keys)
+  (when handlers-plist
+    (setf (filesystem-expand-function object)
+          (getf handlers-plist :filesystem-expand-function)
+          (filesystem-expand-function object)
+          (getf handlers-plist :filesystem-expand-function)
+          (filesystem-rename-function object)
+          (getf handlers-plist :filesystem-rename-function)
+          (filesystem-delete-function object)
+          (getf handlers-plist :filesystem-delete-function)
+          (filesystem-create-function object)
+          (getf handlers-plist :filesystem-create-function)
+          (filesystem-download-function object)
+          (getf handlers-plist :filesystem-download-function)
+          (filesystem-upload-function object)
+          (getf handlers-plist :filesystem-upload-function)
+          (filesystem-query-path-function object)
+          (getf handlers-plist :filesystem-query-path-function)))
+  object)
 
 (defmethod refresh-config :after ((object filesystem-tree-window))
   (with-croatoan-window (croatoan-window object)
@@ -213,11 +239,11 @@
                    (return-from write-loop t))))))
   destination-file)
 
-(defun upload-local-filesystem-node (source-path matching-node)
+(defun upload-local-filesystem-node (source-path destination-path)
   (with-open-file (input-stream source-path
                                 :direction    :input
                                 :element-type +octect-type+)
-    (with-open-file (output-stream (tree-path (data matching-node))
+    (with-open-file (output-stream destination-path
                                    :direction         :output
                                    :if-exists         :supersede
                                    :if-does-not-exist :create
@@ -229,8 +255,7 @@
               do
                  (write-sequence buffer output-stream :start 0 :end read-so-far)
                  (when (< read-so-far +download-buffer+)
-                   (return-from write-loop t))))))
-  (tree-path (data matching-node)))
+                   (return-from write-loop t)))))))
 
 (defun %expand-treenode (root path-to-expand expand-fn)
   (when-let ((matching-node (find-node root path-to-expand)))
@@ -387,11 +412,11 @@
 
 (defun upload-treenode (window source-file remote-path)
   (when-let* ((root-node     (filesystem-root window))
-              (matching-node (find-node root-node remote-path))
-              (filep         (not (tree-dir-p (data matching-node))))
               (parent-node   (find-node root-node (fs:parent-dir-path remote-path)))
-              (parent-path   (tree-path (data parent-node))))
-    (funcall (filesystem-upload-function window) source-file matching-node)
+              (parent-path   (tree-path (data parent-node)))
+              (destination-path (fs:append-file-to-path parent-path
+                                                        (fs:path-last-element source-file))))
+    (funcall (filesystem-upload-function window) source-file destination-path)
     (remove-all-children parent-node)
     (expand-treenode window parent-path)
     (win-clear window :redraw nil)
@@ -510,7 +535,7 @@
           (upload-treenode window
                            downloaded-path
                            node-path)))))
-(defun init (root)
+(defun init (root &optional (handlers-plist nil))
   "Initialize the window"
   (let* ((low-level-window  (make-croatoan-window :border t))
          (high-level-window (make-instance 'filesystem-tree-window
@@ -519,7 +544,8 @@
                                            :key-config      swconf:+key-keybindings-window+
                                            :keybindings     *filesystem-explorer-keymap*
                                            :croatoan-window low-level-window
-                                           :filesystem-root (make-root-tree root))))
+                                           :filesystem-root (make-root-tree root)
+                                           :handlers-plist  handlers-plist)))
     (refresh-config high-level-window)
     (setf *filesystem-explorer-window* high-level-window)
     (resync-rows-db high-level-window :redraw t :selected-path root)

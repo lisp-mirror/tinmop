@@ -257,6 +257,13 @@
       (t
        path))))
 
+(defun append-file-to-path (dir filename)
+  (let ((actual-dir (if (cl-ppcre:scan (concatenate 'string *directory-sep* "$")
+                                       dir)
+                        dir
+                        (concatenate 'string dir *directory-sep*))))
+    (concatenate 'string actual-dir filename)))
+
 (defmacro define-stat-time (slot-name)
   (with-gensyms (stat)
     `(defun ,(format-symbol t "~:@(get-stat-~a~)" slot-name) (file)

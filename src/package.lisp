@@ -299,6 +299,7 @@
    :path-first-element
    :path-to-hidden-file-p
    :parent-dir-path
+   :append-file-to-path
    :strip-dirs-from-path
    :get-stat-mtime
    :get-stat-ctime
@@ -2027,6 +2028,10 @@
   (:shadowing-import-from :text-utils :split-lines)
   (:shadowing-import-from :misc :random-elt :shuffle)
   (:export
+   :+octect-type+
+   :+download-buffer+
+   :make-temporary-file-from-node
+   :make-node-data
    :filesystem-tree-window
    :filesystem-root
    :tree-path
@@ -2798,6 +2803,7 @@
    :load-script-file
    :view-user-avatar
    :open-file-explorer
+   :open-remote-file-explorer
    :file-explorer-expand-path
    :file-explorer-close-path
    :file-explorer-rename-path
