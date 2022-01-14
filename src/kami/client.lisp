@@ -38,15 +38,15 @@
            (*root-fid* root-fid)
            (path (tree-path (data node))))
       (with-cloned-root-fid  (*stream* root-fid)
-        (a:when-let* ((entries     (9p:collect-directory-children *stream* root-fid path))
-                      (files       (remove-if-not (lambda (a) (or (eq (9p:stat-entry-type a)
-                                                                      :file)
-                                                                  (eq (9p:stat-entry-type a)
-                                                                      :executable)))
-                                                  entries))
-                      (directories (remove-if-not (lambda (a) (eq (9p:stat-entry-type a)
-                                                                  :directory))
-                                                  entries)))
+        (let* ((entries     (9p:collect-directory-children *stream* root-fid path))
+               (files       (remove-if-not (lambda (a) (or (eq (9p:stat-entry-type a)
+                                                               :file)
+                                                           (eq (9p:stat-entry-type a)
+                                                               :executable)))
+                                           entries))
+               (directories (remove-if-not (lambda (a) (eq (9p:stat-entry-type a)
+                                                           :directory))
+                                           entries)))
           (remove-all-children node)
           (loop for directory in directories do
             (let ((absolute-path (text-utils:strcat path (9p:stat-name directory))))
@@ -55,9 +55,9 @@
                                         :data (make-node-data absolute-path t)))))
           (loop for file in files do
             (let ((absolute-path (text-utils:strcat path (9p:stat-name file))))
-            (add-child node
-                       (make-instance 'm-tree
-                                      :data (make-node-data absolute-path nil))))))))
+              (add-child node
+                         (make-instance 'm-tree
+                                        :data (make-node-data absolute-path nil))))))))
     node))
 
 (defun rename-node (stream root-fid)
