@@ -2029,7 +2029,6 @@
   (:shadowing-import-from :misc :random-elt :shuffle)
   (:export
    :+octect-type+
-   :+download-buffer+
    :make-temporary-file-from-node
    :make-node-data
    :filesystem-tree-window

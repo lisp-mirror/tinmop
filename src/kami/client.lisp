@@ -1,6 +1,6 @@
 (in-package :kami)
 
-(a:define-constant +download-buffer+ (expt 2 24)         :test #'=)
+(a:define-constant +download-buffer+ (expt 2 10)         :test #'=)
 
 (a:define-constant +octect-type+     '(unsigned-byte 8) :test #'equalp)
 
@@ -98,14 +98,18 @@
     (let* ((*stream*   stream)
            (*root-fid* root-fid)
            (path       (tree-path (data node))))
-      (with-cloned-root-fid (*stream* root-fid)
-        (let ((data (9p:slurp-file *stream* root-fid path)))
-          (with-open-file (output-stream destination-file
-                                         :direction         :output
-                                         :if-exists         :supersede
-                                         :if-does-not-exist :create
-                                         :element-type      +octect-type+)
-            (write-sequence data output-stream)))))
+      (with-open-file (output-stream destination-file
+                                     :direction         :output
+                                     :if-exists         :supersede
+                                     :if-does-not-exist :create
+                                     :element-type      +octect-type+)
+        (with-cloned-root-fid (*stream* root-fid)
+          (9p:read-entire-file-apply-function stream
+                                              root-fid
+                                              path
+                                              (lambda (data offset count)
+                                                (declare (ignore offset count))
+                                                (write-sequence data output-stream))))))
     destination-file))
 
 (defun upload-node (stream root-fid)
@@ -116,8 +120,9 @@
                                     :direction    :input
                                     :element-type +octect-type+)
         (with-cloned-root-fid (*stream* root-fid)
-          (let* ((buffer           (misc:make-array-frame +download-buffer+ 0 +octect-type+ t))
-                 (fid              (9p:create-path *stream* root-fid destination-path)))
+          (let* ((buffer (misc:make-array-frame +download-buffer+ 0 +octect-type+ t))
+                 (fid    (9p:create-path *stream* root-fid destination-path)))
+
             (loop named write-loop
                   for read-so-far = (read-sequence buffer input-stream)
                     then (read-sequence buffer input-stream)

@@ -205,8 +205,6 @@
     (assert path)
     (fs:recursive-delete path)))
 
-(define-constant +download-buffer+ (expt 2 24)         :test #'=)
-
 (define-constant +octect-type+     '(unsigned-byte 8) :test #'equalp)
 
 (defun make-temporary-file-from-path (path)
@@ -216,6 +214,8 @@
 (defun make-temporary-file-from-node (node)
   (let ((path (tree-path (data node))))
     (make-temporary-file-from-path path)))
+
+(define-constant +download-buffer+ (expt 2 24) :test #'=)
 
 (defun download-local-filesystem-node (matching-node
                                        &optional
@@ -413,10 +413,8 @@
 (defun upload-treenode (window source-file remote-path)
   (when-let* ((root-node     (filesystem-root window))
               (parent-node   (find-node root-node (fs:parent-dir-path remote-path)))
-              (parent-path   (tree-path (data parent-node)))
-              (destination-path (fs:append-file-to-path parent-path
-                                                        (fs:path-last-element source-file))))
-    (funcall (filesystem-upload-function window) source-file destination-path)
+              (parent-path   (tree-path (data parent-node))))
+    (funcall (filesystem-upload-function window) source-file remote-path)
     (remove-all-children parent-node)
     (expand-treenode window parent-path)
     (win-clear window :redraw nil)
