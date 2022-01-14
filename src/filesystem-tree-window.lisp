@@ -418,7 +418,7 @@
     (remove-all-children parent-node)
     (expand-treenode window parent-path)
     (win-clear window :redraw nil)
-    (resync-rows-db window :redraw t :selected-path parent-path)))
+    (resync-rows-db window :redraw t :selected-path remote-path)))
 
 (defun recursive-delete-node (window path)
   (with-accessors ((root-node                  filesystem-root)
