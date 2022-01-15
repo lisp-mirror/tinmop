@@ -8,4 +8,5 @@
   (:local-nicknames (:9p :purgatory)
                     (:a  :alexandria))
   (:export
-   :generate-filesystem-window-handlers))
+   :generate-filesystem-window-handlers
+   :iri->filesystem-window-handlers))

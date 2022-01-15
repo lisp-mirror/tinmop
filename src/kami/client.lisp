@@ -159,3 +159,16 @@
             :filesystem-close-connection-function  (lambda (stream)
                                                      (declare (ignore stream))
                                                      (9p:close-client socket))))))
+
+(defun iri->filesystem-window-handlers (kami-iri)
+  (a:when-let ((parsed-iri (iri:iri-parse kami-iri :null-on-error t)))
+    (multiple-value-bind (cached-certificate cached-key)
+        (gemini-client:fetch-cached-certificate kami-iri)
+      (multiple-value-bind (actual-iri host path query port fragment scheme)
+          (gemini-client:displace-iri parsed-iri)
+        (declare (ignore actual-iri query fragment scheme))
+        (kami:generate-filesystem-window-handlers path
+                                                  host
+                                                  port
+                                                  cached-certificate
+                                                  cached-key)))))

@@ -137,7 +137,7 @@
 
 ;; global keymap
 
-(define-key "y y"       #'open-remote-file-explorer)
+(define-key "M-k >"     #'kami-open-url)
 
 (define-key "q"         #'quit)  ; here we  are  calling the  custom
                                  ; function defined above

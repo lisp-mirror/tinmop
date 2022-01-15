@@ -2420,16 +2420,26 @@ printed, on the main window."
       (filesystem-tree-window:init actual-root)
       (focus-to-filesystem-explorer-window))))
 
+(defun kami-open-url-prompt ()
+  (_ "Open Kami url: "))
 
-(defun open-remote-file-explorer (&optional (root "/"))
-  (with-enqueued-process ()
-    (let ((handlers (kami:generate-filesystem-window-handlers root
-                                                              *host*
-                                                              *port*
-                                                              *client-certificate*
-                                                              *certificate-key*)))
-      (filesystem-tree-window:init root handlers)
-      (focus-to-filesystem-explorer-window))))
+(defun kami-open-url ()
+  (flet ((on-input-complete (url)
+           (with-enqueued-process ()
+             (tui:with-notify-errors
+               (let ((handlers (kami:iri->filesystem-window-handlers url)))
+                 (if handlers
+                     (progn
+                       (filesystem-tree-window:init (uri:path (iri:iri-parse url))
+                                                    handlers)
+                       (focus-to-filesystem-explorer-window))
+                     (error-message (format nil
+                                            (_ "~s is not a valid gemini address")
+                                            url))))))))
+    (let ((prompt (kami-open-url-prompt)))
+      (ask-string-input #'on-input-complete
+                        :prompt      prompt
+                        :complete-fn (complete:make-complete-gemini-iri-fn prompt)))))
 
 (defun file-explorer-expand-path ()
   (when-let* ((win    *filesystem-explorer-window*)
@@ -2493,7 +2503,7 @@ printed, on the main window."
   "Upload a file"
   (when-let* ((win              *filesystem-explorer-window*)
               (fields           (line-oriented-window:selected-row-fields win))
-              (destination-dir (fstree:tree-path  fields)))
+              (destination-dir  (fstree:tree-path  fields)))
     (labels ((build-actual-destination-file (source destination)
                (if (fs:extension-dir-p destination)
                    (fs:cat-parent-dir destination
@@ -2626,4 +2636,5 @@ if the selected item represents a directory."
   (let* ((win    *filesystem-explorer-window*)
          (fields (line-oriented-window:selected-row-fields win))
          (path   (fstree:tree-path  fields)))
-    (fstree:edit-node win path)))
+    (fstree:edit-node win path)
+    (info-message (format nil (_ "File ~s was modified on server") path))))

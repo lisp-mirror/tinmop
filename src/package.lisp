@@ -2802,7 +2802,7 @@
    :load-script-file
    :view-user-avatar
    :open-file-explorer
-   :open-remote-file-explorer
+   :kami-open-url
    :file-explorer-expand-path
    :file-explorer-close-path
    :file-explorer-rename-path
