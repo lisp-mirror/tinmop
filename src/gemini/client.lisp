@@ -320,19 +320,22 @@
          (port       (or (uri:port iri)
                          +gemini-default-port+))
          (scheme     (uri:scheme   iri))
+         (user-info  (uri:user-info iri))
          (actual-iri (gemini-parser:make-gemini-iri host
                                                     path
-                                                    :query    query
-                                                    :port     port
-                                                    :fragment fragment
-                                                    :scheme   scheme)))
+                                                    :user-info user-info
+                                                    :query     query
+                                                    :port      port
+                                                    :fragment  fragment
+                                                    :scheme    scheme)))
     (values actual-iri
             host
             path
             query
             port
             fragment
-            scheme)))
+            scheme
+            user-info)))
 
 (defun debug-gemini (&rest data)
   (declare (ignorable data))
@@ -474,19 +477,20 @@
   (when-let* ((all-rows           (db:find-tls-certificates-rows))
               (parsed-request-iri (iri:iri-parse request-iri :null-on-error t)))
     (multiple-value-bind (request-iri request-host request-path request-query request-port
-                          request-fragment request-scheme)
+                          request-fragment request-scheme request-user-info)
         (gemini-client:displace-iri parsed-request-iri)
       (declare (ignore request-iri request-query request-fragment))
       (loop for row in all-rows do
         (let ((id (db:row-id row)))
-          (multiple-value-bind (iri host path query port fragment scheme)
+          (multiple-value-bind (iri host path query port fragment scheme user-info)
               (gemini-client:displace-iri (iri:iri-parse (db:row-cache-key row)))
             (declare (ignore iri query fragment))
-            (when (and (string= request-host   host)
-                     (string= request-scheme   scheme)
-                     (=       request-port     port)
-                     (text-utils:string-starts-with-p (gemini-parser:path-last-dir path)
-                                                      request-path))
+            (when (and (string= request-host      host)
+                       (string= request-scheme    scheme)
+                       (string= request-user-info user-info)
+                       (=       request-port      port)
+                       (text-utils:string-starts-with-p (gemini-parser:path-last-dir path)
+                                                        request-path))
               (return-from tls-cert-find
                 (values (strcat (os-utils:cached-file-path (to-s id))
                                 fs:*directory-sep* os-utils:+ssl-cert-name+)

@@ -288,27 +288,35 @@
                                     (fragment nil)
                                     (scheme  +gemini-scheme+)
                                     (omit-default-port t)
-                                    (default-port *omitted-port*))
-  (let* ((actual-path           (if (string-starts-with-p "/" path)
-                                    (subseq path 1)
-                                    path))
-         (actual-port           (cond
-                                  ((null port)
-                                   "")
-                                  ((and omit-default-port
-                                        (= port default-port))
-                                   "")
-                                  (t
-                                   (to-s port))))
-         (domain-port-separator (if (string-not-empty-p actual-port)
-                                    ":"
-                                    ""))
-         (actual-host           (if (iri:ipv6-address-p host)
-                                    (strcat "[" host "]")
-                                    host))
+                                    (default-port *omitted-port*)
+                                    (user-info    nil))
+  (let* ((actual-path              (if (string-starts-with-p "/" path)
+                                       (subseq path 1)
+                                       path))
+         (actual-port              (cond
+                                     ((null port)
+                                      "")
+                                     ((and omit-default-port
+                                           (= port default-port))
+                                      "")
+                                     (t
+                                      (to-s port))))
+         (domain-port-separator    (if (string-not-empty-p actual-port)
+                                       ":"
+                                       ""))
+         (actual-host              (if (iri:ipv6-address-p host)
+                                       (strcat "[" host "]")
+                                       host))
+         (actual-user-info         (if (string-not-empty-p user-info)
+                                       user-info
+                                       ""))
+         (user-info-host-separator (if (string-not-empty-p user-info)
+                                       "@"
+                                       ""))
+
          (iri (strcat scheme         "://"
-                      actual-host    domain-port-separator
-                      actual-port     "/"
+                      actual-user-info user-info-host-separator actual-host
+                      domain-port-separator actual-port     "/"
                       actual-path)))
     (when query
       (setf iri (strcat iri "?" query)))
