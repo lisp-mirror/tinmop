@@ -132,7 +132,7 @@
   (let* ((cert-file (text-utils:strcat outdir fs:*directory-sep* +ssl-cert-name+))
          (key-file  (text-utils:strcat outdir fs:*directory-sep* +ssl-key-name+))
          (cmd-args  (format nil
-                            (text-utils:strcat "req -new -nodes -x509 -days 365 -batch "
+                            (text-utils:strcat "req -new -nodes -x509 -days 365 -subj / "
                                                "-keyout ~a -outform PEM -out ~a")
                             key-file
                             cert-file)))
