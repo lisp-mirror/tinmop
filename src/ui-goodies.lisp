@@ -2632,6 +2632,24 @@ if the selected item represents a directory."
               (path   (fstree:tree-path  fields)))
     (fstree:open-node win path)))
 
+(defun file-explorer-node-details ()
+  (when-let* ((win         *filesystem-explorer-window*)
+              (fields      (line-oriented-window:selected-row-fields win))
+              (path        (fstree:tree-path  fields))
+              (size        (fstree:filesystem-query-treenode win path :size-string))
+              (permissions (fstree:filesystem-query-treenode win path :permissions-string))
+              (bg          (swconf:win-bg swconf:+key-help-dialog+))
+              (fg          (swconf:win-fg swconf:+key-help-dialog+)))
+    (windows:make-blocking-message-dialog *main-window*
+                                          nil
+                                          (format nil (_ "Details of: ~a") path)
+                                          (list (_ "Size")
+                                                size
+                                                (_ "Permissions")
+                                                permissions)
+                                          bg
+                                          fg)))
+
 (defun file-explorer-edit-file ()
   (let* ((win    *filesystem-explorer-window*)
          (fields (line-oriented-window:selected-row-fields win))

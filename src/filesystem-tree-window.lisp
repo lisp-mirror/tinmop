@@ -163,10 +163,12 @@
                            (fgcolor window)))
 
 (defun query-local-filesystem-path (path what)
-  (ecase what
+  (case what
     (:size
      (and (fs:file-exists-p path)
-          (fs:file-size     path)))))
+          (fs:file-size     path)))
+    (otherwise
+     (_ "not implemented"))))
 
 (defun expand-local-filesystem-node (matching-node)
   (let ((path (tree-path (data matching-node))))
@@ -439,21 +441,12 @@
             (delete-treenode window path))))))
 
 (defun filesystem-query-treenode (window path what)
-  (assert (member what '(:size)))
+  (assert (member what '(:size :size-string :permissions :permissions-string)))
   (when-let* ((root-node     (filesystem-root window))
-              (matching-node (find-node root-node path))
-              (filep         (not (tree-dir-p (data matching-node))))
-              (octects       (funcall (filesystem-query-path-function window)
-                                      (tree-path (data matching-node))
-                                      what)))
-    (flet ((to-string (octects-data units)
-             (multiple-value-bind (size unit-measurement)
-                 (fs:octects->units octects-data units)
-               (format nil "~,2f~a" size unit-measurement))))
-      (values octects
-              (to-string octects :kib)
-              (to-string octects :mib)
-              (to-string octects :gib)))))
+              (matching-node (find-node root-node path)))
+    (funcall (filesystem-query-path-function window)
+             (tree-path (data matching-node))
+             what)))
 
 (defmethod search-row ((object filesystem-tree-window) regex &key (redraw t))
   (handler-case

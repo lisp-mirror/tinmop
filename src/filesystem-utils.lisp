@@ -496,3 +496,24 @@
          (scaled (/ octects (expt 1024 exponent))))
       (values scaled
               (elt +file-size-units+ (1- exponent)))))
+
+(defgeneric octects->units-string (object))
+
+(defmethod octects->units-string (object)
+  (format nil (config:_ "invalid value: ~a") object))
+
+(defmethod octects->units-string ((object number))
+  (let ((decimals (loop
+                    for number = object then (truncate (/ number 10)) while (> number 0)
+                    for results = 0 then (1+ results)
+                    finally (return results))))
+    (cond
+      ((or (null decimals)
+           (<= decimals 3))
+       (format nil (config:_ "~a bytes") object))
+      ((<= 4 decimals 6)
+       (format nil (config:_ "~a Kib") (truncate (octects->units object :kib))))
+      ((<= 7 decimals 9)
+       (format nil (config:_ "~a Mib") (truncate (octects->units object :mib))))
+      (t
+       (format nil (config:_ "~a Gib") (truncate (octects->units object :gib)))))))

@@ -333,7 +333,8 @@
    :namestring->pathname
    :read-single-form
    :eq-filename
-   :octects->units))
+   :octects->units
+   :octects->units-string))
 
 (defpackage :os-utils
   (:use
@@ -2821,6 +2822,7 @@
    :file-explorer-scroll-end
    :file-explorer-close-window
    :file-explorer-open-node
+   :file-explorer-node-details
    :file-explorer-edit-file))
 
 (defpackage :scheduled-events

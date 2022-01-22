@@ -139,11 +139,20 @@
   (lambda (path what)
     (let* ((*stream*   stream)
            (*root-fid* root-fid))
-      (ecase what
-        (:size
-         (with-cloned-root-fid (*stream* root-fid)
-           (a:when-let ((stat-entry (9p:path-exists-p *stream* root-fid path)))
-             (9p:stat-size stat-entry))))))))
+      (with-cloned-root-fid (*stream* root-fid)
+        (a:when-let ((stat-entry (9p:path-exists-p *stream* root-fid path)))
+          (ecase what
+            (:size
+             (9p:stat-size stat-entry))
+            (:size-string
+             (fs:octects->units-string (9p:stat-size stat-entry)))
+            (:permissions-string
+             (let ((mode (9p:stat-mode stat-entry)))
+               (format nil
+                       (_ "User: ~a Group: ~a Others ~a")
+                       (9p:permissions-user-string      mode)
+                       (9p:permissions-group-string     mode)
+                       (9p:permissions-others-string    mode))))))))))
 
 (defun generate-filesystem-window-handlers (path host port
                                             query fragment
