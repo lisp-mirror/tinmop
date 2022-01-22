@@ -145,11 +145,17 @@
            (a:when-let ((stat-entry (9p:path-exists-p *stream* root-fid path)))
              (9p:stat-size stat-entry))))))))
 
-(defun generate-filesystem-window-handlers (root host port client-certificate client-key)
+(defun generate-filesystem-window-handlers (path host port
+                                            query fragment
+                                            client-certificate client-key)
   (with-open-ssl-stream (stream socket host port client-certificate client-key)
     (let* ((*stream*   stream)
-           (*root-fid* (9p:mount *stream* root)))
-      (list :filesystem-expand-function            (expand-node   *stream* *root-fid*)
+           (*root-fid* (9p:mount *stream* "/")))
+      (list :query                                 query
+            :fragment                              fragment
+            :socket                                socket
+            :path                                  path
+            :filesystem-expand-function            (expand-node   *stream* *root-fid*)
             :filesystem-rename-function            (rename-node   *stream* *root-fid*)
             :filesystem-delete-function            (delete-node   *stream* *root-fid*)
             :filesystem-create-function            (create-node   *stream* *root-fid*)
@@ -166,9 +172,11 @@
         (gemini-client:fetch-cached-certificate kami-iri)
       (multiple-value-bind (actual-iri host path query port fragment scheme)
           (gemini-client:displace-iri parsed-iri)
-        (declare (ignore actual-iri query fragment scheme))
+        (declare (ignore actual-iri scheme))
         (kami:generate-filesystem-window-handlers path
                                                   host
                                                   port
+                                                  query
+                                                  fragment
                                                   cached-certificate
                                                   cached-key)))))
