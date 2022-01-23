@@ -2429,10 +2429,17 @@ printed, on the main window."
              (tui:with-notify-errors
                (let ((handlers (kami:iri->filesystem-window-handlers url)))
                  (if handlers
-                     (progn
-                       (filesystem-tree-window:init (uri:path (iri:iri-parse url))
-                                                    handlers)
-                       (focus-to-filesystem-explorer-window))
+                     (let* ((path          (uri:path (iri:iri-parse url)))
+                            (path-to-dir-p (fs:path-referencing-dir-p path))
+                            (init-path (if path-to-dir-p
+                                           path
+                                           (fs:parent-dir-path path))))
+                       (filesystem-tree-window:init init-path handlers)
+                       (if path-to-dir-p
+                           (focus-to-filesystem-explorer-window)
+                           (progn
+                             (%file-explorer-download-path path)
+                             (file-explorer-close-path))))
                      (error-message (format nil
                                             (_ "~s is not a valid kami address")
                                             url))))))))
@@ -2481,11 +2488,9 @@ printed, on the main window."
                         :prompt
                         (format nil (_ "Rename ~a to: ") path)))))
 
-(defun file-explorer-download-path ()
+(defun %file-explorer-download-path (path)
   "Download a file"
   (when-let* ((win         *filesystem-explorer-window*)
-              (fields      (line-oriented-window:selected-row-fields win))
-              (path        (fstree:tree-path  fields))
               (output-file (fs:temporary-file)))
     (flet ((on-input-complete (destination-file)
              (when (string-not-empty-p destination-file)
@@ -2498,6 +2503,13 @@ printed, on the main window."
       (ask-string-input #'on-input-complete
                         :prompt        (format nil (_ "Download ~a to: ") path)
                         :initial-value output-file))))
+
+(defun file-explorer-download-path ()
+  "Download a file"
+  (when-let* ((win    *filesystem-explorer-window*)
+              (fields (line-oriented-window:selected-row-fields win))
+              (path   (fstree:tree-path  fields)))
+    (%file-explorer-download-path path)))
 
 (defun file-explorer-upload-path ()
   "Upload a file"
