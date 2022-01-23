@@ -2049,6 +2049,7 @@
    :mark-node
    :open-node
    :edit-node
+   :close-connection
    :resync-rows-db
    :init))
 

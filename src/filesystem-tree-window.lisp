@@ -94,10 +94,10 @@
     to query Valid  feature values are :size.  Returns  nil if Returns
     nil if the path does not point to an actual file.")
    (filesystem-close-connection-function
-    :initform  (lambda (stream) (declare (ignore stream)))
+    :initform  (constantly t)
     :accessor  filesystem-close-connection-function
     :type      function
-    :documentation "function with a signle parameter the connection stream to be closed."))
+    :documentation "function with no parameter to close the connection."))
    (:documentation "A  window that shows  and allow interacting  with a
    hierarchical filesystem"))
 
@@ -119,7 +119,9 @@
           (filesystem-upload-function object)
           (getf handlers-plist :filesystem-upload-function)
           (filesystem-query-path-function object)
-          (getf handlers-plist :filesystem-query-path-function)))
+          (getf handlers-plist :filesystem-query-path-function)
+          (filesystem-close-connection-function object)
+          (getf handlers-plist :filesystem-close-connection-function)))
   object)
 
 (defmethod refresh-config :after ((object filesystem-tree-window))
@@ -526,6 +528,10 @@
           (upload-treenode window
                            downloaded-path
                            node-path)))))
+
+(defun close-connection (window)
+  (funcall (filesystem-close-connection-function window)))
+
 (defun init (root &optional (handlers-plist nil))
   "Initialize the window"
   (let* ((low-level-window  (make-croatoan-window :border t))

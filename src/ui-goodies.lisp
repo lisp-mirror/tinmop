@@ -2421,7 +2421,7 @@ printed, on the main window."
       (focus-to-filesystem-explorer-window))))
 
 (defun kami-open-url-prompt ()
-  (_ "Open Kami url: "))
+  (_ "Open kami url: "))
 
 (defun kami-open-url ()
   (flet ((on-input-complete (url)
@@ -2434,7 +2434,7 @@ printed, on the main window."
                                                     handlers)
                        (focus-to-filesystem-explorer-window))
                      (error-message (format nil
-                                            (_ "~s is not a valid gemini address")
+                                            (_ "~s is not a valid kami address")
                                             url))))))))
     (let ((prompt (kami-open-url-prompt)))
       (ask-string-input #'on-input-complete
@@ -2622,6 +2622,7 @@ printed, on the main window."
       (windows:draw win))))
 
 (defun file-explorer-close-window ()
+  (fstree:close-connection *filesystem-explorer-window*)
   (close-window-and-return-to-message *filesystem-explorer-window*))
 
 (defun file-explorer-open-node ()
