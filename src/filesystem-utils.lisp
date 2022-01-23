@@ -146,6 +146,23 @@
     (setf all-paths (sort all-paths #'string<))
     all-paths))
 
+(defun collect-tree (unvisited-dirs &optional (accum '()))
+  (declare (optimize (debug 0) (speed 3)))
+  (cond
+    ((null unvisited-dirs)
+     accum)
+    (t
+     (let* ((children (collect-children (first unvisited-dirs)))
+            (files        (remove-if #'directory-exists-p children))
+            (directories  (mapcar (lambda (a) (text-utils:strcat a "/"))
+                                  (remove-if (lambda (a)
+                                               (or (file-exists-p a)
+                                                   (backreference-dir-p a)
+                                                   (loopback-reference-dir-p a)))
+                                             children))))
+       (collect-tree (append (rest unvisited-dirs) directories)
+                     (append files accum))))))
+
 (defun backreference-dir-p (path)
   (string= (path-last-element path) ".."))
 
