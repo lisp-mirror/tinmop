@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tinmop 0.0.1\n"
 "Report-Msgid-Bugs-To: https://notabug.org/cage/tinmop/\n"
-"POT-Creation-Date: 2022-01-22 15:18+0100\n"
-"PO-Revision-Date: 2022-01-22 15:20+0100\n"
+"POT-Creation-Date: 2022-01-23 14:28+0100\n"
+"PO-Revision-Date: 2022-01-23 14:28+0100\n"
 "Last-Translator: cage <cage@invalid.org>\n"
 "Language-Team: Italian\n"
 "Language: it\n"
@@ -212,40 +212,40 @@ msgstr "home"
 msgid "no description"
 msgstr "nessuna descrizione"
 
-#: src/filesystem-tree-window.lisp:171
+#: src/filesystem-tree-window.lisp:173
 msgid "not implemented"
 msgstr "Non implementato"
 
-#: src/filesystem-tree-window.lisp:466 src/line-oriented-window.lisp:325
+#: src/filesystem-tree-window.lisp:468 src/line-oriented-window.lisp:325
 #: src/open-message-link-window.lisp:194 src/program-events.lisp:465
 msgid "Invalid regular expression"
 msgstr "Espressione regolare non valida"
 
-#: src/filesystem-tree-window.lisp:534
+#: src/filesystem-tree-window.lisp:540
 msgid "File explorer"
 msgstr "Navigatore albero dei file"
 
-#: src/filesystem-utils.lisp:503
+#: src/filesystem-utils.lisp:506
 #, lisp-format
 msgid "invalid value: ~a"
 msgstr "Valore non valido: ~a"
 
-#: src/filesystem-utils.lisp:513
+#: src/filesystem-utils.lisp:516
 #, lisp-format
 msgid "~a bytes"
 msgstr "~a byte"
 
-#: src/filesystem-utils.lisp:515
+#: src/filesystem-utils.lisp:518
 #, lisp-format
 msgid "~a Kib"
 msgstr "~a Kib"
 
-#: src/filesystem-utils.lisp:517
+#: src/filesystem-utils.lisp:520
 #, lisp-format
 msgid "~a Mib"
 msgstr "~a Mib"
 
-#: src/filesystem-utils.lisp:519
+#: src/filesystem-utils.lisp:522
 #, lisp-format
 msgid "~a Gib"
 msgstr "~a Gib"
@@ -1406,7 +1406,7 @@ msgstr "Inserisci l'indirizzo gemini per il quale le credenziali sono valide: "
 msgid "Certificate imported for ~s"
 msgstr "Certificato importato per ~s"
 
-#: src/ui-goodies.lisp:2237 src/ui-goodies.lisp:2437
+#: src/ui-goodies.lisp:2237
 #, lisp-format
 msgid "~s is not a valid gemini address"
 msgstr "~s non è un indirizzo gemini valido"
@@ -1475,74 +1475,79 @@ msgid "load file: "
 msgstr "Carica il file: "
 
 #: src/ui-goodies.lisp:2424
-msgid "Open Kami url: "
+msgid "Open kami url: "
 msgstr "Apri un indirizzo kami: "
 
-#: src/ui-goodies.lisp:2469 src/ui-goodies.lisp:2591
+#: src/ui-goodies.lisp:2444
+#, lisp-format
+msgid "~s is not a valid kami address"
+msgstr "~s non è un indirizzo kami valido"
+
+#: src/ui-goodies.lisp:2476 src/ui-goodies.lisp:2603
 #, lisp-format
 msgid "Delete ~a? "
 msgstr "Cancella ~a? "
 
-#: src/ui-goodies.lisp:2482
+#: src/ui-goodies.lisp:2489
 #, lisp-format
 msgid "Rename ~a to: "
 msgstr "Rinomina ~a a: "
 
-#: src/ui-goodies.lisp:2494
+#: src/ui-goodies.lisp:2499
 #, lisp-format
 msgid "Staring download of ~a"
 msgstr "Avvio il download di ~a"
 
-#: src/ui-goodies.lisp:2495
+#: src/ui-goodies.lisp:2500
 #, lisp-format
 msgid "Download completed in ~a"
 msgstr "Scaricamento di ~a completato"
 
-#: src/ui-goodies.lisp:2499
+#: src/ui-goodies.lisp:2504
 #, lisp-format
 msgid "Download ~a to: "
 msgstr "Scarica ~a in: "
 
-#: src/ui-goodies.lisp:2522
+#: src/ui-goodies.lisp:2534
 #, lisp-format
 msgid "Starting upload of ~a"
 msgstr "Inizio caricamento di ~a"
 
-#: src/ui-goodies.lisp:2523
+#: src/ui-goodies.lisp:2535
 #, lisp-format
 msgid "Upload completed in ~a"
 msgstr "Caricamento di ~a completato"
 
-#: src/ui-goodies.lisp:2529
+#: src/ui-goodies.lisp:2541
 msgid "Upload: "
 msgstr "Carica: "
 
-#: src/ui-goodies.lisp:2543
+#: src/ui-goodies.lisp:2555
 msgid "Create: "
 msgstr "Crea: "
 
-#: src/ui-goodies.lisp:2565
+#: src/ui-goodies.lisp:2577
 msgid "Search for: "
 msgstr "Criterio di ricerca: "
 
-#: src/ui-goodies.lisp:2608
+#: src/ui-goodies.lisp:2620
 msgid "Delete marked items? "
 msgstr "Cancella gli elementi selezionati? "
 
-#: src/ui-goodies.lisp:2645
+#: src/ui-goodies.lisp:2658
 #, lisp-format
 msgid "Details of: ~a"
 msgstr "Dettagli di: ~a"
 
-#: src/ui-goodies.lisp:2646
+#: src/ui-goodies.lisp:2659
 msgid "Size"
 msgstr "Dimensione"
 
-#: src/ui-goodies.lisp:2648
+#: src/ui-goodies.lisp:2661
 msgid "Permissions"
 msgstr "Permessi"
 
-#: src/ui-goodies.lisp:2658
+#: src/ui-goodies.lisp:2671
 #, lisp-format
 msgid "File ~s was modified on server"
 msgstr "Il file ~s è stato modificato sul server"
