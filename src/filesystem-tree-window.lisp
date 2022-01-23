@@ -23,7 +23,7 @@
          (not dirp))
      (list :path path :dirp dirp :markedp nil))
     (dirp
-     (if (scan "/$" path)
+     (if (fs:path-referencing-dir-p path)
          (list :path path :dirp t :markedp nil)
          (list :path (strcat path "/") :dirp t :markedp nil)))))
 

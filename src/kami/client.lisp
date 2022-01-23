@@ -85,7 +85,7 @@
       (assert path)
       (with-cloned-root-fid (*stream* root-fid)
         (if dirp
-            (9p:create-path *stream* root-fid (if (cl-ppcre:scan "/$" path)
+            (9p:create-path *stream* root-fid (if (fs:path-referencing-dir-p path)
                                                   path
                                                   (text-utils:strcat path "/")))
             (9p:create-path *stream* root-fid path))))))

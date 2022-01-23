@@ -289,6 +289,7 @@
    :collect-children
    :backreference-dir-p
    :loopback-reference-dir-p
+   :path-referencing-dir-p
    :collect-files/dirs
    :prepend-pwd
    :search-matching-file

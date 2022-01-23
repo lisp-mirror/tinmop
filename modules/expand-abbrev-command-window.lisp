@@ -32,7 +32,8 @@
 
 (in-package :modules)
 
-(defparameter *expand-abbrev-rewriting-rules* '(("^!g" "gemini://"))
+(defparameter *expand-abbrev-rewriting-rules* '(("^!g" "gemini://")
+                                                ("^!n" "np://"))
   "Before  displaying  messages that  module  will  rewrites the  first
   element of each item (a regular expression) of this list with the second
 

@@ -152,6 +152,9 @@
 (defun loopback-reference-dir-p (path)
   (string= (path-last-element path) "."))
 
+(defun path-referencing-dir-p (path)
+  (cl-ppcre:scan "/$" path))
+
 (defun collect-files/dirs (root)
   (let ((all-files '())
         (all-dirs  '()))
