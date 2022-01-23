@@ -1895,22 +1895,29 @@ mot recent updated to least recent"
 
 ;;;; gemini
 
-(defun gemini-open-url-prompt ()
+(defun open-url-prompt ()
   "This is used when opening gemini link too, see:
 open-message-link-window:open-message-link"
-  (_ "Open Gemini url: "))
+  (_ "Open url: "))
 
-(defun open-gemini-address ()
-  "Ask for a gemini address and try to load it"
+(defun open-net-address ()
+  "Ask for an internet address and try to load it.
+Currently the only recognized protocols are gemini and kami."
   (flet ((on-input-complete (url)
-           (gemini-viewer:load-gemini-url (trim-blanks url)
-                                          :use-cached-file-if-exists t
-                                          :priority program-events:+maximum-event-priority+)))
-
-    (let ((prompt (gemini-open-url-prompt)))
+           (let ((trimmed-url (trim-blanks url)))
+             (if (text-utils:string-starts-with-p kami:+kami-scheme+ trimmed-url)
+                 (open-kami-address trimmed-url)
+                 (open-gemini-address trimmed-url)))))
+    (let ((prompt (open-url-prompt)))
       (ask-string-input #'on-input-complete
                         :prompt      prompt
                         :complete-fn (complete:make-complete-gemini-iri-fn prompt)))))
+
+
+(defun open-gemini-address (url)
+  (gemini-viewer:load-gemini-url url
+                                 :use-cached-file-if-exists t
+                                 :priority program-events:+maximum-event-priority+))
 
 (defun gemini-history-back ()
   "Reopen a previous visited gemini address"
@@ -2208,8 +2215,8 @@ gemini page the program is rendering."
                                       :prompt (format nil (_ "Insert certificate key file: "))
                                       :complete-fn #'complete:directory-complete)))
              (on-cert-key-path-input-complete (key-path)
-               (let ((prompt-history (gemini-open-url-prompt))
-                     (prompt         (_ "Insert the gemini IRI where where credential are valid: ")))
+               (let ((prompt-history (open-url-prompt))
+                     (prompt         (_ "Insert the gemini address where where credential are valid: ")))
                  (when (file-valid-p key-path)
                    (setf cert-key-file key-path)
                    (ui:ask-string-input #'on-valid-uri-complete
@@ -2294,7 +2301,7 @@ gemini page the program is rendering."
     (push-event event)))
 
 (defun generate-latest-visited-url ()
-  (let ((history (remove-duplicates (db:history-prompt->values (gemini-open-url-prompt))
+  (let ((history (remove-duplicates (db:history-prompt->values (open-url-prompt))
                                     :test #'string=)))
     (with-output-to-string (stream)
       (format stream (gemini-parser:geminize-h1 (_ "Latest visited addresses~2%")))
@@ -2420,33 +2427,25 @@ printed, on the main window."
       (filesystem-tree-window:init actual-root)
       (focus-to-filesystem-explorer-window))))
 
-(defun kami-open-url-prompt ()
-  (_ "Open kami url: "))
-
-(defun kami-open-url ()
-  (flet ((on-input-complete (url)
-           (with-enqueued-process ()
-             (tui:with-notify-errors
-               (let ((handlers (kami:iri->filesystem-window-handlers url)))
-                 (if handlers
-                     (let* ((path          (uri:path (iri:iri-parse url)))
-                            (path-to-dir-p (fs:path-referencing-dir-p path))
-                            (init-path (if path-to-dir-p
-                                           path
-                                           (fs:parent-dir-path path))))
-                       (filesystem-tree-window:init init-path handlers)
-                       (if path-to-dir-p
-                           (focus-to-filesystem-explorer-window)
-                           (progn
-                             (%file-explorer-download-path path)
-                             (file-explorer-close-path))))
-                     (error-message (format nil
-                                            (_ "~s is not a valid kami address")
-                                            url))))))))
-    (let ((prompt (kami-open-url-prompt)))
-      (ask-string-input #'on-input-complete
-                        :prompt      prompt
-                        :complete-fn (complete:make-complete-gemini-iri-fn prompt)))))
+(defun open-kami-address (url)
+  (with-enqueued-process ()
+    (tui:with-notify-errors
+      (let ((handlers (kami:iri->filesystem-window-handlers url)))
+        (if handlers
+            (let* ((path          (uri:path (iri:iri-parse url)))
+                   (path-to-dir-p (fs:path-referencing-dir-p path))
+                   (init-path (if path-to-dir-p
+                                  path
+                                  (fs:parent-dir-path path))))
+              (filesystem-tree-window:init init-path handlers)
+              (if path-to-dir-p
+                  (focus-to-filesystem-explorer-window)
+                  (progn
+                    (%file-explorer-download-path path)
+                    (file-explorer-close-path))))
+            (error-message (format nil
+                                   (_ "~s is not a valid kami address")
+                                   url)))))))
 
 (defun file-explorer-expand-path ()
   (when-let* ((win    *filesystem-explorer-window*)

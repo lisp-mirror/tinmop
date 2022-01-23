@@ -1,5 +1,7 @@
 (in-package :kami)
 
+(a:define-constant +kami-scheme+     "np"               :test #'string=)
+
 (a:define-constant +download-buffer+ (expt 2 24)        :test #'=)
 
 (a:define-constant +octect-type+     '(unsigned-byte 8) :test #'equalp)

@@ -8,5 +8,6 @@
   (:local-nicknames (:9p :purgatory)
                     (:a  :alexandria))
   (:export
+   :+kami-scheme+
    :generate-filesystem-window-handlers
    :iri->filesystem-window-handlers))

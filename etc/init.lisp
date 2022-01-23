@@ -137,8 +137,6 @@
 
 ;; global keymap
 
-(define-key "M-k >"     #'kami-open-url)
-
 (define-key "q"         #'quit)  ; here we  are  calling the  custom
                                  ; function defined above
 (define-key "C-a"       #'show-about-window)
@@ -155,7 +153,7 @@
 
 (define-key "!"         #'gemini-search)
 
-(define-key ">"         #'open-gemini-address)
+(define-key ">"         #'open-net-address)
 
 (define-key "M-c"       #'open-chats-list-window)
 

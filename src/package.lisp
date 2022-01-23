@@ -2740,7 +2740,8 @@
    :chat-create-new
    :chat-list-go-up
    :chat-list-go-down
-   :gemini-open-url-prompt
+   :open-url-prompt
+   :open-net-address
    :open-gemini-address
    :gemini-history-back
    :gemini-view-source
@@ -2805,7 +2806,7 @@
    :load-script-file
    :view-user-avatar
    :open-file-explorer
-   :kami-open-url
+   :open-kami-address
    :file-explorer-expand-path
    :file-explorer-close-path
    :file-explorer-rename-path

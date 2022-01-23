@@ -80,7 +80,7 @@
       (ui:close-open-message-link-window))
     (cond
       ((string= gemini-constants:+gemini-scheme+ scheme)
-       (db:insert-in-history (ui:gemini-open-url-prompt) url)
+       (db:insert-in-history (ui:open-url-prompt) url)
        (db:gemlog-mark-as-seen url)
        (gemini-viewer:ensure-just-one-stream-rendering)
        (gemini-viewer:load-gemini-url url
