@@ -1351,7 +1351,9 @@ certificate).
   (focus-to-open-gemini-subscription-window))
 
 (defun close-gemlog-window ()
-  (close-window-and-return-to-threads *gemini-subscription-window*))
+  (if *thread-window*
+      (close-window-and-return-to-threads *gemini-subscription-window*)
+      (close-window-and-return-to-message *gemini-subscription-window*)))
 
 (defmacro with-selected-gemlog-id ((fields gemlog-id) &body body)
   `(when-let* ((,fields    (line-oriented-window:selected-row-fields *gemini-subscription-window*))
