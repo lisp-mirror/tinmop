@@ -2506,14 +2506,56 @@ printed, on the main window."
                         :initial-value output-file))))
 
 (defun file-explorer-download-path ()
-  "Download a file"
-  (when-let* ((win    *filesystem-explorer-window*)
-              (fields (line-oriented-window:selected-row-fields win))
-              (path   (fstree:tree-path  fields)))
-    (%file-explorer-download-path path)))
+  "Download file or files, wildcard are allowed (e.g. \"/foo/*.lisp\")."
+  (when-let* ((win        *filesystem-explorer-window*)
+              (fields     (line-oriented-window:selected-row-fields win))
+              (remote-dir (fstree:tree-path fields))
+              (local-dir  (os-utils:pwd)))
+    (labels ((on-input-destination-dir (path)
+               (when (and (string-not-empty-p    path)
+                          (fs:extension-dir-p    path)
+                          (fs:directory-exists-p path))
+                 (setf local-dir path)
+                 (ask-string-input #'on-destination-dir-completed
+                                   :initial-value remote-dir
+                                   :prompt        (_ "Download: "))))
+             (on-destination-dir-completed (source-pattern)
+               (when (string-not-empty-p source-pattern)
+                 (if (fs:extension-dir-p source-pattern)
+                     (error-message (format nil "~a is a directory" source-pattern))
+                     (with-enqueued-process ()
+                       (let* ((remote-files (filesystem-tree-window:filter-node-children win
+                                                                                         source-pattern))
+                              (local-files  (mapcar (lambda (a)
+                                                       (fs:append-file-to-path local-dir
+                                                                               a))
+                                                    remote-files)))
+                         (if (null remote-files)
+                             (error-message (format nil
+                                                    "no matching files for ~a"
+                                                    source-pattern))
+                             (loop for remote-file in remote-files
+                                   for local-file  in local-files
+                                   do
+                               (with-blocking-notify-procedure
+                                   ((format nil
+                                            (_ "Starting download of ~a")
+                                            remote-file)
+                                    (format nil
+                                            (_ "Download of ~a completed in ~a")
+                                            remote-file
+                                            local-file))
+                                 (fstree:download-treenode win
+                                                            remote-file
+                                                            local-file))))))))))
+      (ask-string-input #'on-input-destination-dir
+                        :initial-value local-dir
+                        :complete-fn   #'complete:directory-complete
+                        :prompt        (_ "Save downloaded files in directory: ")))))
+
 
 (defun file-explorer-upload-path ()
-  "Upload a file"
+  "Upload a file or files, wildcard are allowed (e.g. \"/foo/*.lisp\")."
   (when-let* ((win              *filesystem-explorer-window*)
               (fields           (line-oriented-window:selected-row-fields win))
               (destination-dir  (fstree:tree-path fields)))
@@ -2664,6 +2706,7 @@ if the selected item represents a directory."
     (fstree:open-node win path)))
 
 (defun file-explorer-node-details ()
+  "Print details dor the node (name, permissions etc.)"
   (when-let* ((win         *filesystem-explorer-window*)
               (fields      (line-oriented-window:selected-row-fields win))
               (path        (fstree:tree-path  fields))

@@ -2054,6 +2054,7 @@
    :open-node
    :edit-node
    :close-connection
+   :filter-node-children
    :resync-rows-db
    :init))
 

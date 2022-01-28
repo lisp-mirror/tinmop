@@ -144,8 +144,10 @@
       (with-cloned-root-fid (*stream* root-fid)
         (a:when-let ((stat-entry (9p:path-exists-p *stream* root-fid path)))
           (ecase what
+            (:type
+             (9p:stat-entry-type stat-entry))
             (:size
-             (9p:stat-size stat-entry))
+             (9p:stat-entry-type stat-entry))
             (:size-string
              (fs:octects->units-string (9p:stat-size stat-entry)))
             (:permissions-string

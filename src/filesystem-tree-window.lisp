@@ -265,6 +265,10 @@
   (when-let ((matching-node (find-node root path-to-expand)))
     (funcall expand-fn matching-node)))
 
+(defun expand-treenode-collect-paths (root path-to-expand expand-fn)
+  (when-let ((root-node (%expand-treenode root path-to-expand expand-fn)))
+    (mapcar #'tree-path (mtree:collect-nodes-data root-node))))
+
 (defun %build-annotated-tree-rows (window root-node)
   (with-accessors ((render-arrow-value         render-arrow-value)
                    (render-leaf-value          render-leaf-value)
@@ -445,7 +449,7 @@
             (delete-treenode window path))))))
 
 (defun filesystem-query-treenode (window path what)
-  (assert (member what '(:size :size-string :permissions :permissions-string)))
+  (assert (member what '(:size :size-string :permissions :permissions-string :type)))
   (when-let* ((root-node     (filesystem-root window))
               (matching-node (find-node root-node path)))
     (funcall (filesystem-query-path-function window)
@@ -533,6 +537,24 @@
 
 (defun close-connection (window)
   (funcall (filesystem-close-connection-function window)))
+
+(defun filter-node-children (window path-pattern)
+  (with-accessors ((filesystem-root            filesystem-root)
+                   (filesystem-expand-function filesystem-expand-function)) window
+    (when-let* ((dir          (if (fs:extension-dir-p  path-pattern)
+                                  path-pattern
+                                  (fs:parent-dir-path path-pattern)))
+                (all-children (expand-treenode-collect-paths filesystem-root
+                                                             dir
+                                                             filesystem-expand-function))
+                (all-files    (remove-if (lambda (a)
+                                           (let* ((type (filesystem-query-treenode window
+                                                                                   a
+                                                                                   :type)))
+                                             (eq type :directory)))
+                                         all-children)))
+      (remove-if-not (lambda (a) (fs:filename-pattern-match path-pattern a))
+                     all-files))))
 
 (defun init (root &optional (handlers-plist nil))
   "Initialize the window"
