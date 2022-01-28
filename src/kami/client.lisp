@@ -135,7 +135,7 @@
                      (when (< read-so-far +download-buffer+)
                        (return-from write-loop t)))
             (9p:9p-clunk *stream* fid)
-            (9p:read-all-pending-message stream)))))))
+            (9p:read-all-pending-messages stream)))))))
 
 (defun query-path (stream root-fid)
   (lambda (path what)
