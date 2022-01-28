@@ -2506,7 +2506,7 @@ printed, on the main window."
                         :initial-value output-file))))
 
 (defun file-explorer-download-path ()
-  "Download file or files, wildcard are allowed (e.g. \"/foo/*.lisp\")."
+  "Download file or files, wildcards are allowed (e.g. \"/foo/*.lisp\")."
   (when-let* ((win        *filesystem-explorer-window*)
               (fields     (line-oriented-window:selected-row-fields win))
               (remote-dir (fstree:tree-path fields))
@@ -2555,7 +2555,7 @@ printed, on the main window."
 
 
 (defun file-explorer-upload-path ()
-  "Upload a file or files, wildcard are allowed (e.g. \"/foo/*.lisp\")."
+  "Upload a file or files, wildcards are allowed (e.g. \"/foo/*.lisp\")."
   (when-let* ((win              *filesystem-explorer-window*)
               (fields           (line-oriented-window:selected-row-fields win))
               (destination-dir  (fstree:tree-path fields)))
@@ -2706,18 +2706,21 @@ if the selected item represents a directory."
     (fstree:open-node win path)))
 
 (defun file-explorer-node-details ()
-  "Print details dor the node (name, permissions etc.)"
+  "Print details for the node (name, permissions etc.)"
   (when-let* ((win         *filesystem-explorer-window*)
               (fields      (line-oriented-window:selected-row-fields win))
               (path        (fstree:tree-path  fields))
               (size        (fstree:filesystem-query-treenode win path :size-string))
               (permissions (fstree:filesystem-query-treenode win path :permissions-string))
+              (entry-type  (symbol-name (fstree:filesystem-query-treenode win path :type)))
               (bg          (swconf:win-bg swconf:+key-help-dialog+))
               (fg          (swconf:win-fg swconf:+key-help-dialog+)))
     (windows:make-blocking-message-dialog *main-window*
                                           nil
                                           (format nil (_ "Details of: ~a") path)
-                                          (list (_ "Size")
+                                          (list (_ "Type")
+                                                entry-type
+                                                (_ "Size")
                                                 size
                                                 (_ "Permissions")
                                                 permissions)
