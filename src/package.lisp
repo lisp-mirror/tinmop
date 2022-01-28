@@ -317,6 +317,8 @@
    :clean-temporary-files
    :*temporary-directories-created*
    :temporary-directory
+   :filename-pattern-match
+   :children-matching-path
    :recursive-delete
    :clean-temporary-directories
    :with-anaphoric-temp-file
@@ -335,7 +337,8 @@
    :read-single-form
    :eq-filename
    :octects->units
-   :octects->units-string))
+   :octects->units-string
+   :normalize-path))
 
 (defpackage :os-utils
   (:use

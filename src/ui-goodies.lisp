@@ -2516,28 +2516,45 @@ printed, on the main window."
   "Upload a file"
   (when-let* ((win              *filesystem-explorer-window*)
               (fields           (line-oriented-window:selected-row-fields win))
-              (destination-dir  (fstree:tree-path  fields)))
+              (destination-dir  (fstree:tree-path fields)))
     (labels ((build-actual-destination-file (source destination)
                (if (fs:extension-dir-p destination)
                    (fs:cat-parent-dir destination
                                       (fs:path-last-element source))
                    destination))
+             (build-actual-paths (source)
+               (let* ((all-children (remove-if #'fs:dirp
+                                               (fs:children-matching-path source)))
+                      (destination  (mapcar (lambda (a)
+                                              (build-actual-destination-file a
+                                                                             destination-dir))
+                                            all-children)))
+                 (values all-children destination)))
              (on-input-complete (source-file)
-               (cond
-                 ((fs:dirp source-file)
-                  (error-message (format nil "~a is a directory" source-file)))
-                 ((not (fs:file-exists-p source-file))
-                  (error-message (format nil "~a does not exists" source-file)))
-                 (t
-                  (when (string-not-empty-p source-file)
-                    (with-enqueued-process ()
-                      (with-blocking-notify-procedure
-                          ((format nil (_ "Starting upload of ~a") source-file)
-                           (format nil (_ "Upload completed in ~a") destination-dir))
-                        (let ((destination-file  (build-actual-destination-file source-file
-                                                                                destination-dir)))
-                          (fstree:upload-treenode win source-file destination-file)
-                          (info-message destination-file)))))))))
+               (when (string-not-empty-p source-file)
+                 (if (fs:dirp source-file)
+                     (error-message (format nil "~a is a directory" source-file))
+                     (with-enqueued-process ()
+                       (multiple-value-bind (sources destinations)
+                           (build-actual-paths source-file)
+                         (if (null sources)
+                             (error-message (format nil
+                                                    "no matching files for ~a"
+                                                    source-file))
+                             (loop for destination in destinations
+                                   for source      in sources
+                                   do
+                               (with-blocking-notify-procedure
+                                   ((format nil
+                                            (_ "Starting upload of ~a")
+                                            destination)
+                                    (format nil
+                                            (_ "Upload of ~a completed in ~a")
+                                            source
+                                            destination))
+                                 (fstree:upload-treenode win
+                                                         source
+                                                         destination))))))))))
       (ask-string-input #'on-input-complete
                         :prompt        (_ "Upload: ")
                         :complete-fn #'complete:directory-complete))))

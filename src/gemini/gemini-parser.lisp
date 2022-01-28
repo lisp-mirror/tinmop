@@ -272,15 +272,15 @@
                                                "/")
                                            (uri:path parsed)))))
          (make-gemini-iri original-host
-                          (uri:normalize-path path)
+                          (fs:normalize-path path)
                           :query    (uri:query parsed)
                           :port     original-port
                           :fragment (uri:fragment parsed))))
       ((null (uri:scheme parsed))
        (strcat +gemini-scheme+ ":"
-               (to-s (uri:normalize-path parsed))))
+               (to-s (fs:normalize-path parsed))))
       (t
-       (to-s (uri:normalize-path parsed))))))
+       (to-s (fs:normalize-path parsed))))))
 
 (defun make-gemini-iri (host path &key
                                     (query    nil)

@@ -1113,11 +1113,11 @@
     :accessor enqueue)))
 
 (defun relative-path->absolute (path)
-  (uri:normalize-path (fs:prepend-pwd path)))
+  (fs:normalize-path (fs:prepend-pwd path)))
 
 (defun render-directory-as-gemini-text (root-directory)
   (let* ((index-path (relative-path->absolute root-directory))
-         (all-paths  (mapcar #'uri:normalize-path
+         (all-paths  (mapcar #'fs:normalize-path
                              (fs:collect-children index-path)))
          (link-lines ())
          (raw-text   (with-output-to-string (stream)

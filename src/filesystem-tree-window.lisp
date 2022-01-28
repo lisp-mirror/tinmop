@@ -178,7 +178,7 @@
     (let* ((children    (mapcar (lambda (a)
                                   (if (not (or (fs:backreference-dir-p a)
                                                (fs:loopback-reference-dir-p a)))
-                                      (uri:normalize-path a)
+                                      (fs:normalize-path a)
                                       a))
                                 (fs:collect-children path)))
            (files       (remove-if #'fs:dirp children))
@@ -336,7 +336,7 @@
 
 (defun jump-to-parent-node (window path)
   (when (fs:backreference-dir-p path)
-    (let ((parent-path (uri:normalize-path path)))
+    (let ((parent-path (fs:normalize-path path)))
       (win-clear window :redraw nil)
       (resync-rows-db window :selected-path parent-path :redraw t))))
 
@@ -418,7 +418,9 @@
   (when-let* ((root-node     (filesystem-root window))
               (parent-node   (find-node root-node (fs:parent-dir-path remote-path)))
               (parent-path   (tree-path (data parent-node))))
-    (funcall (filesystem-upload-function window) source-file remote-path)
+    (funcall (filesystem-upload-function window)
+             source-file
+             (fs:normalize-path remote-path))
     (remove-all-children parent-node)
     (expand-treenode window parent-path)
     (win-clear window :redraw nil)

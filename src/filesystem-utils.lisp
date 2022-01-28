@@ -391,6 +391,23 @@
       (push directory-path *temporary-directories-created*)
       directory-path)))
 
+(cffi:defcfun (ffi-fnmatch "fnmatch")
+  :int
+  (pattern       :pointer)
+  (string        :pointer)
+  (flags         :int))
+
+(defun filename-pattern-match (pattern string)
+  (cffi:with-foreign-string (ptr-pattern pattern)
+    (cffi:with-foreign-string (ptr-string string)
+      (zerop (ffi-fnmatch ptr-pattern ptr-string 0)))))
+
+(defun children-matching-path (pattern)
+  (let* ((parent   (parent-dir-path pattern))
+         (children (collect-children parent)))
+    (remove-if-not (lambda (a) (filename-pattern-match pattern a))
+                   children)))
+
 (defun recursive-delete (path)
   (if (regular-file-p path)
       (delete-file-if-exists path)
@@ -537,3 +554,59 @@
        (format nil (config:_ "~a Mib") (truncate (octects->units object :mib))))
       (t
        (format nil (config:_ "~a Gib") (truncate (octects->units object :gib)))))))
+
+(defgeneric normalize-path (object))
+
+(defmethod normalize-path ((object null))
+  nil)
+
+(defmethod normalize-path ((object string))
+  (flet ((make-stack ()
+           (make-instance 'stack:stack
+                          :test-fn #'string=))
+         (fill-input-stack (stack)
+           (loop
+              for segment in (remove-if #'text-utils:string-empty-p
+                                        (reverse (cl-ppcre:split "/" object)))
+              do
+                (stack:stack-push stack segment))))
+    (let* ((ends-with-separator-p (text-utils:string-ends-with-p "/" object))
+           (ends-with-dots        nil)
+           (input-stack  (make-stack))
+           (output-stack (make-stack)))
+      (fill-input-stack input-stack)
+      (labels ((fill-output-buffer ()
+                 (when (not (stack:stack-empty-p input-stack))
+                   (let ((popped (stack:stack-pop input-stack)))
+                     (cond
+                       ((and (string= popped "..")
+                             (not (stack:stack-empty-p output-stack)))
+                        (stack:stack-pop output-stack)
+                        (when (stack:stack-empty-p input-stack)
+                          (setf ends-with-dots t)))
+                       ((and (or (string= popped "..")
+                                 (string= popped "."))
+                             (stack:stack-empty-p input-stack))
+                        (setf ends-with-dots t)
+                        (stack:stack-push output-stack "/"))
+                       ((and (string/= popped ".")
+                             (string/= popped ".."))
+                        (stack:stack-push output-stack popped))))
+                   (fill-output-buffer)))
+               (output-stack->list ()
+                 (reverse (loop
+                             for segment = (stack:stack-pop output-stack)
+                             while segment
+                             collect segment))))
+        (fill-output-buffer)
+        (let* ((joinable (output-stack->list))
+               (merged   (if joinable
+                             (if (or ends-with-separator-p
+                                     ends-with-dots)
+                                 (text-utils:wrap-with (text-utils:join-with-strings joinable
+                                                                                     "/")
+                                                       "/")
+                                 (text-utils:strcat "/" (text-utils:join-with-strings joinable
+                                                                                      "/")))
+                             "/")))
+          (cl-ppcre:regex-replace-all "//" merged ""))))))

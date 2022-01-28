@@ -306,9 +306,16 @@
               query
               fragment)))
 
-(defmethod uri:normalize-path ((object iri))
-  (let ((clean-path (uri:normalize-path (uri:path object)))
+(defmethod normalize-path ((object iri))
+  (let ((clean-path (fs:normalize-path (uri:path object)))
         (copy       (copy-iri  object)))
+    (when clean-path
+      (setf (uri:path copy) clean-path))
+    copy))
+
+(defmethod normalize-path ((object uri:uri))
+  (let ((clean-path (fs:normalize-path (uri:path object)))
+        (copy       (uri:copy-uri  object)))
     (when clean-path
       (setf (uri:path copy) clean-path))
     copy))

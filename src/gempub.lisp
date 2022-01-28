@@ -114,7 +114,7 @@
                         (gempub:gempub-file-p local-uri :ignore-errors t)))
           (push local-uri removed-known)
           (db:gempub-metadata-delete local-uri))))
-    (loop for gempub-file in (mapcar #'uri:normalize-path all-gempub-files) do
+    (loop for gempub-file in (mapcar #'fs:normalize-path all-gempub-files) do
       (when (not (db:gempub-metadata-find gempub-file))
         (push gempub-file added-file)
         (save-metadata gempub-file)))
