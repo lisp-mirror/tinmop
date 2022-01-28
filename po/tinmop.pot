@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tinmop 0.9.2\n"
 "Report-Msgid-Bugs-To: https://notabug.org/cage/tinmop/\n"
-"POT-Creation-Date: 2022-01-23 15:04+0100\n"
+"POT-Creation-Date: 2022-01-28 15:57+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -210,36 +210,36 @@ msgstr ""
 msgid "not implemented"
 msgstr ""
 
-#: src/filesystem-tree-window.lisp:468 src/line-oriented-window.lisp:325
+#: src/filesystem-tree-window.lisp:475 src/line-oriented-window.lisp:325
 #: src/open-message-link-window.lisp:194 src/program-events.lisp:465
 msgid "Invalid regular expression"
 msgstr ""
 
-#: src/filesystem-tree-window.lisp:540
+#: src/filesystem-tree-window.lisp:566
 msgid "File explorer"
 msgstr ""
 
-#: src/filesystem-utils.lisp:506
+#: src/filesystem-utils.lisp:540
 #, lisp-format
 msgid "invalid value: ~a"
 msgstr ""
 
-#: src/filesystem-utils.lisp:516
+#: src/filesystem-utils.lisp:550
 #, lisp-format
 msgid "~a bytes"
 msgstr ""
 
-#: src/filesystem-utils.lisp:518
+#: src/filesystem-utils.lisp:552
 #, lisp-format
 msgid "~a Kib"
 msgstr ""
 
-#: src/filesystem-utils.lisp:520
+#: src/filesystem-utils.lisp:554
 #, lisp-format
 msgid "~a Mib"
 msgstr ""
 
-#: src/filesystem-utils.lisp:522
+#: src/filesystem-utils.lisp:556
 #, lisp-format
 msgid "~a Gib"
 msgstr ""
@@ -352,7 +352,7 @@ msgstr ""
 msgid "No address found"
 msgstr ""
 
-#: src/kami/client.lisp:154
+#: src/kami/client.lisp:156
 #, lisp-format
 msgid "User: ~a Group: ~a Others ~a"
 msgstr ""
@@ -1455,7 +1455,7 @@ msgstr ""
 msgid "~s is not a valid kami address"
 msgstr ""
 
-#: src/ui-goodies.lisp:2477 src/ui-goodies.lisp:2604
+#: src/ui-goodies.lisp:2477 src/ui-goodies.lisp:2663
 #, lisp-format
 msgid "Delete ~a? "
 msgstr ""
@@ -1480,46 +1480,68 @@ msgstr ""
 msgid "Download ~a to: "
 msgstr ""
 
-#: src/ui-goodies.lisp:2535
+#: src/ui-goodies.lisp:2521
+msgid "Download: "
+msgstr ""
+
+#: src/ui-goodies.lisp:2542
+#, lisp-format
+msgid "Starting download of ~a"
+msgstr ""
+
+#: src/ui-goodies.lisp:2545
+#, lisp-format
+msgid "Download of ~a completed in ~a"
+msgstr ""
+
+#: src/ui-goodies.lisp:2554
+msgid "Save downloaded files in directory: "
+msgstr ""
+
+#: src/ui-goodies.lisp:2591
 #, lisp-format
 msgid "Starting upload of ~a"
 msgstr ""
 
-#: src/ui-goodies.lisp:2536
+#: src/ui-goodies.lisp:2594
 #, lisp-format
-msgid "Upload completed in ~a"
+msgid "Upload of ~a completed in ~a"
 msgstr ""
 
-#: src/ui-goodies.lisp:2542
+#: src/ui-goodies.lisp:2601
 msgid "Upload: "
 msgstr ""
 
-#: src/ui-goodies.lisp:2556
+#: src/ui-goodies.lisp:2615
 msgid "Create: "
 msgstr ""
 
-#: src/ui-goodies.lisp:2578
+#: src/ui-goodies.lisp:2637
 msgid "Search for: "
 msgstr ""
 
-#: src/ui-goodies.lisp:2621
+#: src/ui-goodies.lisp:2680
 msgid "Delete marked items? "
 msgstr ""
 
-#: src/ui-goodies.lisp:2659
+#: src/ui-goodies.lisp:2720
 #, lisp-format
 msgid "Details of: ~a"
 msgstr ""
 
-#: src/ui-goodies.lisp:2660
+#: src/ui-goodies.lisp:2721
+msgid "Type"
+msgstr ""
+
+#: src/ui-goodies.lisp:2723
 msgid "Size"
 msgstr ""
 
-#: src/ui-goodies.lisp:2662
+#: src/ui-goodies.lisp:2725
 msgid "Permissions"
 msgstr ""
 
-#: src/ui-goodies.lisp:2672
+#: src/ui-goodies.lisp:2735
 #, lisp-format
 msgid "File ~s was modified on server"
 msgstr ""

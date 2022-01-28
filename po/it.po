@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tinmop 0.0.1\n"
 "Report-Msgid-Bugs-To: https://notabug.org/cage/tinmop/\n"
-"POT-Creation-Date: 2022-01-23 15:04+0100\n"
-"PO-Revision-Date: 2022-01-23 15:05+0100\n"
+"POT-Creation-Date: 2022-01-28 15:57+0100\n"
+"PO-Revision-Date: 2022-01-28 15:59+0100\n"
 "Last-Translator: cage <cage@invalid.org>\n"
 "Language-Team: Italian\n"
 "Language: it\n"
@@ -216,36 +216,36 @@ msgstr "nessuna descrizione"
 msgid "not implemented"
 msgstr "Non implementato"
 
-#: src/filesystem-tree-window.lisp:468 src/line-oriented-window.lisp:325
+#: src/filesystem-tree-window.lisp:475 src/line-oriented-window.lisp:325
 #: src/open-message-link-window.lisp:194 src/program-events.lisp:465
 msgid "Invalid regular expression"
 msgstr "Espressione regolare non valida"
 
-#: src/filesystem-tree-window.lisp:540
+#: src/filesystem-tree-window.lisp:566
 msgid "File explorer"
 msgstr "Navigatore albero dei file"
 
-#: src/filesystem-utils.lisp:506
+#: src/filesystem-utils.lisp:540
 #, lisp-format
 msgid "invalid value: ~a"
 msgstr "Valore non valido: ~a"
 
-#: src/filesystem-utils.lisp:516
+#: src/filesystem-utils.lisp:550
 #, lisp-format
 msgid "~a bytes"
 msgstr "~a byte"
 
-#: src/filesystem-utils.lisp:518
+#: src/filesystem-utils.lisp:552
 #, lisp-format
 msgid "~a Kib"
 msgstr "~a Kib"
 
-#: src/filesystem-utils.lisp:520
+#: src/filesystem-utils.lisp:554
 #, lisp-format
 msgid "~a Mib"
 msgstr "~a Mib"
 
-#: src/filesystem-utils.lisp:522
+#: src/filesystem-utils.lisp:556
 #, lisp-format
 msgid "~a Gib"
 msgstr "~a Gib"
@@ -361,7 +361,7 @@ msgstr "Biblioteca dei gempub"
 msgid "No address found"
 msgstr "nessun indirizzo trovato"
 
-#: src/kami/client.lisp:154
+#: src/kami/client.lisp:156
 #, lisp-format
 msgid "User: ~a Group: ~a Others ~a"
 msgstr "\"Utente: ~a Gruppo: ~a Altri: ~a\""
@@ -1479,7 +1479,7 @@ msgstr "Carica il file: "
 msgid "~s is not a valid kami address"
 msgstr "~s non è un indirizzo kami valido"
 
-#: src/ui-goodies.lisp:2477 src/ui-goodies.lisp:2604
+#: src/ui-goodies.lisp:2477 src/ui-goodies.lisp:2663
 #, lisp-format
 msgid "Delete ~a? "
 msgstr "Cancella ~a? "
@@ -1504,46 +1504,68 @@ msgstr "Scaricamento di ~a completato"
 msgid "Download ~a to: "
 msgstr "Scarica ~a in: "
 
-#: src/ui-goodies.lisp:2535
+#: src/ui-goodies.lisp:2521
+msgid "Download: "
+msgstr "Scarica: "
+
+#: src/ui-goodies.lisp:2542
+#, lisp-format
+msgid "Starting download of ~a"
+msgstr "Avvio il download di ~a"
+
+#: src/ui-goodies.lisp:2545
+#, lisp-format
+msgid "Download of ~a completed in ~a"
+msgstr "Scaricamento di ~a completato in ~a"
+
+#: src/ui-goodies.lisp:2554
+msgid "Save downloaded files in directory: "
+msgstr "Salva i file scaricati nella directory: "
+
+#: src/ui-goodies.lisp:2591
 #, lisp-format
 msgid "Starting upload of ~a"
 msgstr "Inizio caricamento di ~a"
 
-#: src/ui-goodies.lisp:2536
+#: src/ui-goodies.lisp:2594
 #, lisp-format
-msgid "Upload completed in ~a"
-msgstr "Caricamento di ~a completato"
+msgid "Upload of ~a completed in ~a"
+msgstr "Caricamento di ~a completato in ~a"
 
-#: src/ui-goodies.lisp:2542
+#: src/ui-goodies.lisp:2601
 msgid "Upload: "
 msgstr "Carica: "
 
-#: src/ui-goodies.lisp:2556
+#: src/ui-goodies.lisp:2615
 msgid "Create: "
 msgstr "Crea: "
 
-#: src/ui-goodies.lisp:2578
+#: src/ui-goodies.lisp:2637
 msgid "Search for: "
 msgstr "Criterio di ricerca: "
 
-#: src/ui-goodies.lisp:2621
+#: src/ui-goodies.lisp:2680
 msgid "Delete marked items? "
 msgstr "Cancella gli elementi selezionati? "
 
-#: src/ui-goodies.lisp:2659
+#: src/ui-goodies.lisp:2720
 #, lisp-format
 msgid "Details of: ~a"
 msgstr "Dettagli di: ~a"
 
-#: src/ui-goodies.lisp:2660
+#: src/ui-goodies.lisp:2721
+msgid "Type"
+msgstr "Tipo"
+
+#: src/ui-goodies.lisp:2723
 msgid "Size"
 msgstr "Dimensione"
 
-#: src/ui-goodies.lisp:2662
+#: src/ui-goodies.lisp:2725
 msgid "Permissions"
 msgstr "Permessi"
 
-#: src/ui-goodies.lisp:2672
+#: src/ui-goodies.lisp:2735
 #, lisp-format
 msgid "File ~s was modified on server"
 msgstr "Il file ~s è stato modificato sul server"
