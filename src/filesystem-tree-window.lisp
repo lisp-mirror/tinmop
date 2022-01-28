@@ -416,6 +416,7 @@
                             (destination-file (make-temporary-file-from-path remote-path)))
   (when-let* ((root-node     (filesystem-root window))
               (matching-node (find-node root-node remote-path)))
+    (fs:create-file destination-file)
     (funcall (filesystem-download-function window) matching-node destination-file)))
 
 (defun upload-treenode (window source-file remote-path)
@@ -551,7 +552,8 @@
                                            (let* ((type (filesystem-query-treenode window
                                                                                    a
                                                                                    :type)))
-                                             (eq type :directory)))
+                                             (or (null type)
+                                                 (eq type :directory))))
                                          all-children)))
       (remove-if-not (lambda (a) (fs:filename-pattern-match path-pattern a))
                      all-files))))

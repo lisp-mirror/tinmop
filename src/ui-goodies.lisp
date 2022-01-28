@@ -2524,11 +2524,11 @@ printed, on the main window."
                  (if (fs:extension-dir-p source-pattern)
                      (error-message (format nil "~a is a directory" source-pattern))
                      (with-enqueued-process ()
-                       (let* ((remote-files (filesystem-tree-window:filter-node-children win
-                                                                                         source-pattern))
+                       (let* ((remote-files (fstree:filter-node-children win
+                                                                         source-pattern))
                               (local-files  (mapcar (lambda (a)
                                                        (fs:append-file-to-path local-dir
-                                                                               a))
+                                                                               (fs:path-last-element a)))
                                                     remote-files)))
                          (if (null remote-files)
                              (error-message (format nil
@@ -2712,18 +2712,18 @@ if the selected item represents a directory."
               (path        (fstree:tree-path  fields))
               (size        (fstree:filesystem-query-treenode win path :size-string))
               (permissions (fstree:filesystem-query-treenode win path :permissions-string))
-              (entry-type  (symbol-name (fstree:filesystem-query-treenode win path :type)))
+              (entry-type  (fstree:filesystem-query-treenode win path :type))
               (bg          (swconf:win-bg swconf:+key-help-dialog+))
               (fg          (swconf:win-fg swconf:+key-help-dialog+)))
     (windows:make-blocking-message-dialog *main-window*
                                           nil
                                           (format nil (_ "Details of: ~a") path)
                                           (list (_ "Type")
-                                                entry-type
+                                                (to-s entry-type)
                                                 (_ "Size")
-                                                size
+                                                (to-s size)
                                                 (_ "Permissions")
-                                                permissions)
+                                                (to-s permissions))
                                           bg
                                           fg)))
 

@@ -142,7 +142,7 @@
     (let* ((*stream*   stream)
            (*root-fid* root-fid))
       (with-cloned-root-fid (*stream* root-fid)
-        (a:when-let ((stat-entry (9p:path-exists-p *stream* root-fid path)))
+        (a:when-let ((stat-entry (9p:path-info *stream* root-fid path)))
           (ecase what
             (:type
              (9p:stat-entry-type stat-entry))
