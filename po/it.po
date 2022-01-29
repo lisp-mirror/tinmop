@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tinmop 0.0.1\n"
 "Report-Msgid-Bugs-To: https://notabug.org/cage/tinmop/\n"
-"POT-Creation-Date: 2022-01-28 15:57+0100\n"
-"PO-Revision-Date: 2022-01-28 15:59+0100\n"
+"POT-Creation-Date: 2022-01-29 17:45+0100\n"
+"PO-Revision-Date: 2022-01-29 17:46+0100\n"
 "Last-Translator: cage <cage@invalid.org>\n"
 "Language-Team: Italian\n"
 "Language: it\n"
@@ -216,36 +216,36 @@ msgstr "nessuna descrizione"
 msgid "not implemented"
 msgstr "Non implementato"
 
-#: src/filesystem-tree-window.lisp:475 src/line-oriented-window.lisp:325
+#: src/filesystem-tree-window.lisp:479 src/line-oriented-window.lisp:325
 #: src/open-message-link-window.lisp:194 src/program-events.lisp:465
 msgid "Invalid regular expression"
 msgstr "Espressione regolare non valida"
 
-#: src/filesystem-tree-window.lisp:566
+#: src/filesystem-tree-window.lisp:570
 msgid "File explorer"
 msgstr "Navigatore albero dei file"
 
-#: src/filesystem-utils.lisp:540
+#: src/filesystem-utils.lisp:544
 #, lisp-format
 msgid "invalid value: ~a"
 msgstr "Valore non valido: ~a"
 
-#: src/filesystem-utils.lisp:550
+#: src/filesystem-utils.lisp:554
 #, lisp-format
 msgid "~a bytes"
 msgstr "~a byte"
 
-#: src/filesystem-utils.lisp:552
+#: src/filesystem-utils.lisp:556
 #, lisp-format
 msgid "~a Kib"
 msgstr "~a Kib"
 
-#: src/filesystem-utils.lisp:554
+#: src/filesystem-utils.lisp:558
 #, lisp-format
 msgid "~a Mib"
 msgstr "~a Mib"
 
-#: src/filesystem-utils.lisp:556
+#: src/filesystem-utils.lisp:560
 #, lisp-format
 msgid "~a Gib"
 msgstr "~a Gib"
@@ -1532,7 +1532,7 @@ msgstr "Inizio caricamento di ~a"
 msgid "Upload of ~a completed in ~a"
 msgstr "Caricamento di ~a completato in ~a"
 
-#: src/ui-goodies.lisp:2601
+#: src/ui-goodies.lisp:2601 src/ui-goodies.lisp:2772
 msgid "Upload: "
 msgstr "Carica: "
 
@@ -1569,6 +1569,15 @@ msgstr "Permessi"
 #, lisp-format
 msgid "File ~s was modified on server"
 msgstr "Il file ~s è stato modificato sul server"
+
+#: src/ui-goodies.lisp:2762
+#, lisp-format
+msgid "Uploading ~a"
+msgstr "Caricamento di ~a"
+
+#: src/ui-goodies.lisp:2770
+msgid "Uploading completed."
+msgstr "Caricamento completato."
 
 #: src/windows.lisp:558 src/windows.lisp:614
 msgid "OK"

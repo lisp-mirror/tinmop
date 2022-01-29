@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tinmop 0.9.2\n"
 "Report-Msgid-Bugs-To: https://notabug.org/cage/tinmop/\n"
-"POT-Creation-Date: 2022-01-28 15:57+0100\n"
+"POT-Creation-Date: 2022-01-29 17:45+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -210,36 +210,36 @@ msgstr ""
 msgid "not implemented"
 msgstr ""
 
-#: src/filesystem-tree-window.lisp:475 src/line-oriented-window.lisp:325
+#: src/filesystem-tree-window.lisp:479 src/line-oriented-window.lisp:325
 #: src/open-message-link-window.lisp:194 src/program-events.lisp:465
 msgid "Invalid regular expression"
 msgstr ""
 
-#: src/filesystem-tree-window.lisp:566
+#: src/filesystem-tree-window.lisp:570
 msgid "File explorer"
 msgstr ""
 
-#: src/filesystem-utils.lisp:540
+#: src/filesystem-utils.lisp:544
 #, lisp-format
 msgid "invalid value: ~a"
 msgstr ""
 
-#: src/filesystem-utils.lisp:550
+#: src/filesystem-utils.lisp:554
 #, lisp-format
 msgid "~a bytes"
 msgstr ""
 
-#: src/filesystem-utils.lisp:552
+#: src/filesystem-utils.lisp:556
 #, lisp-format
 msgid "~a Kib"
 msgstr ""
 
-#: src/filesystem-utils.lisp:554
+#: src/filesystem-utils.lisp:558
 #, lisp-format
 msgid "~a Mib"
 msgstr ""
 
-#: src/filesystem-utils.lisp:556
+#: src/filesystem-utils.lisp:560
 #, lisp-format
 msgid "~a Gib"
 msgstr ""
@@ -1508,7 +1508,7 @@ msgstr ""
 msgid "Upload of ~a completed in ~a"
 msgstr ""
 
-#: src/ui-goodies.lisp:2601
+#: src/ui-goodies.lisp:2601 src/ui-goodies.lisp:2772
 msgid "Upload: "
 msgstr ""
 
@@ -1544,6 +1544,15 @@ msgstr ""
 #: src/ui-goodies.lisp:2735
 #, lisp-format
 msgid "File ~s was modified on server"
+msgstr ""
+
+#: src/ui-goodies.lisp:2762
+#, lisp-format
+msgid "Uploading ~a"
+msgstr ""
+
+#: src/ui-goodies.lisp:2770
+msgid "Uploading completed."
 msgstr ""
 
 #: src/windows.lisp:558 src/windows.lisp:614
