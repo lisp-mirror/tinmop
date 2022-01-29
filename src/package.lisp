@@ -2830,7 +2830,8 @@
    :file-explorer-close-window
    :file-explorer-open-node
    :file-explorer-node-details
-   :file-explorer-edit-file))
+   :file-explorer-edit-file
+   :file-explorer-upload-mirror))
 
 (defpackage :scheduled-events
   (:use

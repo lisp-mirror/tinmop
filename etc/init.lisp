@@ -632,6 +632,8 @@
 
 (define-key "i"         #'file-explorer-node-details  *filesystem-explorer-keymap*)
 
+(define-key "M"         #'file-explorer-upload-mirror  *filesystem-explorer-keymap*)
+
 ;;;; hooks
 
 ;; this module  will install an  hook to  rewrite urls; By  default it

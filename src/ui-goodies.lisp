@@ -2733,3 +2733,41 @@ if the selected item represents a directory."
          (path   (fstree:tree-path  fields)))
     (fstree:edit-node win path)
     (info-message (format nil (_ "File ~s was modified on server") path))))
+
+
+(defun file-explorer-upload-mirror ()
+  "Upload a filesystem tree."
+  (when-let* ((win              *filesystem-explorer-window*)
+              (fields           (line-oriented-window:selected-row-fields win))
+              (destination-dir  (if (fs:path-referencing-dir-p (fstree:tree-path fields))
+                                    (fstree:tree-path fields)
+                                    (fs:parent-dir-path (fstree:tree-path fields)))))
+    (labels ((build-actual-destination-path-clsr (destination-dir root-directory)
+               (lambda (a)
+                 (fs:append-file-to-path destination-dir
+                                         (cl-ppcre:regex-replace root-directory
+                                                                 a
+                                                                 ""))))
+             (on-input-complete (root-directory)
+               (with-enqueued-process ()
+                 (when (string-not-empty-p root-directory)
+                   (if (not (fs:dirp root-directory))
+                       (error-message (format nil "~a is not directory" root-directory))
+                       (let* ((children     (fs::collect-tree (list root-directory)))
+                              (remote-paths
+                                (mapcar (build-actual-destination-path-clsr destination-dir
+                                                                            root-directory)
+                                        children)))
+                         (mapcar (lambda (destination source)
+                                   (info-message (format nil (_"Uploading ~a") destination))
+                                   (with-enqueued-process ()
+                                     (fstree:upload-treenode win
+                                                             source
+                                                             destination
+                                                             :force-upload t)))
+                                 remote-paths
+                                 children)
+                         (info-message (_"Uploading completed."))))))))
+      (ask-string-input #'on-input-complete
+                        :prompt        (_ "Upload: ")
+                        :complete-fn #'complete:directory-complete))))

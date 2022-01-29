@@ -140,9 +140,12 @@
        (nix:closedir ,dir)))))
 
 (defun collect-children (parent-dir)
-  (let ((all-paths ()))
+  (let ((all-paths '()))
     (fs:do-directory (path) parent-dir
-      (push path all-paths))
+      (if (or (backreference-dir-p      path)
+              (loopback-reference-dir-p path))
+          (push path all-paths)
+          (push (normalize-path path) all-paths)))
     (setf all-paths (sort all-paths #'string<))
     all-paths))
 
@@ -153,7 +156,8 @@
      accum)
     (t
      (let* ((children (collect-children (first unvisited-dirs)))
-            (files        (remove-if #'directory-exists-p children))
+            (files        (mapcar #'normalize-path
+                                  (remove-if #'directory-exists-p children)))
             (directories  (mapcar (lambda (a) (text-utils:strcat a "/"))
                                   (remove-if (lambda (a)
                                                (or (file-exists-p a)
@@ -187,8 +191,8 @@
                    (setf all-files (append all-files files))
                    (setf all-dirs  (append all-dirs directories))
                    (loop for new-dir in directories do
-                      (collect new-dir))))))
-    (collect root)
+                     (collect new-dir))))))
+      (collect root)
       (values all-files
               all-dirs))))
 

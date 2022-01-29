@@ -419,17 +419,21 @@
     (fs:create-file destination-file)
     (funcall (filesystem-download-function window) matching-node destination-file)))
 
-(defun upload-treenode (window source-file remote-path)
-  (when-let* ((root-node     (filesystem-root window))
-              (parent-node   (find-node root-node (fs:parent-dir-path remote-path)))
-              (parent-path   (tree-path (data parent-node))))
-    (funcall (filesystem-upload-function window)
-             source-file
-             (fs:normalize-path remote-path))
-    (remove-all-children parent-node)
-    (expand-treenode window parent-path)
-    (win-clear window :redraw nil)
-    (resync-rows-db window :redraw t :selected-path remote-path)))
+(defun upload-treenode (window source-file remote-path &key (force-upload nil))
+  (let ((root-node     (filesystem-root window)))
+    (if force-upload
+        (funcall (filesystem-upload-function window)
+                 source-file
+                 (fs:normalize-path remote-path))
+        (when-let* ((parent-node   (find-node root-node (fs:parent-dir-path remote-path)))
+                    (parent-path   (tree-path (data parent-node))))
+          (funcall (filesystem-upload-function window)
+                   source-file
+                   (fs:normalize-path remote-path))
+          (remove-all-children parent-node)
+          (expand-treenode window parent-path)
+          (win-clear window :redraw nil)
+          (resync-rows-db window :redraw t :selected-path remote-path)))))
 
 (defun recursive-delete-node (window path)
   (with-accessors ((root-node                  filesystem-root)
