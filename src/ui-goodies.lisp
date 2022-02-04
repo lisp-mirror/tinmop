@@ -2700,18 +2700,10 @@ printed, on the main window."
                         :prompt (_ "Delete marked items? ")))))
 
 (defun file-explorer-scroll-begin ()
-  (when-let* ((win *filesystem-explorer-window*))
-    (when (not (line-oriented-window:rows-empty-p win))
-      (line-oriented-window:select-row win 0)
-      (windows:win-clear win)
-      (windows:draw win))))
+  (line-oriented-window-scroll-begin *filesystem-explorer-window*))
 
 (defun file-explorer-scroll-end ()
-  (when-let* ((win *filesystem-explorer-window*))
-    (when (not (line-oriented-window:rows-empty-p win))
-      (line-oriented-window:select-row win (1- (line-oriented-window:rows-length win)))
-      (windows:win-clear win)
-      (windows:draw win))))
+  (line-oriented-window-scroll-end  *filesystem-explorer-window*))
 
 (defun file-explorer-close-window ()
   (fstree:close-connection *filesystem-explorer-window*)
