@@ -2693,6 +2693,8 @@
    :go-to-next-link
    :go-to-previous-link
    :close-open-message-link-window
+   :open-message-link-window-scroll-begin
+   :open-message-link-window-scroll-end
    :attach-go-up
    :attach-go-down
    :attach-delete

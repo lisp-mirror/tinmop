@@ -551,6 +551,10 @@
 
 (define-key "T"         #'save-selected-message-in-tour                 *open-message-link-keymap*)
 
+(define-key "home"      #'open-message-link-window-scroll-begin         *open-message-link-keymap*)
+
+(define-key "end"       #'open-message-link-window-scroll-end           *open-message-link-keymap*)
+
 ;; chats list window
 
 (define-key "r"         #'refresh-chat-messages                         *chats-list-keymap*)

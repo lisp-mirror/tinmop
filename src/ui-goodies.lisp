@@ -1302,6 +1302,26 @@ This makes sense only for gemini file stream, if not this command performs the s
         (close-window-and-return-to-message *open-message-link-window*)
         (close-window-and-return-to-threads *open-message-link-window*))))
 
+(defun line-oriented-window-scroll-begin (window)
+  (when (and window
+             (not (line-oriented-window:rows-empty-p window)))
+    (line-oriented-window:select-row window 0)
+    (windows:win-clear window)
+    (windows:draw window)))
+
+(defun line-oriented-window-scroll-end (window)
+  (when (and window
+             (not (line-oriented-window:rows-empty-p window)))
+    (line-oriented-window:select-row window (1- (line-oriented-window:rows-length window)))
+    (windows:win-clear window)
+    (windows:draw window)))
+
+(defun open-message-link-window-scroll-begin ()
+  (line-oriented-window-scroll-begin *open-message-link-window*))
+
+(defun open-message-link-window-scroll-end ()
+  (line-oriented-window-scroll-end *open-message-link-window*))
+
 (defun gemini-open-certificates-window ()
   "Open a window with all the  client certificated generated so far to
 authenticate this client on a gemini server."
