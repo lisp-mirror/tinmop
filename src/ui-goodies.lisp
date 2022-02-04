@@ -2491,11 +2491,12 @@ printed, on the main window."
     (flet ((on-input-complete (maybe-accepted)
              (with-valid-yes-at-prompt (maybe-accepted y-pressed-p)
                (when y-pressed-p
+                 (info-message (format nil (_"deleting ~a") path))
                  (with-enqueued-process ()
                    (fstree:delete-treenode win path))))))
       (ask-string-input #'on-input-complete
                         :prompt
-                        (format nil (_ "Delete ~a? ") path)))))
+                        (format nil (_ "Delete ~a? [y/N] ") path)))))
 
 (defun file-explorer-rename-path ()
   "Rename (or move) a file or directory"
@@ -2672,13 +2673,15 @@ printed, on the main window."
     (flet ((on-input-complete (maybe-accepted)
              (with-valid-yes-at-prompt (maybe-accepted y-pressed-p)
                (when y-pressed-p
+                 (info-message (format nil (_"deleting ~a") path))
                  (with-enqueued-process ()
                    (fstree:recursive-delete-node win path)
                    (fstree:resync-rows-db win
                                           :selected-path (fs:parent-dir-path path)
                                           :redraw nil)
                    (windows:win-clear win)
-                   (windows:draw win))))))
+                   (windows:draw win)
+                   (info-message (format nil (_"Completed") path)))))))
       (ask-string-input #'on-input-complete
                         :prompt
                         (format nil (_ "Delete ~a? ") path)))))
@@ -2694,9 +2697,9 @@ printed, on the main window."
                    (let ((path (fstree:tree-path (line-oriented-window:fields row))))
                      (fstree:recursive-delete-node win path)))
                  (let ((root (fstree:tree-path (mtree:data (fstree:filesystem-root win)))))
-                 (fstree:resync-rows-db win
-                                        :selected-path root
-                                        :redraw t))))))
+                   (fstree:resync-rows-db win
+                                          :selected-path root
+                                          :redraw t))))))
       (ask-string-input #'on-input-complete
                         :prompt (_ "Delete marked items? ")))))
 
@@ -2744,9 +2747,9 @@ if the selected item represents a directory."
   (let* ((win    *filesystem-explorer-window*)
          (fields (line-oriented-window:selected-row-fields win))
          (path   (fstree:tree-path  fields)))
-    (fstree:edit-node win path)
-    (info-message (format nil (_ "File ~s was modified on server") path))))
-
+    (tui:with-notify-errors
+      (fstree:edit-node win path)
+      (info-message (format nil (_ "File ~s was modified on server") path)))))
 
 (defun file-explorer-upload-mirror ()
   "Upload a filesystem tree."

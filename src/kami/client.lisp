@@ -164,19 +164,19 @@
   (with-open-ssl-stream (stream socket host port client-certificate client-key)
     (let* ((*stream*   stream)
            (*root-fid* (9p:mount *stream* "/")))
-      (list :query                                 query
-            :fragment                              fragment
-            :socket                                socket
-            :path                                  path
-            :filesystem-expand-function            (expand-node   *stream* *root-fid*)
-            :filesystem-rename-function            (rename-node   *stream* *root-fid*)
-            :filesystem-delete-function            (delete-node   *stream* *root-fid*)
-            :filesystem-create-function            (create-node   *stream* *root-fid*)
-            :filesystem-download-function          (download-node *stream* *root-fid*)
-            :filesystem-upload-function            (upload-node   *stream* *root-fid*)
-            :filesystem-query-path-function        (query-path    *stream* *root-fid*)
-            :filesystem-close-connection-function  (lambda ()
-                                                     (9p:close-client socket))))))
+      (list :query                                query
+            :fragment                             fragment
+            :socket                               socket
+            :path                                 path
+            :filesystem-expand-function           (expand-node   *stream* *root-fid*)
+            :filesystem-rename-function           (rename-node   *stream* *root-fid*)
+            :filesystem-delete-function           (delete-node   *stream* *root-fid*)
+            :filesystem-create-function           (create-node   *stream* *root-fid*)
+            :filesystem-download-function         (download-node *stream* *root-fid*)
+            :filesystem-upload-function           (upload-node   *stream* *root-fid*)
+            :filesystem-query-path-function       (query-path    *stream* *root-fid*)
+            :filesystem-close-connection-function (lambda ()
+                                                    (9p:close-client socket))))))
 
 (defun iri->filesystem-window-handlers (kami-iri)
   (a:when-let ((parsed-iri (iri:iri-parse kami-iri :null-on-error t)))
