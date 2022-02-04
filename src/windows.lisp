@@ -746,3 +746,13 @@ insetred by the user"
     (print-text object left-stopper        title-padding-left 0)
     (print-text object title               nil                nil)
     (print-text object right-stopper       nil                nil)))
+
+(defun adjust-win-vertical-positioning-if-gemini-fullscreen (window)
+  (when command-line:*gemini-full-screen-mode*
+    (with-croatoan-window (croatoan-window window)
+      (let* ((reference-window *gemini-toc-window*)
+             (width            (- (win-width *main-window*)
+                                  (win-width reference-window)))
+             (x                (win-width reference-window)))
+        (resize croatoan-window (win-height window) width)
+        (win-move window x (win-y window))))))

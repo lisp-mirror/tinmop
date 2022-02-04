@@ -1803,8 +1803,9 @@ there."
 (defun open-chats-list-window ()
   "open a window  containing the list of active chat  ordered from the
 mot recent updated to least recent"
-  (chats-list-window:open-chats-list-window)
-  (focus-to-chats-list-window))
+  (when (not command-line:*gemini-full-screen-mode*)
+    (chats-list-window:open-chats-list-window)
+    (focus-to-chats-list-window)))
 
 (defun close-chats-list-window ()
   (close-window-and-return-to-threads *chats-list-window*))

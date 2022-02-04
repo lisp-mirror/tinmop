@@ -1788,7 +1788,8 @@
    :uses-border-p
    :usable-window-width
    :window-uses-border-p
-   :title-window))
+   :title-window
+   :adjust-win-vertical-positioning-if-gemini-fullscreen))
 
 (defpackage :notify-window
   (:use

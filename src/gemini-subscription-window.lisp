@@ -35,6 +35,7 @@
             (- (win-width *main-window*)
                (win-width object))
             0)
+  (adjust-win-vertical-positioning-if-gemini-fullscreen object)
   object)
 
 (defun gemlog->text (gemlog-db-row window)

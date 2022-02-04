@@ -100,8 +100,8 @@
                            :bgcolor mark-bg))))
 
 (defmethod refresh-config :after ((object message-window))
-    (refresh-config-colors object swconf:+key-message-window+)
-   (refresh-line-mark-config object)
+  (refresh-config-colors object swconf:+key-message-window+)
+  (refresh-line-mark-config object)
   (let* ((reference-window        (if command-line:*gemini-full-screen-mode*
                                       *main-window*
                                       *thread-window*))
