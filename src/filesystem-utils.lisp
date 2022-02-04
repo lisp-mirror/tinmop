@@ -544,20 +544,17 @@
   (format nil (config:_ "invalid value: ~a") object))
 
 (defmethod octects->units-string ((object number))
-  (let ((decimals (loop
-                    for number = object then (truncate (/ number 10)) while (> number 0)
-                    for results = 0 then (1+ results)
-                    finally (return results))))
+  (let ((decimals (1- (num-utils:count-digit object))))
     (cond
       ((or (null decimals)
-           (<= decimals 3))
+           (< decimals 3))
        (format nil (config:_ "~a bytes") object))
-      ((<= 4 decimals 6)
-       (format nil (config:_ "~a Kib") (truncate (octects->units object :kib))))
-      ((<= 7 decimals 9)
-       (format nil (config:_ "~a Mib") (truncate (octects->units object :mib))))
+      ((<= 3 decimals 5)
+       (format nil (config:_ "~,1f Kib") (octects->units object :kib)))
+      ((<= 6 decimals 8)
+       (format nil (config:_ "~,1f Mib") (octects->units object :mib)))
       (t
-       (format nil (config:_ "~a Gib") (truncate (octects->units object :gib)))))))
+       (format nil (config:_ "~,1f Gib") (octects->units object :gib))))))
 
 (defgeneric normalize-path (object))
 
