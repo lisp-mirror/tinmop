@@ -328,6 +328,7 @@
    :cached-directory-files
    :directory-files
    :make-directory
+   :maybe-append-directory-separator
    :package-path
    :file-in-package
    :link-file-path

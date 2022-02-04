@@ -467,6 +467,11 @@
       (make-directory (concatenate 'string path *directory-sep*))
       (ensure-directories-exist path)))
 
+(defun maybe-append-directory-separator (path)
+  (if (extension-dir-p path)
+      path
+      (concatenate 'string path *directory-sep*)))
+
 (defun package-path ()
   (uiop:pathname-parent-directory-pathname
    (asdf:component-pathname

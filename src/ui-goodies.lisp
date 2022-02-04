@@ -2531,7 +2531,7 @@ printed, on the main window."
   (when-let* ((win        *filesystem-explorer-window*)
               (fields     (line-oriented-window:selected-row-fields win))
               (remote-dir (fstree:tree-path fields))
-              (local-dir  (os-utils:pwd)))
+              (local-dir  (fs:maybe-append-directory-separator (os-utils:pwd))))
     (labels ((on-input-destination-dir (path)
                (when (and (string-not-empty-p    path)
                           (fs:extension-dir-p    path)
