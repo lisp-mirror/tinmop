@@ -287,6 +287,7 @@
    :add-extension
    :do-directory
    :collect-children
+   :collect-tree
    :backreference-dir-p
    :loopback-reference-dir-p
    :path-referencing-dir-p

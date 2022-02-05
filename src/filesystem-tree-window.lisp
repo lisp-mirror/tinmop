@@ -93,6 +93,17 @@
     :documentation "function with two parameter the path and a feature
     to query Valid  feature values are :size.  Returns  nil if Returns
     nil if the path does not point to an actual file.")
+   (filesystem-list-all-file-paths-function
+    :initform  #'fs:collect-tree
+    :accessor  filesystem-list-all-file-paths-function
+    :type      function
+    :documentation   "function   with    a   single   parameter,   the
+    path. Returns a  list of path to all the  reachable files from the
+    argument as root directory e.g
+      (funcall filesystem-list-all-file-paths-function \"foo/\")
+      ; => (foo/bar/baz
+            foo/a/b
+            ...)")
    (filesystem-close-connection-function
     :initform  (constantly t)
     :accessor  filesystem-close-connection-function
@@ -105,22 +116,24 @@
                                        &key (handlers-plist nil) &allow-other-keys)
   (when handlers-plist
     (setf (filesystem-expand-function object)
-          (getf handlers-plist :filesystem-expand-function)
-          (filesystem-expand-function object)
-          (getf handlers-plist :filesystem-expand-function)
-          (filesystem-rename-function object)
-          (getf handlers-plist :filesystem-rename-function)
-          (filesystem-delete-function object)
-          (getf handlers-plist :filesystem-delete-function)
-          (filesystem-create-function object)
-          (getf handlers-plist :filesystem-create-function)
-          (filesystem-download-function object)
-          (getf handlers-plist :filesystem-download-function)
-          (filesystem-upload-function object)
-          (getf handlers-plist :filesystem-upload-function)
-          (filesystem-query-path-function object)
-          (getf handlers-plist :filesystem-query-path-function)
-          (filesystem-close-connection-function object)
+          (getf handlers-plist :filesystem-expand-function))
+    (setf (filesystem-expand-function object)
+          (getf handlers-plist :filesystem-expand-function))
+    (setf (filesystem-rename-function object)
+          (getf handlers-plist :filesystem-rename-function))
+    (setf (filesystem-delete-function object)
+          (getf handlers-plist :filesystem-delete-function))
+    (setf (filesystem-create-function object)
+          (getf handlers-plist :filesystem-create-function))
+    (setf (filesystem-download-function object)
+          (getf handlers-plist :filesystem-download-function))
+    (setf (filesystem-upload-function object)
+          (getf handlers-plist :filesystem-upload-function))
+    (setf (filesystem-query-path-function object)
+          (getf handlers-plist :filesystem-query-path-function))
+    (setf (filesystem-list-all-file-paths-function object)
+          (getf handlers-plist  :filesystem-list-all-file-paths-function))
+    (setf (filesystem-close-connection-function object)
           (getf handlers-plist :filesystem-close-connection-function)))
   object)
 
@@ -435,23 +448,49 @@
           (win-clear window :redraw nil)
           (resync-rows-db window :redraw t :selected-path remote-path)))))
 
-(defun recursive-delete-node (window path)
+(defun recursive-delete-node (window path
+                                     &key
+                                     (progress-function (lambda (filename file-count all-files-number)
+                                                          (declare (ignore filename file-count all-files-number)))))
   (with-accessors ((root-node                  filesystem-root)
-                   (filesystem-expand-function filesystem-expand-function)) window
+                   (filesystem-expand-function filesystem-expand-function)
+                   (list-all-file-function     filesystem-list-all-file-paths-function))
+      window
     (let* ((matching-node (find-node root-node path))
            (filep         (not (tree-dir-p (data matching-node)))))
       (if filep
           (delete-treenode window path)
           (when (not (or (fs:loopback-reference-dir-p path)
                          (fs:backreference-dir-p      path)))
-            (%expand-treenode root-node
-                              (tree-path (data matching-node))
-                              filesystem-expand-function)
-            (setf matching-node (find-node root-node path))
-            (do-children (child matching-node)
-              (let ((path-to-recurse (tree-path (data child))))
-                (recursive-delete-node window path-to-recurse)))
-            (delete-treenode window path))))))
+            (multiple-value-bind (all-files-to-delete all-dirs-to-delete)
+                (funcall list-all-file-function path)
+              (let ((items-count 0)
+                    (items-total-number (+ (length all-files-to-delete)
+                                           (length all-dirs-to-delete))))
+                (flet ((delete-items (items)
+                         (loop for item  in items
+                               for count from 0
+                               when (not (or (fs:backreference-dir-p      item)
+                                             (fs:loopback-reference-dir-p item)))
+                                 do
+                                    (let ((node (mtree:make-node (make-node-data item nil))))
+                                      (incf items-count)
+                                      (funcall (filesystem-delete-function window)
+                                               node)
+                                      (funcall progress-function
+                                               item
+                                               items-count
+                                               items-total-number)))))
+                  (delete-items all-files-to-delete)
+                  (delete-items all-dirs-to-delete)
+                  (delete-items (list path))
+                  (when-let* ((parent-node   (find-node root-node
+                                                        (fs:parent-dir-path path)))
+                              (parent-path   (tree-path (data parent-node))))
+                    (remove-all-children parent-node)
+                    (expand-treenode window parent-path)
+                    (win-clear window :redraw nil)
+                    (resync-rows-db window :redraw t :selected-path parent-path))))))))))
 
 (defun filesystem-query-treenode (window path what)
   (assert (member what '(:size :size-string :permissions :permissions-string :type)))

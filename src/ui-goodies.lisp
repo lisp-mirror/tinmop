@@ -2670,18 +2670,26 @@ printed, on the main window."
   (when-let* ((win    *filesystem-explorer-window*)
               (fields (line-oriented-window:selected-row-fields win))
               (path   (fstree:tree-path  fields)))
-    (flet ((on-input-complete (maybe-accepted)
-             (with-valid-yes-at-prompt (maybe-accepted y-pressed-p)
-               (when y-pressed-p
-                 (info-message (format nil (_"deleting ~a") path))
-                 (with-enqueued-process ()
-                   (fstree:recursive-delete-node win path)
-                   (fstree:resync-rows-db win
-                                          :selected-path (fs:parent-dir-path path)
-                                          :redraw nil)
-                   (windows:win-clear win)
-                   (windows:draw win)
-                   (info-message (format nil (_"Completed") path)))))))
+    (labels ((progress-print (file count item-number)
+               (info-message (format nil
+                                     (_ "deleting ~a (~a of ~a)")
+                                     file
+                                     count
+                                     item-number)))
+             (on-input-complete (maybe-accepted)
+               (with-valid-yes-at-prompt (maybe-accepted y-pressed-p)
+                 (when y-pressed-p
+                   (info-message (format nil (_"Preparing to delete ~a") path))
+                   (with-enqueued-process ()
+                     (fstree:recursive-delete-node win
+                                                   path
+                                                   :progress-function #'progress-print)
+                     (fstree:resync-rows-db win
+                                            :selected-path (fs:parent-dir-path path)
+                                            :redraw nil)
+                     (windows:win-clear win)
+                     (windows:draw win)
+                     (info-message (format nil (_"Completed") path)))))))
       (ask-string-input #'on-input-complete
                         :prompt
                         (format nil (_ "Delete ~a? ") path)))))

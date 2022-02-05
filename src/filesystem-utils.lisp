@@ -120,10 +120,14 @@
   (text-utils:strcat file "." extension))
 
 (defun cat-parent-dir (parent direntry)
-  (if (or (backreference-dir-p direntry)
-          (loopback-reference-dir-p direntry))
-      (format nil "~a~a" parent direntry)
-      (format nil "~a~a~a" parent *directory-sep* direntry)))
+  (cond
+    ((or (backreference-dir-p direntry)
+         (loopback-reference-dir-p direntry))
+     (format nil "~a~a" parent direntry))
+    ((string= (string (alexandria:last-elt parent)) *directory-sep*)
+     (format nil "~a~a" parent direntry))
+    (t
+      (format nil "~a~a~a" parent *directory-sep* direntry))))
 
 (defmacro do-directory ((var) root &body body)
   (with-gensyms (dir)
@@ -149,23 +153,29 @@
     (setf all-paths (sort all-paths #'string<))
     all-paths))
 
-(defun collect-tree (unvisited-dirs &optional (accum '()))
-  (declare (optimize (debug 0) (speed 3)))
-  (cond
-    ((null unvisited-dirs)
-     accum)
-    (t
-     (let* ((children (collect-children (first unvisited-dirs)))
-            (files        (mapcar #'normalize-path
-                                  (remove-if #'directory-exists-p children)))
-            (directories  (mapcar (lambda (a) (text-utils:strcat a "/"))
-                                  (remove-if (lambda (a)
-                                               (or (file-exists-p a)
-                                                   (backreference-dir-p a)
-                                                   (loopback-reference-dir-p a)))
-                                             children))))
-       (collect-tree (append (rest unvisited-dirs) directories)
-                     (append files accum))))))
+(defun collect-tree (root)
+  (labels ((%collect-tree (unvisited-dirs
+                           &optional
+                             (accum-files '())
+                             (accum-dirs '()))
+             (declare (optimize (debug 0) (speed 3)))
+             (cond
+               ((null unvisited-dirs)
+                (values accum-files accum-dirs))
+               (t
+                (let* ((children (collect-children (first unvisited-dirs)))
+                       (files        (mapcar #'normalize-path
+                                             (remove-if #'directory-exists-p children)))
+                       (directories  (mapcar (lambda (a) (text-utils:strcat a "/"))
+                                             (remove-if (lambda (a)
+                                                          (or (file-exists-p a)
+                                                              (backreference-dir-p a)
+                                                              (loopback-reference-dir-p a)))
+                                                        children))))
+                  (%collect-tree (append (rest unvisited-dirs) directories)
+                                 (append files accum-files)
+                                 (append directories accum-dirs)))))))
+    (%collect-tree (list root))))
 
 (defun backreference-dir-p (path)
   (string= (path-last-element path) ".."))

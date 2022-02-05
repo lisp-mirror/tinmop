@@ -18,9 +18,9 @@
 (in-package :chats-list-window)
 
 (defclass chats-list-window (focus-marked-window
-                                 simple-line-navigation-window
-                                 title-window
-                                 border-window)
+                             simple-line-navigation-window
+                             title-window
+                             border-window)
   ())
 
 (defmethod refresh-config :after ((object chats-list-window))
