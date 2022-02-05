@@ -598,45 +598,47 @@
 
 ;; file explorer
 
-(define-key "x"         #'file-explorer-expand-path   *filesystem-explorer-keymap*)
+(define-key "x"         #'file-explorer-expand-path     *filesystem-explorer-keymap*)
 
-(define-key "c"         #'file-explorer-close-path    *filesystem-explorer-keymap*)
+(define-key "c"         #'file-explorer-close-path      *filesystem-explorer-keymap*)
 
-(define-key "r"         #'file-explorer-rename-path   *filesystem-explorer-keymap*)
+(define-key "r"         #'file-explorer-rename-path     *filesystem-explorer-keymap*)
 
-(define-key "D"         #'file-explorer-delete-tree   *filesystem-explorer-keymap*)
+(define-key "D"         #'file-explorer-delete-tree     *filesystem-explorer-keymap*)
 
-(define-key "X"         #'file-explorer-delete-marked *filesystem-explorer-keymap*)
+(define-key "X"         #'file-explorer-delete-marked   *filesystem-explorer-keymap*)
 
-(define-key "a"         #'file-explorer-create-path   *filesystem-explorer-keymap*)
+(define-key "a"         #'file-explorer-create-path     *filesystem-explorer-keymap*)
 
-(define-key "d"         #'file-explorer-download-path *filesystem-explorer-keymap*)
+(define-key "d"         #'file-explorer-download-path   *filesystem-explorer-keymap*)
 
-(define-key "u"         #'file-explorer-upload-path   *filesystem-explorer-keymap*)
+(define-key "u"         #'file-explorer-upload-path     *filesystem-explorer-keymap*)
 
-(define-key "/"         #'file-explorer-search        *filesystem-explorer-keymap*)
+(define-key "/"         #'file-explorer-search          *filesystem-explorer-keymap*)
 
-(define-key "N"         #'repeat-search               *filesystem-explorer-keymap*)
+(define-key "N"         #'repeat-search                 *filesystem-explorer-keymap*)
 
-(define-key "m"         #'file-explorer-mark-entry    *filesystem-explorer-keymap*)
+(define-key "m"         #'file-explorer-mark-entry      *filesystem-explorer-keymap*)
 
-(define-key "up"        #'file-explorer-go-up         *filesystem-explorer-keymap*)
+(define-key "up"        #'file-explorer-go-up           *filesystem-explorer-keymap*)
 
-(define-key "down"      #'file-explorer-go-down       *filesystem-explorer-keymap*)
+(define-key "down"      #'file-explorer-go-down         *filesystem-explorer-keymap*)
 
-(define-key "home"      #'file-explorer-scroll-begin  *filesystem-explorer-keymap*)
+(define-key "home"      #'file-explorer-scroll-begin    *filesystem-explorer-keymap*)
 
-(define-key "end"       #'file-explorer-scroll-end    *filesystem-explorer-keymap*)
+(define-key "end"       #'file-explorer-scroll-end      *filesystem-explorer-keymap*)
 
-(define-key "q"         #'file-explorer-close-window  *filesystem-explorer-keymap*)
+(define-key "q"         #'file-explorer-close-window    *filesystem-explorer-keymap*)
 
-(define-key "C-J"       #'file-explorer-open-node     *filesystem-explorer-keymap*)
+(define-key "C-J"       #'file-explorer-open-node       *filesystem-explorer-keymap*)
 
-(define-key "e"         #'file-explorer-edit-file     *filesystem-explorer-keymap*)
+(define-key "e"         #'file-explorer-edit-file       *filesystem-explorer-keymap*)
 
-(define-key "i"         #'file-explorer-node-details  *filesystem-explorer-keymap*)
+(define-key "i"         #'file-explorer-node-details    *filesystem-explorer-keymap*)
 
-(define-key "M"         #'file-explorer-upload-mirror  *filesystem-explorer-keymap*)
+(define-key "M u"       #'file-explorer-upload-mirror   *filesystem-explorer-keymap*)
+
+(define-key "M d"       #'file-explorer-download-mirror *filesystem-explorer-keymap*)
 
 ;;;; hooks
 

@@ -2041,6 +2041,7 @@
    :make-node-data
    :filesystem-tree-window
    :filesystem-root
+   :filesystem-collect-tree
    :tree-path
    :tree-dir-p
    :tree-marked-p
@@ -2836,7 +2837,8 @@
    :file-explorer-open-node
    :file-explorer-node-details
    :file-explorer-edit-file
-   :file-explorer-upload-mirror))
+   :file-explorer-upload-mirror
+   :file-explorer-download-mirror))
 
 (defpackage :scheduled-events
   (:use

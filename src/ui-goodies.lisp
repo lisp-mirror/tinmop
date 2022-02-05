@@ -2511,24 +2511,33 @@ printed, on the main window."
                         :prompt
                         (format nil (_ "Rename ~a to: ") path)))))
 
-(defun %file-explorer-download-path (path)
+(defun %file-explorer-download-path (path &key
+                                            (output-file (fs:temporary-file))
+                                            (force nil)
+                                            (notify t))
   "Download a file"
-  (when-let* ((win         *filesystem-explorer-window*)
-              (output-file (fs:temporary-file)))
+  (when-let* ((win *filesystem-explorer-window*))
     (flet ((on-input-complete (destination-file)
              (when (string-not-empty-p destination-file)
                (with-enqueued-process ()
-                 (with-blocking-notify-procedure
-                     ((format nil (_ "Staring download of ~a") path)
-                      (format nil (_ "Download completed in ~a") destination-file))
-                   (fstree:download-treenode win path destination-file)
-                   (info-message destination-file))))))
-      (ask-string-input #'on-input-complete
-                        :prompt        (format nil (_ "Download ~a to: ") path)
-                        :initial-value output-file))))
+                 (when (not (fs:file-exists-p destination-file))
+                   (fs:create-file output-file))
+                 (if notify
+                     (with-blocking-notify-procedure
+                         ((format nil (_ "Starting download of ~a") path)
+                          (format nil (_ "Download completed in ~a") destination-file))
+                       (fstree:download-treenode win path destination-file)
+                       (info-message destination-file))
+                     (fstree:download-treenode win path destination-file))))))
+      (if force
+          (on-input-complete output-file)
+          (ask-string-input #'on-input-complete
+                            :prompt        (format nil (_ "Download ~a to: ") path)
+                            :initial-value output-file)))))
 
 (defun file-explorer-download-path ()
-  "Download file or files, wildcards are allowed (e.g. \"/foo/*.lisp\")."
+  "Download file or files, wildcards are allowed (e.g. \"/foo/*.lisp\").
+Note: existing file will be overwritten."
   (when-let* ((win        *filesystem-explorer-window*)
               (fields     (line-oriented-window:selected-row-fields win))
               (remote-dir (fstree:tree-path fields))
@@ -2577,7 +2586,8 @@ printed, on the main window."
 
 
 (defun file-explorer-upload-path ()
-  "Upload a file or files, wildcards are allowed (e.g. \"/foo/*.lisp\")."
+  "Upload a file or files, wildcards are allowed (e.g. \"/foo/*.lisp\").
+Note: existing file will be overwritten."
   (when-let* ((win              *filesystem-explorer-window*)
               (fields           (line-oriented-window:selected-row-fields win))
               (destination-dir  (fstree:tree-path fields)))
@@ -2760,7 +2770,8 @@ if the selected item represents a directory."
       (info-message (format nil (_ "File ~s was modified on server") path)))))
 
 (defun file-explorer-upload-mirror ()
-  "Upload a filesystem tree."
+  "Upload a filesystem tree.
+Note: existing file will be overwritten."
   (when-let* ((win              *filesystem-explorer-window*)
               (fields           (line-oriented-window:selected-row-fields win))
               (destination-dir  (if (fs:path-referencing-dir-p (fstree:tree-path fields))
@@ -2777,7 +2788,7 @@ if the selected item represents a directory."
                  (when (string-not-empty-p root-directory)
                    (if (not (fs:dirp root-directory))
                        (error-message (format nil "~a is not directory" root-directory))
-                       (let* ((children     (fs::collect-tree (list root-directory)))
+                       (let* ((children     (fs:collect-tree root-directory))
                               (remote-paths
                                 (mapcar (build-actual-destination-path-clsr destination-dir
                                                                             root-directory)
@@ -2795,3 +2806,40 @@ if the selected item represents a directory."
       (ask-string-input #'on-input-complete
                         :prompt        (_ "Upload: ")
                         :complete-fn #'complete:directory-complete))))
+
+(defun file-explorer-download-mirror ()
+  "Download a filesystem tree.
+Note: existing file will be overwritten."
+  (when-let* ((win        *filesystem-explorer-window*)
+              (fields     (line-oriented-window:selected-row-fields win))
+              (remote-dir (and (fs:path-referencing-dir-p (fstree:tree-path fields))
+                                     (fstree:tree-path fields)))
+              (local-dir  (fs:maybe-append-directory-separator (os-utils:pwd))))
+    (labels ((on-input-complete (root-directory)
+               (with-enqueued-process ()
+                 (when (and (string-not-empty-p root-directory)
+                            (string-not-empty-p remote-dir))
+                   (if (not (fs:directory-exists-p root-directory))
+                       (error-message (format nil "~a is not directory" root-directory))
+                       (let* ((remote-paths  (funcall (fstree:filesystem-collect-tree win)
+                                                  remote-dir))
+                              (local-paths
+                                (mapcar (lambda (a) (fs:cat-parent-dir root-directory a))
+                                        remote-paths)))
+                         (mapcar (lambda (source destination)
+                                   (info-message (format nil
+                                                         (_"downloading ~a → ~a")
+                                                         source
+                                                         destination))
+                                   (with-enqueued-process ()
+                                     (%file-explorer-download-path source
+                                                                   :output-file destination
+                                                                   :force       t
+                                                                   :notify      nil)))
+                                 remote-paths
+                                 local-paths)
+                         (info-message (_"Downloading completed."))))))))
+      (ask-string-input #'on-input-complete
+                        :prompt        (_ "Download in: ")
+                        :initial-value local-dir
+                        :complete-fn   #'complete:directory-complete))))
