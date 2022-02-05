@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tinmop 0.0.1\n"
 "Report-Msgid-Bugs-To: https://notabug.org/cage/tinmop/\n"
-"POT-Creation-Date: 2022-01-29 17:45+0100\n"
-"PO-Revision-Date: 2022-01-29 17:46+0100\n"
+"POT-Creation-Date: 2022-02-05 15:28+0100\n"
+"PO-Revision-Date: 2022-02-05 15:32+0100\n"
 "Last-Translator: cage <cage@invalid.org>\n"
 "Language-Team: Italian\n"
 "Language: it\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: modules/share-gemini-link.lisp:30 src/ui-goodies.lisp:2276
+#: modules/share-gemini-link.lisp:30 src/ui-goodies.lisp:2297
 msgid "The window is not displaying a gemini document"
 msgstr "La finestra non sta mostrando un documento gemini"
 
@@ -212,43 +212,43 @@ msgstr "home"
 msgid "no description"
 msgstr "nessuna descrizione"
 
-#: src/filesystem-tree-window.lisp:173
+#: src/filesystem-tree-window.lisp:190
 msgid "not implemented"
 msgstr "Non implementato"
 
-#: src/filesystem-tree-window.lisp:479 src/line-oriented-window.lisp:325
+#: src/filesystem-tree-window.lisp:522 src/line-oriented-window.lisp:325
 #: src/open-message-link-window.lisp:194 src/program-events.lisp:465
 msgid "Invalid regular expression"
 msgstr "Espressione regolare non valida"
 
-#: src/filesystem-tree-window.lisp:570
+#: src/filesystem-tree-window.lisp:613
 msgid "File explorer"
 msgstr "Navigatore albero dei file"
 
-#: src/filesystem-utils.lisp:544
+#: src/filesystem-utils.lisp:559
 #, lisp-format
 msgid "invalid value: ~a"
 msgstr "Valore non valido: ~a"
 
-#: src/filesystem-utils.lisp:554
+#: src/filesystem-utils.lisp:566
 #, lisp-format
 msgid "~a bytes"
 msgstr "~a byte"
 
-#: src/filesystem-utils.lisp:556
+#: src/filesystem-utils.lisp:568
 #, lisp-format
-msgid "~a Kib"
-msgstr "~a Kib"
+msgid "~,1f Kib"
+msgstr "~,1f Kib"
 
-#: src/filesystem-utils.lisp:558
+#: src/filesystem-utils.lisp:570
 #, lisp-format
-msgid "~a Mib"
-msgstr "~a Mib"
+msgid "~,1f Mib"
+msgstr "~,1f Mib"
 
-#: src/filesystem-utils.lisp:560
+#: src/filesystem-utils.lisp:572
 #, lisp-format
-msgid "~a Gib"
-msgstr "~a Gib"
+msgid "~,1f Gib"
+msgstr "~,1f Gib"
 
 #: src/follow-requests.lisp:67
 msgid ""
@@ -279,11 +279,11 @@ msgstr "Certificati generati"
 msgid "Table of contents"
 msgstr "Indice"
 
-#: src/gemini-subscription-window.lisp:50 src/program-events.lisp:1365
+#: src/gemini-subscription-window.lisp:51 src/program-events.lisp:1365
 msgid "No subtitle"
 msgstr "Nessun sottotitolo"
 
-#: src/gemini-subscription-window.lisp:89
+#: src/gemini-subscription-window.lisp:90
 msgid "Subscribed gemlogs"
 msgstr "Abbonamenti ai gemlog"
 
@@ -1151,226 +1151,226 @@ msgstr "Il numero massimo di file da allegare è ~a."
 msgid "Sending message"
 msgstr "Spedisco il messaggio"
 
-#: src/ui-goodies.lisp:1345
+#: src/ui-goodies.lisp:1365
 msgid "Delete this certificate? [Y/n] "
 msgstr "Cancella questo certificato? [s/N] "
 
-#: src/ui-goodies.lisp:1367
+#: src/ui-goodies.lisp:1387
 #, lisp-format
 msgid "Canceling subscription for ~s"
 msgstr "Annullamento dell'abbonamento per ~s"
 
-#: src/ui-goodies.lisp:1399
+#: src/ui-goodies.lisp:1419
 msgid "Follow: "
 msgstr "Segui: "
 
-#: src/ui-goodies.lisp:1402
+#: src/ui-goodies.lisp:1422
 #, lisp-format
 msgid "Following ~a"
 msgstr "Segui ~a"
 
-#: src/ui-goodies.lisp:1407
+#: src/ui-goodies.lisp:1427
 msgid "Unfollow: "
 msgstr "Abbandona: "
 
-#: src/ui-goodies.lisp:1410
+#: src/ui-goodies.lisp:1430
 #, lisp-format
 msgid "Unfollowing ~a"
 msgstr "Abbandona ~a"
 
-#: src/ui-goodies.lisp:1441
+#: src/ui-goodies.lisp:1461
 msgid "Confirm operation?"
 msgstr "Confermi l'operazione?"
 
-#: src/ui-goodies.lisp:1479
+#: src/ui-goodies.lisp:1499
 msgid "Updating conversations."
 msgstr "Aggiorno le conversazioni"
 
-#: src/ui-goodies.lisp:1480
+#: src/ui-goodies.lisp:1500
 msgid "Conversations updated."
 msgstr "Conversazioni aggiornate"
 
-#: src/ui-goodies.lisp:1490
+#: src/ui-goodies.lisp:1510
 msgid "Open conversation: "
 msgstr "Apri una conversazione: "
 
-#: src/ui-goodies.lisp:1525
+#: src/ui-goodies.lisp:1545
 msgid "Old name: "
 msgstr "Nome precedente: "
 
-#: src/ui-goodies.lisp:1539
+#: src/ui-goodies.lisp:1559
 #, lisp-format
 msgid "A conversation with name ~a already exists."
 msgstr "Una conversazione con nome ~a esiste già."
 
-#: src/ui-goodies.lisp:1545
+#: src/ui-goodies.lisp:1565
 msgid "New name: "
 msgstr "Nuovo nome: "
 
-#: src/ui-goodies.lisp:1561
+#: src/ui-goodies.lisp:1581
 #, lisp-format
 msgid "Ignore conversation ~s? [y/N] "
 msgstr "Ignorare la conversazione ~s? [s/N] "
 
-#: src/ui-goodies.lisp:1577
+#: src/ui-goodies.lisp:1597
 #, lisp-format
 msgid "Delete conversation ~s? [y/N] "
 msgstr "Eliminare la conversazione ~s? [s/N] "
 
-#: src/ui-goodies.lisp:1596
+#: src/ui-goodies.lisp:1616
 #, lisp-format
 msgid "Comment too long by ~a character"
 msgid_plural "Comment too long by ~a characters"
 msgstr[0] "Il commento è troppo lungo di ~a caratteri"
 msgstr[1] "Il commento è troppo lungo di ~a caratteri"
 
-#: src/ui-goodies.lisp:1603
+#: src/ui-goodies.lisp:1623
 #, lisp-format
 msgid "Reporting user: ~s"
 msgstr "Segnalo l'utente ~s"
 
-#: src/ui-goodies.lisp:1604
+#: src/ui-goodies.lisp:1624
 msgid "Report trasmitted."
 msgstr "Segnalazione trasmessa."
 
-#: src/ui-goodies.lisp:1607
+#: src/ui-goodies.lisp:1627
 msgid "Comment on reports: "
 msgstr "Commento sulla segnalazione: "
 
-#: src/ui-goodies.lisp:1623 src/ui-goodies.lisp:1656 src/ui-goodies.lisp:1674
+#: src/ui-goodies.lisp:1643 src/ui-goodies.lisp:1676 src/ui-goodies.lisp:1694
 #, lisp-format
 msgid "User ~s does not exists in database"
 msgstr "L'utente ~s non esiste nel database"
 
-#: src/ui-goodies.lisp:1626 src/ui-goodies.lisp:1659 src/ui-goodies.lisp:1677
+#: src/ui-goodies.lisp:1646 src/ui-goodies.lisp:1679 src/ui-goodies.lisp:1697
 msgid "Username: "
 msgstr "Nome utente: "
 
-#: src/ui-goodies.lisp:1636
+#: src/ui-goodies.lisp:1656
 #, lisp-format
 msgid "Added crypto key for user ~s"
 msgstr "Aggiunta chiave crittografica per l'utente ~s"
 
-#: src/ui-goodies.lisp:1639
+#: src/ui-goodies.lisp:1659
 msgid "Key: "
 msgstr "Chiave: "
 
-#: src/ui-goodies.lisp:1653
+#: src/ui-goodies.lisp:1673
 #, lisp-format
 msgid "Generated key for user ~s"
 msgstr "Generata chiave crittografica per l'utente ~s"
 
-#: src/ui-goodies.lisp:1654
+#: src/ui-goodies.lisp:1674
 #, lisp-format
 msgid "user ~s key ~s"
 msgstr "utente ~s chiave ~s"
 
-#: src/ui-goodies.lisp:1670
+#: src/ui-goodies.lisp:1690
 #, lisp-format
 msgid "Added key for user ~s: ~a"
 msgstr "Aggiunta chiave crittografica per l'utente ~s: ~a"
 
-#: src/ui-goodies.lisp:1687
+#: src/ui-goodies.lisp:1707
 msgid "About this software"
 msgstr "Sul programma"
 
-#: src/ui-goodies.lisp:1699
+#: src/ui-goodies.lisp:1719
 msgid " Welcome "
 msgstr " Benvenuto o benvenuta "
 
-#: src/ui-goodies.lisp:1716
+#: src/ui-goodies.lisp:1736
 msgid "Clearing pagination data"
 msgstr "Elimina i dati della paginazione"
 
-#: src/ui-goodies.lisp:1735
+#: src/ui-goodies.lisp:1755
 msgid "Invalid choices, use a space separated list of positive integers."
 msgstr ""
 "Il formato ammesso è costituito da una lista di interi positivi separati da "
 "spazi."
 
-#: src/ui-goodies.lisp:1752
+#: src/ui-goodies.lisp:1772
 #, lisp-format
 msgid "Invalid choices, index choice out of range (max ~a)."
 msgstr "Intervallo dei valori delle scelte non valido (massimo ~a)."
 
-#: src/ui-goodies.lisp:1754
+#: src/ui-goodies.lisp:1774
 msgid "Voting… "
 msgstr "Votazione in corso…"
 
-#: src/ui-goodies.lisp:1755
+#: src/ui-goodies.lisp:1775
 msgid "Choice sent."
 msgstr "Voto inserito."
 
-#: src/ui-goodies.lisp:1764
+#: src/ui-goodies.lisp:1784
 msgid "Type the index (or space separated indices) of selected choices: "
 msgstr "Inserisci gli indici associati alle opzioni separati da spazi: "
 
-#: src/ui-goodies.lisp:1765
+#: src/ui-goodies.lisp:1785
 msgid "This in not a poll"
 msgstr "Questo messaggio non è un sondaggio."
 
-#: src/ui-goodies.lisp:1833
+#: src/ui-goodies.lisp:1854
 msgid "Add message (enter to quit): "
 msgstr "Aggiungi un messaggio (invio per abbandonare): "
 
-#: src/ui-goodies.lisp:1858 src/ui-goodies.lisp:1871
+#: src/ui-goodies.lisp:1879 src/ui-goodies.lisp:1892
 msgid "Type the new label of the chat: "
 msgstr "Digita la nuova etichetta della chat: "
 
-#: src/ui-goodies.lisp:1879
+#: src/ui-goodies.lisp:1900
 #, lisp-format
 msgid "Chat ~a with ~a created"
 msgstr "Chat ~a con ~a creata"
 
-#: src/ui-goodies.lisp:1883
+#: src/ui-goodies.lisp:1904
 msgid "Type the user to chat with: "
 msgstr "Digita l'utente con cui vuoi iniziare una chat: "
 
-#: src/ui-goodies.lisp:1903
+#: src/ui-goodies.lisp:1924
 msgid "Open url: "
 msgstr "Apri un indirizzo di rete: "
 
-#: src/ui-goodies.lisp:2011
+#: src/ui-goodies.lisp:2032
 #, lisp-format
 msgid "Subscribing to ~s"
 msgstr "Abbonati a ~s: "
 
-#: src/ui-goodies.lisp:2022
+#: src/ui-goodies.lisp:2043
 #, lisp-format
 msgid "Command ~s completed"
 msgstr "Comando ~s completato"
 
-#: src/ui-goodies.lisp:2030
+#: src/ui-goodies.lisp:2051
 msgid "Send to command: "
 msgstr "Manda al comando: "
 
-#: src/ui-goodies.lisp:2039
+#: src/ui-goodies.lisp:2060
 msgid "Send message to command: "
 msgstr "Manda il messaggio al comando: "
 
-#: src/ui-goodies.lisp:2087
+#: src/ui-goodies.lisp:2108
 #, lisp-format
 msgid "Index ~a out of range"
 msgstr "L'indice ~a supera i limiti"
 
-#: src/ui-goodies.lisp:2089
+#: src/ui-goodies.lisp:2110
 msgid "Tour saved"
 msgstr "Il tour è stato salvato."
 
-#: src/ui-goodies.lisp:2110
+#: src/ui-goodies.lisp:2131
 msgid "link indices: "
 msgstr "indice dei link: "
 
-#: src/ui-goodies.lisp:2117
+#: src/ui-goodies.lisp:2138
 msgid "Tour completed"
 msgstr "Tour completato"
 
-#: src/ui-goodies.lisp:2138
+#: src/ui-goodies.lisp:2159
 #, lisp-format
 msgid "~s saved in tour"
 msgstr "~s salvato nel tour"
 
-#: src/ui-goodies.lisp:2193
+#: src/ui-goodies.lisp:2214
 #, lisp-format
 msgid ""
 "Host ~s signature changed! This is a potential security risk! Ignore this "
@@ -1379,209 +1379,245 @@ msgstr ""
 "La firma dell'host ~s è cambiata! Questo è un potenziale problema di "
 "sicurezza! Proseguire? [s/N]"
 
-#: src/ui-goodies.lisp:2204
+#: src/ui-goodies.lisp:2225
 msgid "Empty path"
 msgstr "Percorso vuoto"
 
-#: src/ui-goodies.lisp:2207
+#: src/ui-goodies.lisp:2228
 #, lisp-format
 msgid "No such file ~s"
 msgstr "Nono esiste il file ~s"
 
-#: src/ui-goodies.lisp:2210
+#: src/ui-goodies.lisp:2231
 #, lisp-format
 msgid "File ~s is empty"
 msgstr "Il file ~s è vuoto"
 
-#: src/ui-goodies.lisp:2217
+#: src/ui-goodies.lisp:2238
 msgid "Insert certificate key file: "
 msgstr "Inserisci il percorso del file che contiene la chiave: "
 
-#: src/ui-goodies.lisp:2221
+#: src/ui-goodies.lisp:2242
 msgid "Insert the gemini address where where credential are valid: "
 msgstr "Inserisci l'indirizzo gemini per il quale le credenziali sono valide: "
 
-#: src/ui-goodies.lisp:2244
+#: src/ui-goodies.lisp:2265
 #, lisp-format
 msgid "Certificate imported for ~s"
 msgstr "Certificato importato per ~s"
 
-#: src/ui-goodies.lisp:2246
+#: src/ui-goodies.lisp:2267
 #, lisp-format
 msgid "~s is not a valid gemini address"
 msgstr "~s non è un indirizzo gemini valido"
 
-#: src/ui-goodies.lisp:2249
+#: src/ui-goodies.lisp:2270
 msgid "Insert certificate file: "
 msgstr "Inserisci il percorso del file che contiene il certificato: "
 
-#: src/ui-goodies.lisp:2260
+#: src/ui-goodies.lisp:2281
 msgid "Empty description"
 msgstr "Descrizione vuota"
 
-#: src/ui-goodies.lisp:2264
+#: src/ui-goodies.lisp:2285
 msgid "Insert bookmark section: "
 msgstr "Inserisci la sezione del segnalibro: "
 
-#: src/ui-goodies.lisp:2272
+#: src/ui-goodies.lisp:2293
 #, lisp-format
 msgid "Added ~s in bookmark"
 msgstr "Aggiunto ~s come segnalibro"
 
-#: src/ui-goodies.lisp:2274
+#: src/ui-goodies.lisp:2295
 msgid "Insert bookmark description: "
 msgstr "Inserisci l adescrizione del segnalibro: "
 
-#: src/ui-goodies.lisp:2281
+#: src/ui-goodies.lisp:2302
 #, lisp-format
 msgid "My bookmark~2%"
 msgstr "I miei segnalibri~%"
 
-#: src/ui-goodies.lisp:2286
+#: src/ui-goodies.lisp:2307
 msgid "Uncategorized"
 msgstr "Senza categoria"
 
-#: src/ui-goodies.lisp:2309
+#: src/ui-goodies.lisp:2330
 #, lisp-format
 msgid "Latest visited addresses~2%"
 msgstr "Ultimi indirizzi visitati~2%"
 
-#: src/ui-goodies.lisp:2323
+#: src/ui-goodies.lisp:2344
 msgid "No entry selected"
 msgstr "Nessuna voce selezionata"
 
-#: src/ui-goodies.lisp:2328
+#: src/ui-goodies.lisp:2349
 msgid "Delete bookmark: "
 msgstr "Canvella il segnalibro: "
 
-#: src/ui-goodies.lisp:2343
+#: src/ui-goodies.lisp:2364
 msgid "Search criteria: "
 msgstr "Criterio di ricerca: "
 
-#: src/ui-goodies.lisp:2370
+#: src/ui-goodies.lisp:2391
 msgid "Message window scrolling locked"
 msgstr "Scorrimento della finestra dei messaggi bloccato"
 
-#: src/ui-goodies.lisp:2378
+#: src/ui-goodies.lisp:2399
 msgid "Message window scrolling unlocked"
 msgstr "Scorrimento della finestra dei messaggi sbloccato"
 
-#: src/ui-goodies.lisp:2392
+#: src/ui-goodies.lisp:2413
 msgid "eval: "
 msgstr "eval: "
 
-#: src/ui-goodies.lisp:2415
+#: src/ui-goodies.lisp:2436
 msgid "load file: "
 msgstr "Carica il file: "
 
-#: src/ui-goodies.lisp:2449
+#: src/ui-goodies.lisp:2470
 #, lisp-format
 msgid "~s is not a valid kami address"
 msgstr "~s non è un indirizzo kami valido"
 
-#: src/ui-goodies.lisp:2477 src/ui-goodies.lisp:2663
+#: src/ui-goodies.lisp:2494
 #, lisp-format
-msgid "Delete ~a? "
-msgstr "Cancella ~a? "
+msgid "deleting ~a"
+msgstr "cancell ~a"
 
-#: src/ui-goodies.lisp:2490
+#: src/ui-goodies.lisp:2499
+#, lisp-format
+msgid "Delete ~a? [y/N] "
+msgstr "Cancella ~a? [s/N] "
+
+#: src/ui-goodies.lisp:2512
 #, lisp-format
 msgid "Rename ~a to: "
 msgstr "Rinomina ~a a: "
 
-#: src/ui-goodies.lisp:2500
-#, lisp-format
-msgid "Staring download of ~a"
-msgstr "Avvio il download di ~a"
-
-#: src/ui-goodies.lisp:2501
-#, lisp-format
-msgid "Download completed in ~a"
-msgstr "Scaricamento di ~a completato"
-
-#: src/ui-goodies.lisp:2505
-#, lisp-format
-msgid "Download ~a to: "
-msgstr "Scarica ~a in: "
-
-#: src/ui-goodies.lisp:2521
-msgid "Download: "
-msgstr "Scarica: "
-
-#: src/ui-goodies.lisp:2542
+#: src/ui-goodies.lisp:2527 src/ui-goodies.lisp:2573
 #, lisp-format
 msgid "Starting download of ~a"
 msgstr "Avvio il download di ~a"
 
-#: src/ui-goodies.lisp:2545
+#: src/ui-goodies.lisp:2528
+#, lisp-format
+msgid "Download completed in ~a"
+msgstr "Scaricamento di ~a completato"
+
+#: src/ui-goodies.lisp:2535
+#, lisp-format
+msgid "Download ~a to: "
+msgstr "Scarica ~a in: "
+
+#: src/ui-goodies.lisp:2552
+msgid "Download: "
+msgstr "Scarica: "
+
+#: src/ui-goodies.lisp:2576
 #, lisp-format
 msgid "Download of ~a completed in ~a"
 msgstr "Scaricamento di ~a completato in ~a"
 
-#: src/ui-goodies.lisp:2554
+#: src/ui-goodies.lisp:2585
 msgid "Save downloaded files in directory: "
 msgstr "Salva i file scaricati nella directory: "
 
-#: src/ui-goodies.lisp:2591
+#: src/ui-goodies.lisp:2623
 #, lisp-format
 msgid "Starting upload of ~a"
 msgstr "Inizio caricamento di ~a"
 
-#: src/ui-goodies.lisp:2594
+#: src/ui-goodies.lisp:2626
 #, lisp-format
 msgid "Upload of ~a completed in ~a"
 msgstr "Caricamento di ~a completato in ~a"
 
-#: src/ui-goodies.lisp:2601 src/ui-goodies.lisp:2772
+#: src/ui-goodies.lisp:2633 src/ui-goodies.lisp:2807
 msgid "Upload: "
 msgstr "Carica: "
 
-#: src/ui-goodies.lisp:2615
+#: src/ui-goodies.lisp:2647
 msgid "Create: "
 msgstr "Crea: "
 
-#: src/ui-goodies.lisp:2637
+#: src/ui-goodies.lisp:2669
 msgid "Search for: "
 msgstr "Criterio di ricerca: "
 
-#: src/ui-goodies.lisp:2680
+#: src/ui-goodies.lisp:2685
+#, lisp-format
+msgid "deleting ~a (~a of ~a)"
+msgstr "cancellazione di ~a (~a di ~a)"
+
+#: src/ui-goodies.lisp:2692
+#, lisp-format
+msgid "Preparing to delete ~a"
+msgstr "Preparazione alla cancellazione di ~a"
+
+#: src/ui-goodies.lisp:2702
+msgid "Completed"
+msgstr "Compito completato"
+
+#: src/ui-goodies.lisp:2705
+#, lisp-format
+msgid "Delete ~a? "
+msgstr "Cancella ~a? "
+
+#: src/ui-goodies.lisp:2722
 msgid "Delete marked items? "
 msgstr "Cancella gli elementi selezionati? "
 
-#: src/ui-goodies.lisp:2720
+#: src/ui-goodies.lisp:2754
 #, lisp-format
 msgid "Details of: ~a"
 msgstr "Dettagli di: ~a"
 
-#: src/ui-goodies.lisp:2721
+#: src/ui-goodies.lisp:2755
 msgid "Type"
 msgstr "Tipo"
 
-#: src/ui-goodies.lisp:2723
+#: src/ui-goodies.lisp:2757
 msgid "Size"
 msgstr "Dimensione"
 
-#: src/ui-goodies.lisp:2725
+#: src/ui-goodies.lisp:2759
 msgid "Permissions"
 msgstr "Permessi"
 
-#: src/ui-goodies.lisp:2735
+#: src/ui-goodies.lisp:2770
 #, lisp-format
 msgid "File ~s was modified on server"
 msgstr "Il file ~s è stato modificato sul server"
 
-#: src/ui-goodies.lisp:2762
+#: src/ui-goodies.lisp:2797
 #, lisp-format
 msgid "Uploading ~a"
 msgstr "Caricamento di ~a"
 
-#: src/ui-goodies.lisp:2770
+#: src/ui-goodies.lisp:2805
 msgid "Uploading completed."
 msgstr "Caricamento completato."
+
+#: src/ui-goodies.lisp:2831
+#, lisp-format
+msgid "downloading ~a → ~a"
+msgstr "Scaricamento di ~a → ~a"
+
+#: src/ui-goodies.lisp:2841
+msgid "Downloading completed."
+msgstr "Scaricamento completato."
+
+#: src/ui-goodies.lisp:2843
+msgid "Download in: "
+msgstr "Scarica in: "
 
 #: src/windows.lisp:558 src/windows.lisp:614
 msgid "OK"
 msgstr "OK"
+
+#, lisp-format
+#~ msgid "Staring download of ~a"
+#~ msgstr "Avvio il download di ~a"
 
 #~ msgid "Open Gemini url: "
 #~ msgstr "Apri un indirizzo gemini: "
