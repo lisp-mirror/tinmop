@@ -1,7 +1,8 @@
 #+TITLE: tinmop
 
 * Name
-  tinmop - a client for gemini or pleroma social network
+
+  tinmop - a client for gemini, pleroma social network or 9p protocol overt TLS
 
 * Synopsis
 
@@ -23,12 +24,18 @@
   - gemini://gemini.circumlunar.space/
   - [[https://gemini.circumlunar.space/docs/]]
 
+  Finally tinmop can  connect to network file system  using 9p protocol
+  over TLS (using client certificates as authentication method).
+
+  For more information about this feature, please visit:
+  [[https://kamid.omarpolo.com/]].
+
 * Options
 
   Without options the program will start a terminal interface and will
   try to connect to your instance (see [[Configuration]])
 
-  + -o, --open-gemini-url ARG        :: Open gemini url
+  + -o, --open-net-address ARG       :: Open net address (currentli only gemini or 9p)
   + -m, --notify-mentions ARG        :: Notify messages that mentions the user
   + -R, --reset-timeline-pagination  ::
     Reset the timeline pagination. By default the new toots are fetched
