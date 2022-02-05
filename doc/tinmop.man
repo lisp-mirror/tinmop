@@ -466,35 +466,50 @@ Moreover you can have some useful hint at the program web page:
 .SH "Default keybindings"
 .SS "Global keymap"
 .TP
-\fBq        \fP
-quit
-.TP
-\fBC-a      \fP
-show-about-window
-.TP
-\fB?        \fP
-print-quick-help
-.TP
-\fBC-h h    \fP
-print-quick-help
-.TP
-\fBC-h a    \fP
-apropos-help
-.TP
-\fBC-h A    \fP
-apropos-help-global
-.TP
-\fBC-h m    \fP
-open-manual
-.TP
 \fB!        \fP
 gemini-search
 .TP
 \fB>        \fP
 open-net-address
 .TP
+\fB?        \fP
+print-quick-help
+.TP
+\fBC-a      \fP
+show-about-window
+.TP
+\fBC-h A    \fP
+apropos-help-global
+.TP
+\fBC-h a    \fP
+apropos-help
+.TP
+\fBC-h h    \fP
+print-quick-help
+.TP
+\fBC-h m    \fP
+open-manual
+.TP
 \fBM-c      \fP
 open-chats-list-window
+.TP
+\fBM-down   \fP
+pass-focus-on-bottom
+.TP
+\fBM-e      \fP
+eval-command
+.TP
+\fBM-g c i  \fP
+import-gemini-certificate
+.TP
+\fBM-g c s  \fP
+gemini-open-certificates-window
+.TP
+\fBM-g g b s\fP
+display-bookmark
+.TP
+\fBM-g g l  \fP
+open-gempub-library
 .TP
 \fBM-g s o  \fP
 gemini-open-gemlog-window
@@ -505,41 +520,14 @@ gemlog-refresh-all
 \fBM-g s t a\fP
 gemlog-add-unread-posts-tour
 .TP
-\fBM-g c i  \fP
-import-gemini-certificate
-.TP
-\fBM-g c s  \fP
-gemini-open-certificates-window
-.TP
-\fBM-g g l  \fP
-open-gempub-library
-.TP
-\fBM-g g b s\fP
-display-bookmark
-.TP
-\fBM-t t    \fP
-next-tour-link
-.TP
-\fBM-t s    \fP
-show-tour-links
-.TP
-\fBM-t S    \fP
-shuffle-tour
-.TP
-\fBM-t c    \fP
-clean-all-tour
-.TP
-\fBM-right  \fP
-pass-focus-on-right
+\fBM-l      \fP
+load-script-file
 .TP
 \fBM-left   \fP
 pass-focus-on-left
 .TP
-\fBM-down   \fP
-pass-focus-on-bottom
-.TP
-\fBM-up     \fP
-pass-focus-on-top
+\fBM-right  \fP
+pass-focus-on-right
 .TP
 \fBM-s l    \fP
 message-window-lock-scrolling
@@ -547,42 +535,54 @@ message-window-lock-scrolling
 \fBM-s u    \fP
 message-window-unlock-scrolling
 .TP
-\fBM-e      \fP
-eval-command
+\fBM-t S    \fP
+shuffle-tour
 .TP
-\fBM-l      \fP
-load-script-file
+\fBM-t c    \fP
+clean-all-tour
+.TP
+\fBM-t s    \fP
+show-tour-links
+.TP
+\fBM-t t    \fP
+next-tour-link
+.TP
+\fBM-up     \fP
+pass-focus-on-top
+.TP
+\fBq        \fP
+quit
 
 .SS "Follow request window"
-.TP
-\fBup       \fP
-follow-request-go-up
-.TP
-\fBdown     \fP
-follow-request-go-down
-.TP
-\fBd        \fP
-follow-request-delete
 .TP
 \fBC-J      \fP
 process-follow-requests
 .TP
+\fBd        \fP
+follow-request-delete
+.TP
+\fBdown     \fP
+follow-request-go-down
+.TP
 \fBq        \fP
 cancel-follow-requests
+.TP
+\fBup       \fP
+follow-request-go-up
 
 .SS "Send post window"
 .TP
-\fBup       \fP
-attach-go-up
-.TP
-\fBdown     \fP
-attach-go-down
+\fBC-J      \fP
+send-message
 .TP
 \fBd        \fP
 attach-delete
 .TP
-\fBs        \fP
-change-subject
+\fBdown     \fP
+attach-go-down
+.TP
+\fBe        \fP
+edit-message-body
 .TP
 \fBm        \fP
 change-mentions
@@ -590,133 +590,91 @@ change-mentions
 \fBq        \fP
 cancel-send-message
 .TP
-\fBv        \fP
-change-visibility
-.TP
-\fBe        \fP
-edit-message-body
-.TP
-\fBC-J      \fP
-send-message
-
-.SS "Thread window"
+\fBs        \fP
+change-subject
 .TP
 \fBup       \fP
-thread-go-up
+attach-go-up
 .TP
-\fBdown     \fP
-thread-go-down
-.TP
-\fBC-J      \fP
-thread-open-selected-message
-.TP
-\fBdc       \fP
-thread-mark-delete-selected-message
-.TP
-\fBU        \fP
-thread-mark-prevent-delete-selected-message
-.TP
-\fBright    \fP
-open-next
-.TP
-\fBleft     \fP
-open-previous
-.TP
-\fBd        \fP
-delete-and-move-next
-.TP
-\fBM-u      \fP
-delete-and-move-previous
-.TP
-\fBD        \fP
-delete-post-using-regex
-.TP
-\fBg        \fP
-thread-goto-message
+\fBv        \fP
+change-visibility
+
+.SS "Thread window"
 .TP
 \fB/ b      \fP
 thread-search-next-message-body
 .TP
-\fB$\ \ b   \fP
-thread-search-previous-message-body
-.TP
 \fB/ m      \fP
 thread-search-next-message-meta
-.TP
-\fB$\ \ m   \fP
-thread-search-previous-message-meta
-.TP
-\fBN        \fP
-repeat-search
-.TP
-\fBn        \fP
-thread-search-next-unread-message
 .TP
 \fBC-I      \fP
 thread-search-next-unread-message
 .TP
-\fBhome     \fP
-thread-goto-first-message
+\fBC-J      \fP
+thread-open-selected-message
 .TP
-\fBend      \fP
-thread-goto-last-message
+\fBC-X m b  \fP
+boost-selected-status
 .TP
-\fBc        \fP
-compose-message
+\fBC-X m f  \fP
+favourite-selected-status
 .TP
-\fBr        \fP
-reply-message
+\fBC-X m r b\fP
+unboost-selected-status
 .TP
-\fBx        \fP
-refresh-thread
+\fBC-X m r f\fP
+unfavourite-selected-status
 .TP
-\fBX        \fP
-refresh-thread-totally
+\fBC-X m s  \fP
+subscribe-to-hash
 .TP
-\fBv        \fP
-open-message-attach
+\fBC-X m t  \fP
+move-message-tree
 .TP
-\fBl        \fP
-open-message-link
-.TP
-\fBP        \fP
-poll-vote
-.TP
-\fBC-c u    \fP
-update-conversations
-.TP
-\fBC-c o    \fP
-open-conversation
+\fBC-X m u  \fP
+unsubscribe-to-hash
 .TP
 \fBC-c c    \fP
 change-conversation-name
 .TP
+\fBC-c o    \fP
+open-conversation
+.TP
+\fBC-c u    \fP
+update-conversations
+.TP
 \fBC-f c    \fP
 change-folder
-.TP
-\fBC-t c    \fP
-change-timeline
-.TP
-\fBC-t u    \fP
-update-current-timeline
-.TP
-\fBC-t U    \fP
-update-current-timeline-backwards
 .TP
 \fBC-t R    \fP
 reset-timeline-pagination
 .TP
+\fBC-t U    \fP
+update-current-timeline-backwards
+.TP
+\fBC-t c    \fP
+change-timeline
+.TP
 \fBC-t h r  \fP
 refresh-tags
 .TP
-\fBC-u i    \fP
-ignore-user
+\fBC-t u    \fP
+update-current-timeline
 .TP
-\fBC-u x    \fP
-unignore-user
+\fBC-u c k g\fP
+crypto-generate-key
+.TP
+\fBC-u c k i\fP
+crypto-import-key
+.TP
+\fBC-u c k s\fP
+crypto-export-key
 .TP
 \fBC-u f    \fP
 follow-user
+.TP
+\fBC-u i    \fP
+ignore-user
 .TP
 \fBC-u r f  \fP
 start-follow-request-processing
@@ -730,147 +688,144 @@ unfollow-user
 \fBC-u v a  \fP
 view-user-avatar
 .TP
-\fBC-u c k i\fP
-crypto-import-key
+\fBC-u x    \fP
+unignore-user
 .TP
-\fBC-u c k s\fP
-crypto-export-key
+\fBD        \fP
+delete-post-using-regex
 .TP
-\fBC-u c k g\fP
-crypto-generate-key
+\fBM-u      \fP
+delete-and-move-previous
 .TP
-\fBC-X m t  \fP
-move-message-tree
+\fBN        \fP
+repeat-search
 .TP
-\fBC-X m f  \fP
-favourite-selected-status
+\fBP        \fP
+poll-vote
 .TP
-\fBC-X m r f\fP
-unfavourite-selected-status
+\fBU        \fP
+thread-mark-prevent-delete-selected-message
 .TP
-\fBC-X m b  \fP
-boost-selected-status
+\fBX        \fP
+refresh-thread-totally
 .TP
-\fBC-X m r b\fP
-unboost-selected-status
+\fB$\ \ b   \fP
+thread-search-previous-message-body
 .TP
-\fBC-X m s  \fP
-subscribe-to-hash
+\fB$\ \ m   \fP
+thread-search-previous-message-meta
 .TP
-\fBC-X m u  \fP
-unsubscribe-to-hash
+\fBc        \fP
+compose-message
+.TP
+\fBd        \fP
+delete-and-move-next
+.TP
+\fBdc       \fP
+thread-mark-delete-selected-message
+.TP
+\fBdown     \fP
+thread-go-down
+.TP
+\fBend      \fP
+thread-goto-last-message
+.TP
+\fBg        \fP
+thread-goto-message
+.TP
+\fBhome     \fP
+thread-goto-first-message
+.TP
+\fBl        \fP
+open-message-link
+.TP
+\fBleft     \fP
+open-previous
+.TP
+\fBn        \fP
+thread-search-next-unread-message
+.TP
+\fBr        \fP
+reply-message
+.TP
+\fBright    \fP
+open-next
+.TP
+\fBup       \fP
+thread-go-up
+.TP
+\fBv        \fP
+open-message-attach
+.TP
+\fBx        \fP
+refresh-thread
 .TP
 \fB|        \fP
 send-message-to-pipe
 
 .SS "Posts window"
 .TP
-\fBup       \fP
-message-scroll-up
-.TP
-\fBdown     \fP
-message-scroll-down
-.TP
-\fBleft     \fP
-message-scroll-left
-.TP
-\fBright    \fP
-message-scroll-right
+\fB/        \fP
+message-search-regex
 .TP
 \fBC-J      \fP
 message-scroll-down
 .TP
-\fBhome     \fP
-message-scroll-begin
+\fBN        \fP
+repeat-search
+.TP
+\fBdown     \fP
+message-scroll-down
 .TP
 \fBend      \fP
 message-scroll-end
 .TP
-\fB/        \fP
-message-search-regex
+\fBhome     \fP
+message-scroll-begin
 .TP
-\fBN        \fP
-repeat-search
+\fBleft     \fP
+message-scroll-left
 .TP
 \fBnpage    \fP
 message-scroll-next-page
 .TP
 \fBppage    \fP
 message-scroll-previous-page
+.TP
+\fBright    \fP
+message-scroll-right
+.TP
+\fBup       \fP
+message-scroll-up
 .TP
 \fB|        \fP
 send-to-pipe
 
 .SS "Gemini viewer window"
 .TP
-\fBup       \fP
-message-scroll-up
-.TP
-\fBdown     \fP
-message-scroll-down
-.TP
-\fBleft     \fP
-message-scroll-left
-.TP
-\fBright    \fP
-message-scroll-right
+\fB/        \fP
+message-search-regex
 .TP
 \fBC-J      \fP
 message-scroll-down
 .TP
-\fBhome     \fP
-message-scroll-begin
+\fBC-[      \fP
+go-to-previous-link
 .TP
-\fBend      \fP
-message-scroll-end
-.TP
-\fB/        \fP
-message-search-regex
-.TP
-\fBN        \fP
-repeat-search
-.TP
-\fBnpage    \fP
-message-scroll-next-page
-.TP
-\fBppage    \fP
-message-scroll-previous-page
-.TP
-\fBl        \fP
-open-message-link
-.TP
-\fBb        \fP
-gemini-history-back
+\fBC-]      \fP
+go-to-next-link
 .TP
 \fBC-b a    \fP
 bookmark-gemini-page
 .TP
-\fBC-b s    \fP
-display-bookmark
-.TP
 \fBC-b d    \fP
 delete-gemini-bookmark
 .TP
-\fBU        \fP
-gemini-view-source
+\fBC-b s    \fP
+display-bookmark
 .TP
-\fBd        \fP
-gemini-open-streams-window
-.TP
-\fBc        \fP
-gemini-open-certificates-window
-.TP
-\fBr        \fP
-gemini-refresh-page
-.TP
-\fBs        \fP
-gemini-subscribe-gemlog
-.TP
-\fBp        \fP
-message-toggle-preformatted-block
-.TP
-\fBt        \fP
-next-tour-link
+\fBN        \fP
+repeat-search
 .TP
 \fBO        \fP
 open-gemini-toc
@@ -878,45 +833,90 @@ open-gemini-toc
 \fBT        \fP
 show-tour-links
 .TP
-\fB|        \fP
-send-to-pipe
+\fBU        \fP
+gemini-view-source
 .TP
 \fB]        \fP
 open-next-visible-link
 .TP
-\fBC-]      \fP
-go-to-next-link
+\fBb        \fP
+gemini-history-back
 .TP
-\fBC-[      \fP
-go-to-previous-link
-
-.SS "Gemini page table of contents window"
+\fBc        \fP
+gemini-open-certificates-window
 .TP
-\fBup       \fP
-gemini-toc-scroll-up
+\fBd        \fP
+gemini-open-streams-window
 .TP
 \fBdown     \fP
-gemini-toc-scroll-down
+message-scroll-down
 .TP
-\fBq        \fP
-gemini-toc-close
+\fBend      \fP
+message-scroll-end
 .TP
-\fBn        \fP
-gemini-toc-scroll-down-page
+\fBhome     \fP
+message-scroll-begin
+.TP
+\fBl        \fP
+open-message-link
+.TP
+\fBleft     \fP
+message-scroll-left
+.TP
+\fBnpage    \fP
+message-scroll-next-page
+.TP
+\fBp        \fP
+message-toggle-preformatted-block
+.TP
+\fBppage    \fP
+message-scroll-previous-page
+.TP
+\fBr        \fP
+gemini-refresh-page
+.TP
+\fBright    \fP
+message-scroll-right
+.TP
+\fBs        \fP
+gemini-subscribe-gemlog
+.TP
+\fBt        \fP
+next-tour-link
+.TP
+\fBup       \fP
+message-scroll-up
+.TP
+\fB|        \fP
+send-to-pipe
+
+.SS "Gemini page table of contents window"
 .TP
 \fBC-J      \fP
 gemini-toc-scroll-down-page
 .TP
+\fBdown     \fP
+gemini-toc-scroll-down
+.TP
+\fBn        \fP
+gemini-toc-scroll-down-page
+.TP
 \fBp        \fP
 gemini-toc-scroll-up-page
+.TP
+\fBq        \fP
+gemini-toc-close
+.TP
+\fBup       \fP
+gemini-toc-scroll-up
 
 .SS "Gemini stream window"
 .TP
+\fBC-J      \fP
+gemini-streams-window-open-stream
+.TP
 \fBa        \fP
 gemini-abort-download
-.TP
-\fBup       \fP
-gemini-streams-window-up
 .TP
 \fBdown     \fP
 gemini-streams-window-down
@@ -924,13 +924,13 @@ gemini-streams-window-down
 \fBq        \fP
 gemini-streams-window-close
 .TP
-\fBC-J      \fP
-gemini-streams-window-open-stream
+\fBup       \fP
+gemini-streams-window-up
 
 .SS "gemini certificates window"
 .TP
-\fBup       \fP
-gemini-certificate-window-go-up
+\fBC-J      \fP
+gemini-delete-certificate
 .TP
 \fBdown     \fP
 gemini-certificate-window-go-down
@@ -938,33 +938,33 @@ gemini-certificate-window-go-down
 \fBq        \fP
 gemini-close-certificate-window
 .TP
-\fBC-J      \fP
-gemini-delete-certificate
+\fBup       \fP
+gemini-certificate-window-go-up
 
 .SS "Gemini subscription window"
 .TP
 \fBC-J      \fP
 show-gemlog-to-screen
 .TP
-\fBup       \fP
-gemlogs-subscription-go-up
+\fBd        \fP
+gemlog-cancel-subscription
 .TP
 \fBdown     \fP
 gemlogs-subscription-go-down
 .TP
+\fBl        \fP
+open-message-link
+.TP
 \fBq        \fP
 close-gemlog-window
 .TP
-\fBd        \fP
-gemlog-cancel-subscription
-.TP
-\fBl        \fP
-open-message-link
+\fBup       \fP
+gemlogs-subscription-go-up
 
 .SS "Gempub library window"
 .TP
-\fBup       \fP
-gempub-library-window-go-up
+\fBC-J      \fP
+gempub-open-file
 .TP
 \fBdown     \fP
 gempub-library-window-go-down
@@ -972,16 +972,10 @@ gempub-library-window-go-down
 \fBq        \fP
 gempub-library-window-close
 .TP
-\fBC-J      \fP
-gempub-open-file
+\fBup       \fP
+gempub-library-window-go-up
 
 .SS "Post's tag window"
-.TP
-\fBup       \fP
-tag-go-up
-.TP
-\fBdown     \fP
-tag-go-down
 .TP
 \fBC-J      \fP
 open-tag-folder
@@ -989,28 +983,34 @@ open-tag-folder
 \fBU        \fP
 unsubscribe-to-hash
 .TP
+\fBdown     \fP
+tag-go-down
+.TP
 \fBr        \fP
 refresh-tags
+.TP
+\fBup       \fP
+tag-go-up
 
 .SS "Conversations window"
-.TP
-\fBC-c c    \fP
-change-conversation-name
 .TP
 \fBC-J      \fP
 goto-conversation
 .TP
-\fBup       \fP
-conversation-go-up
+\fBC-c c    \fP
+change-conversation-name
 .TP
-\fBdown     \fP
-conversation-go-down
+\fBI        \fP
+ignore-conversation
 .TP
 \fBdc       \fP
 delete-conversation
 .TP
-\fBI        \fP
-ignore-conversation
+\fBdown     \fP
+conversation-go-down
+.TP
+\fBup       \fP
+conversation-go-up
 
 .SS "Attachments window"
 .TP
@@ -1020,89 +1020,89 @@ open-message-attach-perform-opening
 \fBa        \fP
 open-all-message-attachments
 .TP
-\fBup       \fP
-open-message-attach-go-up
-.TP
 \fBdown     \fP
 open-message-attach-go-down
 .TP
 \fBq        \fP
 close-open-attach-window
-
-.SS "Links window"
-.TP
-\fBC-J      \fP
-open-message-link-perform-opening
 .TP
 \fBup       \fP
-open-message-link-go-up
-.TP
-\fBdown     \fP
-open-message-link-go-down
-.TP
-\fBq        \fP
-close-open-message-link-window
-.TP
-\fBe        \fP
-open-message-link-open-enqueue
+open-message-attach-go-up
+
+.SS "Links window"
 .TP
 \fB/        \fP
 search-link-window
 .TP
+\fBC-J      \fP
+open-message-link-perform-opening
+.TP
 \fBN        \fP
 repeat-search
+.TP
+\fBT        \fP
+save-selected-message-in-tour
+.TP
+\fBdown     \fP
+open-message-link-go-down
+.TP
+\fBe        \fP
+open-message-link-open-enqueue
+.TP
+\fBq        \fP
+close-open-message-link-window
 .TP
 \fBt        \fP
 tour-mode-link
 .TP
-\fBT        \fP
-save-selected-message-in-tour
+\fBup       \fP
+open-message-link-go-up
 
 .SS "Chats list window"
-.TP
-\fBr        \fP
-refresh-chat-messages
-.TP
-\fBR        \fP
-refresh-chats
-.TP
-\fBq        \fP
-close-chats-list-window
 .TP
 \fBC-J      \fP
 show-chat-to-screen
 .TP
-\fBl        \fP
-change-chat-label
+\fBR        \fP
+refresh-chats
 .TP
 \fBc        \fP
 chat-create-new
 .TP
-\fBup       \fP
-chat-list-go-up
-.TP
 \fBdown     \fP
 chat-list-go-down
+.TP
+\fBl        \fP
+change-chat-label
+.TP
+\fBq        \fP
+close-chats-list-window
+.TP
+\fBr        \fP
+refresh-chat-messages
+.TP
+\fBup       \fP
+chat-list-go-up
 
 .SS "Chat window"
+.TP
+\fB/        \fP
+message-search-regex
 .TP
 \fBM-c      \fP
 write-to-chat
 .TP
-\fBup       \fP
-message-scroll-up
+\fBa        \fP
+open-chat-link-window
 .TP
 \fBdown     \fP
 message-scroll-down
 .TP
-\fBhome     \fP
-message-scroll-begin
-.TP
 \fBend      \fP
 message-scroll-end
 .TP
-\fB/        \fP
-message-search-regex
+\fBhome     \fP
+message-scroll-begin
 .TP
 \fBnpage    \fP
 message-scroll-next-page
@@ -1110,22 +1110,28 @@ message-scroll-next-page
 \fBppage    \fP
 message-scroll-previous-page
 .TP
-\fBa        \fP
-open-chat-link-window
+\fBup       \fP
+message-scroll-up
 
 .SS "File explorer"
 .TP
-\fBx        \fP
-file-explorer-expand-path
+\fB/        \fP
+file-explorer-search
 .TP
-\fBc        \fP
-file-explorer-close-path
-.TP
-\fBr        \fP
-file-explorer-rename-path
+\fBC-J      \fP
+file-explorer-open-node
 .TP
 \fBD        \fP
 file-explorer-delete-tree
+.TP
+\fBM d      \fP
+file-explorer-download-mirror
+.TP
+\fBM u      \fP
+file-explorer-upload-mirror
+.TP
+\fBN        \fP
+repeat-search
 .TP
 \fBX        \fP
 file-explorer-delete-marked
@@ -1133,44 +1139,44 @@ file-explorer-delete-marked
 \fBa        \fP
 file-explorer-create-path
 .TP
+\fBc        \fP
+file-explorer-close-path
+.TP
 \fBd        \fP
 file-explorer-download-path
-.TP
-\fBu        \fP
-file-explorer-upload-path
-.TP
-\fB/        \fP
-file-explorer-search
-.TP
-\fBN        \fP
-repeat-search
-.TP
-\fBm        \fP
-file-explorer-mark-entry
-.TP
-\fBup       \fP
-file-explorer-go-up
 .TP
 \fBdown     \fP
 file-explorer-go-down
 .TP
-\fBhome     \fP
-file-explorer-scroll-begin
+\fBe        \fP
+file-explorer-edit-file
 .TP
 \fBend      \fP
 file-explorer-scroll-end
 .TP
-\fBq        \fP
-file-explorer-close-window
-.TP
-\fBC-J      \fP
-file-explorer-open-node
-.TP
-\fBe        \fP
-file-explorer-edit-file
+\fBhome     \fP
+file-explorer-scroll-begin
 .TP
 \fBi        \fP
 file-explorer-node-details
+.TP
+\fBm        \fP
+file-explorer-mark-entry
+.TP
+\fBq        \fP
+file-explorer-close-window
+.TP
+\fBr        \fP
+file-explorer-rename-path
+.TP
+\fBu        \fP
+file-explorer-upload-path
+.TP
+\fBup       \fP
+file-explorer-go-up
+.TP
+\fBx        \fP
+file-explorer-expand-path
 
 .SH "BUGS"
 .PP

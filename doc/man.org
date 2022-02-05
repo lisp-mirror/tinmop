@@ -344,281 +344,283 @@
 
 ** Global keymap
 
-  - q         :: quit
-  - C-a       :: show-about-window
-  - ?         :: print-quick-help
-  - C-h h     :: print-quick-help
-  - C-h a     :: apropos-help
-  - C-h A     :: apropos-help-global
-  - C-h m     :: open-manual
   - !         :: gemini-search
   - >         :: open-net-address
+  - ?         :: print-quick-help
+  - C-a       :: show-about-window
+  - C-h A     :: apropos-help-global
+  - C-h a     :: apropos-help
+  - C-h h     :: print-quick-help
+  - C-h m     :: open-manual
   - M-c       :: open-chats-list-window
+  - M-down    :: pass-focus-on-bottom
+  - M-e       :: eval-command
+  - M-g c i   :: import-gemini-certificate
+  - M-g c s   :: gemini-open-certificates-window
+  - M-g g b s :: display-bookmark
+  - M-g g l   :: open-gempub-library
   - M-g s o   :: gemini-open-gemlog-window
   - M-g s r   :: gemlog-refresh-all
   - M-g s t a :: gemlog-add-unread-posts-tour
-  - M-g c i   :: import-gemini-certificate
-  - M-g c s   :: gemini-open-certificates-window
-  - M-g g l   :: open-gempub-library
-  - M-g g b s :: display-bookmark
-  - M-t t     :: next-tour-link
-  - M-t s     :: show-tour-links
-  - M-t S     :: shuffle-tour
-  - M-t c     :: clean-all-tour
-  - M-right   :: pass-focus-on-right
+  - M-l       :: load-script-file
   - M-left    :: pass-focus-on-left
-  - M-down    :: pass-focus-on-bottom
-  - M-up      :: pass-focus-on-top
+  - M-right   :: pass-focus-on-right
   - M-s l     :: message-window-lock-scrolling
   - M-s u     :: message-window-unlock-scrolling
-  - M-e       :: eval-command
-  - M-l       :: load-script-file
+  - M-t S     :: shuffle-tour
+  - M-t c     :: clean-all-tour
+  - M-t s     :: show-tour-links
+  - M-t t     :: next-tour-link
+  - M-up      :: pass-focus-on-top
+  - q         :: quit
 
 ** Follow request window
 
-  - up        :: follow-request-go-up
-  - down      :: follow-request-go-down
-  - d         :: follow-request-delete
   - C-J       :: process-follow-requests
+  - d         :: follow-request-delete
+  - down      :: follow-request-go-down
   - q         :: cancel-follow-requests
+  - up        :: follow-request-go-up
 
 ** Send post window
 
-  - up        :: attach-go-up
-  - down      :: attach-go-down
+  - C-J       :: send-message
   - d         :: attach-delete
-  - s         :: change-subject
+  - down      :: attach-go-down
+  - e         :: edit-message-body
   - m         :: change-mentions
   - q         :: cancel-send-message
+  - s         :: change-subject
+  - up        :: attach-go-up
   - v         :: change-visibility
-  - e         :: edit-message-body
-  - C-J       :: send-message
 
 ** Thread window
 
-  - up        :: thread-go-up
-  - down      :: thread-go-down
-  - C-J       :: thread-open-selected-message
-  - dc        :: thread-mark-delete-selected-message
-  - U         :: thread-mark-prevent-delete-selected-message
-  - right     :: open-next
-  - left      :: open-previous
-  - d         :: delete-and-move-next
-  - M-u       :: delete-and-move-previous
-  - D         :: delete-post-using-regex
-  - g         :: thread-goto-message
   - / b       :: thread-search-next-message-body
-  - \ \ b    :: thread-search-previous-message-body
   - / m       :: thread-search-next-message-meta
-  - \ \ m    :: thread-search-previous-message-meta
-  - N         :: repeat-search
-  - n         :: thread-search-next-unread-message
   - C-I       :: thread-search-next-unread-message
-  - home      :: thread-goto-first-message
-  - end       :: thread-goto-last-message
-  - c         :: compose-message
-  - r         :: reply-message
-  - x         :: refresh-thread
-  - X         :: refresh-thread-totally
-  - v         :: open-message-attach
-  - l         :: open-message-link
-  - P         :: poll-vote
-  - C-c u     :: update-conversations
-  - C-c o     :: open-conversation
+  - C-J       :: thread-open-selected-message
+  - C-X m b   :: boost-selected-status
+  - C-X m f   :: favourite-selected-status
+  - C-X m r b :: unboost-selected-status
+  - C-X m r f :: unfavourite-selected-status
+  - C-X m s   :: subscribe-to-hash
+  - C-X m t   :: move-message-tree
+  - C-X m u   :: unsubscribe-to-hash
   - C-c c     :: change-conversation-name
+  - C-c o     :: open-conversation
+  - C-c u     :: update-conversations
   - C-f c     :: change-folder
-  - C-t c     :: change-timeline
-  - C-t u     :: update-current-timeline
-  - C-t U     :: update-current-timeline-backwards
   - C-t R     :: reset-timeline-pagination
+  - C-t U     :: update-current-timeline-backwards
+  - C-t c     :: change-timeline
   - C-t h r   :: refresh-tags
-  - C-u i     :: ignore-user
-  - C-u x     :: unignore-user
+  - C-t u     :: update-current-timeline
+  - C-u c k g :: crypto-generate-key
+  - C-u c k i :: crypto-import-key
+  - C-u c k s :: crypto-export-key
   - C-u f     :: follow-user
+  - C-u i     :: ignore-user
   - C-u r f   :: start-follow-request-processing
   - C-u r r   :: report-status
   - C-u u     :: unfollow-user
   - C-u v a   :: view-user-avatar
-  - C-u c k i :: crypto-import-key
-  - C-u c k s :: crypto-export-key
-  - C-u c k g :: crypto-generate-key
-  - C-X m t   :: move-message-tree
-  - C-X m f   :: favourite-selected-status
-  - C-X m r f :: unfavourite-selected-status
-  - C-X m b   :: boost-selected-status
-  - C-X m r b :: unboost-selected-status
-  - C-X m s   :: subscribe-to-hash
-  - C-X m u   :: unsubscribe-to-hash
+  - C-u x     :: unignore-user
+  - D         :: delete-post-using-regex
+  - M-u       :: delete-and-move-previous
+  - N         :: repeat-search
+  - P         :: poll-vote
+  - U         :: thread-mark-prevent-delete-selected-message
+  - X         :: refresh-thread-totally
+  - \ \ b    :: thread-search-previous-message-body
+  - \ \ m    :: thread-search-previous-message-meta
+  - c         :: compose-message
+  - d         :: delete-and-move-next
+  - dc        :: thread-mark-delete-selected-message
+  - down      :: thread-go-down
+  - end       :: thread-goto-last-message
+  - g         :: thread-goto-message
+  - home      :: thread-goto-first-message
+  - l         :: open-message-link
+  - left      :: open-previous
+  - n         :: thread-search-next-unread-message
+  - r         :: reply-message
+  - right     :: open-next
+  - up        :: thread-go-up
+  - v         :: open-message-attach
+  - x         :: refresh-thread
   - |         :: send-message-to-pipe
 
 **  Posts window
 
-  - up        :: message-scroll-up
-  - down      :: message-scroll-down
-  - left      :: message-scroll-left
-  - right     :: message-scroll-right
-  - C-J       :: message-scroll-down
-  - home      :: message-scroll-begin
-  - end       :: message-scroll-end
   - /         :: message-search-regex
+  - C-J       :: message-scroll-down
   - N         :: repeat-search
+  - down      :: message-scroll-down
+  - end       :: message-scroll-end
+  - home      :: message-scroll-begin
+  - left      :: message-scroll-left
   - npage     :: message-scroll-next-page
   - ppage     :: message-scroll-previous-page
+  - right     :: message-scroll-right
+  - up        :: message-scroll-up
   - |         :: send-to-pipe
 
 ** Gemini viewer window
 
-  - up        :: message-scroll-up
-  - down      :: message-scroll-down
-  - left      :: message-scroll-left
-  - right     :: message-scroll-right
-  - C-J       :: message-scroll-down
-  - home      :: message-scroll-begin
-  - end       :: message-scroll-end
   - /         :: message-search-regex
-  - N         :: repeat-search
-  - npage     :: message-scroll-next-page
-  - ppage     :: message-scroll-previous-page
-  - l         :: open-message-link
-  - b         :: gemini-history-back
+  - C-J       :: message-scroll-down
+  - C-[       :: go-to-previous-link
+  - C-]       :: go-to-next-link
   - C-b a     :: bookmark-gemini-page
-  - C-b s     :: display-bookmark
   - C-b d     :: delete-gemini-bookmark
-  - U         :: gemini-view-source
-  - d         :: gemini-open-streams-window
-  - c         :: gemini-open-certificates-window
-  - r         :: gemini-refresh-page
-  - s         :: gemini-subscribe-gemlog
-  - p         :: message-toggle-preformatted-block
-  - t         :: next-tour-link
+  - C-b s     :: display-bookmark
+  - N         :: repeat-search
   - O         :: open-gemini-toc
   - T         :: show-tour-links
-  - |         :: send-to-pipe
+  - U         :: gemini-view-source
   - ]         :: open-next-visible-link
-  - C-]       :: go-to-next-link
-  - C-[       :: go-to-previous-link
+  - b         :: gemini-history-back
+  - c         :: gemini-open-certificates-window
+  - d         :: gemini-open-streams-window
+  - down      :: message-scroll-down
+  - end       :: message-scroll-end
+  - home      :: message-scroll-begin
+  - l         :: open-message-link
+  - left      :: message-scroll-left
+  - npage     :: message-scroll-next-page
+  - p         :: message-toggle-preformatted-block
+  - ppage     :: message-scroll-previous-page
+  - r         :: gemini-refresh-page
+  - right     :: message-scroll-right
+  - s         :: gemini-subscribe-gemlog
+  - t         :: next-tour-link
+  - up        :: message-scroll-up
+  - |         :: send-to-pipe
 
 ** Gemini page table of contents window
 
-  - up        :: gemini-toc-scroll-up
-  - down      :: gemini-toc-scroll-down
-  - q         :: gemini-toc-close
-  - n         :: gemini-toc-scroll-down-page
   - C-J       :: gemini-toc-scroll-down-page
+  - down      :: gemini-toc-scroll-down
+  - n         :: gemini-toc-scroll-down-page
   - p         :: gemini-toc-scroll-up-page
+  - q         :: gemini-toc-close
+  - up        :: gemini-toc-scroll-up
 
 ** Gemini stream window
 
+  - C-J       :: gemini-streams-window-open-stream
   - a         :: gemini-abort-download
-  - up        :: gemini-streams-window-up
   - down      :: gemini-streams-window-down
   - q         :: gemini-streams-window-close
-  - C-J       :: gemini-streams-window-open-stream
+  - up        :: gemini-streams-window-up
 
 ** gemini certificates window
 
-  - up        :: gemini-certificate-window-go-up
+  - C-J       :: gemini-delete-certificate
   - down      :: gemini-certificate-window-go-down
   - q         :: gemini-close-certificate-window
-  - C-J       :: gemini-delete-certificate
+  - up        :: gemini-certificate-window-go-up
 
 ** Gemini subscription window
 
   - C-J       :: show-gemlog-to-screen
-  - up        :: gemlogs-subscription-go-up
-  - down      :: gemlogs-subscription-go-down
-  - q         :: close-gemlog-window
   - d         :: gemlog-cancel-subscription
+  - down      :: gemlogs-subscription-go-down
   - l         :: open-message-link
+  - q         :: close-gemlog-window
+  - up        :: gemlogs-subscription-go-up
 
 ** Gempub library window
 
-  - up        :: gempub-library-window-go-up
+  - C-J       :: gempub-open-file
   - down      :: gempub-library-window-go-down
   - q         :: gempub-library-window-close
-  - C-J       :: gempub-open-file
+  - up        :: gempub-library-window-go-up
 
 ** Post's tag window
 
-  - up        :: tag-go-up
-  - down      :: tag-go-down
   - C-J       :: open-tag-folder
   - U         :: unsubscribe-to-hash
+  - down      :: tag-go-down
   - r         :: refresh-tags
+  - up        :: tag-go-up
 
 ** Conversations window
 
-  - C-c c     :: change-conversation-name
   - C-J       :: goto-conversation
-  - up        :: conversation-go-up
-  - down      :: conversation-go-down
-  - dc        :: delete-conversation
+  - C-c c     :: change-conversation-name
   - I         :: ignore-conversation
+  - dc        :: delete-conversation
+  - down      :: conversation-go-down
+  - up        :: conversation-go-up
 
 ** Attachments window
 
   - C-J       :: open-message-attach-perform-opening
   - a         :: open-all-message-attachments
-  - up        :: open-message-attach-go-up
   - down      :: open-message-attach-go-down
   - q         :: close-open-attach-window
+  - up        :: open-message-attach-go-up
 
 ** Links window
 
-  - C-J       :: open-message-link-perform-opening
-  - up        :: open-message-link-go-up
-  - down      :: open-message-link-go-down
-  - q         :: close-open-message-link-window
-  - e         :: open-message-link-open-enqueue
   - /         :: search-link-window
+  - C-J       :: open-message-link-perform-opening
   - N         :: repeat-search
-  - t         :: tour-mode-link
   - T         :: save-selected-message-in-tour
+  - down      :: open-message-link-go-down
+  - e         :: open-message-link-open-enqueue
+  - q         :: close-open-message-link-window
+  - t         :: tour-mode-link
+  - up        :: open-message-link-go-up
 
 ** Chats list window
 
-  - r         :: refresh-chat-messages
-  - R         :: refresh-chats
-  - q         :: close-chats-list-window
   - C-J       :: show-chat-to-screen
-  - l         :: change-chat-label
+  - R         :: refresh-chats
   - c         :: chat-create-new
-  - up        :: chat-list-go-up
   - down      :: chat-list-go-down
+  - l         :: change-chat-label
+  - q         :: close-chats-list-window
+  - r         :: refresh-chat-messages
+  - up        :: chat-list-go-up
 
 ** Chat window
 
-  - M-c       :: write-to-chat
-  - up        :: message-scroll-up
-  - down      :: message-scroll-down
-  - home      :: message-scroll-begin
-  - end       :: message-scroll-end
   - /         :: message-search-regex
+  - M-c       :: write-to-chat
+  - a         :: open-chat-link-window
+  - down      :: message-scroll-down
+  - end       :: message-scroll-end
+  - home      :: message-scroll-begin
   - npage     :: message-scroll-next-page
   - ppage     :: message-scroll-previous-page
-  - a         :: open-chat-link-window
+  - up        :: message-scroll-up
 
 ** File explorer
 
-  - x         :: file-explorer-expand-path
-  - c         :: file-explorer-close-path
-  - r         :: file-explorer-rename-path
+  - /         :: file-explorer-search
+  - C-J       :: file-explorer-open-node
   - D         :: file-explorer-delete-tree
+  - M d       :: file-explorer-download-mirror
+  - M u       :: file-explorer-upload-mirror
+  - N         :: repeat-search
   - X         :: file-explorer-delete-marked
   - a         :: file-explorer-create-path
+  - c         :: file-explorer-close-path
   - d         :: file-explorer-download-path
-  - u         :: file-explorer-upload-path
-  - /         :: file-explorer-search
-  - N         :: repeat-search
-  - m         :: file-explorer-mark-entry
-  - up        :: file-explorer-go-up
   - down      :: file-explorer-go-down
-  - home      :: file-explorer-scroll-begin
-  - end       :: file-explorer-scroll-end
-  - q         :: file-explorer-close-window
-  - C-J       :: file-explorer-open-node
   - e         :: file-explorer-edit-file
+  - end       :: file-explorer-scroll-end
+  - home      :: file-explorer-scroll-begin
   - i         :: file-explorer-node-details
+  - m         :: file-explorer-mark-entry
+  - q         :: file-explorer-close-window
+  - r         :: file-explorer-rename-path
+  - u         :: file-explorer-upload-path
+  - up        :: file-explorer-go-up
+  - x         :: file-explorer-expand-path
 
 * BUGS
 
