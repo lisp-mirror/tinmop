@@ -1923,7 +1923,7 @@ mot recent updated to least recent"
 open-message-link-window:open-message-link"
   (_ "Open url: "))
 
-(defun open-net-address ()
+(defun open-net-address (&optional (address nil))
   "Ask for an internet address and try to load it.
 Currently the only recognized protocols are gemini and kami."
   (flet ((on-input-complete (url)
@@ -1931,11 +1931,12 @@ Currently the only recognized protocols are gemini and kami."
              (if (text-utils:string-starts-with-p kami:+kami-scheme+ trimmed-url)
                  (open-kami-address trimmed-url)
                  (open-gemini-address trimmed-url)))))
-    (let ((prompt (open-url-prompt)))
-      (ask-string-input #'on-input-complete
-                        :prompt      prompt
-                        :complete-fn (complete:make-complete-gemini-iri-fn prompt)))))
-
+    (if (null address)
+        (let ((prompt (open-url-prompt)))
+          (ask-string-input #'on-input-complete
+                            :prompt      prompt
+                            :complete-fn (complete:make-complete-gemini-iri-fn prompt)))
+        (on-input-complete address))))
 
 (defun open-gemini-address (url)
   (gemini-viewer:load-gemini-url url

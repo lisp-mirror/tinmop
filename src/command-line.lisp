@@ -68,7 +68,7 @@
             :description               (_ "Open gemini url")
             :short                     #\o
             :arg-parser                #'identity
-             :long                      "open-gemini-url")
+            :long                      "open-gemini-url")
      (:name :gemini-full-screen-mode
             :description               (_ "Start as gemini client only.")
             :short                     #\G

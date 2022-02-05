@@ -166,7 +166,7 @@ etc.) happened"
                              command-line:*module-file*)
                      :as-error t))))
     (if command-line:*gemini-url*
-        (gemini-viewer:load-gemini-url command-line:*gemini-url*)
+        (ui:open-net-address command-line:*gemini-url*)
         (progn
           (let ((program-events:*process-events-immediately* t))
             (when command-line:*start-timeline*
