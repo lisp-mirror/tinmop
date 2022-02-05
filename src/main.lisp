@@ -165,8 +165,8 @@ etc.) happened"
                              (_ "Unable to load module ~a")
                              command-line:*module-file*)
                      :as-error t))))
-    (if command-line:*gemini-url*
-        (ui:open-net-address command-line:*gemini-url*)
+    (if command-line:*net-address*
+        (ui:open-net-address command-line:*net-address*)
         (progn
           (let ((program-events:*process-events-immediately* t))
             (when command-line:*start-timeline*

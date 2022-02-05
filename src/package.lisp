@@ -1355,7 +1355,7 @@
    :*check-follow-requests*
    :*reset-timeline-pagination*
    :*notify-mentions*
-   :*gemini-url*
+   :*net-address*
    :*update-timeline-climb-message-tree*
    :*gemini-full-screen-mode*
    :*print-lisp-dependencies*

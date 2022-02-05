@@ -64,11 +64,11 @@
             :description               (_ "Notify messages that mentions the user")
             :short                     #\m
             :long                      "notify-mentions")
-     (:name :open-gemini-url
-            :description               (_ "Open gemini url")
+     (:name :open-net-url
+            :description               (_ "Open net address")
             :short                     #\o
             :arg-parser                #'identity
-            :long                      "open-gemini-url")
+            :long                      "open-net-address")
      (:name :gemini-full-screen-mode
             :description               (_ "Start as gemini client only.")
             :short                     #\G
@@ -100,7 +100,7 @@
 
 (defparameter *notify-mentions*                    nil)
 
-(defparameter *gemini-url*                         nil)
+(defparameter *net-address*                        nil)
 
 (defparameter *update-timeline-climb-message-tree* nil)
 
@@ -134,7 +134,7 @@
         (print-version)
         (os-utils:exit-program))
       (set-option-variable options :folder                     *start-folder*)
-      (set-option-variable options :open-gemini-url            *gemini-url*)
+      (set-option-variable options :open-net-address           *net-address*)
       (set-option-variable options :timeline                   *start-timeline*)
       (set-option-variable options :reset-timeline-pagination  *reset-timeline-pagination*)
       (set-option-variable options :update-timeline            *update-timeline*)
