@@ -93,17 +93,21 @@
     :documentation "function with two parameter the path and a feature
     to query Valid  feature values are :size.  Returns  nil if Returns
     nil if the path does not point to an actual file.")
-   (filesystem-list-all-file-paths-function
+   (filesystem-collect-tree
     :initform  #'fs:collect-tree
-    :accessor  filesystem-list-all-file-paths-function
+    :accessor  filesystem-collect-tree
     :type      function
     :documentation   "function   with    a   single   parameter,   the
-    path. Returns a  list of path to all the  reachable files from the
-    argument as root directory e.g
-      (funcall filesystem-list-all-file-paths-function \"foo/\")
-      ; => (foo/bar/baz
-            foo/a/b
-            ...)")
+    path. Returns a  two values a list of path to all the  reachable files from the
+    argument as root directory and a list of the paths to all directory reachable from the root
+    e.g
+      (funcall filesystem-collect-tree \"foo/\")
+      ; => (values (foo/bar/baz
+                    foo/a/b
+                    ...)
+                  (foo/bar/
+                   foo/a/
+                    ...)")
    (filesystem-close-connection-function
     :initform  (constantly t)
     :accessor  filesystem-close-connection-function
@@ -131,8 +135,8 @@
           (getf handlers-plist :filesystem-upload-function))
     (setf (filesystem-query-path-function object)
           (getf handlers-plist :filesystem-query-path-function))
-    (setf (filesystem-list-all-file-paths-function object)
-          (getf handlers-plist  :filesystem-list-all-file-paths-function))
+    (setf (filesystem-collect-tree object)
+          (getf handlers-plist  :filesystem-collect-tree))
     (setf (filesystem-close-connection-function object)
           (getf handlers-plist :filesystem-close-connection-function)))
   object)
@@ -454,7 +458,7 @@
                                                           (declare (ignore filename file-count all-files-number)))))
   (with-accessors ((root-node                  filesystem-root)
                    (filesystem-expand-function filesystem-expand-function)
-                   (list-all-file-function     filesystem-list-all-file-paths-function))
+                   (list-all-file-function     filesystem-collect-tree))
       window
     (let* ((matching-node (find-node root-node path))
            (filep         (not (tree-dir-p (data matching-node)))))

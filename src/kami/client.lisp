@@ -182,7 +182,7 @@
             :filesystem-download-function            (download-node *stream* *root-fid*)
             :filesystem-upload-function              (upload-node   *stream* *root-fid*)
             :filesystem-query-path-function          (query-path    *stream* *root-fid*)
-            :filesystem-list-all-file-paths-function (collect-tree *stream* *root-fid*)
+            :filesystem-collect-tree                 (collect-tree *stream* *root-fid*)
             :filesystem-close-connection-function    (lambda ()
                                                        (9p:close-client socket))))))
 
