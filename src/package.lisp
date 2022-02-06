@@ -2829,6 +2829,7 @@
    :file-explorer-go-up
    :file-explorer-search
    :file-explorer-mark-entry
+   :file-explorer-mark-by-regexp
    :file-explorer-delete-tree
    :file-explorer-delete-marked
    :file-explorer-scroll-begin

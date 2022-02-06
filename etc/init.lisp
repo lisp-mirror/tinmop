@@ -620,6 +620,8 @@
 
 (define-key "m"         #'file-explorer-mark-entry      *filesystem-explorer-keymap*)
 
+(define-key "M-m"       #'file-explorer-mark-by-regexp  *filesystem-explorer-keymap*)
+
 (define-key "up"        #'file-explorer-go-up           *filesystem-explorer-keymap*)
 
 (define-key "down"      #'file-explorer-go-down         *filesystem-explorer-keymap*)

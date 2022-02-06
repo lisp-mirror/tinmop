@@ -2679,6 +2679,36 @@ Note: existing file will be overwritten."
       (fstree:mark-node win path)
       (file-explorer-go-down))))
 
+(defun %mark-by-regexp (scanner)
+  (when-let* ((win *filesystem-explorer-window*)
+              (count 0))
+    (line-oriented-window:loop-rows
+        (win row
+             when (cl-ppcre:scan scanner
+                                 (fstree:tree-path (line-oriented-window:fields row))) do)
+      (let ((path (fstree:tree-path (line-oriented-window:fields row))))
+        (fstree:mark-node win path)
+        (incf count)))
+    count))
+
+(defun file-explorer-mark-by-regexp ()
+  (when-let* ((win    *filesystem-explorer-window*))
+    (labels ((on-input-complete (regexp)
+               (let ((scanner (ignore-errors (create-scanner regexp
+                                                             :case-insensitive-mode nil))))
+                 (if (null scanner)
+                     (error-message (format nil (_"Invalid regular expression ~a") regexp))
+                     (with-enqueued-process ()
+                       (let ((count (%mark-by-regexp scanner)))
+                         (windows:win-clear win)
+                         (windows:draw win)
+                         (info-message (format nil (n_ "Marked ~a item"
+                                                       "Marked ~a items"
+                                                       count)
+                                               count))))))))
+      (ask-string-input #'on-input-complete
+                        :prompt (format nil (_ "Mark items matching: "))))))
+
 (defun file-explorer-delete-tree ()
   (when-let* ((win    *filesystem-explorer-window*)
               (fields (line-oriented-window:selected-row-fields win))
