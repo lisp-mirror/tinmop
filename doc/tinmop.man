@@ -1138,6 +1138,9 @@ file-explorer-download-mirror
 \fBM u      \fP
 file-explorer-upload-mirror
 .TP
+\fBM-m      \fP
+file-explorer-mark-by-regexp
+.TP
 \fBN        \fP
 repeat-search
 .TP

@@ -612,6 +612,7 @@
   - D         :: file-explorer-delete-tree
   - M d       :: file-explorer-download-mirror
   - M u       :: file-explorer-upload-mirror
+  - M-m       :: file-explorer-mark-by-regexp
   - N         :: repeat-search
   - X         :: file-explorer-delete-marked
   - a         :: file-explorer-create-path
