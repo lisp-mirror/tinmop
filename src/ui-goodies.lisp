@@ -1929,7 +1929,9 @@ Currently the only recognized protocols are gemini and kami."
   (flet ((on-input-complete (url)
            (let ((trimmed-url (trim-blanks url)))
              (if (text-utils:string-starts-with-p kami:+kami-scheme+ trimmed-url)
-                 (open-kami-address trimmed-url)
+                 (progn
+                   (file-explorer-close-window)
+                   (open-kami-address trimmed-url))
                  (open-gemini-address trimmed-url)))))
     (if (null address)
         (let ((prompt (open-url-prompt)))
@@ -2729,8 +2731,9 @@ Note: existing file will be overwritten."
   (line-oriented-window-scroll-end  *filesystem-explorer-window*))
 
 (defun file-explorer-close-window ()
-  (fstree:close-connection *filesystem-explorer-window*)
-  (close-window-and-return-to-message *filesystem-explorer-window*))
+  (when *filesystem-explorer-window*
+    (fstree:close-connection *filesystem-explorer-window*)
+    (close-window-and-return-to-message *filesystem-explorer-window*)))
 
 (defun file-explorer-open-node ()
   "Download in a temporary file and open the eselected file, or expand
