@@ -1,5 +1,218 @@
+2022-02-06 cage
+
+	* etc/init.lisp,
+	* src/package.lisp,
+	* src/ui-goodies.lisp:
+
+	- prevented block of software when opening a kami address with the
+	filesystem explorer window opened.
+	- [kami] added 'file-explorer-mark-by-regexp'.
+
+2022-02-05 cage
+
+	* doc/man.org,
+	* doc/tinmop.man,
+	* etc/init.lisp,
+	* po/it.po,
+	* po/tinmop.pot,
+	* src/chats-list-window.lisp,
+	* src/command-line.lisp,
+	* src/filesystem-tree-window.lisp,
+	* src/filesystem-utils.lisp,
+	* src/kami/client.lisp,
+	* src/main.lisp,
+	* src/package.lisp,
+	* src/ui-goodies.lisp:
+
+	- [kami] optimized deletion of file system trees.
+	- changed variable name.
+	- [kami] added 'file-explorer-download-mirror'.
+	- updated manpage.
+	- updated italian translation.
+	- allowed opending kami address from command line, using '-o' switch.
+	- changed variable names so that is clear that the '-o' switch can
+	open different kind of URI, not only gemini.
+	- updated documentation.
+
+2022-02-04 cage
+
+	* etc/init.lisp,
+	* src/filesystem-utils.lisp,
+	* src/gemini-subscription-window.lisp,
+	* src/kami/client.lisp,
+	* src/message-window.lisp,
+	* src/package.lisp,
+	* src/ui-goodies.lisp,
+	* src/windows.lisp:
+
+	- improved 'fs:octects->units-string'.
+	- added keychords to jump at the start or end of the link window.
+	- refactored functions to jump at the begin or end of the file
+	explorer window.
+	- prevented chat window from opening when in gemini exclusive mode;
+	- fixed positioning of gemlog's subscription when in gemini exclusive
+	mode.
+	- [kami] appended, if needed, '/' at the end of the proposed local
+	directory where the file will be downloaded.
+	- [kami] prevented crash when editing a file with no associated
+	editing program;
+	- [kami] added e few informative messages fro the user.
+
+2022-01-29 cage
+
+	* etc/init.lisp,
+	* po/it.po,
+	* po/tinmop.pot,
+	* src/filesystem-tree-window.lisp,
+	* src/filesystem-utils.lisp,
+	* src/package.lisp,
+	* src/ui-goodies.lisp:
+
+	- added 'file-explorer-upload-mirror'.
+	- updated italian translation.
+
+2022-01-28 cage
+
+	* doc/man.org,
+	* doc/tinmop.man,
+	* po/it.po,
+	* po/tinmop.pot,
+	* src/filesystem-tree-window.lisp,
+	* src/filesystem-utils.lisp,
+	* src/gemini/gemini-parser.lisp,
+	* src/gempub.lisp,
+	* src/iri-parser.lisp,
+	* src/kami/client.lisp,
+	* src/package.lisp,
+	* src/program-events.lisp,
+	* src/ui-goodies.lisp,
+	* src/uri-parser.lisp:
+
+	- added a wrapper for 'fnmatch(3)';
+	- [kamid] upload works with wildcard (e.g. "/*.lisp");
+	- moved 'normalize-path' to filesystem-utils.
+	- [kami] fixed function's name.
+	- [kamid] download works with wildcard (e.g. /*.lisp);
+	- [kamid] printed 'type' of node in the details window;
+	- fixed typos in docstring.
+	- [kami] when downloading file, strips directories from remote paths.
+	- updated italian translation.
+	- added a list of the default keybindings to the manpage.
+
+2022-01-23 cage
+
+	* etc/init.lisp,
+	* modules/expand-abbrev-command-window.lisp,
+	* po/it.po,
+	* po/tinmop.pot,
+	* src/filesystem-tree-window.lisp,
+	* src/filesystem-utils.lisp,
+	* src/kami/client.lisp,
+	* src/kami/package.lisp,
+	* src/open-message-link-window.lisp,
+	* src/package.lisp,
+	* src/ui-goodies.lisp:
+
+	- [kami] close the connection when closing the filesystem explorer
+	window;
+	- fixed a prompt and an error message.
+	- added function 'fs:path-referencing-dir-p'.
+	- [kamid] instructed program to download the element if the url's path
+	points to a file.
+	- updated italian translation.
+	- improved opening net command, gemini and also kami address can be
+	opened.
+	- fixed a bug that made the program crash when the gemlog window was
+	closed in gemini only mode.
+	- updated italian translation.
+	- added 'fs:collect-tree'.
+
+2022-01-22 cage
+
+	* etc/init.lisp,
+	* po/it.po,
+	* po/tinmop.pot,
+	* src/filesystem-tree-window.lisp,
+	* src/filesystem-utils.lisp,
+	* src/kami/client.lisp,
+	* src/package.lisp,
+	* src/ui-goodies.lisp:
+
+	- [kamid] using the path of the uri when mounting a filesystem.
+	- [kami] added a window with details of teh file (permissions, size
+	etc.).
+	- updated italian translation.
+
+2022-01-16 cage
+
+	* src/os-utils.lisp:
+
+	- fixed generation of TLS client certificates when using an openssl
+	binary linked with libressl (thanks op!).
+
+2022-01-15 cage
+
+	* etc/init.lisp,
+	* src/gemini/client.lisp,
+	* src/gemini/gemini-parser.lisp,
+	* src/kami/client.lisp,
+	* src/kami/package.lisp,
+	* src/package.lisp,
+	* src/ui-goodies.lisp:
+
+	- adding user info in uri related functions.
+	- added 'kami-open-url'.
+
+2022-01-14 cage
+
+	* src/filesystem-tree-window.lisp,
+	* src/kami/client.lisp,
+	* src/package.lisp:
+
+	- [kami] prevented reading entire file in memory when downloading.
+	- [kami] increased download buffer-size;
+	- [kami] actually supersede a file when uploading;
+	- ensured the uploaded file is seleted after uploading (filesystem
+	explorer window).
+	- [kami] removed harmful 'when-let*' that was eating some directory
+	entries.
+
+2022-01-09 cage
+
+	* etc/init.lisp,
+	* po/POTFILES.in,
+	* po/it.po,
+	* po/tinmop.pot,
+	* src/filesystem-tree-window.lisp,
+	* src/filesystem-utils.lisp,
+	* src/gemini/package.lisp,
+	* src/kami/client.lisp,
+	* src/kami/package.lisp,
+	* src/package.lisp,
+	* src/ui-goodies.lisp:
+
+	- added a draft for a kami client.
+	- updated italian translation.
+
+2022-01-08 cage
+
+	* etc/init.lisp,
+	* src/9p-client/client.lisp,
+	* src/9p-client/package.lisp,
+	* src/filesystem-tree-window.lisp,
+	* src/os-utils.lisp,
+	* src/package.lisp,
+	* src/ui-goodies.lisp:
+
+	- added code to edit the file in a filesystem explorer window;
+	- fixed a couple of functions that was trying to download a file when
+	upload was correct instead.
+	- removed 9p client code;
+	- fixed 'open-resource-with-external-program'.
+
 2022-01-06 cage
 
+	* ChangeLog,
 	* etc/default-theme.conf,
 	* etc/init.lisp,
 	* etc/shared.conf,
@@ -23,6 +236,9 @@
 	- added 'editor' as pseudo external program.
 	- using the file explorer when opening a local directory.
 	- substituted . with $PWD when opening file explorer.
+	- updated changelog.
+	- fixed a bug in 'jump-to-parent-node', 'normalize a path with a '..'
+	already generate a path that points to the parent.
 
 2022-01-02 cage
 
