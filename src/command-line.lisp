@@ -64,7 +64,7 @@
             :description               (_ "Notify messages that mentions the user")
             :short                     #\m
             :long                      "notify-mentions")
-     (:name :open-net-url
+     (:name :open-net-address
             :description               (_ "Open net address")
             :short                     #\o
             :arg-parser                #'identity
