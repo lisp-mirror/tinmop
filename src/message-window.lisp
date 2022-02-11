@@ -618,22 +618,21 @@
 
 (defmethod search-regex ((object message-window) regex)
   (with-accessors ((row-selected-index   row-selected-index)) object
-    (let* ((selected-row                 (selected-row object))
-           (selected-text                (normal-text selected-row))
-           (actual-row-starting          (if (scan regex
-                                                   (tui-string->chars-string selected-text))
-                                             (1+ row-selected-index)
-                                             row-selected-index))
-           (line-found (rows-position-if object
-                                         (lambda (a)
-                                           (scan regex
-                                                 (tui-string->chars-string (normal-text a))))
-                                         :start (clamp actual-row-starting
-                                                       0
-                                                       (rows-length object))))
-           (replacements-strings ()))
-      (when line-found
-        (progn
+    (when-let ((selected-row (selected-row object)))
+      (let* ((selected-text                (normal-text selected-row))
+             (actual-row-starting          (if (scan regex
+                                                     (tui-string->chars-string selected-text))
+                                               (1+ row-selected-index)
+                                               row-selected-index))
+             (line-found (rows-position-if object
+                                           (lambda (a)
+                                             (scan regex
+                                                   (tui-string->chars-string (normal-text a))))
+                                           :start (clamp actual-row-starting
+                                                         0
+                                                         (rows-length object))))
+             (replacements-strings ()))
+        (when line-found
           (row-move object (- line-found row-selected-index))
           (draw object)
           (multiple-value-bind (first-window-line-simple first-window-line-complex)
