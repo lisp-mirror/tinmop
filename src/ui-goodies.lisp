@@ -229,7 +229,12 @@
                               (condition-variable condition-variable)) event
                (push-event event)
                (with-lock (lock)
-                 (bt:condition-wait condition-variable lock)
+                 (loop
+                   while (not (eq (command-window:echo-character *command-window*)
+                                  :completed))
+                   do
+                      (bt:condition-wait condition-variable lock))
+                 (setf (command-window:echo-character *command-window*) nil)
                  (funcall on-input-complete-fn (box:dunbox (payload event))))))))
       (bt:make-thread #'thread-fn)))
 

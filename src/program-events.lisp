@@ -258,7 +258,7 @@
   (with-accessors ((lock               lock)
                    (condition-variable condition-variable)) object
     (setf (command-window:echo-character specials:*command-window*)
-          nil)
+          :completed)
     (with-lock (lock)
       (bt:condition-notify condition-variable))))
 
