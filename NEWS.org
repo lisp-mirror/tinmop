@@ -1,3 +1,23 @@
+* 2022-02-11 version 0.9.5
+
+  - New Features
+
+    This versions added support for 9p protocol over TLS
+
+    From https://kamid.omarpolo.com/9p.7.html
+
+    #+BEGIN_QUOTE
+    9P is  a protocol that  implements a distributed file  systems. It
+    provides  primitives to  manage (create,  read, write  and delete)
+    sets of files  remotely. These files don't necessarily  need to be
+    actually stored on a disk, they may be, for example, synthesise on
+    demand from external sources.
+    #+END_QUOTE
+
+  - Bugfix
+    - fixed generation of TLS client certificates when using an openssl
+      binary linked with libressl (thanks op!);
+
 * 2021-11-28 version 0.9.0
 
   - New Features

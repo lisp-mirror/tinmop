@@ -1,12 +1,41 @@
+2022-02-11 cage
+
+	* po/it.po,
+	* po/tinmop.pot,
+	* src/message-window.lisp,
+	* src/program-events.lisp,
+	* src/ui-goodies.lisp:
+
+	- prevented crash when performing searching in an empty message
+	window.
+	- prevented a condition variable to be awaken even if condition is not
+	actually met.
+	- updated italian translation.
+
+2022-02-09 cage
+
+	* src/command-line.lisp:
+
+	- fixed keyword name.
+
 2022-02-06 cage
 
+	* ChangeLog,
+	* configure,
+	* configure.ac,
+	* doc/man.org,
+	* doc/tinmop.man,
 	* etc/init.lisp,
 	* src/package.lisp,
-	* src/ui-goodies.lisp:
+	* src/ui-goodies.lisp,
+	* tinmop.asd:
 
 	- prevented block of software when opening a kami address with the
 	filesystem explorer window opened.
 	- [kami] added 'file-explorer-mark-by-regexp'.
+	- updated Changelog.
+	- icreased version number.
+	- updated manpage.
 
 2022-02-05 cage
 
