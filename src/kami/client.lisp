@@ -118,24 +118,26 @@
   (lambda (source-path destination-path)
     (let* ((*stream*   stream)
            (*root-fid* root-fid))
-      (with-open-file (input-stream source-path
-                                    :direction    :input
-                                    :element-type +octect-type+)
-        (with-cloned-root-fid (*stream* root-fid)
-          (9p:remove-path *stream* root-fid destination-path))
-        (with-cloned-root-fid (*stream* root-fid)
-          (let* ((buffer (misc:make-array-frame +download-buffer+ 0 +octect-type+ t))
-                 (fid    (9p:create-path *stream* root-fid destination-path)))
-            (loop named write-loop
-                  for read-so-far = (read-sequence buffer input-stream)
-                    then (read-sequence buffer input-stream)
-                  for offset = 0 then (+ offset read-so-far)
-                  do
-                     (9p:9p-write *stream* fid offset (subseq buffer 0 read-so-far))
-                     (when (< read-so-far +download-buffer+)
-                       (return-from write-loop t)))
-            (9p:9p-clunk *stream* fid)
-            (9p:read-all-pending-messages stream)))))))
+      (let ((source-permissions (fs:get-stat-mode source-path)))
+        (with-open-file (input-stream source-path
+                                      :direction    :input
+                                      :element-type +octect-type+)
+          (with-cloned-root-fid (*stream* root-fid)
+            (9p:remove-path *stream* root-fid destination-path))
+          (with-cloned-root-fid (*stream* root-fid)
+            (let* ((buffer (misc:make-array-frame +download-buffer+ 0 +octect-type+ t))
+                   (fid    (9p:create-path *stream* root-fid destination-path)))
+              (loop named write-loop
+                    for read-so-far = (read-sequence buffer input-stream)
+                      then (read-sequence buffer input-stream)
+                    for offset = 0 then (+ offset read-so-far)
+                    do
+                       (9p:9p-write *stream* fid offset (subseq buffer 0 read-so-far))
+                       (when (< read-so-far +download-buffer+)
+                         (return-from write-loop t)))
+              (9p:9p-clunk *stream* fid)
+              (9p:change-mode *stream* *root-fid* destination-path source-permissions)
+              (9p:read-all-pending-messages stream))))))))
 
 (defun query-path (stream root-fid)
   (lambda (path what)

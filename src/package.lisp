@@ -306,6 +306,7 @@
    :get-stat-mtime
    :get-stat-ctime
    :get-stat-atime
+   :get-stat-mode
    :file-outdated-p
    :file-exists-p
    :directory-exists-p

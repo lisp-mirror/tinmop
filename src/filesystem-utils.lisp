@@ -314,6 +314,11 @@
 
 (define-stat-time atime)
 
+(defun get-stat-mode (file)
+  (let ((raw (nix:stat-mode (nix:stat file))))
+    (values raw
+            (logand raw #o777))))
+
 (defun file-hash (file)
   (num:fnv-hash-32 (slurp-file file :convert-to-string nil)))
 
