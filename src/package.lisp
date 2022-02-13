@@ -307,6 +307,7 @@
    :get-stat-ctime
    :get-stat-atime
    :get-stat-mode
+   :change-path-permissions
    :file-outdated-p
    :file-exists-p
    :directory-exists-p

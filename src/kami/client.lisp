@@ -111,7 +111,11 @@
                                               path
                                               (lambda (data offset count)
                                                 (declare (ignore offset count))
-                                                (write-sequence data output-stream))))))
+                                                (write-sequence data output-stream)))))
+      (let* ((info-source-node (9p:path-info *stream* *root-fid* path))
+             (permissions (9p:permissions-original-value (9p:stat-mode info-source-node)))
+             (destination-file-mode (logand permissions  #x7ff)))
+        (fs:change-path-permissions destination-file destination-file-mode)))
     destination-file))
 
 (defun upload-node (stream root-fid)

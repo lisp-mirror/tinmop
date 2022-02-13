@@ -319,6 +319,9 @@
     (values raw
             (logand raw #o777))))
 
+(defun change-path-permissions (path mode)
+  (nix:chmod path mode))
+
 (defun file-hash (file)
   (num:fnv-hash-32 (slurp-file file :convert-to-string nil)))
 
