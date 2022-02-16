@@ -2053,7 +2053,7 @@
    :delete-treenode
    :create-treenode
    :download-path
-   :upload-treenode
+   :upload-path
    :recursive-delete-node
    :filesystem-query-path
    :mark-node
