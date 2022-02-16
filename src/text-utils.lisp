@@ -78,7 +78,7 @@
   object)
 
 (defmethod to-s ((object vector))
-  (coerce object 'string))
+  (babel:octets-to-string object :errorp nil))
 
 (defmethod to-s ((object character))
   (string object))

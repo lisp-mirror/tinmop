@@ -52,13 +52,13 @@
         0
         (file-length stream))))
 
-(defun slurp-file (filename &key (convert-to-string t))
+(defun slurp-file (filename &key (convert-to-string t) (errorp nil))
   "A simple way to slurp a file."
   (with-open-file (stream filename :direction :input :element-type '(unsigned-byte 8))
     (let ((seq (make-array (file-length stream) :element-type '(unsigned-byte 8))))
       (read-sequence seq stream)
       (if convert-to-string
-          (babel:octets-to-string seq)
+          (babel:octets-to-string seq :errorp errorp)
           seq))))
 
 (defun dump-sequence-to-file (seq file)
