@@ -420,8 +420,8 @@
     (resync-rows-db window :redraw t :selected-path path)))
 
 (defun create-treenode (window path dirp)
-  (when-let* ((root-node     (filesystem-root window))
-              (parent-node   (find-node root-node (fs:parent-dir-path path))))
+  (when-let* ((root-node   (filesystem-root window))
+              (parent-node (find-node root-node (fs:parent-dir-path path))))
     (funcall (filesystem-create-function window) path dirp)
     (remove-all-children parent-node)
     (expand-treenode window (tree-path (data parent-node)))
@@ -438,8 +438,8 @@
                (make-instance 'm-tree :data (make-node-data remote-path dirp))
                destination-file))))
 
-(defun upload-treenode (window source-file remote-path &key (force-upload nil))
-  (let ((root-node     (filesystem-root window)))
+(defun upload-path (window source-file remote-path &key (force-upload nil))
+  (let ((root-node (filesystem-root window)))
     (if force-upload
         (funcall (filesystem-upload-function window)
                  source-file
@@ -579,7 +579,7 @@
         (let ((downloaded-path (download-path window node-path)))
           (croatoan:end-screen)
           (os-utils:open-resource-with-external-program downloaded-path nil :open-for-edit t)
-          (upload-treenode window
+          (upload-path window
                            downloaded-path
                            node-path)))))
 
