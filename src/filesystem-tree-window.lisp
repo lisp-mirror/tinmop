@@ -431,7 +431,7 @@
 (defun download-treenode (window remote-path
                           &optional
                             (destination-file (make-temporary-file-from-path remote-path)))
-  (when-let ((type (filesystem-query-treenode window remote-path :type)))
+  (when-let ((type (filesystem-query-path window remote-path :type)))
     (let ((dirp (eq type :directory)))
       (fs:create-file destination-file)
       (funcall (filesystem-download-function window)
@@ -498,7 +498,7 @@
                     (win-clear window :redraw nil)
                     (resync-rows-db window :redraw t :selected-path parent-path))))))))))
 
-(defun filesystem-query-treenode (window path what)
+(defun filesystem-query-path (window path what)
   (assert (member what '(:size :size-string :permissions :permissions-string :type)))
   (funcall (filesystem-query-path-function window)
            path
@@ -596,9 +596,9 @@
                                                              dir
                                                              filesystem-expand-function))
                 (all-files    (remove-if (lambda (a)
-                                           (let* ((type (filesystem-query-treenode window
-                                                                                   a
-                                                                                   :type)))
+                                           (let* ((type (filesystem-query-path window
+                                                                               a
+                                                                               :type)))
                                              (or (null type)
                                                  (eq type :directory))))
                                          all-children)))

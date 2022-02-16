@@ -2055,7 +2055,7 @@
    :download-treenode
    :upload-treenode
    :recursive-delete-node
-   :filesystem-query-treenode
+   :filesystem-query-path
    :mark-node
    :open-node
    :edit-node

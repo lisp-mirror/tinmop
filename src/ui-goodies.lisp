@@ -2783,9 +2783,9 @@ if the selected item represents a directory."
   (when-let* ((win         *filesystem-explorer-window*)
               (fields      (line-oriented-window:selected-row-fields win))
               (path        (fstree:tree-path  fields))
-              (size        (fstree:filesystem-query-treenode win path :size-string))
-              (permissions (fstree:filesystem-query-treenode win path :permissions-string))
-              (entry-type  (fstree:filesystem-query-treenode win path :type))
+              (size        (fstree:filesystem-query-path win path :size-string))
+              (permissions (fstree:filesystem-query-path win path :permissions-string))
+              (entry-type  (fstree:filesystem-query-path win path :type))
               (bg          (swconf:win-bg swconf:+key-help-dialog+))
               (fg          (swconf:win-fg swconf:+key-help-dialog+)))
     (windows:make-blocking-message-dialog *main-window*
