@@ -428,9 +428,9 @@
     (win-clear window :redraw nil)
     (resync-rows-db window :redraw t :selected-path path)))
 
-(defun download-treenode (window remote-path
-                          &optional
-                            (destination-file (make-temporary-file-from-path remote-path)))
+(defun download-path (window remote-path
+                      &optional
+                        (destination-file (make-temporary-file-from-path remote-path)))
   (when-let ((type (filesystem-query-path window remote-path :type)))
     (let ((dirp (eq type :directory)))
       (fs:create-file destination-file)
@@ -566,7 +566,7 @@
               (node-path     (tree-path node-data)))
     (if (tree-dir-p node-data)
         (expand-treenode window node-path)
-        (let ((downloaded-path (download-treenode window node-path)))
+        (let ((downloaded-path (download-path window node-path)))
           (os-utils:open-resource-with-external-program downloaded-path nil)))))
 
 (defun edit-node (window path)
@@ -576,7 +576,7 @@
               (node-path     (tree-path node-data)))
     (if (tree-dir-p node-data)
         (expand-treenode window node-path)
-        (let ((downloaded-path (download-treenode window node-path)))
+        (let ((downloaded-path (download-path window node-path)))
           (croatoan:end-screen)
           (os-utils:open-resource-with-external-program downloaded-path nil :open-for-edit t)
           (upload-treenode window

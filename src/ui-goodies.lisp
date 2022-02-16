@@ -2534,9 +2534,9 @@ printed, on the main window."
                      (with-blocking-notify-procedure
                          ((format nil (_ "Starting download of ~a") path)
                           (format nil (_ "Download completed in ~a") destination-file))
-                       (fstree:download-treenode win path destination-file)
+                       (fstree:download-path win path destination-file)
                        (info-message destination-file))
-                     (fstree:download-treenode win path destination-file))))))
+                     (fstree:download-path win path destination-file))))))
       (if force
           (on-input-complete output-file)
           (ask-string-input #'on-input-complete
@@ -2584,9 +2584,9 @@ Note: existing file will be overwritten."
                                             (_ "Download of ~a completed in ~a")
                                             remote-file
                                             local-file))
-                                 (fstree:download-treenode win
-                                                            remote-file
-                                                            local-file))))))))))
+                                 (fstree:download-path win
+                                                       remote-file
+                                                       local-file))))))))))
       (ask-string-input #'on-input-destination-dir
                         :initial-value local-dir
                         :complete-fn   #'complete:directory-complete
