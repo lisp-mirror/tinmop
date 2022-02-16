@@ -2866,18 +2866,19 @@ Note: existing file will be overwritten."
                                 (mapcar (lambda (a) (fs:cat-parent-dir root-directory a))
                                         remote-paths)))
                          (mapcar (lambda (source destination)
-                                   (info-message (format nil
-                                                         (_"downloading ~a → ~a")
-                                                         source
-                                                         destination))
                                    (with-enqueued-process ()
+                                     (info-message (format nil
+                                                           (_"downloading ~a → ~a")
+                                                           source
+                                                           destination))
                                      (%file-explorer-download-path source
                                                                    :output-file destination
                                                                    :force       t
                                                                    :notify      nil)))
                                  remote-paths
                                  local-paths)
-                         (info-message (_"Downloading completed."))))))))
+                         (info-message (_"Downloading completed.")
+                                       +minimum-event-priority+)))))))
       (ask-string-input #'on-input-complete
                         :prompt        (_ "Download in: ")
                         :initial-value local-dir

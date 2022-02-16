@@ -30,17 +30,20 @@
                                                  :hostname        ,ssl-hostname)))
            ,@body)))))
 
-(defmacro with-cloned-root-fid ((stream cloned-fid) &body body)
+(defmacro with-cloned-root-fid ((stream cloned-fid &key (clunk-cloned-fid t)) &body body)
   `(let ((,cloned-fid (9p:clone-fid ,stream *root-fid*)))
-     ,@body))
+     (prog1
+         (progn ,@body)
+       (when ,clunk-cloned-fid
+         (9p:9p-clunk ,stream ,cloned-fid)))))
 
 (defun expand-node (stream root-fid)
   (lambda (node)
     (let* ((*stream*   stream)
            (*root-fid* root-fid)
            (path (tree-path (data node))))
-      (with-cloned-root-fid  (*stream* root-fid)
-        (let* ((entries     (9p:collect-directory-children *stream* root-fid path))
+      (with-cloned-root-fid  (*stream* cloned-root-fid)
+        (let* ((entries     (9p:collect-directory-children *stream* cloned-root-fid path))
                (files       (remove-if-not (lambda (a) (or (eq (9p:stat-entry-type a)
                                                                :file)
                                                            (eq (9p:stat-entry-type a)
@@ -68,8 +71,8 @@
            (*root-fid* root-fid)
            (path (tree-path (data node))))
       (assert path)
-      (with-cloned-root-fid  (*stream* root-fid)
-        (9p:move-file *stream* root-fid path new-path)))))
+      (with-cloned-root-fid  (*stream* cloned-root-fid)
+        (9p:move-file *stream* cloned-root-fid path new-path)))))
 
 (defun delete-node (stream root-fid)
   (lambda (node)
@@ -77,20 +80,20 @@
            (*root-fid* root-fid)
            (path (tree-path (data node))))
       (assert path)
-      (with-cloned-root-fid (*stream* root-fid)
-        (9p:remove-path *stream* root-fid path)))))
+      (with-cloned-root-fid (*stream* cloned-root-fid)
+        (9p:remove-path *stream* cloned-root-fid path)))))
 
 (defun create-node (stream root-fid)
   (lambda (path dirp)
     (let* ((*stream*   stream)
            (*root-fid* root-fid))
       (assert path)
-      (with-cloned-root-fid (*stream* root-fid)
+      (with-cloned-root-fid (*stream* cloned-root-fid)
         (if dirp
-            (9p:create-path *stream* root-fid (if (fs:path-referencing-dir-p path)
+            (9p:create-path *stream* cloned-root-fid (if (fs:path-referencing-dir-p path)
                                                   path
                                                   (text-utils:strcat path "/")))
-            (9p:create-path *stream* root-fid path))))))
+            (9p:create-path *stream* cloned-root-fid path))))))
 
 (defun download-node (stream root-fid)
   (lambda (node
@@ -105,18 +108,19 @@
                                      :if-exists         :supersede
                                      :if-does-not-exist :create
                                      :element-type      +octect-type+)
-        (with-cloned-root-fid (*stream* root-fid)
+        (with-cloned-root-fid (*stream* cloned-root-fid)
           (9p:read-entire-file-apply-function stream
-                                              root-fid
+                                              cloned-root-fid
                                               path
                                               (lambda (data offset count)
                                                 (declare (ignore offset count))
                                                 (write-sequence data output-stream)))))
-      (let* ((info-source-node (9p:path-info *stream* *root-fid* path))
-             (permissions (9p:permissions-original-value (9p:stat-mode info-source-node)))
-             (destination-file-mode (logand permissions  #x7ff)))
-        (fs:change-path-permissions destination-file destination-file-mode)))
-    destination-file))
+      (with-cloned-root-fid (*stream* cloned-root-fid)
+         (let* ((info-source-node (9p:path-info *stream* cloned-root-fid path))
+                (permissions (9p:permissions-original-value (9p:stat-mode info-source-node)))
+                (destination-file-mode (logand permissions  #x7ff)))
+           (fs:change-path-permissions destination-file destination-file-mode)))
+      destination-file)))
 
 (defun upload-node (stream root-fid)
   (lambda (source-path destination-path)
@@ -126,11 +130,11 @@
         (with-open-file (input-stream source-path
                                       :direction    :input
                                       :element-type +octect-type+)
-          (with-cloned-root-fid (*stream* root-fid)
-            (9p:remove-path *stream* root-fid destination-path))
-          (with-cloned-root-fid (*stream* root-fid)
+          (with-cloned-root-fid (*stream* cloned-root-fid)
+            (9p:remove-path *stream* cloned-root-fid destination-path))
+          (with-cloned-root-fid (*stream* cloned-root-fid)
             (let* ((buffer (misc:make-array-frame +download-buffer+ 0 +octect-type+ t))
-                   (fid    (9p:create-path *stream* root-fid destination-path)))
+                   (fid    (9p:create-path *stream* cloned-root-fid destination-path)))
               (loop named write-loop
                     for read-so-far = (read-sequence buffer input-stream)
                       then (read-sequence buffer input-stream)
@@ -147,8 +151,8 @@
   (lambda (path what)
     (let* ((*stream*   stream)
            (*root-fid* root-fid))
-      (with-cloned-root-fid (*stream* root-fid)
-        (a:when-let ((stat-entry (9p:path-info *stream* root-fid path)))
+      (with-cloned-root-fid (*stream* cloned-root-fid)
+        (a:when-let ((stat-entry (9p:path-info *stream* cloned-root-fid path)))
           (ecase what
             (:type
              (9p:stat-entry-type stat-entry))
@@ -168,8 +172,8 @@
   (lambda (path)
     (let* ((*stream*   stream)
            (*root-fid* root-fid))
-      (with-cloned-root-fid (*stream* root-fid)
-        (9p:collect-tree *stream* root-fid path)))))
+      (with-cloned-root-fid (*stream* cloned-root-fid :clunk-cloned-fid t)
+        (9p:collect-tree *stream* cloned-root-fid path)))))
 
 (defun generate-filesystem-window-handlers (path host port
                                             query fragment

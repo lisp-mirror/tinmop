@@ -431,10 +431,12 @@
 (defun download-treenode (window remote-path
                           &optional
                             (destination-file (make-temporary-file-from-path remote-path)))
-  (when-let* ((root-node     (filesystem-root window))
-              (matching-node (find-node root-node remote-path)))
-    (fs:create-file destination-file)
-    (funcall (filesystem-download-function window) matching-node destination-file)))
+  (when-let ((type (filesystem-query-treenode window remote-path :type)))
+    (let ((dirp (eq type :directory)))
+      (fs:create-file destination-file)
+      (funcall (filesystem-download-function window)
+               (make-instance 'm-tree :data (make-node-data remote-path dirp))
+               destination-file))))
 
 (defun upload-treenode (window source-file remote-path &key (force-upload nil))
   (let ((root-node     (filesystem-root window)))
@@ -498,11 +500,9 @@
 
 (defun filesystem-query-treenode (window path what)
   (assert (member what '(:size :size-string :permissions :permissions-string :type)))
-  (when-let* ((root-node     (filesystem-root window))
-              (matching-node (find-node root-node path)))
-    (funcall (filesystem-query-path-function window)
-             (tree-path (data matching-node))
-             what)))
+  (funcall (filesystem-query-path-function window)
+           path
+           what))
 
 (defmethod search-row ((object filesystem-tree-window) regex &key (redraw t))
   (handler-case
