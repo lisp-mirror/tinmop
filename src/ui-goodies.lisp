@@ -2634,9 +2634,9 @@ Note: existing file will be overwritten."
                                             (_ "Upload of ~a completed in ~a")
                                             source
                                             destination))
-                                 (fstree:upload-treenode win
-                                                         source
-                                                         destination))))))))))
+                                 (fstree:upload-path win
+                                                     source
+                                                     destination))))))))))
       (ask-string-input #'on-input-complete
                         :prompt        (_ "Upload: ")
                         :complete-fn #'complete:directory-complete))))
@@ -2835,10 +2835,10 @@ Note: existing file will be overwritten."
                          (mapcar (lambda (destination source)
                                    (info-message (format nil (_"Uploading ~a") destination))
                                    (with-enqueued-process ()
-                                     (fstree:upload-treenode win
-                                                             source
-                                                             destination
-                                                             :force-upload t)))
+                                     (fstree:upload-path win
+                                                         source
+                                                         destination
+                                                         :force-upload t)))
                                  remote-paths
                                  children)
                          (info-message (_"Uploading completed."))))))))
