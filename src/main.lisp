@@ -95,7 +95,10 @@ etc.) happened"
   (ui:reset-timeline-pagination))
 
 (defun load-configuration-files ()
-  (format t (_ "Loading configuration file ~a~%") swconf:+shared-conf-filename+)
+  (when (not command-line:*script-file*)
+    (format t
+            (_ "Loading configuration file ~a~%")
+            swconf:+shared-conf-filename+))
   (handler-case
       (multiple-value-bind (x configuration-file-path)
           (swconf:load-config-file swconf:+shared-conf-filename+)
