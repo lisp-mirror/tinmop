@@ -78,7 +78,17 @@
   object)
 
 (defmethod to-s ((object vector))
-  (babel:octets-to-string object :errorp nil))
+  (handler-case
+      (let ((byte-vector (make-array (length object)
+                                     :element-type    '(unsigned-byte 8)
+                                     :initial-element 0
+                                     :adjustable      nil)))
+        (loop for i from 0 below (length object) do
+          (setf (aref byte-vector i)
+                (logand (aref object i) #xff)))
+        (babel:octets-to-string byte-vector :errorp nil))
+    (error ()
+      (coerce object 'string))))
 
 (defmethod to-s ((object character))
   (string object))
