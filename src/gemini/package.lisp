@@ -31,6 +31,7 @@
    :config
    :constants
    :text-utils
+   :iri-parser
    :misc
    :alexandria
    :gemini-constants)

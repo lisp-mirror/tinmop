@@ -66,7 +66,7 @@
     (assert-true (test-uri a b) a)))
 
 (defun normalize (path expected)
-  (string= (uri:normalize-path path)
+  (string= (fs:normalize-path path)
            expected))
 
 (deftest test-normalize-path (uri-suite)

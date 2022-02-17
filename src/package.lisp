@@ -709,7 +709,6 @@
    :path
    :query
    :fragment
-   :normalize-path
    :make-uri))
 
 (defpackage :iri-parser
@@ -720,6 +719,7 @@
    :cl-ppcre
    :text-utils)
   (:nicknames :iri)
+  (:import-from :fs :normalize-path)
   (:export
    :+segment-separator+
    :iri
@@ -727,6 +727,7 @@
    :render-iri
    :make-iri
    :iri-parse
+   :normalize-path
    :absolute-url-p
    :ipv4-address-p
    :ipv6-address-p))
