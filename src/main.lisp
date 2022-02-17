@@ -169,7 +169,9 @@ etc.) happened"
                              command-line:*module-file*)
                      :as-error t))))
     (if command-line:*net-address*
-        (ui:open-net-address command-line:*net-address*)
+        (progn
+          (gemini-page-toc:open-toc-window specials:*message-window*)
+          (ui:open-net-address command-line:*net-address*))
         (progn
           (let ((program-events:*process-events-immediately* t))
             (when command-line:*start-timeline*
