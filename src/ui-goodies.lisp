@@ -2525,18 +2525,21 @@ printed, on the main window."
                                             (notify t))
   "Download a file"
   (when-let* ((win *filesystem-explorer-window*))
-    (flet ((on-input-complete (destination-file)
-             (when (string-not-empty-p destination-file)
-               (with-enqueued-process ()
-                 (when (not (fs:file-exists-p destination-file))
-                   (fs:create-file output-file))
-                 (if notify
-                     (with-blocking-notify-procedure
-                         ((format nil (_ "Starting download of ~a") path)
-                          (format nil (_ "Download completed in ~a") destination-file))
-                       (fstree:download-path win path destination-file)
-                       (info-message destination-file))
-                     (fstree:download-path win path destination-file))))))
+    (labels ((%download (win path destination-file)
+               (with-notify-errors
+                 (fstree:download-path win path destination-file)))
+             (on-input-complete (destination-file)
+               (when (string-not-empty-p destination-file)
+                 (with-enqueued-process ()
+                   (when (not (fs:file-exists-p destination-file))
+                     (fs:create-file output-file))
+                   (if notify
+                       (with-blocking-notify-procedure
+                           ((format nil (_ "Starting download of ~a") path)
+                            (format nil (_ "Download completed in ~a") destination-file))
+                         (%download win path destination-file)
+                         (info-message destination-file))
+                       (%download win path destination-file))))))
       (if force
           (on-input-complete output-file)
           (ask-string-input #'on-input-complete
@@ -2852,16 +2855,17 @@ Note: existing file will be overwritten."
   (when-let* ((win        *filesystem-explorer-window*)
               (fields     (line-oriented-window:selected-row-fields win))
               (remote-dir (and (fs:path-referencing-dir-p (fstree:tree-path fields))
-                                     (fstree:tree-path fields)))
+                               (fstree:tree-path fields)))
               (local-dir  (fs:maybe-append-directory-separator (os-utils:pwd))))
     (labels ((on-input-complete (root-directory)
                (with-enqueued-process ()
+                 (info-message (_"Preparing for download…"))
                  (when (and (string-not-empty-p root-directory)
                             (string-not-empty-p remote-dir))
                    (if (not (fs:directory-exists-p root-directory))
                        (error-message (format nil "~a is not directory" root-directory))
                        (let* ((remote-paths  (funcall (fstree:filesystem-collect-tree win)
-                                                  remote-dir))
+                                                      remote-dir))
                               (local-paths
                                 (mapcar (lambda (a) (fs:cat-parent-dir root-directory a))
                                         remote-paths)))
