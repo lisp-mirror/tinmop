@@ -2812,7 +2812,7 @@ if the selected item represents a directory."
       (info-message (format nil (_ "File ~s was modified on server") path)))))
 
 (defun file-explorer-upload-mirror ()
-  "Upload a filesystem tree.
+  "Upload a filesystem tree (a.k.a. mirroring).
 Note: existing file will be overwritten."
   (when-let* ((win              *filesystem-explorer-window*)
               (fields           (line-oriented-window:selected-row-fields win))
@@ -2850,7 +2850,7 @@ Note: existing file will be overwritten."
                         :complete-fn #'complete:directory-complete))))
 
 (defun file-explorer-download-mirror ()
-  "Download a filesystem tree.
+  "Download a filesystem tree (a.k.a. mirroring).
 Note: existing file will be overwritten."
   (when-let* ((win        *filesystem-explorer-window*)
               (fields     (line-oriented-window:selected-row-fields win))
