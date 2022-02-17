@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tinmop 0.9.5\n"
 "Report-Msgid-Bugs-To: https://notabug.org/cage/tinmop/\n"
-"POT-Creation-Date: 2022-02-11 14:15+0100\n"
+"POT-Creation-Date: 2022-02-17 19:22+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -219,27 +219,27 @@ msgstr ""
 msgid "File explorer"
 msgstr ""
 
-#: src/filesystem-utils.lisp:559
+#: src/filesystem-utils.lisp:567
 #, lisp-format
 msgid "invalid value: ~a"
 msgstr ""
 
-#: src/filesystem-utils.lisp:566
+#: src/filesystem-utils.lisp:574
 #, lisp-format
 msgid "~a bytes"
 msgstr ""
 
-#: src/filesystem-utils.lisp:568
+#: src/filesystem-utils.lisp:576
 #, lisp-format
 msgid "~,1f Kib"
 msgstr ""
 
-#: src/filesystem-utils.lisp:570
+#: src/filesystem-utils.lisp:578
 #, lisp-format
 msgid "~,1f Mib"
 msgstr ""
 
-#: src/filesystem-utils.lisp:572
+#: src/filesystem-utils.lisp:580
 #, lisp-format
 msgid "~,1f Gib"
 msgstr ""
@@ -352,7 +352,7 @@ msgstr ""
 msgid "No address found"
 msgstr ""
 
-#: src/kami/client.lisp:156
+#: src/kami/client.lisp:166
 #, lisp-format
 msgid "User: ~a Group: ~a Others ~a"
 msgstr ""
@@ -480,12 +480,12 @@ msgstr ""
 msgid "Folder ~s does not exists"
 msgstr ""
 
-#: src/main.lisp:98
+#: src/main.lisp:100
 #, lisp-format
 msgid "Loading configuration file ~a~%"
 msgstr ""
 
-#: src/main.lisp:110
+#: src/main.lisp:113
 #, lisp-format
 msgid ""
 "Non fatal error~%~a~%Tinmop will add an empty file for you. This file will "
@@ -493,7 +493,7 @@ msgid ""
 "the file must be properly filled.~%Consult the manpage ~a(1) for more details"
 msgstr ""
 
-#: src/main.lisp:165
+#: src/main.lisp:168
 #, lisp-format
 msgid "Unable to load module ~a"
 msgstr ""
@@ -764,12 +764,12 @@ msgstr ""
 msgid "Subscribed tags"
 msgstr ""
 
-#: src/text-utils.lisp:494
+#: src/text-utils.lisp:504
 #, lisp-format
 msgid "Can not fit column of width of ~a in a box of width ~a"
 msgstr ""
 
-#: src/text-utils.lisp:626
+#: src/text-utils.lisp:636
 #, lisp-format
 msgid "Unrecoverable error: ~a can not be fitted in a box of width ~a"
 msgstr ""
@@ -1470,136 +1470,140 @@ msgstr ""
 msgid "Rename ~a to: "
 msgstr ""
 
-#: src/ui-goodies.lisp:2535 src/ui-goodies.lisp:2581
+#: src/ui-goodies.lisp:2538 src/ui-goodies.lisp:2584
 #, lisp-format
 msgid "Starting download of ~a"
 msgstr ""
 
-#: src/ui-goodies.lisp:2536
+#: src/ui-goodies.lisp:2539
 #, lisp-format
 msgid "Download completed in ~a"
 msgstr ""
 
-#: src/ui-goodies.lisp:2543
+#: src/ui-goodies.lisp:2546
 #, lisp-format
 msgid "Download ~a to: "
 msgstr ""
 
-#: src/ui-goodies.lisp:2560
+#: src/ui-goodies.lisp:2563
 msgid "Download: "
 msgstr ""
 
-#: src/ui-goodies.lisp:2584
+#: src/ui-goodies.lisp:2587
 #, lisp-format
 msgid "Download of ~a completed in ~a"
 msgstr ""
 
-#: src/ui-goodies.lisp:2593
+#: src/ui-goodies.lisp:2596
 msgid "Save downloaded files in directory: "
-msgstr ""
-
-#: src/ui-goodies.lisp:2631
-#, lisp-format
-msgid "Starting upload of ~a"
 msgstr ""
 
 #: src/ui-goodies.lisp:2634
 #, lisp-format
+msgid "Starting upload of ~a"
+msgstr ""
+
+#: src/ui-goodies.lisp:2637
+#, lisp-format
 msgid "Upload of ~a completed in ~a"
 msgstr ""
 
-#: src/ui-goodies.lisp:2641 src/ui-goodies.lisp:2846
+#: src/ui-goodies.lisp:2644 src/ui-goodies.lisp:2849
 msgid "Upload: "
 msgstr ""
 
-#: src/ui-goodies.lisp:2655
+#: src/ui-goodies.lisp:2658
 msgid "Create: "
 msgstr ""
 
-#: src/ui-goodies.lisp:2677
+#: src/ui-goodies.lisp:2680
 msgid "Search for: "
 msgstr ""
 
-#: src/ui-goodies.lisp:2705
+#: src/ui-goodies.lisp:2708
 #, lisp-format
 msgid "Invalid regular expression ~a"
 msgstr ""
 
-#: src/ui-goodies.lisp:2710
+#: src/ui-goodies.lisp:2713
 #, lisp-format
 msgid "Marked ~a item"
 msgid_plural "Marked ~a items"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/ui-goodies.lisp:2715
+#: src/ui-goodies.lisp:2718
 msgid "Mark items matching: "
 msgstr ""
 
-#: src/ui-goodies.lisp:2723
+#: src/ui-goodies.lisp:2726
 #, lisp-format
 msgid "deleting ~a (~a of ~a)"
 msgstr ""
 
-#: src/ui-goodies.lisp:2730
+#: src/ui-goodies.lisp:2733
 #, lisp-format
 msgid "Preparing to delete ~a"
 msgstr ""
 
-#: src/ui-goodies.lisp:2740
+#: src/ui-goodies.lisp:2743
 msgid "Completed"
 msgstr ""
 
-#: src/ui-goodies.lisp:2743
+#: src/ui-goodies.lisp:2746
 #, lisp-format
 msgid "Delete ~a? "
 msgstr ""
 
-#: src/ui-goodies.lisp:2760
+#: src/ui-goodies.lisp:2763
 msgid "Delete marked items? "
 msgstr ""
 
-#: src/ui-goodies.lisp:2793
+#: src/ui-goodies.lisp:2796
 #, lisp-format
 msgid "Details of: ~a"
 msgstr ""
 
-#: src/ui-goodies.lisp:2794
+#: src/ui-goodies.lisp:2797
 msgid "Type"
 msgstr ""
 
-#: src/ui-goodies.lisp:2796
+#: src/ui-goodies.lisp:2799
 msgid "Size"
 msgstr ""
 
-#: src/ui-goodies.lisp:2798
+#: src/ui-goodies.lisp:2801
 msgid "Permissions"
 msgstr ""
 
-#: src/ui-goodies.lisp:2809
+#: src/ui-goodies.lisp:2812
 #, lisp-format
 msgid "File ~s was modified on server"
 msgstr ""
 
-#: src/ui-goodies.lisp:2836
+#: src/ui-goodies.lisp:2839
 #, lisp-format
 msgid "Uploading ~a"
 msgstr ""
 
-#: src/ui-goodies.lisp:2844
+#: src/ui-goodies.lisp:2847
 msgid "Uploading completed."
 msgstr ""
 
-#: src/ui-goodies.lisp:2870
+#: src/ui-goodies.lisp:2862
+msgid "Preparing for download…"
+msgstr ""
+
+#: src/ui-goodies.lisp:2875
 #, lisp-format
 msgid "downloading ~a → ~a"
 msgstr ""
 
-#: src/ui-goodies.lisp:2880
+#: src/ui-goodies.lisp:2884
 msgid "Downloading completed."
 msgstr ""
 
-#: src/ui-goodies.lisp:2882
+#: src/ui-goodies.lisp:2887
 msgid "Download in: "
 msgstr ""
 
