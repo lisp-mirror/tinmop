@@ -1,4 +1,4 @@
-#! @BASH@
+#!/bin/sh
 
 # tinmop: an humble mastodon client
 # Copyright (C) 2020  cage
@@ -27,30 +27,26 @@ QUICKLISP="quicklisp.lisp"
 QUICKLISP_SIG="quicklisp.lisp.asc"
 QUICKLISP_KEY="release-key"
 
-QUICKLISP_SIGNATURE="D7A3 +489D +DEFE +32B7 +D0E7 +CC61 +3079 +65AB +028B +5FF7";
+QUICKLISP_SIGNATURE="D7A3 +489D +DEFE +32B7 +D0E7 +CC61 +3079 +65AB +028B +5FF7"
 
 LISP_SOURCE_REGISTRY_DIR="$HOME/.config/common-lisp/"
 
 LISP_SOURCE_REGISTRY_FILE="$LISP_SOURCE_REGISTRY_DIR/source-registry.conf"
 
-BOLD_TEXT="\033[1m"
-
-NORMAL_TEXT="\033[0m"
-
 VERIFY_OK_RES=2
 
 CROATOAN_GIT_URL=https://github.com/McParen/croatoan.git
 
-CROATOAN_DIR="$QUICKLISP_INSTALL_DIR"/local-projects/croatoan/;
+CROATOAN_DIR="$QUICKLISP_INSTALL_DIR"/local-projects/croatoan/
 
 CROATOAN_COMMIT=000c60428fe73d796d4ee032cfa5901eb57b4703
 
 PURGATORY_GIT_URL=https://notabug.org/cage/purgatory.git
 
-PURGATORY_DIR="$QUICKLISP_INSTALL_DIR"/local-projects/purgatory/;
+PURGATORY_DIR="$QUICKLISP_INSTALL_DIR"/local-projects/purgatory/
 
 echo_bold () {
-    echo -e "${BOLD_TEXT}${1}${NORMAL_TEXT}";
+    printf "\033[1m%s\033[0m\n" "$1"
 }
 
 check_croatoan (){
@@ -75,33 +71,33 @@ check_quicklisp_signature () {
     res1=$(LC_MESSAGES="C" @GPG@ --verify quicklisp.lisp.asc quicklisp.lisp 2> >(@AWK@  -- "${chk1_prog}"))
     res2=$(@GPG@ --verify quicklisp.lisp.asc quicklisp.lisp 2> >(@AWK@  -- "${chk2_prog}"))
     res=$(expr $res1 + $res2)
-    echo -n "$res"
+    printf "%s" "$res"
 }
 
 install_quicklisp () {
-    echo_bold "Downloading quicklisp...";
-    @CURL@ "$QUICKLISP_URL"     > $QUICKLISP;
-    @CURL@ "$QUICKLISP_SIG_URL" > $QUICKLISP_SIG;
-    @CURL@ "$QUICKLISP_KEY_URL" > $QUICKLISP_KEY;
-    echo_bold "Importing gpg key.";
-    @GPG@ --import $QUICKLISP_KEY;
-    echo_bold "Verifing key";
-    signature_verified=$(check_quicklisp_signature);
+    echo_bold "Downloading quicklisp..."
+    @CURL@ "$QUICKLISP_URL"     > $QUICKLISP
+    @CURL@ "$QUICKLISP_SIG_URL" > $QUICKLISP_SIG
+    @CURL@ "$QUICKLISP_KEY_URL" > $QUICKLISP_KEY
+    echo_bold "Importing gpg key."
+    @GPG@ --import $QUICKLISP_KEY
+    echo_bold "Verifing key"
+    signature_verified=$(check_quicklisp_signature)
     if [ "$signature_verified" -ne $VERIFY_OK_RES ]; then
          echo_bold "Key verification failed!"
-         exit 1;
+         exit 1
     else
-        echo_bold "Key sucessfully verified.";
+        echo_bold "Key sucessfully verified."
         @LISP_COMPILER@ --load $QUICKLISP            \
           --eval "(quicklisp-quickstart:install)"    \
           --eval "(ql:add-to-init-file)"             \
           --eval "(sb-ext:quit)";
-        @MKDIR_P@ $LISP_SOURCE_REGISTRY_DIR;
-        PAR_PWD="${PWD%/*}";
-        echo "(:source-registry"       >  $LISP_SOURCE_REGISTRY_FILE;
-        echo "  (:tree \"$PAR_PWD\")"  >> $LISP_SOURCE_REGISTRY_FILE;
-        echo ":inherit-configuration)" >> $LISP_SOURCE_REGISTRY_FILE;
-        echo "quicklisp installed";
+        @MKDIR_P@ $LISP_SOURCE_REGISTRY_DIR
+        PAR_PWD="${PWD%/*}"
+        echo "(:source-registry"       >  $LISP_SOURCE_REGISTRY_FILE
+        echo "  (:tree \"$PAR_PWD\")"  >> $LISP_SOURCE_REGISTRY_FILE
+        echo ":inherit-configuration)" >> $LISP_SOURCE_REGISTRY_FILE
+        echo "quicklisp installed"
     fi
 }
 
@@ -140,7 +136,7 @@ install_dependency () {
      --eval "(ql:quickload \"cffi\")"             \
      --eval "(ql:quickload \"babel\")"            \
      --eval "(ql:quickload \"percent-encoding\")" \
-     --eval "(sb-ext:quit)";
+     --eval "(sb-ext:quit)"
 }
 
 install_croatoan () {
@@ -160,18 +156,18 @@ install_croatoan () {
 }
 
 
-quicklisp_installed_p=$(check_quicklisp);
+quicklisp_installed_p=$(check_quicklisp)
 
 if [ $quicklisp_installed_p -eq 0 ]; then
-    echo_bold "Quicklisp already installed; fetching libraries...";
-    install_dependency;
+    echo_bold "Quicklisp already installed; fetching libraries..."
+    install_dependency
 else
-    install_quicklisp;
-    install_dependency;
+    install_quicklisp
+    install_dependency
 fi
 
-echo_bold "installing croatoan from git repository...";
+echo_bold "installing croatoan from git repository..."
 
-install_croatoan;
+install_croatoan
 
-echo_bold "Finished.";
+echo_bold "Finished."

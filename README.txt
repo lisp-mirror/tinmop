@@ -83,7 +83,6 @@ Table of Contents
   ⁃ to install the package, including running the script to install lisp
     libraries (`quick_quicklisp.sh'):
     • AWK;
-    • BASH shell;
     • git.
 
   ⁃ to run the program:

@@ -73,13 +73,6 @@ if test "$MAN" = "no" ; then
    AC_MSG_WARN([Can not find man.])
 fi
 
-AC_PATH_PROG([BASH],[bash],[no])
-
-if test "$BASH" = "no" ; then
-   AC_MSG_ERROR([Can not find bash shell.])
-   exit 1;
-fi
-
 dnl autoconf has an automatic test for AWK
 if test -z "${AWK}"; then
    AC_MSG_ERROR([Can not find AWK.])
@@ -104,6 +97,13 @@ AC_PATH_PROGS([GIT],[git],[no])
 
 if test "$GIT" = "no" ; then
    AC_MSG_ERROR([Can not find git executable.])
+   exit 1;
+fi
+
+AC_PATH_PROGS([CHMOD],[chmod],[no])
+
+if test "$CHMOD" = "no" ; then
+   AC_MSG_ERROR([Can not find chmod executable.])
    exit 1;
 fi
 
@@ -140,3 +140,5 @@ AC_CHECK_LIB([sqlite3], [sqlite3_libversion], [], AC_MSG_ERROR([Can not find lib
 AC_CONFIG_FILES([Makefile quick_quicklisp.sh po/Makefile.in src/config.lisp.in])
 
 AC_OUTPUT
+
+${CHMOD} 750 quick_quicklisp.sh
