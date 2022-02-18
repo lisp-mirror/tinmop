@@ -88,12 +88,18 @@
     (let* ((*stream*   stream)
            (*root-fid* root-fid))
       (assert path)
-      (with-cloned-root-fid (*stream* cloned-root-fid)
-        (if dirp
-            (9p:create-path *stream* cloned-root-fid (if (fs:path-referencing-dir-p path)
-                                                  path
-                                                  (text-utils:strcat path "/")))
-            (9p:create-path *stream* cloned-root-fid path))))))
+      (with-cloned-root-fid (*stream* cloned-root-fid :clunk-cloned-fid nil)
+        (let ((created-fid nil))
+          (if dirp
+              (setf created-fid
+                    (9p:create-path *stream*
+                                    cloned-root-fid
+                                    (if (fs:path-referencing-dir-p path)
+                                        path
+                                        (text-utils:strcat path "/"))))
+              (setf created-fid
+                    (9p:create-path *stream* cloned-root-fid path)))
+          (9p:9p-clunk *stream* created-fid))))))
 
 (defun download-node (stream root-fid)
   (lambda (node
