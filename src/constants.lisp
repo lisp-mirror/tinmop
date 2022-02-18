@@ -59,7 +59,7 @@ For bug report please point your browser to:
                                                  /_/
 
 
-Welcome to ~a! A gemini and pleroma client.
+Welcome to ~a! A gemini, pleroma and kami client.
 
 - for available keychords (sequence of keys to fire a command) help type '?';
 
@@ -73,6 +73,23 @@ Welcome to ~a! A gemini and pleroma client.
 
 - if you need more help or for bug report: ~a
   (collaborations are welcome too!).
+
+Some useful keybinding to start (manpage contains the full list):
+
+· gemini
+  - '>' open URL (also kami is supported)
+  - 'l' open link window
+  - 'b' go back in history of visited URLs
+  - '!' search geminispace (contacts gemini://geminispace.info/search)
+· pleroma
+  - 'C-t u' update current timeline
+  - 'C-t c' change timeline
+
+· kamid
+  - 'newline' open node
+  - 'e'       edit node
+  - 'd'       download file
+  - 'u'       upload file
 
 Enjoy!
 
