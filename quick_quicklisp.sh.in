@@ -68,9 +68,9 @@ check_quicklisp () {
 check_quicklisp_signature () {
     chk1_prog='BEGIN {res=0} /Good signature.*release@quicklisp.org/ {res++; print res}'
     chk2_prog="BEGIN {res=0} /${QUICKLISP_SIGNATURE}/ {res++; print res}"
-    res1=$(LC_MESSAGES="C" @GPG@ --verify quicklisp.lisp.asc quicklisp.lisp 2> >(@AWK@  -- "${chk1_prog}"))
-    res2=$(@GPG@ --verify quicklisp.lisp.asc quicklisp.lisp 2> >(@AWK@  -- "${chk2_prog}"))
-    res=$(expr $res1 + $res2)
+    res1=$(LC_MESSAGES="C" @GPG@ --verify quicklisp.lisp.asc quicklisp.lisp 2>&1 | @AWK@  -- "${chk1_prog}")
+    res2=$(@GPG@ --verify quicklisp.lisp.asc quicklisp.lisp 2>&1 | @AWK@  -- "${chk2_prog}")
+    res=$((res1 + res2))
     printf "%s" "$res"
 }
 
