@@ -45,6 +45,10 @@ CROATOAN_DIR="$QUICKLISP_INSTALL_DIR"/local-projects/croatoan/;
 
 CROATOAN_COMMIT=000c60428fe73d796d4ee032cfa5901eb57b4703
 
+PURGATORY_GIT_URL=https://notabug.org/cage/purgatory.git
+
+PURGATORY_DIR="$QUICKLISP_INSTALL_DIR"/local-projects/purgatory/;
+
 echo_bold () {
     echo -e "${BOLD_TEXT}${1}${NORMAL_TEXT}";
 }
@@ -148,6 +152,7 @@ install_croatoan () {
     fi
 
     cd $CROATOAN_DIR && @GIT@ checkout $CROATOAN_COMMIT
+    cd $QUICKLISP_INSTALL_DIR/local-projects/ && @GIT@ clone $PURGATORY_GIT_URL
 }
 
 
