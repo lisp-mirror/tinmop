@@ -50,7 +50,7 @@ For bug report please point your browser to:
 
 (define-constant +welcome-message+
   (format nil
- "
+ "[ Note: this window can be scrolled using using ⇧ and ⇩ ]
                         _______
                        /_  __(_)___  ____ ___  ____  ____
                         / / / / __ \\/ __ `__ \\/ __ \\/ __ \\
@@ -59,11 +59,12 @@ For bug report please point your browser to:
                                                  /_/
 
 
+
 Welcome to ~a! A gemini, pleroma and kami client.
 
 - for available keychords (sequence of keys to fire a command) help type '?';
 
-- for searching in the help type: 'C-h a' (control and 'h' keys toghether, then 'a');
+- for searching in the help type: 'C-h a' (control and 'h' keys together, then 'a');
   [if this keychords  does not works, ask to your system administrator]
 
 - documentation is available in man format. Type 'man tinmop' at shell's prompt
@@ -74,22 +75,31 @@ Welcome to ~a! A gemini, pleroma and kami client.
 - if you need more help or for bug report: ~a
   (collaborations are welcome too!).
 
-Some useful keybinding to start (manpage contains the full list):
+Some useful keycords to start (the man page contains the full list):
+
+· general use
+  - 'q' quit program
+  - '/' search
 
 · gemini
   - '>' open URL (also kami is supported)
   - 'l' open link window
   - 'b' go back in history of visited URLs
   - '!' search geminispace (contacts gemini://geminispace.info/search)
+
 · pleroma
   - 'C-t u' update current timeline
   - 'C-t c' change timeline
+  - 'v'     view post's attachments
+  - 'l'     open a window containing the links in the post
 
 · kamid
   - 'newline' open node
   - 'e'       edit node
   - 'd'       download file
   - 'u'       upload file
+  - 'M-u'     mirror local tree on server
+  - 'M-d'     mirror remote tree on local computer
 
 Enjoy!
 

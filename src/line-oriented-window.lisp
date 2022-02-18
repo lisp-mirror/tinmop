@@ -540,6 +540,7 @@ will fire the `callback' function (with the selected field from `all-fields'
              ((string= c "^J")
               (let ((selected-fields (selected-row-fields high-level-window))
                     (selected-text   (selected-text (selected-row high-level-window))))
-                (funcall callback selected-text selected-fields))))
+                (when callback
+                  (funcall callback selected-text selected-fields)))))
            (draw))
       (win-close high-level-window))))
