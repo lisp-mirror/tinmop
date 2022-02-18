@@ -152,7 +152,7 @@ install_croatoan () {
     fi
 
     cd $CROATOAN_DIR && @GIT@ checkout $CROATOAN_COMMIT
-    if [ -d "PURGATORY_DIR" ]; then
+    if [ -d "$PURGATORY_DIR" ]; then
         cd $PURGATORY_DIR && @GIT@ pull
     else
         cd $QUICKLISP_INSTALL_DIR/local-projects/ && @GIT@ clone $PURGATORY_GIT_URL
