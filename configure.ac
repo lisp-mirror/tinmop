@@ -21,7 +21,25 @@ AM_INIT_AUTOMAKE([-Wall foreign])
 
 AM_GNU_GETTEXT([external])
 
-AC_CHECK_LIB([ssl], [SSL_get_version], [], AC_MSG_ERROR([Can not find libssl.]))
+dnl    checks for programs
+
+AC_PATH_PROG([MSGMERGE],[msgmerge],[no])
+
+if test "$MSGMERGE" = "no" ; then
+   AC_MSG_ERROR([Can not find msgmerge, from the gettext package.])
+fi
+
+AC_PATH_PROG([XGETTEXT],[xgettext],[no])
+
+if test "$XGETTEXT" = "no" ; then
+   AC_MSG_ERROR([Can not find xgettext, from the gettext package.])
+fi
+
+AC_PATH_PROG([MSGFMT],[msgfmt],[no])
+
+if test "$MSGFMT" = "no" ; then
+   AC_MSG_ERROR([Can not find msgfmt, from the gettext package.])
+fi
 
 AC_PATH_PROG([LISP_COMPILER],[sbcl],[no])
 
@@ -101,7 +119,7 @@ if test "$enable_check_sbcl_version" = "yes" || test "$enable_check_sbcl_version
    SBCL_VERSION_OK=`echo "$SBCL_VERSION $SBCL_MIN_VERSION" | ${AWK} -f compare_version.awk`
 
    AC_MSG_CHECKING([if the compiler is too old])
-   AC_MSG_NOTICE([To Disable this tests use type './configure --disable-check-sbcl-version.])
+   AC_MSG_NOTICE([To Disable this test type: './configure --disable-check-sbcl-version.])
 
    if test "$SBCL_VERSION_OK" = "1" ; then
       AC_MSG_ERROR([Lisp compiler too old, $SBCL_MIN_VERSION is the oldest supported.])
@@ -110,6 +128,14 @@ if test "$enable_check_sbcl_version" = "yes" || test "$enable_check_sbcl_version
     AC_MSG_RESULT([version is not too old])
    fi
 fi
+
+dnl checks for libraries
+
+AC_CHECK_LIB([ssl], [SSL_get_version], [], AC_MSG_ERROR([Can not find libssl.]))
+
+AC_CHECK_LIB([ncurses], [initscr], [], AC_MSG_ERROR([Can not find ncurses.]))
+
+AC_CHECK_LIB([sqlite3], [sqlite3_libversion], [], AC_MSG_ERROR([Can not find libsqlite3.]))
 
 AC_CONFIG_FILES([Makefile quick_quicklisp.sh po/Makefile.in src/config.lisp.in])
 

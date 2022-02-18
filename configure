@@ -6858,51 +6858,159 @@ printf "%s\n" "#define HAVE_DCGETTEXT 1" >>confdefs.h
 
 
 
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for SSL_get_version in -lssl" >&5
-printf %s "checking for SSL_get_version in -lssl... " >&6; }
-if test ${ac_cv_lib_ssl_SSL_get_version+y}
+
+# Extract the first word of "msgmerge", so it can be a program name with args.
+set dummy msgmerge; ac_word=$2
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+printf %s "checking for $ac_word... " >&6; }
+if test ${ac_cv_path_MSGMERGE+y}
 then :
   printf %s "(cached) " >&6
 else $as_nop
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lssl  $LIBS"
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
+  case $MSGMERGE in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_MSGMERGE="$MSGMERGE" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  case $as_dir in #(((
+    '') as_dir=./ ;;
+    */) ;;
+    *) as_dir=$as_dir/ ;;
+  esac
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if as_fn_executable_p "$as_dir$ac_word$ac_exec_ext"; then
+    ac_cv_path_MSGMERGE="$as_dir$ac_word$ac_exec_ext"
+    printf "%s\n" "$as_me:${as_lineno-$LINENO}: found $as_dir$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
 
-/* Override any GCC internal prototype to avoid an error.
-   Use char because int might match the return type of a GCC
-   builtin and then its argument prototype would still apply.  */
-char SSL_get_version ();
-int
-main (void)
-{
-return SSL_get_version ();
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"
+  test -z "$ac_cv_path_MSGMERGE" && ac_cv_path_MSGMERGE="no"
+  ;;
+esac
+fi
+MSGMERGE=$ac_cv_path_MSGMERGE
+if test -n "$MSGMERGE"; then
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $MSGMERGE" >&5
+printf "%s\n" "$MSGMERGE" >&6; }
+else
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+printf "%s\n" "no" >&6; }
+fi
+
+
+
+if test "$MSGMERGE" = "no" ; then
+   as_fn_error $? "Can not find msgmerge, from the gettext package." "$LINENO" 5
+fi
+
+# Extract the first word of "xgettext", so it can be a program name with args.
+set dummy xgettext; ac_word=$2
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+printf %s "checking for $ac_word... " >&6; }
+if test ${ac_cv_path_XGETTEXT+y}
 then :
-  ac_cv_lib_ssl_SSL_get_version=yes
+  printf %s "(cached) " >&6
 else $as_nop
-  ac_cv_lib_ssl_SSL_get_version=no
+  case $XGETTEXT in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_XGETTEXT="$XGETTEXT" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  case $as_dir in #(((
+    '') as_dir=./ ;;
+    */) ;;
+    *) as_dir=$as_dir/ ;;
+  esac
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if as_fn_executable_p "$as_dir$ac_word$ac_exec_ext"; then
+    ac_cv_path_XGETTEXT="$as_dir$ac_word$ac_exec_ext"
+    printf "%s\n" "$as_me:${as_lineno-$LINENO}: found $as_dir$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
+
+  test -z "$ac_cv_path_XGETTEXT" && ac_cv_path_XGETTEXT="no"
+  ;;
+esac
 fi
-rm -f core conftest.err conftest.$ac_objext conftest.beam \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
+XGETTEXT=$ac_cv_path_XGETTEXT
+if test -n "$XGETTEXT"; then
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $XGETTEXT" >&5
+printf "%s\n" "$XGETTEXT" >&6; }
+else
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+printf "%s\n" "no" >&6; }
 fi
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_ssl_SSL_get_version" >&5
-printf "%s\n" "$ac_cv_lib_ssl_SSL_get_version" >&6; }
-if test "x$ac_cv_lib_ssl_SSL_get_version" = xyes
+
+
+
+if test "$XGETTEXT" = "no" ; then
+   as_fn_error $? "Can not find xgettext, from the gettext package." "$LINENO" 5
+fi
+
+# Extract the first word of "msgfmt", so it can be a program name with args.
+set dummy msgfmt; ac_word=$2
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+printf %s "checking for $ac_word... " >&6; }
+if test ${ac_cv_path_MSGFMT+y}
 then :
-  printf "%s\n" "#define HAVE_LIBSSL 1" >>confdefs.h
-
-  LIBS="-lssl $LIBS"
-
+  printf %s "(cached) " >&6
 else $as_nop
-  as_fn_error $? "Can not find libssl." "$LINENO" 5
+  case $MSGFMT in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_MSGFMT="$MSGFMT" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  case $as_dir in #(((
+    '') as_dir=./ ;;
+    */) ;;
+    *) as_dir=$as_dir/ ;;
+  esac
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if as_fn_executable_p "$as_dir$ac_word$ac_exec_ext"; then
+    ac_cv_path_MSGFMT="$as_dir$ac_word$ac_exec_ext"
+    printf "%s\n" "$as_me:${as_lineno-$LINENO}: found $as_dir$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
+
+  test -z "$ac_cv_path_MSGFMT" && ac_cv_path_MSGFMT="no"
+  ;;
+esac
+fi
+MSGFMT=$ac_cv_path_MSGFMT
+if test -n "$MSGFMT"; then
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $MSGFMT" >&5
+printf "%s\n" "$MSGFMT" >&6; }
+else
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+printf "%s\n" "no" >&6; }
 fi
 
+
+
+if test "$MSGFMT" = "no" ; then
+   as_fn_error $? "Can not find msgfmt, from the gettext package." "$LINENO" 5
+fi
 
 # Extract the first word of "sbcl", so it can be a program name with args.
 set dummy sbcl; ac_word=$2
@@ -7408,8 +7516,8 @@ if test "$enable_check_sbcl_version" = "yes" || test "$enable_check_sbcl_version
 
    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking if the compiler is too old" >&5
 printf %s "checking if the compiler is too old... " >&6; }
-   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: To Disable this tests use type './configure --disable-check-sbcl-version." >&5
-printf "%s\n" "$as_me: To Disable this tests use type './configure --disable-check-sbcl-version." >&6;}
+   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: To Disable this test type: './configure --disable-check-sbcl-version." >&5
+printf "%s\n" "$as_me: To Disable this test type: './configure --disable-check-sbcl-version." >&6;}
 
    if test "$SBCL_VERSION_OK" = "1" ; then
       as_fn_error $? "Lisp compiler too old, $SBCL_MIN_VERSION is the oldest supported." "$LINENO" 5
@@ -7419,6 +7527,145 @@ printf "%s\n" "$as_me: To Disable this tests use type './configure --disable-che
 printf "%s\n" "version is not too old" >&6; }
    fi
 fi
+
+
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for SSL_get_version in -lssl" >&5
+printf %s "checking for SSL_get_version in -lssl... " >&6; }
+if test ${ac_cv_lib_ssl_SSL_get_version+y}
+then :
+  printf %s "(cached) " >&6
+else $as_nop
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lssl  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+char SSL_get_version ();
+int
+main (void)
+{
+return SSL_get_version ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"
+then :
+  ac_cv_lib_ssl_SSL_get_version=yes
+else $as_nop
+  ac_cv_lib_ssl_SSL_get_version=no
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.beam \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_ssl_SSL_get_version" >&5
+printf "%s\n" "$ac_cv_lib_ssl_SSL_get_version" >&6; }
+if test "x$ac_cv_lib_ssl_SSL_get_version" = xyes
+then :
+  printf "%s\n" "#define HAVE_LIBSSL 1" >>confdefs.h
+
+  LIBS="-lssl $LIBS"
+
+else $as_nop
+  as_fn_error $? "Can not find libssl." "$LINENO" 5
+fi
+
+
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for initscr in -lncurses" >&5
+printf %s "checking for initscr in -lncurses... " >&6; }
+if test ${ac_cv_lib_ncurses_initscr+y}
+then :
+  printf %s "(cached) " >&6
+else $as_nop
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lncurses  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+char initscr ();
+int
+main (void)
+{
+return initscr ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"
+then :
+  ac_cv_lib_ncurses_initscr=yes
+else $as_nop
+  ac_cv_lib_ncurses_initscr=no
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.beam \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_ncurses_initscr" >&5
+printf "%s\n" "$ac_cv_lib_ncurses_initscr" >&6; }
+if test "x$ac_cv_lib_ncurses_initscr" = xyes
+then :
+  printf "%s\n" "#define HAVE_LIBNCURSES 1" >>confdefs.h
+
+  LIBS="-lncurses $LIBS"
+
+else $as_nop
+  as_fn_error $? "Can not find ncurses." "$LINENO" 5
+fi
+
+
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for sqlite3_libversion in -lsqlite3" >&5
+printf %s "checking for sqlite3_libversion in -lsqlite3... " >&6; }
+if test ${ac_cv_lib_sqlite3_sqlite3_libversion+y}
+then :
+  printf %s "(cached) " >&6
+else $as_nop
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lsqlite3  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+char sqlite3_libversion ();
+int
+main (void)
+{
+return sqlite3_libversion ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"
+then :
+  ac_cv_lib_sqlite3_sqlite3_libversion=yes
+else $as_nop
+  ac_cv_lib_sqlite3_sqlite3_libversion=no
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.beam \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_sqlite3_sqlite3_libversion" >&5
+printf "%s\n" "$ac_cv_lib_sqlite3_sqlite3_libversion" >&6; }
+if test "x$ac_cv_lib_sqlite3_sqlite3_libversion" = xyes
+then :
+  printf "%s\n" "#define HAVE_LIBSQLITE3 1" >>confdefs.h
+
+  LIBS="-lsqlite3 $LIBS"
+
+else $as_nop
+  as_fn_error $? "Can not find libsqlite3." "$LINENO" 5
+fi
+
 
 ac_config_files="$ac_config_files Makefile quick_quicklisp.sh po/Makefile.in src/config.lisp.in"
 
