@@ -19,8 +19,6 @@ AC_INIT([tinmop],[0.9.5],[https://notabug.org/cage/tinmop/],[tinmop])
 
 AM_INIT_AUTOMAKE([-Wall foreign])
 
-AM_GNU_GETTEXT([external])
-
 dnl    checks for programs
 
 AC_PATH_PROG([MSGMERGE],[msgmerge],[no])
@@ -40,6 +38,8 @@ AC_PATH_PROG([MSGFMT],[msgfmt],[no])
 if test "$MSGFMT" = "no" ; then
    AC_MSG_ERROR([Can not find msgfmt, from the gettext package.])
 fi
+
+AM_GNU_GETTEXT([external])
 
 AC_PATH_PROG([LISP_COMPILER],[sbcl],[no])
 
