@@ -195,16 +195,6 @@
 
 (define-key "M-l"       #'load-script-file)
 
-;; focus
-
-(define-key "f1"        #'focus-to-tags-window)
-
-(define-key "f2"        #'focus-to-thread-window)
-
-(define-key "f3"        #'focus-to-message-window)
-
-(define-key "f4"        #'focus-to-conversations-window)
-
 ;; follow requests keymap
 
 (define-key "up"        #'follow-request-go-up                        *follow-requests-keymap*)

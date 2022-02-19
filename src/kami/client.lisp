@@ -138,7 +138,7 @@
                                       :element-type +octect-type+)
           (with-cloned-root-fid (*stream* cloned-root-fid)
             (9p:remove-path *stream* cloned-root-fid destination-path))
-          (with-cloned-root-fid (*stream* cloned-root-fid)
+          (with-cloned-root-fid (*stream* cloned-root-fid :clunk-cloned-fid nil)
             (let* ((buffer (misc:make-array-frame +download-buffer+ 0 +octect-type+ t))
                    (fid    (9p:create-path *stream* cloned-root-fid destination-path)))
               (loop named write-loop
@@ -149,9 +149,12 @@
                        (9p:9p-write *stream* fid offset (subseq buffer 0 read-so-far))
                        (when (< read-so-far +download-buffer+)
                          (return-from write-loop t)))
-              (9p:9p-clunk *stream* fid)
-              (9p:change-mode *stream* *root-fid* destination-path source-permissions)
-              (9p:read-all-pending-messages stream))))))))
+              (9p:9p-clunk *stream* fid)))
+          (with-cloned-root-fid (*stream* cloned-root-fid)
+            (9p:change-mode *stream*
+                            cloned-root-fid
+                            destination-path source-permissions)
+            (9p:read-all-pending-messages stream)))))))
 
 (defun query-path (stream root-fid)
   (lambda (path what)
