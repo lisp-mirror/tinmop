@@ -40,7 +40,7 @@
 (defun remove-all-db-stream ()
   (map nil
        (lambda (a) (abort-downloading a))
-       *gemini-streams-window*)
+       *gemini-streams-db*)
   (setf *gemini-streams-db* ())
   *gemini-streams-db*)
 

@@ -429,13 +429,13 @@ Metadata includes:
       (setf (windows:in-focus window) nil))))
 
 (defun pass-focus (all-adjacent-win-fn intersecting-fn sort-predicate)
-  (let* ((window                   (main-window:focused-window *main-window*))
-              (all-adjacent-win    (stack:stack-select windows::*window-stack*
-                                                       all-adjacent-win-fn))
-              (to-intersecting-win (remove-if-not intersecting-fn
-                                                  all-adjacent-win))
-              (intersect-sorted    (sort to-intersecting-win
-                                         sort-predicate)))
+  (let* ((window              (main-window:focused-window *main-window*))
+         (all-adjacent-win    (stack:stack-select windows::*window-stack*
+                                                  all-adjacent-win-fn))
+         (to-intersecting-win (remove-if-not intersecting-fn
+                                             all-adjacent-win))
+         (intersect-sorted    (sort to-intersecting-win
+                                    sort-predicate)))
     (setf intersect-sorted
           (remove window intersect-sorted))
     (setf intersect-sorted
@@ -445,72 +445,97 @@ Metadata includes:
       (remove-focus-to-all-windows)
       (give-focus (first-elt intersect-sorted) nil))))
 
+(defun pinned-window-p (window)
+  (member window
+          (list *send-message-window*
+                *follow-requests-window*
+                *open-attach-window*
+                *open-message-link-window*
+                *gemini-streams-window*
+                *gemini-certificates-window*
+                *filesystem-explorer-window*)))
+
+(defun find-window-focused ()
+  (stack:do-stack-element (window windows::*window-stack*)
+    (when (and (typep window 'main-window::focus-marked-window)
+               (windows:in-focus-p window))
+      (return-from find-window-focused window)))
+  nil)
+
+(defun window-focused-pinned-p ()
+  (when-let ((focused (find-window-focused)))
+    (pinned-window-p focused)))
+
 (defun pass-focus-on-right ()
   "Pass the focus on the window placed on the right of the window that
 current has focus"
-  (let* ((window    (main-window:focused-window *main-window*))
-         (x-focused (win-x window))
-         (y-focused (win-y window))
-         (w-focused (win-width window)))
-    (labels ((all-adjacent-fn (w)
-               (>= (win-x w)
-                   (+ x-focused
-                      w-focused)))
-             (intersect-fn (w)
-               (<= (win-y w)
-                   y-focused
-                   (+ (win-y w) (win-height w))))
-             (sort-predicate (a b)
-               (< (win-y a) (win-y b))))
-      (pass-focus #'all-adjacent-fn #'intersect-fn #'sort-predicate))))
+  (when (not (window-focused-pinned-p))
+    (let* ((window    (main-window:focused-window *main-window*))
+           (x-focused (win-x window))
+           (y-focused (win-y window))
+           (w-focused (win-width window)))
+      (labels ((all-adjacent-fn (w)
+                 (>= (win-x w)
+                     (+ x-focused
+                        w-focused)))
+               (intersect-fn (w)
+                 (<= (win-y w)
+                     y-focused
+                     (+ (win-y w) (win-height w))))
+               (sort-predicate (a b)
+                 (< (win-y a) (win-y b))))
+        (pass-focus #'all-adjacent-fn #'intersect-fn #'sort-predicate)))))
 
 (defun pass-focus-on-left ()
   "Pass the focus on the window placed on the left of the window that current has focus"
-  (let* ((window    (main-window:focused-window *main-window*))
-         (x-focused (win-x window))
-         (y-focused (win-y window)))
-    (labels ((all-adjacent-fn (w)
-               (< (win-x w)
-                   x-focused))
-             (intersect-fn (w)
-               (<= (win-y w)
-                   y-focused
-                   (+ (win-y w) (win-height w))))
-             (sort-predicate (a b)
-               (< (win-y a) (win-y b))))
-      (pass-focus #'all-adjacent-fn #'intersect-fn #'sort-predicate))))
+  (when (not (window-focused-pinned-p))
+    (let* ((window    (main-window:focused-window *main-window*))
+           (x-focused (win-x window))
+           (y-focused (win-y window)))
+      (labels ((all-adjacent-fn (w)
+                 (< (win-x w)
+                    x-focused))
+               (intersect-fn (w)
+                 (<= (win-y w)
+                     y-focused
+                     (+ (win-y w) (win-height w))))
+               (sort-predicate (a b)
+                 (< (win-y a) (win-y b))))
+        (pass-focus #'all-adjacent-fn #'intersect-fn #'sort-predicate)))))
 
 (defun pass-focus-on-bottom ()
   "Pass the focus on the window placed below the window that current has focus"
-  (let* ((window    (main-window:focused-window *main-window*))
-         (x-focused (win-x window))
-         (y-focused (win-y window)))
-    (labels ((all-adjacent-fn (w)
-               (> (win-y w)
-                  y-focused))
-             (intersect-fn (w)
-               (<= (win-x w)
-                   x-focused
-                   (+ (win-x w) (win-width w))))
-             (sort-predicate (a b)
-               (> (win-x a) (win-x b))))
-      (pass-focus #'all-adjacent-fn #'intersect-fn #'sort-predicate))))
+  (when (not (window-focused-pinned-p))
+    (let* ((window    (main-window:focused-window *main-window*))
+           (x-focused (win-x window))
+           (y-focused (win-y window)))
+      (labels ((all-adjacent-fn (w)
+                 (> (win-y w)
+                    y-focused))
+               (intersect-fn (w)
+                 (<= (win-x w)
+                     x-focused
+                     (+ (win-x w) (win-width w))))
+               (sort-predicate (a b)
+                 (> (win-x a) (win-x b))))
+        (pass-focus #'all-adjacent-fn #'intersect-fn #'sort-predicate)))))
 
 (defun pass-focus-on-top ()
   "Pass the focus on the window placed above the window that current has focus"
-  (let* ((window    (main-window:focused-window *main-window*))
-         (x-focused (win-x window))
-         (y-focused (win-y window)))
-    (labels ((all-adjacent-fn (w)
-               (< (win-y w)
-                  y-focused))
-             (intersect-fn (w)
-               (<= (win-x w)
-                   x-focused
-                   (+ (win-x w) (win-width w))))
-             (sort-predicate (a b)
-               (> (win-x a) (win-x b))))
-      (pass-focus #'all-adjacent-fn #'intersect-fn #'sort-predicate))))
+  (when (not (window-focused-pinned-p))
+    (let* ((window    (main-window:focused-window *main-window*))
+           (x-focused (win-x window))
+           (y-focused (win-y window)))
+      (labels ((all-adjacent-fn (w)
+                 (< (win-y w)
+                    y-focused))
+               (intersect-fn (w)
+                 (<= (win-x w)
+                     x-focused
+                     (+ (win-x w) (win-width w))))
+               (sort-predicate (a b)
+                 (> (win-x a) (win-x b))))
+        (pass-focus #'all-adjacent-fn #'intersect-fn #'sort-predicate)))))
 
 (defmacro gen-focus-to-window (function-suffix window-get-focus
                                &key
