@@ -180,9 +180,15 @@
 (defun collect-tree (stream root-fid)
   (lambda (path)
     (let* ((*stream*   stream)
-           (*root-fid* root-fid))
+           (*root-fid* root-fid)
+           (all-files  nil)
+           (all-dirs   nil))
       (with-cloned-root-fid (*stream* cloned-root-fid :clunk-cloned-fid t)
-        (9p:collect-tree *stream* cloned-root-fid path)))))
+        (multiple-value-bind (files directories)
+            (9p:collect-tree *stream* cloned-root-fid path)
+          (setf all-files files)
+          (setf all-dirs  directories)))
+      (values all-files all-dirs))))
 
 (defun generate-filesystem-window-handlers (path host port
                                             query fragment
