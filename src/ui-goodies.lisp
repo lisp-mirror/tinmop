@@ -2276,30 +2276,34 @@ gemini page the program is rendering."
                            :complete-fn #'complete:directory-complete))))
 
 (defun bookmark-gemini-page ()
-  (if (message-window:gemini-window-p)
-      (let* ((link        (gemini-viewer:current-gemini-url))
-             (metadata    (message-window:metadata *message-window*))
-             (source      (gemini-viewer:gemini-metadata-source-file metadata))
-             (description (gemini-parser:gemini-first-h1 source)))
-        (labels ((on-description-completed (new-description)
-                   (if (text-utils:string-empty-p new-description)
-                       (error-message (_ "Empty description"))
-                       (progn
-                         (setf description new-description)
-                         (ui:ask-string-input #'on-section-completed
-                                              :prompt (format nil (_ "Insert bookmark section: "))
-                                              :complete-fn #'complete:bookmark-section-complete))))
-                 (on-section-completed (section)
-                   (db-utils:with-ready-database (:connect nil)
-                     (db:bookmark-add db:+bookmark-gemini-type-entry+
-                                      link
-                                      :section     section
-                                      :description description))
-                   (notify (format nil (_ "Added ~s in bookmark") link))))
-          (ui:ask-string-input #'on-description-completed
-                               :prompt        (format nil (_ "Insert bookmark description: "))
-                               :initial-value description)))
-      (error-message (_ "The window is not displaying a gemini document"))))
+  (cond
+    ((not (message-window:gemini-window-p))
+     (error-message (_ "The window is not displaying a gemini document")))
+    ((not (gemini-viewer:current-gemini-url))
+     (error-message (_ "This page can not be added to bookmarks")))
+    (t
+     (let* ((link        (gemini-viewer:current-gemini-url))
+            (metadata    (message-window:metadata *message-window*))
+            (source      (gemini-viewer:gemini-metadata-source-file metadata))
+            (description (gemini-parser:gemini-first-h1 source)))
+       (labels ((on-description-completed (new-description)
+                  (if (text-utils:string-empty-p new-description)
+                      (error-message (_ "Empty description"))
+                      (progn
+                        (setf description new-description)
+                        (ui:ask-string-input #'on-section-completed
+                                             :prompt (format nil (_ "Insert bookmark section: "))
+                                             :complete-fn #'complete:bookmark-section-complete))))
+                (on-section-completed (section)
+                  (db-utils:with-ready-database (:connect nil)
+                    (db:bookmark-add db:+bookmark-gemini-type-entry+
+                                     link
+                                     :section     section
+                                     :description description))
+                  (notify (format nil (_ "Added ~s in bookmark") link))))
+         (ui:ask-string-input #'on-description-completed
+                              :prompt        (format nil (_ "Insert bookmark description: "))
+                              :initial-value description))))))
 
 (defun generate-bookmark-page ()
   (let ((bookmarks-sections (db:bookmark-all-grouped-by-section)))
