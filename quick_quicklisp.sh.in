@@ -88,10 +88,17 @@ install_quicklisp () {
          exit 1
     else
         echo_bold "Key sucessfully verified."
-        @LISP_COMPILER@ --load $QUICKLISP            \
-          --eval "(quicklisp-quickstart:install)"    \
-          --eval "(ql:add-to-init-file)"             \
-          --eval "(sb-ext:quit)";
+        if test "$1" = "" ; then
+            @LISP_COMPILER@ --load $QUICKLISP           \
+             --eval "(quicklisp-quickstart:install)"    \
+             --eval "(ql:add-to-init-file)"             \
+             --eval "(sb-ext:quit)";
+        else
+            @LISP_COMPILER@ --load $QUICKLISP                           \
+             --eval "(quicklisp-quickstart:install)"                    \
+             --eval "(ql-util:without-prompting (ql:add-to-init-file))" \
+             --eval "(sb-ext:quit)";
+        fi
         @MKDIR_P@ $LISP_SOURCE_REGISTRY_DIR
         PAR_PWD=$(@DIRNAME@ "$PWD")
         echo "(:source-registry"       >  $LISP_SOURCE_REGISTRY_FILE
@@ -162,7 +169,11 @@ if [ $quicklisp_installed_p -eq 0 ]; then
     echo_bold "Quicklisp already installed; fetching libraries..."
     install_dependency
 else
-    install_quicklisp
+    if test "$1" = "--do-not-prompt" ; then
+        install_quicklisp 1
+    else
+        install_quicklisp
+    fi
     install_dependency
 fi
 
