@@ -93,7 +93,7 @@ install_quicklisp () {
           --eval "(ql:add-to-init-file)"             \
           --eval "(sb-ext:quit)";
         @MKDIR_P@ $LISP_SOURCE_REGISTRY_DIR
-        PAR_PWD="${PWD%/*}"
+        PAR_PWD=$(@DIRNAME@ "$PWD")
         echo "(:source-registry"       >  $LISP_SOURCE_REGISTRY_FILE
         echo "  (:tree \"$PAR_PWD\")"  >> $LISP_SOURCE_REGISTRY_FILE
         echo ":inherit-configuration)" >> $LISP_SOURCE_REGISTRY_FILE

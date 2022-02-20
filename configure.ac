@@ -107,6 +107,13 @@ if test "$CHMOD" = "no" ; then
    exit 1;
 fi
 
+AC_PATH_PROGS([DIRNAME],[dirname],[no])
+
+if test "$DIRNAME" = "no" ; then
+   AC_MSG_ERROR([Can not find dirname executable.])
+   exit 1;
+fi
+
 AC_PROG_MKDIR_P
 
 dnl check sbcl version
