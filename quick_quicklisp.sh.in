@@ -50,7 +50,7 @@ echo_bold () {
 }
 
 check_croatoan (){
-    if [ -d $CROATOAN_DIR ]; then
+    if [ -d "$CROATOAN_DIR" ]; then
         echo 0;
     else
         echo 1;
@@ -99,11 +99,11 @@ install_quicklisp () {
              --eval "(ql-util:without-prompting (ql:add-to-init-file))" \
              --eval "(sb-ext:quit)";
         fi
-        @MKDIR_P@ $LISP_SOURCE_REGISTRY_DIR
+        @MKDIR_P@ "$LISP_SOURCE_REGISTRY_DIR"
         PAR_PWD=$(@DIRNAME@ "$PWD")
-        echo "(:source-registry"       >  $LISP_SOURCE_REGISTRY_FILE
-        echo "  (:tree \"$PAR_PWD\")"  >> $LISP_SOURCE_REGISTRY_FILE
-        echo ":inherit-configuration)" >> $LISP_SOURCE_REGISTRY_FILE
+        echo "(:source-registry"       >  "$LISP_SOURCE_REGISTRY_FILE"
+        echo "  (:tree \"$PAR_PWD\")"  >> "$LISP_SOURCE_REGISTRY_FILE"
+        echo ":inherit-configuration)" >> "$LISP_SOURCE_REGISTRY_FILE"
         echo "quicklisp installed"
     fi
 }
@@ -149,16 +149,16 @@ install_dependency () {
 install_croatoan () {
     installedp=$(check_croatoan);
     if [ $installedp -eq 0 ]; then
-        cd $CROATOAN_DIR && @GIT@ pull
+        cd "$CROATOAN_DIR" && @GIT@ pull
     else
-        cd $QUICKLISP_INSTALL_DIR/local-projects/ && @GIT@ clone $CROATOAN_GIT_URL
+        cd "$QUICKLISP_INSTALL_DIR"/local-projects/ && @GIT@ clone "$CROATOAN_GIT_URL"
     fi
 
-    cd $CROATOAN_DIR && @GIT@ checkout $CROATOAN_COMMIT
+    cd "$CROATOAN_DIR" && @GIT@ checkout "$CROATOAN_COMMIT"
     if [ -d "$PURGATORY_DIR" ]; then
-        cd $PURGATORY_DIR && @GIT@ pull
+        cd "$PURGATORY_DIR" && @GIT@ pull
     else
-        cd $QUICKLISP_INSTALL_DIR/local-projects/ && @GIT@ clone $PURGATORY_GIT_URL
+        cd "$QUICKLISP_INSTALL_DIR"/local-projects/ && @GIT@ clone "$PURGATORY_GIT_URL"
     fi
 }
 
