@@ -42,16 +42,17 @@ confdir              = $(sysconfdir)/$(PACKAGE)
 
 dist_conf_DATA       = etc/init.lisp etc/default-theme.conf etc/shared.conf
 
-dist_pkgdata_DATA    = scripts/export-gemini-subscriptions.lisp \
-scripts/get-following.lisp                       \
-scripts/import-following.lisp                    \
-scripts/import-gemini-subscriptions.lisp         \
-scripts/welcome-bot.lisp                         \
-modules/delete-by-regex.lisp                     \
+dist_pkgdata_DATA    = modules/delete-by-regex.lisp  \
 modules/expand-abbrev-command-window.lisp        \
 modules/next-previous-open.lisp                  \
 modules/rewrite-message-urls.lisp                \
-modules/share-gemini-link.lisp
+modules/share-gemini-link.lisp                   \
+scripts/export-gemini-subscriptions.lisp         \
+scripts/gemget.lisp                              \
+scripts/get-following.lisp                       \
+scripts/import-following.lisp                    \
+scripts/import-gemini-subscriptions.lisp         \
+scripts/welcome-bot.lisp
 
 dist_man1_MANS       = doc/tinmop.man
 
