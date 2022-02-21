@@ -1,0 +1,31 @@
+ARG ARCH=
+FROM docker.io/$ARCH/debian:latest
+
+ARG DEBIAN_FRONTEND=noninteractive
+ENV ARCH=
+
+WORKDIR /src
+
+COPY entrypoint.sh /entrypoint.sh
+
+RUN apt update && apt -y full-upgrade && apt install -y --no-install-recommends \
+build-essential \ 
+autoconf \ 
+automake \ 
+git \
+gettext \
+gawk \
+sbcl \
+xdg-utils \
+libssl-dev \
+libncurses-dev \
+libsqlite3-dev \
+openssl \
+curl \
+ca-certificates \
+gpg \
+wget \
+unzip && apt clean
+
+ENTRYPOINT ["/entrypoint.sh"]
+
