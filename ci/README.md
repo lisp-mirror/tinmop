@@ -1,12 +1,8 @@
 ## Build with containers
 
-The directory with the configs and the scripts to build with containers is named 'ci', as this is usually used for a Continuous Integration or Continuous Delivery (CI/CD) infrastructure.
+The directory that contains the configs and the scripts to build tinmop using containers is named 'ci', as this is usually used for a Continuous Integration or Continuous Delivery (CI/CD) infrastructure.
 
-
-
-The bash script build.sh do all the needed stuffs for you, but one between podman or docker must be installed on your system and in your PATH. If both are installed, podman is preferred, as its default is to run rootless.
-
-
+The bash script build.sh does all the needed stuff for you, but either podman or docker must be installed on your system and in your PATH. If both are installed, podman is preferred, as its default is to run rootless.
 
 You have to invoke the script as PATH/TO/build.sh ARCH, for example, from the ci dir, the invocation for host arch is:
 

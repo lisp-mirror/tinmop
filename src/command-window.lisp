@@ -251,18 +251,19 @@ be either `:keybinding' or `:string'.  the former for key command the latter for
   (with-accessors ((command-line    command-line)
                    (suggestions-win suggestions-win)) command-window
     ;; some envents should by intercepted by command window
-    (cond
-      ((eq :control-left event) ; suggestion win pagination
-       (move-suggestion-page-left command-window))
-      ((eq :control-right event) ; suggestion win pagination
-       (move-suggestion-page-right command-window))
-      ((eq :backspace event) ; delete last command or char
-       (setf command-line (safe-all-but-last-elt command-line))
-       (when-let ((last-command (safe-last-elt command-line)))
-         (setf command-line (safe-all-but-last-elt command-line))
-         (enqueue-command command-window last-command nil)))
-      (t
-       (enqueue-command command-window event t)))))
+    (let ((decoded-event (decode-key-event event :convert-symbol-to-string nil)))
+      (cond
+        ((eq :control-left decoded-event)       ; suggestion win pagination
+         (move-suggestion-page-left command-window))
+        ((eq :control-right decoded-event)      ; suggestion win pagination
+         (move-suggestion-page-right command-window))
+        ((eq :backspace decoded-event)          ; delete last command or char
+         (when-let ((command-before-last (safe-all-but-last-elt command-line)))
+           (setf command-line nil)
+           (loop for i in command-before-last do
+             (enqueue-command command-window i nil))))
+        (t
+         (enqueue-command command-window event t))))))
 
 (defun update-suggestions (window key-decoded)
   "Update suggestion window"

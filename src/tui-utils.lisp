@@ -95,13 +95,15 @@
 as argument `complex-string'."
   (length (complex-char-array complex-string)))
 
-(defun decode-key-event (event)
+(defun decode-key-event (event &key (convert-symbol-to-string t))
   (let* ((key           (croatoan:event-key event))
          (decoded-event (cond
                           ((characterp key)
                            (key-to-string key))
                           ((symbolp key)
-                           (symbol-name key))
+                           (if convert-symbol-to-string
+                               (symbol-name key)
+                               key))
                           (t
                            (error (_ "Unknown key event ~a") key)))))
     (values decoded-event key)))
