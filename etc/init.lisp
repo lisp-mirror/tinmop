@@ -138,7 +138,10 @@
 ;; global keymap
 
 (define-key "q"         #'quit)  ; here we  are  calling the  custom
-                                 ; function defined above
+                                 ; function defined above ...
+
+(define-key "C-q"       #'quit)  ; ...also here
+
 (define-key "C-a"       #'show-about-window)
 
 (define-key "?"         #'print-quick-help)
