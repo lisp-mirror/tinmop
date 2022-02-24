@@ -1581,6 +1581,22 @@
                    (regex  regex)) object
     (line-oriented-window:search-row window regex)))
 
+(defclass search-toc-event (search-event)
+  ((window
+    :initform nil
+    :initarg :window
+    :accessor window)
+   (regex
+    :initform nil
+    :initarg :regex
+    :accessor regex)))
+
+(defmethod process-event ((object search-toc-event))
+  (with-accessors ((window window)
+                   (regex  regex)) object
+    (line-oriented-window:search-row window regex)
+    (ui:gemini-toc-jump-to-entry)))
+
 (defclass help-apropos-event (program-event)
   ((regex
     :initform nil

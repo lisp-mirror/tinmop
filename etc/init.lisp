@@ -440,6 +440,14 @@
 
 (define-key "p"         #'gemini-toc-scroll-up-page                  *gemini-toc-keymap*)
 
+(define-key "home"      #'gemini-toc-scroll-begin                    *gemini-toc-keymap*)
+
+(define-key "end"       #'gemini-toc-scroll-end                      *gemini-toc-keymap*)
+
+(define-key "/"         #'gemini-toc-search                          *gemini-toc-keymap*)
+
+(define-key "N"         #'repeat-search                              *gemini-toc-keymap*)
+
 ;; gemini stream window keymap
 
 (define-key "a"         #'gemini-abort-download                      *gemini-downloads-keymap*)

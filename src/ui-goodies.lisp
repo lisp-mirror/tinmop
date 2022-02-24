@@ -1335,6 +1335,7 @@ This makes sense only for gemini file stream, if not this command performs the s
 (defun line-oriented-window-scroll-begin (window)
   (when (and window
              (not (line-oriented-window:rows-empty-p window)))
+    (line-oriented-window:unselect-all window)
     (line-oriented-window:select-row window 0)
     (windows:win-clear window)
     (windows:draw window)))
@@ -1342,6 +1343,7 @@ This makes sense only for gemini file stream, if not this command performs the s
 (defun line-oriented-window-scroll-end (window)
   (when (and window
              (not (line-oriented-window:rows-empty-p window)))
+    (line-oriented-window:unselect-all window)
     (line-oriented-window:select-row window (1- (line-oriented-window:rows-length window)))
     (windows:win-clear window)
     (windows:draw window)))
@@ -2230,6 +2232,26 @@ gemini page the program is rendering."
 
 (defun gemini-toc-scroll-up-page ()
   (message-window:scroll-up *message-window*))
+
+(defun gemini-toc-scroll-begin ()
+  (line-oriented-window-scroll-begin *gemini-toc-window*)
+  (gemini-toc-jump-to-entry))
+
+(defun gemini-toc-scroll-end ()
+  (line-oriented-window-scroll-end *gemini-toc-window*)
+  (gemini-toc-jump-to-entry))
+
+(defun gemini-toc-search ()
+  "Search toc with a text matching a regular expression"
+  (flet ((on-input-complete (regex)
+           (when-let* ((window (main-window:focused-window *main-window*)))
+             (let ((event (make-instance 'search-toc-event
+                                         :window window
+                                         :regex  regex)))
+               (push-event event)))))
+    (ask-string-input #'on-input-complete
+                      :prompt      (_ "Search key: ")
+                      :complete-fn #'complete:complete-always-empty)))
 
 (defun ask-input-on-tofu-error (condition fn)
   (let ((host (gemini-client:host condition)))

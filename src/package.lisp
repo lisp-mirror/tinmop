@@ -1527,6 +1527,9 @@
    :gemlog-refresh-all-event
    :gemini-toc-jump-to-section
    :gemini-toc-open
+   :gemini-toc-scroll-begin
+   :gemini-toc-scroll-end
+   :gemini-toc-search
    :get-chat-messages-event
    :get-chats-event
    :chat-show-event
@@ -1535,6 +1538,7 @@
    :chat-change-label-event
    :chat-create-event
    :search-link-event
+   :search-toc-event
    :help-apropos-event
    :redraw-window-event
    :send-to-pipe-event
