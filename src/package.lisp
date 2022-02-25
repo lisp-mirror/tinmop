@@ -2762,6 +2762,8 @@
    :open-net-address
    :open-gemini-address
    :gemini-history-back
+   :address-go-back-in-path
+   :address-go-root-path
    :gemini-view-source
    :gemini-abort-download
    :gemini-open-streams-window

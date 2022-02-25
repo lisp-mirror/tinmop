@@ -1988,6 +1988,33 @@ Currently the only recognized protocols are gemini and kami."
   "Reopen a previous visited gemini address"
   (push-event (make-instance 'gemini-back-event)))
 
+(defun address-go-back-in-path ()
+  (when-let ((current-url (gemini-viewer:current-gemini-url)))
+    (multiple-value-bind (actual-iri host path query port fragment scheme user-info)
+        (gemini-client:displace-iri (iri:iri-parse current-url))
+      (declare (ignore fragment query actual-iri))
+      (let* ((parent-path (fs:parent-dir-path path))
+             (new-iri     (to-s (make-instance 'iri:iri
+                                               :scheme    scheme
+                                               :host      host
+                                               :user-info user-info
+                                               :port      port
+                                               :path      parent-path))))
+        (open-net-address new-iri)))))
+
+(defun address-go-root-path ()
+  (when-let ((current-url (gemini-viewer:current-gemini-url)))
+    (multiple-value-bind (actual-iri host path query port fragment scheme user-info)
+        (gemini-client:displace-iri (iri:iri-parse current-url))
+      (declare (ignore fragment query actual-iri path))
+      (let ((new-iri (to-s (make-instance 'iri:iri
+                                          :scheme    scheme
+                                          :host      host
+                                          :user-info user-info
+                                          :port      port
+                                          :path      "/"))))
+        (open-net-address new-iri)))))
+
 (defun gemini-view-source ()
   "Shows the source of current gemini page"
   (gemini-viewer:view-source *message-window*))

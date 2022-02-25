@@ -415,6 +415,10 @@
 
 (define-key "b"         #'gemini-history-back                        *gemini-message-keymap*)
 
+(define-key "B"         #'address-go-back-in-path                    *gemini-message-keymap*)
+
+(define-key "R"         #'address-go-root-path                       *gemini-message-keymap*)
+
 (define-key "C-b a"     #'bookmark-gemini-page                       *gemini-message-keymap*)
 
 (define-key "C-b s"     #'display-bookmark                           *gemini-message-keymap*)
