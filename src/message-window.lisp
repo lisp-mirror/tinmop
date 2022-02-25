@@ -124,8 +124,8 @@
                                            *gemini-toc-window*)
                                       (win-width *gemini-toc-window*)
                                       (win-x reference-window)))
-         (y                       (if (or command-line:*gemini-full-screen-mode*
-                                          *gemini-toc-window*)
+         (y                       (if (and command-line:*gemini-full-screen-mode*
+                                           *gemini-toc-window*)
                                       0
                                       (+ (win-y reference-window)
                                          reference-window-height))))
