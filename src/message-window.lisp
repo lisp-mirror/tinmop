@@ -118,7 +118,8 @@
                                          command-window-height
                                          reference-window-height)
                                       (- main-window-height
-                                         command-window-height)))
+                                         command-window-height
+                                         (swconf:config-gemini-fullscreen-links-height))))
          (width                   reference-window-width)
          (x                       (if (and command-line:*gemini-full-screen-mode*
                                            *gemini-toc-window*)
@@ -126,7 +127,7 @@
                                       (win-x reference-window)))
          (y                       (if (and command-line:*gemini-full-screen-mode*
                                            *gemini-toc-window*)
-                                      0
+                                      (swconf:config-gemini-fullscreen-links-height)
                                       (+ (win-y reference-window)
                                          reference-window-height))))
     (win-resize object width height)
@@ -310,6 +311,10 @@
                                              (make-tui-string text)))))
     (row-add-original-object res original-object)
     res))
+
+(defun row-link-p (row)
+  (typep (row-get-original-object row)
+         'gemini-parser:link-line))
 
 (defun row-pre-start-p (row)
   (typep (row-get-original-object row)

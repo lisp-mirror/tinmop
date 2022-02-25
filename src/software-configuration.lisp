@@ -495,6 +495,7 @@
                    value
                    scheme
                    link
+                   links
                    creation-time
                    access-time
                    visibility
@@ -946,6 +947,14 @@
                     +key-mode+
                     +key-toc+
                     +key-width+)
+
+(gen-simple-access (gemini-fullscreen-links-height
+                    :transform-value-fn main-window:parse-subwin-h)
+                    +key-gemini+
+                    +key-exclusive+
+                    +key-mode+
+                    +key-links+
+                    +key-height+)
 
 (gen-simple-access (post-allowed-language
                     :transform-value-fn

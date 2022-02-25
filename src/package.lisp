@@ -1242,6 +1242,7 @@
    :make-tree-colormap
    :left-arrow
    :config-gemini-fullscreen-toc-width
+   :config-gemini-fullscreen-links-height
    :config-post-allowed-language
    :config-purge-history-days-offset
    :config-purge-cage-days-offset
@@ -2176,6 +2177,7 @@
    :viewport-width
    :draw-downloading-animation
    :visible-rows
+   :row-link-p
    :row-vertical-space-p
    :row-preformatted-p
    :row-invisible-p
@@ -2694,8 +2696,10 @@
    :open-message-attach-go-up
    :open-message-attach-go-down
    :open-message-attach-perform-opening
+   :gemini-jump-to-link
    :close-open-attach-window
    :search-link-window
+   :open-gemini-message-link-window
    :open-message-link
    :open-message-link-go-up
    :open-message-link-go-down

@@ -617,6 +617,8 @@
 
 (define-key "end"       #'open-message-link-window-scroll-end           *open-message-link-keymap*)
 
+(define-key "]"         #'gemini-jump-to-link                           *open-message-link-keymap*)
+
 ;; chats list window
 
 (define-key "r"         #'refresh-chat-messages                         *chats-list-keymap*)

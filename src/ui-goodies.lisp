@@ -460,7 +460,6 @@ Metadata includes:
           (list *send-message-window*
                 *follow-requests-window*
                 *open-attach-window*
-                *open-message-link-window*
                 *gemini-streams-window*
                 *gemini-certificates-window*
                 *filesystem-explorer-window*)))
@@ -1241,12 +1240,13 @@ If some posts was deleted before, download them again."
                       :prompt      (_ "Search key: ")
                       :complete-fn #'complete:complete-always-empty)))
 
-(defun open-gemini-message-link-window ()
+(defun open-gemini-message-link-window (&key (give-focus t))
   (let* ((window   *message-window*)
          (metadata (message-window:metadata window))
          (links    (gemini-viewer:gemini-metadata-links metadata)))
     (open-message-link-window:init-gemini-links links)
-    (focus-to-open-message-link-window)))
+    (when give-focus
+      (focus-to-open-message-link-window))))
 
 (defun open-message-link ()
   "Open message links window
@@ -1323,6 +1323,27 @@ Browse and optionally open the links the text of the message window contains."
   (when-let* ((selected-line (line-oriented-window:selected-row *open-message-link-window*))
               (url           (line-oriented-window:normal-text selected-line)))
     (open-message-link-window:open-message-link url enqueue)))
+
+(defun gemini-jump-to-link ()
+  (when-let* ((link-win          *open-message-link-window*)
+              (message-win       *message-window*)
+              (selected-line     (line-oriented-window:selected-row link-win))
+              (selected-position (line-oriented-window:rows-position-if link-win
+                                                                        (lambda (a)
+                                                                          (eq a selected-line)))))
+    (when (message-window:gemini-window-p* message-win)
+      (let ((count-link                     0)
+            (count-rows                     0)
+            (selected-message-row-position -1))
+        (line-oriented-window:do-rows-raw (message-win row)
+          (when (message-window:row-link-p row)
+            (when (= count-link selected-position)
+              (setf selected-message-row-position count-rows))
+            (incf count-link))
+          (incf count-rows))
+        (when (> selected-message-row-position 0)
+          (line-oriented-window:select-row message-win selected-message-row-position)
+          (draw message-win))))))
 
 (defun open-message-link-perform-opening ()
   (%open-message-link-perform-opening nil))

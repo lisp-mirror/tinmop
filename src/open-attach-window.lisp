@@ -38,12 +38,20 @@
            (selected-bg   (swconf:selected-background theme-style))
            (unselected-fg (swconf:unselected-foreground theme-style))
            (unselected-bg (swconf:unselected-background theme-style))
-           (win-w         (truncate (/ (win-width  specials:*main-window*) 2)))
-           (win-h         (truncate (/ (win-height specials:*main-window*) 2)))
-           (x             (truncate (- (/ (win-width specials:*main-window*) 2)
-                                       (/ win-w 2))))
-           (y             (truncate (- (/ (win-height specials:*main-window*) 2)
-                                       (/ win-h 2)))))
+           (reference-window (if command-line:*gemini-full-screen-mode*
+                                 *gemini-toc-window*
+                                 *thread-window*))
+           (win-w            (if command-line:*gemini-full-screen-mode*
+                                 (- (win-width *main-window*)
+                                    (win-width reference-window))
+                                 (win-width reference-window)))
+           (win-h            (if command-line:*gemini-full-screen-mode*
+                                 (swconf:config-gemini-fullscreen-links-height)
+                                 (win-height reference-window)))
+           (x                (if command-line:*gemini-full-screen-mode*
+                                 (win-width reference-window)
+                                 (win-x     reference-window)))
+           (y                0))
       (setf (background croatoan-window)
             (tui:make-win-background bg))
       (setf (bgcolor croatoan-window) bg)
