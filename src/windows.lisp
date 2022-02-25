@@ -692,7 +692,7 @@ insetred by the user"
   ((title
     :initform ""
     :initarg  :title
-    :reader title
+    :accessor title
     :documentation "The actual title")
    (title-padding-left
     :initform 3
@@ -721,9 +721,7 @@ insetred by the user"
                      (title-padding-left title-padding-left)) object
       (setf title-padding-left padding)
       (setf left-stopper       left-mark)
-      (setf right-stopper      right-mark)
-      (setf (slot-value object 'title)
-            (ellipsize-title object (title object)))))
+      (setf right-stopper      right-mark)))
   object)
 
 (defun ellipsize-title (window title)
@@ -731,17 +729,11 @@ insetred by the user"
                    (right-stopper      right-stopper)
                    (title-padding-left title-padding-left)) window
     (let ((clean-title (ellipsize (trim-blanks title)
-                                  (truncate (/ (- (win-width window)
-                                                  (length left-stopper)
-                                                  (length right-stopper)
-                                                  title-padding-left)
-                                               2)))))
+                                  (truncate (- (win-width window)
+                                               (length left-stopper)
+                                               (length right-stopper)
+                                               title-padding-left)))))
       clean-title)))
-
-(defmethod (setf title) ((new-title string) (object title-window))
-  (setf (slot-value object 'title)
-        (ellipsize-title object new-title))
-  object)
 
 (defmethod draw :after ((object title-window))
   (with-accessors ((left-stopper       left-stopper)
