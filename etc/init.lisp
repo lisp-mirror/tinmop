@@ -137,10 +137,11 @@
 
 ;; global keymap
 
-(define-key "q"         #'quit)  ; here we  are  calling the  custom
-                                 ; function defined above ...
+(define-key "q"         #'confirm-and-clean-close-program)
 
-(define-key "C-q"       #'quit)  ; ...also here
+
+(define-key "C-q"       #'quit)   ;  here we  are calling  the custom
+                                  ; function defined above
 
 (define-key "C-a"       #'show-about-window)
 

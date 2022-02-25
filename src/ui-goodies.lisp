@@ -47,10 +47,11 @@
 
 (defmacro with-valid-yes-at-prompt ((input-text y-pressed-p) &body body)
   (with-gensyms (not-null-input-p)
-  `(multiple-value-bind (,y-pressed-p ,not-null-input-p)
-       (boolean-input-accepted-p ,input-text)
-     (when ,not-null-input-p
-       ,@body))))
+    `(multiple-value-bind (,y-pressed-p ,not-null-input-p)
+         (boolean-input-accepted-p ,input-text)
+       (declare (ignorable ,y-pressed-p))
+       (when ,not-null-input-p
+         ,@body))))
 
 (defun clean-temporary-files ()
   "Use this to close the program"
@@ -81,6 +82,15 @@
                                                   temporary-files-count)
                                               temporary-files-count)))
           (push-event (make-instance 'quit-program-event))))))
+
+(defun confirm-and-clean-close-program ()
+   (flet ((on-input-complete (maybe-accepted)
+            (with-valid-yes-at-prompt (maybe-accepted y-pressed-p)
+              (when y-pressed-p
+                 (db-utils:with-ready-database (:connect nil)
+                   (clean-close-program))))))
+     (ask-string-input #'on-input-complete
+                       :prompt (format nil (_ "Quit ~a? [y/N] ") +program-name+))))
 
 (defun clean-close-program ()
   "Use this to close the program"

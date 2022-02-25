@@ -2620,6 +2620,7 @@
    :open-manual
    :quit-program
    :clean-close-program
+   :confirm-and-clean-close-program
    :notify
    :notify-procedure
    :with-blocking-notify-procedure
