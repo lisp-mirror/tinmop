@@ -205,6 +205,10 @@
 
 (define-key "down"      #'follow-request-go-down                      *follow-requests-keymap*)
 
+(define-key "k"         #'follow-request-go-up                        *follow-requests-keymap*)
+
+(define-key "j"         #'follow-request-go-down                      *follow-requests-keymap*)
+
 (define-key "d"         #'follow-request-delete                       *follow-requests-keymap*)
 
 (define-key "C-J"       #'process-follow-requests                     *follow-requests-keymap*)
@@ -216,6 +220,10 @@
 (define-key "up"        #'attach-go-up                                *send-message-keymap*)
 
 (define-key "down"      #'attach-go-down                              *send-message-keymap*)
+
+(define-key "k"         #'attach-go-up                                *send-message-keymap*)
+
+(define-key "j"         #'attach-go-down                              *send-message-keymap*)
 
 (define-key "d"         #'attach-delete                               *send-message-keymap*)
 
@@ -236,6 +244,10 @@
 (define-key "up"        #'thread-go-up                                *thread-keymap*)
 
 (define-key "down"      #'thread-go-down                              *thread-keymap*)
+
+(define-key "k"         #'thread-go-up                                *thread-keymap*)
+
+(define-key "j"         #'thread-go-down                              *thread-keymap*)
 
 (define-key "C-J"       #'thread-open-selected-message                *thread-keymap*)
 
@@ -347,6 +359,10 @@
 
 (define-key "down"      #'message-scroll-down                         *message-keymap*)
 
+(define-key "k"         #'message-scroll-up                           *message-keymap*)
+
+(define-key "j"         #'message-scroll-down                         *message-keymap*)
+
 (define-key "left"      #'message-scroll-left                         *message-keymap*)
 
 (define-key "right"     #'message-scroll-right                        *message-keymap*)
@@ -372,6 +388,10 @@
 (define-key "up"        #'message-scroll-up                          *gemini-message-keymap*)
 
 (define-key "down"      #'message-scroll-down                        *gemini-message-keymap*)
+
+(define-key "k"         #'message-scroll-up                          *gemini-message-keymap*)
+
+(define-key "j"         #'message-scroll-down                        *gemini-message-keymap*)
 
 (define-key "left"      #'message-scroll-left                        *gemini-message-keymap*)
 
@@ -433,6 +453,10 @@
 
 (define-key "down"      #'gemini-toc-scroll-down                     *gemini-toc-keymap*)
 
+(define-key "k"         #'gemini-toc-scroll-up                       *gemini-toc-keymap*)
+
+(define-key "j"         #'gemini-toc-scroll-down                     *gemini-toc-keymap*)
+
 (define-key "q"         #'gemini-toc-close                           *gemini-toc-keymap*)
 
 (define-key "n"         #'gemini-toc-scroll-down-page                *gemini-toc-keymap*)
@@ -457,6 +481,10 @@
 
 (define-key "down"      #'gemini-streams-window-down                 *gemini-downloads-keymap*)
 
+(define-key "k"         #'gemini-streams-window-up                   *gemini-downloads-keymap*)
+
+(define-key "j"         #'gemini-streams-window-down                 *gemini-downloads-keymap*)
+
 (define-key "q"         #'gemini-streams-window-close                *gemini-downloads-keymap*)
 
 (define-key "C-J"       #'gemini-streams-window-open-stream          *gemini-downloads-keymap*)
@@ -466,6 +494,10 @@
 (define-key "up"        #'gemini-certificate-window-go-up            *gemini-certificates-keymap*)
 
 (define-key "down"      #'gemini-certificate-window-go-down          *gemini-certificates-keymap*)
+
+(define-key "k"         #'gemini-certificate-window-go-up            *gemini-certificates-keymap*)
+
+(define-key "j"         #'gemini-certificate-window-go-down          *gemini-certificates-keymap*)
 
 (define-key "q"         #'gemini-close-certificate-window            *gemini-certificates-keymap*)
 
@@ -479,6 +511,10 @@
 
 (define-key "down"      #'gemlogs-subscription-go-down               *gemlog-subscription-keymap*)
 
+(define-key "k"         #'gemlogs-subscription-go-up                 *gemlog-subscription-keymap*)
+
+(define-key "j"         #'gemlogs-subscription-go-down               *gemlog-subscription-keymap*)
+
 (define-key "q"         #'close-gemlog-window                        *gemlog-subscription-keymap*)
 
 (define-key "d"         #'gemlog-cancel-subscription                 *gemlog-subscription-keymap*)
@@ -491,6 +527,10 @@
 
 (define-key "down"      #'gempub-library-window-go-down              *gempub-library-keymap*)
 
+(define-key "k"         #'gempub-library-window-go-up                *gempub-library-keymap*)
+
+(define-key "j"         #'gempub-library-window-go-down              *gempub-library-keymap*)
+
 (define-key "q"         #'gempub-library-window-close                *gempub-library-keymap*)
 
 (define-key "C-J"       #'gempub-open-file                           *gempub-library-keymap*)
@@ -500,6 +540,10 @@
 (define-key "up"        #'tag-go-up                                   *tags-keymap*)
 
 (define-key "down"      #'tag-go-down                                 *tags-keymap*)
+
+(define-key "k"         #'tag-go-up                                   *tags-keymap*)
+
+(define-key "j"         #'tag-go-down                                 *tags-keymap*)
 
 (define-key "C-J"       #'open-tag-folder                             *tags-keymap*)
 
@@ -517,6 +561,10 @@
 
 (define-key "down"      #'conversation-go-down                        *conversations-keymap*)
 
+(define-key "k"         #'conversation-go-up                          *conversations-keymap*)
+
+(define-key "j"         #'conversation-go-down                        *conversations-keymap*)
+
 (define-key "dc"        #'delete-conversation                         *conversations-keymap*)
 
 (define-key "I"         #'ignore-conversation                         *conversations-keymap*)
@@ -531,6 +579,10 @@
 
 (define-key "down"      #'open-message-attach-go-down                   *open-attach-keymap*)
 
+(define-key "k"          #'open-message-attach-go-up                     *open-attach-keymap*)
+
+(define-key "j"         #'open-message-attach-go-down                   *open-attach-keymap*)
+
 (define-key "q"         #'close-open-attach-window                      *open-attach-keymap*)
 
 ;; message links keymap
@@ -540,6 +592,10 @@
 (define-key "up"        #'open-message-link-go-up                       *open-message-link-keymap*)
 
 (define-key "down"      #'open-message-link-go-down                     *open-message-link-keymap*)
+
+(define-key "k"         #'open-message-link-go-up                       *open-message-link-keymap*)
+
+(define-key "j"         #'open-message-link-go-down                     *open-message-link-keymap*)
 
 (define-key "q"         #'close-open-message-link-window                *open-message-link-keymap*)
 
@@ -575,6 +631,11 @@
 
 (define-key "down"      #'chat-list-go-down                             *chats-list-keymap*)
 
+(define-key "k"         #'chat-list-go-up                               *chats-list-keymap*)
+
+(define-key "j"         #'chat-list-go-down                             *chats-list-keymap*)
+
+
 ;; chat  window
 
 (defun write-to-chat ()
@@ -585,6 +646,10 @@
 (define-key "up"        #'message-scroll-up                             *chat-message-keymap*)
 
 (define-key "down"      #'message-scroll-down                           *chat-message-keymap*)
+
+(define-key "k"         #'message-scroll-up                             *chat-message-keymap*)
+
+(define-key "j"         #'message-scroll-down                           *chat-message-keymap*)
 
 (define-key "home"      #'message-scroll-begin                          *chat-message-keymap*)
 
@@ -627,6 +692,10 @@
 (define-key "up"        #'file-explorer-go-up           *filesystem-explorer-keymap*)
 
 (define-key "down"      #'file-explorer-go-down         *filesystem-explorer-keymap*)
+
+(define-key "k"         #'file-explorer-go-up           *filesystem-explorer-keymap*)
+
+(define-key "j"         #'file-explorer-go-down         *filesystem-explorer-keymap*)
 
 (define-key "home"      #'file-explorer-scroll-begin    *filesystem-explorer-keymap*)
 
