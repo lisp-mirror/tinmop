@@ -692,7 +692,7 @@ insetred by the user"
   ((title
     :initform ""
     :initarg  :title
-    :accessor title
+    :reader title
     :documentation "The actual title")
    (title-padding-left
     :initform 3
@@ -721,21 +721,26 @@ insetred by the user"
                      (title-padding-left title-padding-left)) object
       (setf title-padding-left padding)
       (setf left-stopper       left-mark)
-      (setf right-stopper      right-mark)))
+      (setf right-stopper      right-mark)
+      (setf (slot-value object 'title)
+            (ellipsize-title object (title object)))))
   object)
 
+(defun ellipsize-title (window title)
+  (with-accessors ((left-stopper       left-stopper)
+                   (right-stopper      right-stopper)
+                   (title-padding-left title-padding-left)) window
+    (let ((clean-title (ellipsize (trim-blanks title)
+                                  (truncate (/ (- (win-width window)
+                                                  (length left-stopper)
+                                                  (length right-stopper)
+                                                  title-padding-left)
+                                               2)))))
+      clean-title)))
+
 (defmethod (setf title) ((new-title string) (object title-window))
-  (with-slots (title) object
-    (with-accessors ((left-stopper       left-stopper)
-                     (right-stopper      right-stopper)
-                     (title-padding-left title-padding-left)) object
-      (let ((clean-title (ellipsize (trim-blanks new-title)
-                                    (truncate (/ (- (win-width object)
-                                                    (length left-stopper)
-                                                    (length right-stopper)
-                                                    title-padding-left)
-                                                 2)))))
-        (setf title clean-title))))
+  (setf (slot-value object 'title)
+        (ellipsize-title object new-title))
   object)
 
 (defmethod draw :after ((object title-window))
@@ -743,9 +748,9 @@ insetred by the user"
                    (right-stopper      right-stopper)
                    (title-padding-left title-padding-left)
                    (title              title)) object
-    (print-text object left-stopper        title-padding-left 0)
-    (print-text object title               nil                nil)
-    (print-text object right-stopper       nil                nil)))
+    (print-text object left-stopper                    title-padding-left 0)
+    (print-text object (ellipsize-title object title)  nil                nil)
+    (print-text object right-stopper                   nil                nil)))
 
 (defun adjust-win-vertical-positioning-if-gemini-fullscreen (window)
   (when command-line:*gemini-full-screen-mode*
