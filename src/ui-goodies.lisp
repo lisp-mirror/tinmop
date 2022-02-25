@@ -1325,6 +1325,8 @@ Browse and optionally open the links the text of the message window contains."
     (open-message-link-window:open-message-link url enqueue)))
 
 (defun gemini-jump-to-link ()
+  "Scroll the  document to  the line  where this  link appears  in the
+gemini document."
   (when-let* ((link-win          *open-message-link-window*)
               (message-win       *message-window*)
               (selected-line     (line-oriented-window:selected-row link-win))
