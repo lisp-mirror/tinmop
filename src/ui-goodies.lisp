@@ -2104,6 +2104,7 @@ Currently the only recognized protocols are gemini and kami."
   (ignore-errors
     (line-oriented-window:unselect-all *gemini-subscription-window*)
     (line-oriented-window:row-move     *gemini-subscription-window* amount)
+    (win-clear *gemini-subscription-window*)
     (draw  *gemini-subscription-window*)))
 
 (defun gemlogs-subscription-go-down ()
