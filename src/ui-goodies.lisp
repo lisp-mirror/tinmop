@@ -2684,25 +2684,24 @@ Note: existing file will be overwritten."
                              (error-message (format nil
                                                     "no matching files for ~a"
                                                     source-pattern))
-                             (loop for remote-file in remote-files
-                                   for local-file  in local-files
-                                   do
-                               (with-blocking-notify-procedure
-                                   ((format nil
-                                            (_ "Starting download of ~a")
-                                            remote-file)
-                                    (format nil
-                                            (_ "Download of ~a completed in ~a")
-                                            remote-file
-                                            local-file))
-                                 (fstree:download-path win
-                                                       remote-file
-                                                       local-file))))))))))
+                             (progn
+                               (mapcar (lambda (remote-file local-file)
+                                         (with-enqueued-process ()
+                                           (info-message (format nil
+                                                                 (_"downloading ~a → ~a")
+                                                                 remote-file
+                                                                 local-file))
+                                           (fstree:download-path win
+                                                                 remote-file
+                                                                 local-file)))
+                                       remote-files
+                                       local-files)
+                               (info-message (_"Downloading completed.")
+                                             +minimum-event-priority+)))))))))
       (ask-string-input #'on-input-destination-dir
                         :initial-value local-dir
                         :complete-fn   #'complete:directory-complete
                         :prompt        (_ "Save downloaded files in directory: ")))))
-
 
 (defun file-explorer-upload-path ()
   "Upload a file or files, wildcards are allowed (e.g. \"/foo/*.lisp\").
@@ -2734,20 +2733,20 @@ Note: existing file will be overwritten."
                              (error-message (format nil
                                                     "no matching files for ~a"
                                                     source-file))
-                             (loop for destination in destinations
-                                   for source      in sources
-                                   do
-                               (with-blocking-notify-procedure
-                                   ((format nil
-                                            (_ "Starting upload of ~a")
-                                            destination)
-                                    (format nil
-                                            (_ "Upload of ~a completed in ~a")
-                                            source
-                                            destination))
-                                 (fstree:upload-path win
+                             (progn
+                               (mapcar (lambda (destination source)
+                                         (with-enqueued-process ()
+                                           (info-message (format nil
+                                                                 (_"downloading ~a → ~a")
+                                                                 source
+                                                                 destination))
+                                           (fstree:upload-path win
                                                      source
-                                                     destination))))))))))
+                                                     destination)))
+                                       destinations
+                                       sources)
+                               (info-message (_"Uploading completed.")
+                                             +minimum-event-priority+)))))))))
       (ask-string-input #'on-input-complete
                         :prompt        (_ "Upload: ")
                         :complete-fn #'complete:directory-complete))))
