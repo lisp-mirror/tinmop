@@ -2691,9 +2691,10 @@ Note: existing file will be overwritten."
                                                                  (_"downloading ~a → ~a")
                                                                  remote-file
                                                                  local-file))
-                                           (fstree:download-path win
-                                                                 remote-file
-                                                                 local-file)))
+                                           (tui:with-notify-errors
+                                             (fstree:download-path win
+                                                                   remote-file
+                                                                   local-file))))
                                        remote-files
                                        local-files)
                                (info-message (_"Downloading completed.")
@@ -2740,9 +2741,10 @@ Note: existing file will be overwritten."
                                                                  (_"downloading ~a → ~a")
                                                                  source
                                                                  destination))
-                                           (fstree:upload-path win
-                                                     source
-                                                     destination)))
+                                               (tui:with-notify-errors
+                                                 (fstree:upload-path win
+                                                                     source
+                                                                     destination))))
                                        destinations
                                        sources)
                                (info-message (_"Uploading completed.")
