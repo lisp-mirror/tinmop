@@ -1057,6 +1057,7 @@
    :cache-get
    :cache-get-value
    :cache-expired-p
+   :cache-delete-all
    :tofu-passes-p
    :tofu-delete
    :find-tls-certificates-rows
@@ -2853,7 +2854,8 @@
    :file-explorer-node-details
    :file-explorer-edit-file
    :file-explorer-upload-mirror
-   :file-explorer-download-mirror))
+   :file-explorer-download-mirror
+   :clear-cache))
 
 (defpackage :scheduled-events
   (:use

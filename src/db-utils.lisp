@@ -325,7 +325,7 @@ example
                 for value in values append
                   (list name value)))))
 
-(defmacro make-delete (table-name where-clause)
+(defmacro make-delete (table-name &optional (where-clause nil))
   "Generate an sxql delete statement
 
 example
@@ -334,8 +334,10 @@ example
              (:and (:= col-a 1)
                    (:= col-b 2)))
 "
-  `(delete-from ,table-name
-     (where ,where-clause)))
+  (if where-clause
+      `(delete-from ,table-name
+         (where ,where-clause))
+      `(delete-from ,table-name)))
 
 (defmacro make-update (table-name names values where-clause)
  "Generate an sxql update statement

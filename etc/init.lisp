@@ -145,6 +145,8 @@
 
 (define-key "C-a"       #'show-about-window)
 
+(define-key "C d"       #'clear-cache)
+
 (define-key "?"         #'print-quick-help)
 
 (define-key "C-h h"     #'print-quick-help)

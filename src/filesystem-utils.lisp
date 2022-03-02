@@ -120,24 +120,31 @@
   (text-utils:strcat file "." extension))
 
 (defun cat-parent-dir (parent direntry)
-  (cond
-    ((or (backreference-dir-p direntry)
-         (loopback-reference-dir-p direntry))
-     (format nil "~a~a" parent direntry))
-    ((string= (string (alexandria:last-elt parent)) *directory-sep*)
-     (format nil "~a~a" parent direntry))
-    (t
-      (format nil "~a~a~a" parent *directory-sep* direntry))))
+  (labels ((cat (&rest args)
+             (reduce (lambda (a b) (concatenate 'string a b)) args))
+           (delete-slash  (a)
+             (cl-ppcre:regex-replace (cat "^" *directory-sep*) a "")))
+    (let* ((slashed-parent    (if (cl-ppcre:scan (cat *directory-sep* "$") parent)
+                                  parent
+                                  (cat parent *directory-sep*)))
+           (sequence-slash-re (cat *directory-sep* *directory-sep* "+")))
+      (cl-ppcre:regex-replace-all sequence-slash-re
+                                  (cat slashed-parent
+                                       (delete-slash direntry))
+                                  *directory-sep*))))
 
 (defmacro do-directory ((var) root &body body)
-  (with-gensyms (dir)
+  (with-gensyms (dir dir-name new-path)
     `(let ((,dir (nix:opendir ,root)))
        (unwind-protect
             (handler-case
-                (do ((,var (cat-parent-dir ,root (nix:readdir ,dir))
-                           (cat-parent-dir ,root (nix:readdir ,dir))))
-                    ((cl-ppcre:scan "NIL$" ,var))
-                  ,@body)
+                (flet ((read-dir ()
+                         (when-let* ((,dir-name (nix:readdir ,dir))
+                                     (,new-path (cat-parent-dir ,root  ,dir-name)))
+                           ,new-path)))
+                  (do ((,var (read-dir) (read-dir)))
+                      ((not ,var) ())
+                    ,@body))
               (nix::enotdir () 0)
               (nix:eacces () 0)
               (nix:eloop () 0))

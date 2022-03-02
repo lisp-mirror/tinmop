@@ -2995,6 +2995,9 @@ than `days-in-the-past' days (default: `(swconf:config-purge-cache-days-offset)'
          (local-time:timestamp< access-time
                                 offset)))))
 
+(defun cache-delete-all ()
+  (query (make-delete +table-cache+)))
+
 (defun tofu-passes-p (host hash)
   (let ((known-host (fetch-single (select :*
                                     (from +table-gemini-tofu-cert+)

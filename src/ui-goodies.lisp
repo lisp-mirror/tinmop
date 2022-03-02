@@ -2997,3 +2997,27 @@ Note: existing file will be overwritten."
                         :prompt        (_ "Download in: ")
                         :initial-value local-dir
                         :complete-fn   #'complete:directory-complete))))
+
+(defun clear-cache ()
+  "Delete  permanently cached  data  (note: this  command remove  also
+gemini client certificates!)."
+  (flet ((on-input-complete (input-text)
+           (with-valid-yes-at-prompt (input-text y-pressed-p)
+             (when y-pressed-p
+               (with-enqueued-process ()
+                 (db-utils:with-ready-database (:connect t)
+                   (db:cache-delete-all)
+                   (let ((children (remove-if (lambda (a)
+                                                (or (fs:backreference-dir-p      a)
+                                                    (fs:loopback-reference-dir-p a)))
+                                              (fs:collect-children (os-utils:user-cache-dir)))))
+                     (mapcar (lambda (path)
+                               (info-message (format nil
+                                                     (_ "Deleting cache directory ~a")
+                                                     path))
+                               (with-enqueued-process ()
+                                 (tui:with-notify-errors
+                                   (fs:recursive-delete path))))
+                             children))))))))
+    (ask-string-input #'on-input-complete
+                      :prompt (format nil (_ "Delete cache? [y/N] ")))))
