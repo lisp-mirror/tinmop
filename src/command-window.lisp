@@ -258,10 +258,12 @@ be either `:keybinding' or `:string'.  the former for key command the latter for
         ((eq :control-right decoded-event)      ; suggestion win pagination
          (move-suggestion-page-right command-window))
         ((eq :backspace decoded-event)          ; delete last command or char
-         (when-let ((command-before-last (safe-all-but-last-elt command-line)))
+         (let ((command-before-last (safe-all-but-last-elt command-line)))
            (setf command-line nil)
-           (loop for i in command-before-last do
-             (enqueue-command command-window i nil))))
+           (if command-before-last
+               (loop for i in command-before-last do
+                 (enqueue-command command-window i nil))
+               (win-hide (suggestions-win command-window)))))
         (t
          (enqueue-command command-window event t))))))
 
