@@ -369,7 +369,8 @@
    :open-link-with-program
    :open-resource-with-external-program
    :unzip-file
-   :unzip-single-file))
+   :unzip-single-file
+   :copy-to-clipboard))
 
 (defpackage :text-utils
   (:use

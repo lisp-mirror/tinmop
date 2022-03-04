@@ -213,3 +213,6 @@
            (exit-code (sb-ext:process-exit-code process)))
       (when (/= exit-code 0)
         (error (format nil "File ~s extraction from ~s failed" file-entry zip-file))))))
+
+(defun copy-to-clipboard (text)
+  (trivial-clipboard:text text))

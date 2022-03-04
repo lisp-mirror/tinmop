@@ -1362,7 +1362,7 @@ This makes sense only for gemini file stream, if not this command performs the s
   (when-let* ((selected-line (line-oriented-window:selected-row *open-message-link-window*))
               (url           (line-oriented-window:normal-text selected-line)))
     (with-notify-errors
-      (trivial-clipboard:text url)
+      (os-utils:copy-to-clipboard url)
       (info-message (_ "Address copied to clipboard")))))
 
 (defun close-open-message-link-window ()
