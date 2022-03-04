@@ -2712,6 +2712,7 @@
    :open-next-visible-link
    :go-to-next-link
    :go-to-previous-link
+   :copy-value-to-clipboard
    :copy-link-to-clipboard
    :close-open-message-link-window
    :open-message-link-window-scroll-begin

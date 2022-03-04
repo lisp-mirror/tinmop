@@ -576,6 +576,13 @@
 
 ;; attachments keymap
 
+(defun copy-to-clipboard (window)
+  (ui:copy-link-to-clipboard window))
+
+(define-key "C-c"       (lambda ()
+                          (copy-link-to-clipboard specials:*open-attach-window*))
+  *open-attach-keymap*)
+
 (define-key "C-J"       #'open-message-attach-perform-opening           *open-attach-keymap*)
 
 (define-key "a"         #'open-all-message-attachments                  *open-attach-keymap*)
@@ -584,7 +591,7 @@
 
 (define-key "down"      #'open-message-attach-go-down                   *open-attach-keymap*)
 
-(define-key "k"          #'open-message-attach-go-up                     *open-attach-keymap*)
+(define-key "k"          #'open-message-attach-go-up                    *open-attach-keymap*)
 
 (define-key "j"         #'open-message-attach-go-down                   *open-attach-keymap*)
 
@@ -594,7 +601,9 @@
 
 (define-key "C-J"       #'open-message-link-perform-opening             *open-message-link-keymap*)
 
-(define-key "C-c"       #'copy-link-to-clipboard                        *open-message-link-keymap*)
+(define-key "C-c"        (lambda ()
+                          (copy-link-to-clipboard specials:*open-message-link-window*))
+  *open-message-link-keymap*)
 
 (define-key "up"        #'open-message-link-go-up                       *open-message-link-keymap*)
 
