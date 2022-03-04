@@ -139,7 +139,6 @@
 
 (define-key "q"         #'confirm-and-clean-close-program)
 
-
 (define-key "C-q"       #'quit)   ;  here we  are calling  the custom
                                   ; function defined above
 

@@ -71,3 +71,5 @@
   "The window that shows the gempub library.")
 
 (defparameter *filesystem-explorer-window* nil)
+
+(defparameter *tour-links-window*          nil)

@@ -463,6 +463,7 @@ Metadata includes:
                 *gemini-streams-window*
                 *gemini-certificates-window*
                 *filesystem-explorer-window*)))
+                ;*tour-links-window*)))
 
 (defun find-window-focused ()
   (stack:do-stack-element (window windows::*window-stack*)
@@ -606,6 +607,11 @@ current has focus"
                      *open-message-link-window*
                      :documentation      "Move focus on open-link window"
                      :info-change-focus-message (_ "Focus passed on link window"))
+
+(gen-focus-to-window tour-links-window
+                     *tour-links-window*
+                     :documentation      "Move focus on tour links window"
+                     :info-change-focus-message (_ "Focus passed on tour links"))
 
 (gen-focus-to-window open-gemini-stream-windows
                      *gemini-streams-window*
@@ -1008,6 +1014,13 @@ If some posts was deleted before, download them again."
                       :prompt      (_ "Add mentions: ")
                       :complete-fn #'complete:username-complete)))
 
+(defun close-focused-and-return-to-message ()
+  (when-let ((focused (main-window:focused-window *main-window*)))
+    (when (and focused
+               (not (eq focused *message-window*)))
+      (win-close focused)
+      (focus-to-message-window))))
+
 (defmacro close-window-and-return-to-threads (window-to-close)
   `(progn
      (win-close ,window-to-close)
@@ -1015,10 +1028,20 @@ If some posts was deleted before, download them again."
      (focus-to-thread-window)))
 
 (defmacro close-window-and-return-to-message (window-to-close)
-  `(progn
-     (win-close ,window-to-close)
-     (setf ,window-to-close nil)
-     (focus-to-message-window)))
+  (with-gensyms (focused)
+    `(let ((,focused (main-window:focused-window *main-window*)))
+       (cond
+         (,focused
+          (if (eq ,focused ,window-to-close)
+              (progn
+                (win-close ,window-to-close)
+                (setf ,window-to-close nil)
+                (focus-to-message-window))
+              (close-focused-and-return-to-message)))
+         (t
+           (win-close ,window-to-close)
+           (setf ,window-to-close nil)
+           (focus-to-message-window))))))
 
 (defun cancel-send-message ()
   "Cancel sending operation"
@@ -2244,10 +2267,10 @@ gemini://gemini.circumlunar.space/docs/companion/subscription.gmi
 
   (defun show-tour-links ()
     "Show a link window with all the links in the tour queue."
-    (open-message-link-window:init-gemini-links (reverse tour)
-                                                :title           (_ "Current links tour")
-                                                :center-position t)
-    (focus-to-open-message-link-window))
+    (open-message-link-window:init-tour-links  (reverse tour)
+                                               :title           (_ "Current links tour")
+                                               :center-position t)
+    (focus-to-tour-links-window))
 
   (defun save-selected-message-in-tour ()
     "Save the selected link in the tour queue"

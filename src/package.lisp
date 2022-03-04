@@ -1391,7 +1391,8 @@
    :*gemini-toc-window*
    :*chats-list-window*
    :*gempub-library-window*
-   :*filesystem-explorer-window*))
+   :*filesystem-explorer-window*
+   :*tour-links-window*))
 
 (defpackage :complete
   (:use
@@ -2266,6 +2267,7 @@
    :init
    :init-gemini-links
    :forget-gemini-link-window
+   :init-tour-links
    :init-chat-links
    :forget-chat-link-window))
 
@@ -2728,6 +2730,7 @@
    :change-visibility
    :change-mentions
    :edit-message-body
+   :close-focused-and-return-to-message
    :cancel-send-message
    :close-send-message-window
    :follow-user

@@ -223,6 +223,26 @@
   (setf (keybindings *message-window*)
         keybindings:*message-keymap*))
 
+(defun init-tour-links (links &key (title (_ "Links")) (center-position nil))
+  (let* ((low-level-window (make-croatoan-window :enable-function-keys t)))
+    (setf *tour-links-window*
+          (make-instance 'open-gemini-document-link-window
+                         :center-position        center-position
+                         :top-row-padding        0
+                         :top-horizontal-padding 1
+                         :title                  title
+                         :links                  links
+                         :single-row-height      2
+                         :uses-border-p          t
+                         :keybindings            keybindings:*open-message-link-keymap*
+                         :croatoan-window        low-level-window))
+    (refresh-config *tour-links-window*)
+    (resync-rows-db *tour-links-window* :redraw nil)
+    (when (not (line-oriented-window:rows-empty-p *tour-links-window*))
+      (select-row *tour-links-window* 0))
+    (draw *tour-links-window*)
+    *tour-links-window*))
+
 (defclass open-chat-document-link-window (focus-marked-window
                                           simple-line-navigation-window
                                           title-window
