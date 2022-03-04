@@ -25,7 +25,7 @@
     :initarg  :status-id
     :accessor status-id)))
 
-(defun refresh-view-links-window-config  (window config-window-key)
+(defun refresh-view-links-window-config (window config-window-key &key (center-position nil))
   (with-accessors ((croatoan-window     croatoan-window)
                    (selected-line-bg    selected-line-bg)
                    (selected-line-fg    selected-line-fg)
@@ -41,17 +41,33 @@
            (reference-window (if command-line:*gemini-full-screen-mode*
                                  *gemini-toc-window*
                                  *thread-window*))
-           (win-w            (if command-line:*gemini-full-screen-mode*
-                                 (- (win-width *main-window*)
-                                    (win-width reference-window))
-                                 (win-width reference-window)))
-           (win-h            (if command-line:*gemini-full-screen-mode*
-                                 (swconf:config-gemini-fullscreen-links-height)
-                                 (win-height reference-window)))
-           (x                (if command-line:*gemini-full-screen-mode*
-                                 (win-width reference-window)
-                                 (win-x     reference-window)))
-           (y                0))
+           (win-w            (cond
+                               (command-line:*gemini-full-screen-mode*
+                                (- (win-width *main-window*)
+                                   (win-width reference-window)))
+                               (center-position
+                                (truncate (/ (win-width reference-window) 2)))
+                               (t
+                                (win-width reference-window))))
+           (win-h            (cond
+                               (command-line:*gemini-full-screen-mode*
+                                (swconf:config-gemini-fullscreen-links-height))
+                               (center-position
+                                (truncate (/ (win-height reference-window) 2)))
+                               (t
+                                (win-height reference-window))))
+           (x                (cond
+                               (command-line:*gemini-full-screen-mode*
+                                (win-width reference-window))
+                               (center-position
+                                (truncate (- (/ (win-width *main-window*) 2)
+                                             (/ win-w 2))))
+                               (t
+                                (win-x reference-window))))
+           (y                (if command-line:*gemini-full-screen-mode*
+                                 0
+                                 (truncate (- (/ (win-height *main-window*) 2)
+                                              (/ win-h 2))))))
       (setf (background croatoan-window)
             (tui:make-win-background bg))
       (setf (bgcolor croatoan-window) bg)

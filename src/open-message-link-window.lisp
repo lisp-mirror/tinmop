@@ -103,11 +103,16 @@
                                             title-window
                                             border-window
                                             open-links-window)
-  ())
+  ((center-position
+    :initform nil
+    :initarg  :center-position
+    :reader   center-position-p
+    :writer   (setf center-position))))
 
 (defmethod refresh-config :after ((object open-gemini-document-link-window))
   (open-attach-window:refresh-view-links-window-config object
-                                                       swconf:+key-open-message-link-window+))
+                                                       swconf:+key-open-message-link-window+
+                                                       :center-position (center-position-p object)))
 
 (defmethod resync-rows-db ((object open-gemini-document-link-window)
                            &key
@@ -193,13 +198,14 @@
     (error ()
       (ui:error-message (_ "Invalid regular expression")))))
 
-(defun init-gemini-links (links)
+(defun init-gemini-links (links &key (title (_ "Links")) (center-position nil))
   (let* ((low-level-window (make-croatoan-window :enable-function-keys t)))
     (setf *open-message-link-window*
           (make-instance 'open-gemini-document-link-window
+                         :center-position        center-position
                          :top-row-padding        0
                          :top-horizontal-padding 1
-                         :title                  (_ "Links")
+                         :title                  title
                          :links                  links
                          :single-row-height      2
                          :uses-border-p          t

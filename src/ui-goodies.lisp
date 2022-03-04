@@ -2236,7 +2236,9 @@ gemini://gemini.circumlunar.space/docs/companion/subscription.gmi
 
   (defun show-tour-links ()
     "Show a link window with all the links in the tour queue."
-    (open-message-link-window:init-gemini-links (reverse tour))
+    (open-message-link-window:init-gemini-links (reverse tour)
+                                                :title           (_ "Current links tour")
+                                                :center-position t)
     (focus-to-open-message-link-window))
 
   (defun save-selected-message-in-tour ()
