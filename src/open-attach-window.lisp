@@ -64,10 +64,10 @@
                                              (/ win-w 2))))
                                (t
                                 (win-x reference-window))))
-           (y                (if command-line:*gemini-full-screen-mode*
-                                 0
+           (y                (if center-position
                                  (truncate (- (/ (win-height *main-window*) 2)
-                                              (/ win-h 2))))))
+                                              (/ win-h 2)))
+                                 0)))
       (setf (background croatoan-window)
             (tui:make-win-background bg))
       (setf (bgcolor croatoan-window) bg)

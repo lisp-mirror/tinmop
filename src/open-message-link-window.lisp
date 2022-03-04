@@ -20,7 +20,8 @@
 
 (defmethod refresh-config :after ((object open-message-link-window))
   (open-attach-window:refresh-view-links-window-config object
-                                                       swconf:+key-open-message-link-window+))
+                                                       swconf:+key-open-message-link-window+
+                                                       :center-position (center-position object)))
 
 (defmethod resync-rows-db ((object open-message-link-window) &key
                                                                (redraw t)
