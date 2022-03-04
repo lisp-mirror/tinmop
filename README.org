@@ -55,9 +55,8 @@ All  the dependencies  above  should be  available  using the  package
 manager of your distribution (~apt~, ~yum~ etc).
 
 ** Lisp Libraries
-
    - alexandria;
-   - cl-ppcre;
+   - cl-ppcre-unicode;
    - tooter;
    - croatoan;
    - osicat;
@@ -79,7 +78,12 @@ manager of your distribution (~apt~, ~yum~ etc).
    - cl-html5-parser;
    - unix-opts;
    - crypto-shortcuts;
-   - drakma.
+   - drakma;
+   - usocket;
+   - cffi;
+   - babel;
+   - percent-encoding;
+   - trivial-clipboard.
 
    All these libraries  will be downloaded, compiled  and installed by
    the script ~quick_quicklisp.sh~, see below.

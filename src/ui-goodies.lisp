@@ -1357,6 +1357,14 @@ This makes sense only for gemini file stream, if not this command performs the s
 'open-message-link-perform-opening'"
   (%open-message-link-perform-opening t))
 
+(defun copy-link-to-clipboard ()
+  "Copy the selected link address to clipboard"
+  (when-let* ((selected-line (line-oriented-window:selected-row *open-message-link-window*))
+              (url           (line-oriented-window:normal-text selected-line)))
+    (with-notify-errors
+      (trivial-clipboard:text url)
+      (info-message (_ "Address copied to clipboard")))))
+
 (defun close-open-message-link-window ()
   (when-window-shown (*open-message-link-window*)
     (when (message-window:display-gemini-text-p *open-message-link-window*)

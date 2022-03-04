@@ -2709,6 +2709,7 @@
    :open-next-visible-link
    :go-to-next-link
    :go-to-previous-link
+   :copy-link-to-clipboard
    :close-open-message-link-window
    :open-message-link-window-scroll-begin
    :open-message-link-window-scroll-end

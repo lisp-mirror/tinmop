@@ -595,6 +595,8 @@
 
 (define-key "C-J"       #'open-message-link-perform-opening             *open-message-link-keymap*)
 
+(define-key "C-c"       #'copy-link-to-clipboard                        *open-message-link-keymap*)
+
 (define-key "up"        #'open-message-link-go-up                       *open-message-link-keymap*)
 
 (define-key "down"      #'open-message-link-go-down                     *open-message-link-keymap*)

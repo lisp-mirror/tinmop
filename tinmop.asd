@@ -51,6 +51,7 @@
                :usocket
                :babel
                :percent-encoding
+               :trivial-clipboard
                :uiop)
   :components ((:file "package")
                (:file "idn")

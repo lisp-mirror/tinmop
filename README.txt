@@ -100,7 +100,7 @@ Table of Contents
 ──────────────────
 
   • alexandria;
-  • cl-ppcre;
+  • cl-ppcre-unicode;
   • tooter;
   • croatoan;
   • osicat;
@@ -122,7 +122,12 @@ Table of Contents
   • cl-html5-parser;
   • unix-opts;
   • crypto-shortcuts;
-  • drakma.
+  • drakma;
+  • usocket;
+  • cffi;
+  • babel;
+  • percent-encoding;
+  • trivial-clipboard.
 
   All these libraries will be downloaded, compiled and installed by the
   script `quick_quicklisp.sh', see below.
