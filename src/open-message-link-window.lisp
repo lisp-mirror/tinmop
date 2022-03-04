@@ -16,12 +16,17 @@
 
 (in-package :open-message-link-window)
 
-(defclass open-message-link-window (open-attach-window:open-attach-window) ())
+(defclass open-message-link-window (open-attach-window:open-attach-window)
+  ((center-position
+    :initform nil
+    :initarg  :center-position
+    :reader   center-position-p
+    :writer   (setf center-position))))
 
 (defmethod refresh-config :after ((object open-message-link-window))
   (open-attach-window:refresh-view-links-window-config object
                                                        swconf:+key-open-message-link-window+
-                                                       :center-position (center-position object)))
+                                                       :center-position (center-position-p object)))
 
 (defmethod resync-rows-db ((object open-message-link-window) &key
                                                                (redraw t)
@@ -104,11 +109,7 @@
                                             title-window
                                             border-window
                                             open-links-window)
-  ((center-position
-    :initform nil
-    :initarg  :center-position
-    :reader   center-position-p
-    :writer   (setf center-position))))
+  ())
 
 (defmethod refresh-config :after ((object open-gemini-document-link-window))
   (open-attach-window:refresh-view-links-window-config object
