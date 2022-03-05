@@ -142,6 +142,8 @@
 (define-key "C-q"       #'quit)   ;  here we  are calling  the custom
                                   ; function defined above
 
+(define-key "C-I"       #'pass-focus-clockwise)
+
 (define-key "C-a"       #'show-about-window)
 
 (define-key "C d"       #'clear-cache)

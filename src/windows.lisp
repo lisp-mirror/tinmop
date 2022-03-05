@@ -86,7 +86,12 @@
     :initform nil
     :initarg  :keybindings
     :accessor keybindings
-    :documentation "The keymap associated to this window"))
+    :documentation "The keymap associated to this window")
+   (modal
+    :initform nil
+    :initarg  :modal
+    :reader   modalp
+    :writer   (setf modalp)))
   (:documentation "This is the parent of all the windows in this program"))
 
 (defmethod initialize-instance :after ((object wrapper-window) &key &allow-other-keys)

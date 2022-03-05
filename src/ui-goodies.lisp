@@ -547,6 +547,13 @@ current has focus"
                  (> (win-x a) (win-x b))))
         (pass-focus #'all-adjacent-fn #'intersect-fn #'sort-predicate)))))
 
+(defun pass-focus-clockwise ()
+  "Move focus to next window in clockwise order"
+  (or (pass-focus-on-right)
+      (pass-focus-on-bottom)
+      (pass-focus-on-left)
+      (pass-focus-on-top)))
+
 (defmacro gen-focus-to-window (function-suffix window-get-focus
                                &key
                                  (info-change-focus-message (_ "Focus changed"))

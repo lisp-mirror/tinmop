@@ -1746,6 +1746,8 @@
    :refresh-config-color-map
    :wrapper-window
    :croatoan-window
+   :modalp
+   :modal
    :with-croatoan-window
    :+min-shown-win-height+
    :+min-shown-win-width+
@@ -2819,6 +2821,7 @@
    :pass-focus-on-right
    :pass-focus-on-bottom
    :pass-focus-on-top
+   :pass-focus-clockwise
    :ask-input-on-tofu-error
    :import-gemini-certificate
    :bookmark-gemini-page
