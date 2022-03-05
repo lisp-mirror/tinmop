@@ -431,7 +431,8 @@ Metadata includes:
   (setf (windows:in-focus win) t)
   (windows:draw-all)
   (when info-change-focus-message
-    (info-message info-change-focus-message +maximum-event-priority+)))
+    (info-message info-change-focus-message +maximum-event-priority+))
+  win)
 
 (defun remove-focus-to-all-windows ()
   (stack:do-stack-element (window windows::*window-stack*)
@@ -453,7 +454,8 @@ Metadata includes:
                          intersect-sorted))
     (when intersect-sorted
       (remove-focus-to-all-windows)
-      (give-focus (first-elt intersect-sorted) nil))))
+      (give-focus (first-elt intersect-sorted) nil)
+      t)))
 
 (defun pinned-window-p (window)
   (member window
@@ -491,7 +493,7 @@ current has focus"
                (intersect-fn (w)
                  (<= (win-y w)
                      y-focused
-                     (+ (win-y w) (win-height w))))
+                     (1- (+ (win-y w) (win-height w)))))
                (sort-predicate (a b)
                  (< (win-y a) (win-y b))))
         (pass-focus #'all-adjacent-fn #'intersect-fn #'sort-predicate)))))
@@ -518,14 +520,15 @@ current has focus"
   (when (not (window-focused-pinned-p))
     (let* ((window    (main-window:focused-window *main-window*))
            (x-focused (win-x window))
-           (y-focused (win-y window)))
+           (y-focused (win-y window))
+           (w-focused (win-height window)))
       (labels ((all-adjacent-fn (w)
                  (> (win-y w)
-                    y-focused))
+                    (1- (+ y-focused w-focused))))
                (intersect-fn (w)
                  (<= (win-x w)
                      x-focused
-                     (+ (win-x w) (win-width w))))
+                     (1- (+ (win-x w) (win-width w)))))
                (sort-predicate (a b)
                  (> (win-x a) (win-x b))))
         (pass-focus #'all-adjacent-fn #'intersect-fn #'sort-predicate)))))
@@ -542,7 +545,7 @@ current has focus"
                (intersect-fn (w)
                  (<= (win-x w)
                      x-focused
-                     (+ (win-x w) (win-width w))))
+                     (1- (+ (win-x w) (win-width w)))))
                (sort-predicate (a b)
                  (> (win-x a) (win-x b))))
         (pass-focus #'all-adjacent-fn #'intersect-fn #'sort-predicate)))))
