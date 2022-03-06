@@ -479,81 +479,96 @@ Metadata includes:
   (when-let ((focused (find-window-focused)))
     (pinned-window-p focused)))
 
+(defun warn-pinned-window ()
+  (info-message (_ "This window will not release the focus until it is closed")))
+
 (defun pass-focus-on-right (&key (slide-to-top t))
   "Pass the focus on the window placed on the right of the window that
 current has focus"
-  (when (not (window-focused-pinned-p))
-    (let* ((window    (main-window:focused-window *main-window*))
-           (x-focused (win-x window))
-           (y-focused (win-y window))
-           (w-focused (win-width window)))
-      (labels ((all-adjacent-fn (w)
-                 (>= (win-x w)
-                     (+ x-focused
-                        w-focused)))
-               (intersect-fn (w)
-                 (<= (win-y w)
-                     (if slide-to-top
-                         y-focused
-                         (1- (+ y-focused (win-height window))))
-                     (1- (+ (win-y w) (win-height w)))))
-               (sort-predicate (a b)
-                 (< (win-y a) (win-y b))))
-        (pass-focus #'all-adjacent-fn #'intersect-fn #'sort-predicate)))))
+  (if (not (window-focused-pinned-p))
+      (let* ((window    (main-window:focused-window *main-window*))
+             (x-focused (win-x window))
+             (y-focused (win-y window))
+             (w-focused (win-width window)))
+        (labels ((all-adjacent-fn (w)
+                   (>= (win-x w)
+                       (+ x-focused
+                          w-focused)))
+                 (intersect-fn (w)
+                   (<= (win-y w)
+                       (if slide-to-top
+                           y-focused
+                           (1- (+ y-focused (win-height window))))
+                       (1- (+ (win-y w) (win-height w)))))
+                 (sort-predicate (a b)
+                   (< (win-y a) (win-y b))))
+          (pass-focus #'all-adjacent-fn #'intersect-fn #'sort-predicate)))
+      (progn
+        (warn-pinned-window)
+        nil)))
 
 (defun pass-focus-on-left (&key (slide-to-top t))
   "Pass the focus on the window placed on the left of the window that current has focus"
-  (when (not (window-focused-pinned-p))
-    (let* ((window    (main-window:focused-window *main-window*))
-           (x-focused (win-x window))
-           (y-focused (win-y window)))
-      (labels ((all-adjacent-fn (w)
-                 (< (win-x w)
-                    x-focused))
-               (intersect-fn (w)
-                 (<= (win-y w)
-                     (if slide-to-top
-                         y-focused
-                         (1- (+ y-focused (win-height window))))
-                     (1- (+ (win-y w) (win-height w)))))
-               (sort-predicate (a b)
-                 (< (win-y a) (win-y b))))
-        (pass-focus #'all-adjacent-fn #'intersect-fn #'sort-predicate)))))
+  (if (not (window-focused-pinned-p))
+      (let* ((window    (main-window:focused-window *main-window*))
+             (x-focused (win-x window))
+             (y-focused (win-y window)))
+        (labels ((all-adjacent-fn (w)
+                   (< (win-x w)
+                      x-focused))
+                 (intersect-fn (w)
+                   (<= (win-y w)
+                       (if slide-to-top
+                           y-focused
+                           (1- (+ y-focused (win-height window))))
+                       (1- (+ (win-y w) (win-height w)))))
+                 (sort-predicate (a b)
+                   (< (win-y a) (win-y b))))
+          (pass-focus #'all-adjacent-fn #'intersect-fn #'sort-predicate)))
+      (progn
+        (warn-pinned-window)
+        nil)))
 
 (defun pass-focus-on-bottom ()
   "Pass the focus on the window placed below the window that current has focus"
-  (when (not (window-focused-pinned-p))
-    (let* ((window    (main-window:focused-window *main-window*))
-           (x-focused (win-x window))
-           (y-focused (win-y window))
-           (w-focused (win-height window)))
-      (labels ((all-adjacent-fn (w)
-                 (> (win-y w)
-                    (1- (+ y-focused w-focused))))
-               (intersect-fn (w)
-                 (<= (win-x w)
-                     x-focused
-                     (1- (+ (win-x w) (win-width w)))))
-               (sort-predicate (a b)
-                 (> (win-x a) (win-x b))))
-        (pass-focus #'all-adjacent-fn #'intersect-fn #'sort-predicate)))))
+  (if (not (window-focused-pinned-p))
+      (let* ((window    (main-window:focused-window *main-window*))
+             (x-focused (win-x window))
+             (y-focused (win-y window))
+             (w-focused (win-height window)))
+        (labels ((all-adjacent-fn (w)
+                   (> (win-y w)
+                      (1- (+ y-focused w-focused))))
+                 (intersect-fn (w)
+                   (<= (win-x w)
+                       x-focused
+                       (1- (+ (win-x w) (win-width w)))))
+                 (sort-predicate (a b)
+                   (> (win-x a) (win-x b))))
+          (pass-focus #'all-adjacent-fn #'intersect-fn #'sort-predicate)))
+      (progn
+        (warn-pinned-window)
+        nil)))
 
 (defun pass-focus-on-top ()
   "Pass the focus on the window placed above the window that current has focus"
-  (when (not (window-focused-pinned-p))
-    (let* ((window    (main-window:focused-window *main-window*))
-           (x-focused (win-x window))
-           (y-focused (win-y window)))
-      (labels ((all-adjacent-fn (w)
-                 (< (win-y w)
-                    y-focused))
-               (intersect-fn (w)
-                 (<= (win-x w)
-                     x-focused
-                     (1- (+ (win-x w) (win-width w)))))
-               (sort-predicate (a b)
-                 (> (win-x a) (win-x b))))
-        (pass-focus #'all-adjacent-fn #'intersect-fn #'sort-predicate)))))
+  (if (not (window-focused-pinned-p))
+      (let* ((window    (main-window:focused-window *main-window*))
+             (x-focused (win-x window))
+             (y-focused (win-y window)))
+        (labels ((all-adjacent-fn (w)
+                   (< (win-y w)
+                      y-focused))
+                 (intersect-fn (w)
+                   (<= (win-x w)
+                       x-focused
+                       (1- (+ (win-x w) (win-width w)))))
+                 (sort-predicate (a b)
+                   (> (win-x a) (win-x b))))
+          (pass-focus #'all-adjacent-fn #'intersect-fn #'sort-predicate)))
+      (progn
+        (warn-pinned-window)
+        nil)))
 
 (defun pass-focus-far-right (&key (slide-to-top t))
   "Move focus to far right  window along an ideal horizontal direction
@@ -566,8 +581,8 @@ along the focused window."
            (all-windows-on-right  (filter (lambda (w) (> (win-x w)
                                                          (+ x-focused w-focused))))))
       (when (not (null all-windows-on-right))
-        (pass-focus-on-right :slide-to-top slide-to-top)
-        (pass-focus-far-right)))))
+        (and (pass-focus-on-right :slide-to-top slide-to-top)
+             (pass-focus-far-right))))))
 
 (defun pass-focus-far-left (&key (slide-to-top t))
     "Move focus to far left window along an ideal horizontal direction
@@ -578,8 +593,8 @@ along the focused window."
            (x-focused (win-x window))
            (all-windows-on-left (filter (lambda (w) (< (win-x w) x-focused)))))
       (when (not (null all-windows-on-left))
-        (pass-focus-on-left :slide-to-top slide-to-top)
-        (pass-focus-far-left)))))
+        (and (pass-focus-on-left :slide-to-top slide-to-top)
+             (pass-focus-far-left))))))
 
 (defun pass-focus-top-most ()
     "Move focus to  higher window along an  ideal vertical direction
@@ -590,8 +605,8 @@ along the focused window."
            (y-focused (win-y window))
            (all-windows-on-top (filter (lambda (w) (< (win-y w) y-focused)))))
       (when (not (null all-windows-on-top))
-        (pass-focus-on-top)
-        (pass-focus-top-most)))))
+        (and (pass-focus-on-top)
+             (pass-focus-top-most))))))
 
 (defun pass-focus-bottom-most ()
     "Move focus to  higher window along an  ideal vertical direction
@@ -602,8 +617,8 @@ along the focused window."
            (y-focused (win-y window))
            (all-windows-on-bottom (filter (lambda (w) (> (win-y w) y-focused)))))
       (when (not (null all-windows-on-bottom))
-        (pass-focus-on-bottom)
-        (pass-focus-bottom-most)))))
+        (and (pass-focus-on-bottom)
+             (pass-focus-bottom-most))))))
 
 (defun pass-focus-next ()
   "Move focus to next window in left to right writing order."
