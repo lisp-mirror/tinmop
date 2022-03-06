@@ -2821,7 +2821,7 @@
    :pass-focus-on-right
    :pass-focus-on-bottom
    :pass-focus-on-top
-   :pass-focus-clockwise
+   :pass-focus-next
    :ask-input-on-tofu-error
    :import-gemini-certificate
    :bookmark-gemini-page

@@ -142,7 +142,7 @@
 (define-key "C-q"       #'quit)   ;  here we  are calling  the custom
                                   ; function defined above
 
-(define-key "C-I"       #'pass-focus-clockwise)
+(define-key "C-I"       #'pass-focus-next)
 
 (define-key "C-a"       #'show-about-window)
 
@@ -281,8 +281,6 @@
 (define-key "N"         #'repeat-search                               *thread-keymap*)
 
 (define-key "n"         #'thread-search-next-unread-message           *thread-keymap*)
-
-(define-key "C-I"       #'thread-search-next-unread-message           *thread-keymap*)
 
 (define-key "home"      #'thread-goto-first-message                   *thread-keymap*)
 

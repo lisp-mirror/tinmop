@@ -458,14 +458,15 @@ Metadata includes:
       t)))
 
 (defun pinned-window-p (window)
-  (member window
-          (list *send-message-window*
-                *follow-requests-window*
-                *open-attach-window*
-                *gemini-streams-window*
-                *gemini-certificates-window*
-                *filesystem-explorer-window*)))
-                ;*tour-links-window*)))
+  (or (modalp window)
+      (member window
+              (list *send-message-window*
+                    *follow-requests-window*
+                    *open-attach-window*
+                    *gemini-streams-window*
+                    *gemini-certificates-window*
+                    *filesystem-explorer-window*
+                    *tour-links-window*))))
 
 (defun find-window-focused ()
   (stack:do-stack-element (window windows::*window-stack*)
@@ -478,7 +479,7 @@ Metadata includes:
   (when-let ((focused (find-window-focused)))
     (pinned-window-p focused)))
 
-(defun pass-focus-on-right ()
+(defun pass-focus-on-right (&key (slide-to-top t))
   "Pass the focus on the window placed on the right of the window that
 current has focus"
   (when (not (window-focused-pinned-p))
@@ -492,13 +493,15 @@ current has focus"
                         w-focused)))
                (intersect-fn (w)
                  (<= (win-y w)
-                     y-focused
+                     (if slide-to-top
+                         y-focused
+                         (1- (+ y-focused (win-height window))))
                      (1- (+ (win-y w) (win-height w)))))
                (sort-predicate (a b)
                  (< (win-y a) (win-y b))))
         (pass-focus #'all-adjacent-fn #'intersect-fn #'sort-predicate)))))
 
-(defun pass-focus-on-left ()
+(defun pass-focus-on-left (&key (slide-to-top t))
   "Pass the focus on the window placed on the left of the window that current has focus"
   (when (not (window-focused-pinned-p))
     (let* ((window    (main-window:focused-window *main-window*))
@@ -509,8 +512,10 @@ current has focus"
                     x-focused))
                (intersect-fn (w)
                  (<= (win-y w)
-                     y-focused
-                     (+ (win-y w) (win-height w))))
+                     (if slide-to-top
+                         y-focused
+                         (1- (+ y-focused (win-height window))))
+                     (1- (+ (win-y w) (win-height w)))))
                (sort-predicate (a b)
                  (< (win-y a) (win-y b))))
         (pass-focus #'all-adjacent-fn #'intersect-fn #'sort-predicate)))))
@@ -550,12 +555,84 @@ current has focus"
                  (> (win-x a) (win-x b))))
         (pass-focus #'all-adjacent-fn #'intersect-fn #'sort-predicate)))))
 
-(defun pass-focus-clockwise ()
-  "Move focus to next window in clockwise order"
-  (or (pass-focus-on-right)
-      (pass-focus-on-bottom)
-      (pass-focus-on-left)
-      (pass-focus-on-top)))
+(defun pass-focus-far-right (&key (slide-to-top t))
+  "Move focus to far right  window along an ideal horizontal direction
+along the focused window."
+  (flet ((filter (fn)
+           (stack:stack-select windows::*window-stack* fn)))
+    (let* ((window    (main-window:focused-window *main-window*))
+           (x-focused (win-x window))
+           (w-focused (1- (win-width  window)))
+           (all-windows-on-right  (filter (lambda (w) (> (win-x w)
+                                                         (+ x-focused w-focused))))))
+      (when (not (null all-windows-on-right))
+        (pass-focus-on-right :slide-to-top slide-to-top)
+        (pass-focus-far-right)))))
+
+(defun pass-focus-far-left (&key (slide-to-top t))
+    "Move focus to far left window along an ideal horizontal direction
+along the focused window."
+  (flet ((filter (fn)
+           (stack:stack-select windows::*window-stack* fn)))
+    (let* ((window    (main-window:focused-window *main-window*))
+           (x-focused (win-x window))
+           (all-windows-on-left (filter (lambda (w) (< (win-x w) x-focused)))))
+      (when (not (null all-windows-on-left))
+        (pass-focus-on-left :slide-to-top slide-to-top)
+        (pass-focus-far-left)))))
+
+(defun pass-focus-top-most ()
+    "Move focus to  higher window along an  ideal vertical direction
+along the focused window."
+  (flet ((filter (fn)
+           (stack:stack-select windows::*window-stack* fn)))
+    (let* ((window    (main-window:focused-window *main-window*))
+           (y-focused (win-y window))
+           (all-windows-on-top (filter (lambda (w) (< (win-y w) y-focused)))))
+      (when (not (null all-windows-on-top))
+        (pass-focus-on-top)
+        (pass-focus-top-most)))))
+
+(defun pass-focus-bottom-most ()
+    "Move focus to  higher window along an  ideal vertical direction
+along the focused window."
+  (flet ((filter (fn)
+           (stack:stack-select windows::*window-stack* fn)))
+    (let* ((window    (main-window:focused-window *main-window*))
+           (y-focused (win-y window))
+           (all-windows-on-bottom (filter (lambda (w) (> (win-y w) y-focused)))))
+      (when (not (null all-windows-on-bottom))
+        (pass-focus-on-bottom)
+        (pass-focus-bottom-most)))))
+
+(defun pass-focus-next ()
+  "Move focus to next window in left to right writing order."
+  (flet ((filter (fn)
+           (let ((all (stack:stack-select windows::*window-stack* fn)))
+             (remove-if (lambda (w) (or (eq w (main-window:focused-window *main-window*))
+                                        (eq w *command-window*)))
+                        all))))
+    (let* ((window    (main-window:focused-window *main-window*))
+           (x-focused (win-x window))
+           (y-focused (win-y window))
+           (w-focused (1- (win-width  window)))
+           (h-focused (1- (win-height window)))
+           (all-windows-on-right  (filter (lambda (w) (> (win-x w)
+                                                         (+ x-focused w-focused)))))
+           (all-windows-on-bottom (filter (lambda (w) (> (win-y w)
+                                                         (+ y-focused
+                                                            h-focused))))))
+      (cond
+        ((and (null all-windows-on-right)   ; bottom left corner
+              (null all-windows-on-bottom))
+         (pass-focus-top-most)
+         (pass-focus-far-left :slide-to-top t))
+        ((null all-windows-on-right)       ; left side
+         (pass-focus-far-left :slide-to-top t)
+         (or (pass-focus-on-bottom)
+             (pass-focus-on-right :slide-to-top nil)))
+        (t
+         (pass-focus-on-right))))))
 
 (defmacro gen-focus-to-window (function-suffix window-get-focus
                                &key
@@ -1273,13 +1350,18 @@ If some posts was deleted before, download them again."
                       :prompt      (_ "Search key: ")
                       :complete-fn #'complete:complete-always-empty)))
 
-(defun open-gemini-message-link-window (&key (give-focus t))
+(defun open-gemini-message-link-window (&key (give-focus t) (enqueue nil))
   (let* ((window   *message-window*)
          (metadata (message-window:metadata window))
          (links    (gemini-viewer:gemini-metadata-links metadata)))
-    (open-message-link-window:init-gemini-links links)
-    (when give-focus
-      (focus-to-open-message-link-window))))
+    (flet ((process ()
+             (open-message-link-window:init-gemini-links links)
+             (when give-focus
+               (focus-to-open-message-link-window))))
+      (if enqueue
+          (with-enqueued-process ()
+            (process))
+          (process)))))
 
 (defun open-message-link ()
   "Open message links window

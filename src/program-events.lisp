@@ -1086,7 +1086,7 @@
         (gemini-viewer:maybe-initialize-metadata window)
         (refresh-gemini-message-window links page-data ir-text nil)
         (ui:open-gemini-toc)
-        (ui:open-gemini-message-link-window :give-focus nil)
+        (ui:open-gemini-message-link-window :give-focus nil :enqueue t)
         (windows:draw window)))))
 
 (defclass gemini-request-event (program-event)
