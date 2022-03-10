@@ -106,6 +106,7 @@
                (:file "api-client")
                (:file "api-pleroma")
                (:file "hooks")
+               (:file "2d-utils")
                (:file "windows")
                (:file "notify-window")
                (:file "suggestions-window")

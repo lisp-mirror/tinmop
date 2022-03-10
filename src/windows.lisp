@@ -266,6 +266,8 @@ height, position and so on)"
 (defgeneric draw (object)
   (:documentation "Draw object"))
 
+(defgeneric aabb (object))
+
 (defmethod refresh-config (object)
   object)
 
@@ -332,6 +334,45 @@ height, position and so on)"
 (defmethod draw ((object null))
   (declare (ignore object))
   t)
+
+(defmethod aabb ((object wrapper-window))
+  (let ((x (win-x      object))
+        (y (win-y      object))
+        (w (win-width  object))
+        (h (win-height object)))
+    (2d-utils:make-iaabb2 x y (1- (+ x w)) (1- (+ y h)))))
+
+(defun remove-intersecting-window ()
+  (labels ((copy-subwindows-stack ()
+             (let ((copy '())
+                   (discarded-window-type '(main-window::main-window
+                                            command-window:command-window
+                                            notify-window:notify-window)))
+               (do-stack-element (w *window-stack*)
+                 (when (and (win-visible-p w)
+                            (not (find-if (lambda (a) (typep w a))
+                                          discarded-window-type)))
+                   (push w copy)))
+               copy))
+           (%remove-intersecting-window (&optional
+                                           (windows (copy-subwindows-stack))
+                                           (checked '()))
+             (if (null windows)
+                 checked
+                 (let* ((probe-window (first windows))
+                        (aabb-probe (aabb probe-window)))
+                   (setf windows (remove probe-window windows))
+                   (loop for i in windows do
+                     (let ((aabb (aabb i)))
+                       (when (2d-utils:iaabb2-intersect-p aabb-probe aabb)
+                         (setf windows (remove i windows)))))
+                   (%remove-intersecting-window windows (push probe-window checked))))))
+    (let ((visible-windows (%remove-intersecting-window)))
+      (sort visible-windows
+            (lambda (a b)
+              (if (= (win-y a) (win-y b))
+                  (< (win-x a) (win-x b))
+                  (< (win-y a) (win-y b))))))))
 
 (defun calculate-all (dt)
   (do-stack-element (window *window-stack*)

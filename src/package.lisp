@@ -1715,6 +1715,29 @@
    :help-fields-get-text
    :print-help))
 
+(defpackage :2d-utils
+  (:use :cl)
+  (:export
+   :iaabb2-min-x
+   :iaabb2-max-x
+   :iaabb2-min-y
+   :iaabb2-max-y
+   :make-iaabb2
+   :iaabb2~
+   :valid-iaabb2
+   :expand-iaabb2
+   :union-iaabb2
+   :iaabb2->irect2
+   :irect2->iaabb2
+   :irect2->iaabb2*
+   :inside-iaabb2-p
+   :iaabb2-intersect-p
+   :iaabb2-inglobe-p
+   :iaabb2-null-p
+   :trasl-iaabb2
+   :trasl-irect2
+   :center-iaabb2))
+
 (defpackage :windows
   (:use
    :cl
@@ -1785,6 +1808,8 @@
    :refresh-config-sizes
    :calculate
    :draw
+   :aabb
+   :remove-intersecting-window
    :draw-all
    :refresh-config-all
    :calculate-all

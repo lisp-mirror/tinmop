@@ -622,32 +622,18 @@ along the focused window."
 
 (defun pass-focus-next ()
   "Move focus to next window in left to right writing order."
-  (flet ((filter (fn)
-           (let ((all (stack:stack-select windows::*window-stack* fn)))
-             (remove-if (lambda (w) (or (eq w (main-window:focused-window *main-window*))
-                                        (eq w *command-window*)))
-                        all))))
-    (let* ((window    (main-window:focused-window *main-window*))
-           (x-focused (win-x window))
-           (y-focused (win-y window))
-           (w-focused (1- (win-width  window)))
-           (h-focused (1- (win-height window)))
-           (all-windows-on-right  (filter (lambda (w) (> (win-x w)
-                                                         (+ x-focused w-focused)))))
-           (all-windows-on-bottom (filter (lambda (w) (> (win-y w)
-                                                         (+ y-focused
-                                                            h-focused))))))
-      (cond
-        ((and (null all-windows-on-right)   ; bottom left corner
-              (null all-windows-on-bottom))
-         (pass-focus-top-most)
-         (pass-focus-far-left :slide-to-top t))
-        ((null all-windows-on-right)       ; left side
-         (pass-focus-far-left :slide-to-top t)
-         (or (pass-focus-on-bottom)
-             (pass-focus-on-right :slide-to-top nil)))
-        (t
-         (pass-focus-on-right))))))
+  (let* ((visible-sorted-window (windows:remove-intersecting-window))
+         (focused-window        (main-window:focused-window *main-window*))
+         (focused-position      (position focused-window visible-sorted-window))
+         (next-window-position  (rem (1+ focused-position) (length visible-sorted-window)))
+         (next-focused-window   (elt visible-sorted-window next-window-position)))
+    (if (not (window-focused-pinned-p))
+        (progn
+          (remove-focus-to-all-windows)
+          (give-focus next-focused-window nil))
+        (progn
+          (warn-pinned-window)
+          nil))))
 
 (defmacro gen-focus-to-window (function-suffix window-get-focus
                                &key
