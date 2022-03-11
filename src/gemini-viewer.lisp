@@ -370,6 +370,10 @@
              (maybe-render-toc ()
                (when (eq (stream-status wrapper-object) :rendering)
                  (ui:open-gemini-toc)))
+             (maybe-render-focus-mark ()
+               (when (eq (stream-status wrapper-object) :rendering)
+                 (program-events:with-enqueued-process ()
+                   (windows:draw-focus-mark *message-window*))))
              (maybe-render-links ()
                (when (eq (stream-status wrapper-object) :rendering)
                  (program-events:with-enqueued-process ()
@@ -448,6 +452,7 @@
                   (progn
                     (maybe-render-toc)
                     (maybe-render-links)
+                    (maybe-render-focus-mark)
                     (ui:notify (_ "Gemini document downloading completed"))
                     (setf (stream-status wrapper-object) :completed)
                     (when (and fragment

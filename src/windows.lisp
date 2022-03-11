@@ -716,11 +716,14 @@ insetred by the user"
     (setf (focus-mark object)
           (make-tui-string value :fgcolor fg :bgcolor bg))))
 
-(defmethod draw :after ((object focus-marked-window))
+(definline draw-focus-mark (window)
   (with-accessors ((in-focus-p   in-focus-p)
-                   (focus-mark focus-mark)) object
-    (when (in-focus-p object)
-      (print-text object focus-mark 0 0))))
+                   (focus-mark focus-mark)) window
+    (when (in-focus-p window)
+      (print-text window focus-mark 0 0))))
+
+(defmethod draw :after ((object focus-marked-window))
+  (draw-focus-mark object))
 
 (defclass border-window ()
   ((uses-border-p

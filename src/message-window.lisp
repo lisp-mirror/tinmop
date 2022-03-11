@@ -218,13 +218,10 @@
       (slowness 15))
   (declare (fixnum index frames slowness))
   (defun draw-downloading-animation (window)
-    (declare (optimize (debug 0) (speed 2)))
+    (declare (optimize (debug 0) (speed 3)))
     (let* ((animation-frames (swconf:gemini-downloading-animation))
            (max              (length (the list animation-frames))))
-      (print-text window
-                  (elt animation-frames index)
-                  0 0
-                  :attributes (attribute-bold))
+      (print-text window (elt animation-frames index) 0 0 :attributes (attribute-bold))
       (incf frames)
       (when (= (rem frames slowness)
                0)

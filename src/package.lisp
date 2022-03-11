@@ -1824,6 +1824,7 @@
    :focus-marked-window
    :in-focus
    :in-focus-p
+   :draw-focus-mark
    :border-window
    :uses-border-p
    :usable-window-width
