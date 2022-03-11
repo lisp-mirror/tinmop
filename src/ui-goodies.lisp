@@ -623,7 +623,11 @@ along the focused window."
 (defun pass-focus-next ()
   "Move focus to next window in left to right writing order."
   (if (not (window-focused-pinned-p))
-      (let* ((visible-sorted-window (windows:remove-intersecting-window))
+      (let* ((discarded-window-type '(main-window::main-window
+                                      command-window:command-window
+                                      notify-window:notify-window))
+             (visible-sorted-window (windows:remove-intersecting-window :discarded-window-type
+                                                                        discarded-window-type))
              (focused-window        (main-window:focused-window *main-window*))
              (focused-position      (position focused-window visible-sorted-window))
              (next-window-position  (rem (1+ focused-position) (length visible-sorted-window)))

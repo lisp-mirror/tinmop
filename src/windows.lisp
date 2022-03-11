@@ -342,12 +342,9 @@ height, position and so on)"
         (h (win-height object)))
     (2d-utils:make-iaabb2 x y (1- (+ x w)) (1- (+ y h)))))
 
-(defun remove-intersecting-window ()
+(defun remove-intersecting-window (&key (discarded-window-type '()))
   (labels ((copy-subwindows-stack ()
-             (let ((copy '())
-                   (discarded-window-type '(main-window::main-window
-                                            command-window:command-window
-                                            notify-window:notify-window)))
+             (let ((copy '()))
                (do-stack-element (w *window-stack*)
                  (when (and (win-visible-p w)
                             (not (find-if (lambda (a) (typep w a))
