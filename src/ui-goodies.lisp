@@ -622,18 +622,17 @@ along the focused window."
 
 (defun pass-focus-next ()
   "Move focus to next window in left to right writing order."
-  (let* ((visible-sorted-window (windows:remove-intersecting-window))
-         (focused-window        (main-window:focused-window *main-window*))
-         (focused-position      (position focused-window visible-sorted-window))
-         (next-window-position  (rem (1+ focused-position) (length visible-sorted-window)))
-         (next-focused-window   (elt visible-sorted-window next-window-position)))
-    (if (not (window-focused-pinned-p))
-        (progn
-          (remove-focus-to-all-windows)
-          (give-focus next-focused-window nil))
-        (progn
-          (warn-pinned-window)
-          nil))))
+  (if (not (window-focused-pinned-p))
+      (let* ((visible-sorted-window (windows:remove-intersecting-window))
+             (focused-window        (main-window:focused-window *main-window*))
+             (focused-position      (position focused-window visible-sorted-window))
+             (next-window-position  (rem (1+ focused-position) (length visible-sorted-window)))
+             (next-focused-window   (elt visible-sorted-window next-window-position)))
+        (remove-focus-to-all-windows)
+        (give-focus next-focused-window nil))
+      (progn
+        (warn-pinned-window)
+        nil)))
 
 (defmacro gen-focus-to-window (function-suffix window-get-focus
                                &key
@@ -2740,7 +2739,8 @@ printed, on the main window."
                (when y-pressed-p
                  (info-message (format nil (_"deleting ~a") path))
                  (with-enqueued-process ()
-                   (fstree:delete-treenode win path))))))
+                   (tui:with-notify-errors
+                     (fstree:delete-treenode win path)))))))
       (ask-string-input #'on-input-complete
                         :prompt
                         (format nil (_ "Delete ~a? [y/N] ") path)))))
@@ -2753,7 +2753,8 @@ printed, on the main window."
     (flet ((on-input-complete (new-path)
              (when (string-not-empty-p new-path)
                (with-enqueued-process ()
-                 (fstree:rename-treenode win path new-path)))))
+                 (tui:with-notify-errors
+                   (fstree:rename-treenode win path new-path))))))
       (ask-string-input #'on-input-complete
                         :prompt
                         (format nil (_ "Rename ~a to: ") path)))))
@@ -2893,7 +2894,8 @@ Note: existing file will be overwritten."
              (when (string-not-empty-p new-path)
                (with-enqueued-process ()
                  (let ((dirp (fs:extension-dir-p new-path)))
-                   (fstree:create-treenode win new-path dirp))))))
+                   (tui:with-notify-errors
+                     (fstree:create-treenode win new-path dirp)))))))
       (ask-string-input #'on-input-complete
                         :prompt        (_ "Create: ")
                         :initial-value path))))
@@ -3019,7 +3021,8 @@ if the selected item represents a directory."
   (when-let* ((win    *filesystem-explorer-window*)
               (fields (line-oriented-window:selected-row-fields win))
               (path   (fstree:tree-path  fields)))
-    (fstree:open-node win path)))
+    (tui:with-notify-errors
+      (fstree:open-node win path))))
 
 (defun file-explorer-node-details ()
   "Print details for the node (name, permissions etc.)"
