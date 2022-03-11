@@ -126,7 +126,7 @@
                     (>= ,width  ,min-valid-width))
            ,@body)))))
 
-(defun win-clear (window &key (redraw t))
+(defun win-clear (window &key (redraw nil))
   "Clear window content"
   (clear (croatoan-window window) :target :window :redraw redraw))
 
