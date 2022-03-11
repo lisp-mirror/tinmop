@@ -16,38 +16,84 @@
 
 (in-package :2d-utils)
 
+(eval-when (:compile-toplevel :load-toplevel :execute)
+  (deftype ivec4-type ()
+    '(signed-byte 32))
+
+  (deftype ivec4 ()
+    "A 4d vector of unsigned integer."
+    `(simple-array ivec4-type (4)))
+
+  (defun ivec4p (a)
+    (typep a 'ivec4))
+
+  (defun ivec4= (a b)
+    (every #'= a b)))
+
+(defun ivec4 (x y z &optional (w 0))
+  (let ((res (misc:make-array-frame 4 0 'ivec4-type t)))
+    (setf (elt res 0) x
+          (elt res 1) y
+          (elt res 2) z
+          (elt res 3) w)
+    res))
+
+(defun copy-ivec4 (old)
+  (let ((res (misc:make-array-frame 4 0 'ivec4-type t)))
+    (declare (ivec4 res))
+    (setf (elt res 0) (elt old 0)
+          (elt res 1) (elt old 1)
+          (elt res 2) (elt old 2)
+          (elt res 3) (elt old 3))
+    res))
+
+(defun make-fresh-ivec4 ()
+  (misc:make-array-frame 4 0 'ivec4-type t))
+
 (defun iaabb2-min-x (aabb)
+  (declare (ivec4 aabb))
+  (declare (optimize (speed 3) (debug 0)))
   (elt aabb 0))
 
 (defun iaabb2-max-x (aabb)
+  (declare (ivec4 aabb))
+  (declare (optimize (speed 3) (debug 0)))
   (elt aabb 2))
 
 (defun iaabb2-min-y (aabb)
+  (declare (ivec4 aabb))
+  (declare (optimize (speed 3) (debug 0)))
   (elt aabb 1))
 
 (defun iaabb2-max-y (aabb)
+  (declare (ivec4 aabb))
+  (declare (optimize (speed 3) (debug 0)))
   (elt aabb 3))
 
 (defun make-iaabb2 (min-x min-y max-x max-y)
-  (list min-x min-y max-x max-y))
+  (declare (optimize (speed 3) (debug 0)))
+  (ivec4 min-x min-y max-x max-y))
 
 (defun iaabb2~ (a b)
-  (and
-   (= (elt a 0) (elt b 0))
-   (= (elt a 1) (elt b 1))
-   (= (elt a 2) (elt b 2))
-   (= (elt a 3) (elt b 3))))
+  (declare (ivec4 a b))
+  (declare (optimize (speed 3) (debug 0)))
+  (and (= (elt a 0) (elt b 0))
+       (= (elt a 1) (elt b 1))
+       (= (elt a 2) (elt b 2))
+       (= (elt a 3) (elt b 3))))
 
 (defun valid-iaabb2 (aabb)
+  (declare (ivec4 aabb))
+  (declare (optimize (speed 3) (debug 0)))
   (and (>= (elt aabb 0) 0)
        (>= (elt aabb 1) 0)
        (>= (elt aabb 2) 0)
        (>= (elt aabb 3) 0)
-       (> (elt aabb 2) (elt aabb 0))
-       (> (elt aabb 3) (elt aabb 1))))
+       (>  (elt aabb 2) (elt aabb 0))
+       (>  (elt aabb 3) (elt aabb 1))))
 
 (defun expand-iaabb2 (aabb coord)
-  (let ((cp (copy-list aabb)))
+  (let ((cp (copy-ivec4 aabb)))
     (when (< (elt coord 0) (elt aabb 0))
       (setf (elt cp 0) (elt coord 0)))
     (when (> (elt coord 0) (elt aabb 2))
@@ -59,7 +105,7 @@
     cp))
 
 (defun union-iaabb2 (aabb aabb2)
-  (let ((cp (copy-list aabb)))
+  (let ((cp (copy-ivec4 aabb)))
     (setf cp (expand-iaabb2 cp (subseq aabb2 0 2)))
     (setf cp (expand-iaabb2 cp (list (elt aabb2 2) (elt aabb2 1))))
     (setf cp (expand-iaabb2 cp (list (elt aabb2 2) (elt aabb2 3))))
@@ -73,16 +119,16 @@
         (y1 (elt coords 1))
         (x2 (elt coords 2))
         (y2 (elt coords 3)))
-  (list x1 y1 (- x2 x1) (- y2 y1))))
+  (ivec4 x1 y1 (- x2 x1) (- y2 y1))))
 
 (defun irect2->iaabb2 (coords)
   "(upper-left-x upper-left-y  w h) to
    (upper-left-x upper-left-y bottom-right-x bottom-right-y)"
   (let ((x1 (elt coords 0))
         (y1 (elt coords 1))
-        (w (elt coords 2))
-        (h (elt coords 3)))
-  (list x1 y1 (+ x1 w) (+ y1 h))))
+        (w  (elt coords 2))
+        (h  (elt coords 3)))
+  (ivec4 x1 y1 (+ x1 w) (+ y1 h))))
 
 (defun irect2->iaabb2* (&rest coords)
   (irect2->iaabb2 coords))

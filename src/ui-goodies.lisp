@@ -429,7 +429,7 @@ Metadata includes:
         win)
   (remove-focus-to-all-windows)
   (setf (windows:in-focus win) t)
-  (windows:draw-all)
+  (windows:draw-all :clear nil)
   (when info-change-focus-message
     (info-message info-change-focus-message +maximum-event-priority+))
   win)
