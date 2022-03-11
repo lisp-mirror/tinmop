@@ -86,7 +86,7 @@
        (db:gemlog-mark-as-seen url)
        (gemini-viewer:ensure-just-one-stream-rendering)
        (gemini-viewer:load-gemini-url url
-                                      :give-focus-to-message-window nil
+                                      :give-focus-to-message-window t
                                       :enqueue                      enqueue
                                       :use-cached-file-if-exists    t))
       ((fs:dirp decoded-path)
