@@ -554,6 +554,8 @@
 
 (define-key "U"         #'unsubscribe-to-hash                         *tags-keymap*)
 
+(define-key "s"         #'subscribe-to-hash                           *tags-keymap*)
+
 (define-key "r"         #'refresh-tags                                *tags-keymap*)
 
 ;; conversations keymap
