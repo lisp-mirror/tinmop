@@ -1,5 +1,297 @@
+2022-03-11 cage
+
+	* po/it.po,
+	* po/tinmop.pot,
+	* src/2d-utils.lisp,
+	* src/gemini-viewer.lisp,
+	* src/message-window.lisp,
+	* src/open-message-link-window.lisp,
+	* src/package.lisp,
+	* src/ui-goodies.lisp,
+	* src/windows.lisp:
+
+	- refactored a bit 'pass-focus-next';
+	- [kami] prevented crashes when routine fails.
+	- added a parameter to discard windows when calculating the non
+	intersecting ones.
+	- optimized 'draw-all' made clearing window optional and draw only
+	full visible window.
+	- fixed a bit 'win-clear', calling wclear wa not needed.
+	- pass the focus to the message-window when opening a gemini from a
+	message link window.
+	- [gemini] rendered again the focus mark when a gemini stream has
+	ended.
+
+2022-03-10 cage
+
+	* src/2d-utils.lisp,
+	* src/filesystem-utils.lisp,
+	* src/package.lisp,
+	* src/ui-goodies.lisp,
+	* src/windows.lisp,
+	* tinmop.asd:
+
+	- fixed passing focus between windows.
+
+2022-03-06 cage
+
+	* etc/init.lisp,
+	* po/it.po,
+	* po/tinmop.pot,
+	* src/package.lisp,
+	* src/program-events.lisp,
+	* src/ui-goodies.lisp:
+
+	- added a command to 'jump' between window in a zig-zag way;
+	- fixed crash when starting program in gemini fullscreen mode.
+	- prevented infinite recursion when try to move focus from a modal
+	window.
+
+2022-03-05 cage
+
+	* etc/init.lisp,
+	* src/open-message-link-window.lisp,
+	* src/package.lisp,
+	* src/ui-goodies.lisp,
+	* src/windows.lisp:
+
+	- added slot 'modalp' to class wrapper-window.
+	- fixed moving the focus between windows using ALT-arrow.
+
+2022-03-04 cage
+
+	* README.org,
+	* README.txt,
+	* etc/init.lisp,
+	* po/it.po,
+	* po/tinmop.pot,
+	* quick_quicklisp.sh.in,
+	* src/open-attach-window.lisp,
+	* src/open-message-link-window.lisp,
+	* src/os-utils.lisp,
+	* src/package.lisp,
+	* src/specials.lisp,
+	* src/ui-goodies.lisp,
+	* tinmop.asd:
+
+	- changed sizes and title of window that shows tour links.
+	- added command to copy a link to clipboard.
+	- refactored clipboard utility function.
+	- fixed positioning of links window.
+	- made tour links window indipendent from other links window.
+	- updated italian translation.
+	- allowed to copy to clipboard post's attachments.
+	- fixed slot and reader name.
+
+2022-03-02 cage
+
+	* etc/init.lisp,
+	* src/command-window.lisp,
+	* src/db-utils.lisp,
+	* src/db.lisp,
+	* src/filesystem-utils.lisp,
+	* src/package.lisp,
+	* src/ui-goodies.lisp:
+
+	- added a command to clear the cache;
+	- fixed 'cat-parent-dir'.
+	- remove the root of the keychord tree when hitting :backspace.
+
+2022-02-26 cage
+
+	* src/ui-goodies.lisp:
+
+	- [kami] used info messages instead of notification when uploading or
+	downloading files.
+	- [kami] prevented crash when uploading or downloading failed.
+	- clear gemlog window when scrolling.
+
+2022-02-25 cage
+
+	* etc/init.lisp,
+	* etc/shared.conf,
+	* po/it.po,
+	* po/tinmop.pot,
+	* src/gemini-viewer.lisp,
+	* src/message-window.lisp,
+	* src/open-attach-window.lisp,
+	* src/package.lisp,
+	* src/program-events.lisp,
+	* src/software-configuration.lisp,
+	* src/ui-goodies.lisp,
+	* src/windows.lisp:
+
+	- asking for confirmation when quitting the program using 'q'.
+	- prevented window's title to go out of the window's width.
+	- made the program re-expand truncated title when  the width of
+	terminal window increased.
+	- prevented thread-window from disappears when resizing the terminal
+	window's width.
+	- fixed positioning of message-window when resizing terminal in gemini
+	mode.
+	- added 'k' and 'j' as alias for scrolling windows up and down.
+	- updated italian translation.
+	- [gemini] added two new commands to go back in an URL path.
+	- added command 'gemini-jump-to-link';
+	- fixed layout in gemini full screen mode.
+	- added docstring.
+
+2022-02-24 cage
+
+	* etc/init.lisp,
+	* src/filesystem-utils.lisp,
+	* src/package.lisp,
+	* src/program-events.lisp,
+	* src/ui-goodies.lisp:
+
+	- used osicat as provider for 'mkstemps'.
+	- [gemini] added searching or jumping to first or last item in a TOC
+	window.
+
+2022-02-23 cage
+
+	* ci/README.md,
+	* etc/init.lisp,
+	* src/command-window.lisp,
+	* src/tui-utils.lisp:
+
+	- fixed event  triggered by  backspace when the  keybinding suggestion
+	tree is shown (thanks tgl!);
+	- updated ci/README.md.
+	- added keychord 'C-q' to quit the program.
+
+2022-02-21 Franceso Bonanno
+
+	* ci/Containerfile,
+	* ci/README.md,
+	* ci/build.sh,
+	* ci/entrypoint.sh:
+
+	Adding CI/CD and container building support
+
+2022-02-20 cage
+
+	* Makefile.am,
+	* Makefile.in,
+	* configure,
+	* configure.ac,
+	* quick_quicklisp.sh.in,
+	* scripts/gemget.lisp:
+
+	- fixed guessing of parent dir from value of $PWD
+	in script quick_quicklisp.sh (thanks mibofra!).
+	- added option '--do-not-prompt' to quick_quicklisp.sh, to prevent
+	asking question about init file modification.
+	- quoted variables to prevent globbing.
+	- added script 'gemget.lisp'.
+
+2022-02-19 cage
+
+	* etc/init.lisp,
+	* src/gemini-viewer-metadata.lisp,
+	* src/gemini-viewer.lisp,
+	* src/kami/client.lisp,
+	* src/ui-goodies.lisp:
+
+	- prevented crash when bookmarking the start page in gemini fullscreen
+	mode (Thanks reDFog!).
+	- prevented some kind of windows from losing focus (thanks reDFog)!
+	- prevented reusing an already clunked fid when uploading a file.
+	- [kami] ensured 'collect-tree' returns both values: files and
+	directories.
+
+2022-02-18 cage
+
+	* Makefile.am,
+	* Makefile.in,
+	* README.org,
+	* README.txt,
+	* compile,
+	* config.guess,
+	* config.sub,
+	* configure,
+	* configure.ac,
+	* missing,
+	* quick_quicklisp.sh.in,
+	* src/constants.lisp,
+	* src/kami/client.lisp,
+	* src/line-oriented-window.lisp,
+	* src/ui-goodies.lisp:
+
+	- added more tests in configure.ac
+	- moved test for gettext.
+	- updated Makefile.am to install two new scripts.
+	- added cloning of purgatory from repository.
+	- added check for purgatory dir when installing package.
+	- added missing '$' in variable name.
+	- removed bash as dependency (thanks op!);
+	- made quick_quicklisp.sh executable.
+	- updated building scripts.
+	- [kami] prevented a crash (and a fid leak) when creating new files or
+	directories.
+	- added a minimal list of keybindings to welcome window.
+	- printed a minimal list of keychords on the welcome window.
+	- removed bash specific syntax (thanks op!).
+
+2022-02-17 cage
+
+	* po/it.po,
+	* po/tinmop.pot,
+	* scripts/export-gemini-subscriptions.lisp,
+	* scripts/import-gemini-subscriptions.lisp,
+	* src/gemini/package.lisp,
+	* src/main.lisp,
+	* src/package.lisp,
+	* src/tests/uri-tests.lisp,
+	* src/text-utils.lisp,
+	* src/ui-goodies.lisp:
+
+	- improved 'text:to-s', accepts byte or character vectors.
+	- added a script to import and export gemlog subscriptions;
+	- prevented printing diagnostic message if  the program is executing a
+	script.
+	- forced opening of TOC window when loading a net address as
+	instructed from the command line (i.e. using the '-o' switch).
+	- [kami] prevented crash when downloading fails, notify an error
+	instead.
+	- updated docstrings.
+	- updated italian translation.
+	- fixed symbol export for 'normalize path' (thanks op!).
+
+2022-02-16 cage
+
+	* src/filesystem-tree-window.lisp,
+	* src/filesystem-utils.lisp,
+	* src/kami/client.lisp,
+	* src/package.lisp,
+	* src/text-utils.lisp,
+	* src/ui-goodies.lisp:
+
+	- [kami] fixed mirror uploading.
+	- prevented signalling error when an invalid byte sequence is met,
+	when converting octects to string.
+	- renamed function: 'filesystem-query-treenode' ->
+	'filesystem-query-path'.
+	- renamed function: 'download-treenode' -> 'download-path'.
+	- renamed function: 'upload-treenode' -> 'upload-path'.
+	removed useless spaces and fixed function name.
+	- exported correct symbols.
+
+2022-02-13 cage
+
+	* src/filesystem-utils.lisp,
+	* src/kami/client.lisp,
+	* src/package.lisp:
+
+	- [kami] made an effort to replicate the permissions when uploading a
+	file.
+	- [kami] made an effort to replicate the permissions when downloading
+	a file.
+
 2022-02-11 cage
 
+	* ChangeLog,
+	* NEWS.org,
 	* po/it.po,
 	* po/tinmop.pot,
 	* src/message-window.lisp,
@@ -11,6 +303,7 @@
 	- prevented a condition variable to be awaken even if condition is not
 	actually met.
 	- updated italian translation.
+	- updated NEWS.org and Changelog.
 
 2022-02-09 cage
 
