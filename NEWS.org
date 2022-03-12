@@ -1,4 +1,4 @@
-* 2022-02-11 version 0.9.5
+* 2022-03-12 version 0.9.5
 
   - New Features
 
@@ -10,13 +10,52 @@
     9P is  a protocol that  implements a distributed file  systems. It
     provides  primitives to  manage (create,  read, write  and delete)
     sets of files  remotely. These files don't necessarily  need to be
-    actually stored on a disk, they may be, for example, synthesise on
-    demand from external sources.
+    actually stored on  a disk, they may be,  for example, synthesised
+    on demand from external sources.
     #+END_QUOTE
 
+    - New commands:
+      - copy-link-to-clipboard ::
+        Copy the currently selected link to clipboard;
+      - clear-cache ::
+        Delete  permanently cached  data  (note: this  command remove  also
+        gemini client certificates!);
+      - gemini-jump-to-link ::
+        Scroll the  document to  the line  where this  link appears  in the
+        gemini document;
+
+    - Adding CI/CD and container building support (thanks to mibofra!);
+
+    - Added new script,  ~gemget~, to download a  gemini resource from
+      command line (similar to wget);
+
+  - Improvements
+
+    - added more key-chord to navigate in gemini TOC window (e.g. jump
+      to first or last item, search);
+
+    - The layout  of the windows  has changed and  should be a  bit less
+      confusing now,  also moving window's  focus pressing a  single key
+      has been implemented;
+
+    - Refreshing the  screen should be  faster now and  less flickering
+      should be noticeable;
+
+    - removed bash as dependency (thanks op!).
+
   - Bugfix
+
+    - fixed guessing of parent directory  from value of $PWD in script
+      quick_quicklisp.sh (thanks mibofra!);
+
     - fixed generation of TLS client certificates when using an openssl
       binary linked with libressl (thanks op!);
+
+    - the window title should be truncated according to the terminal's
+      width;
+
+    - prevented crash when bookmarking the start page in gemini fullscreen
+      mode (Thanks reDFog!).
 
 * 2021-11-28 version 0.9.0
 

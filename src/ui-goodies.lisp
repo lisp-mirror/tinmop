@@ -1485,6 +1485,7 @@ This makes sense only for gemini file stream, if not this command performs the s
       (info-message message))))
 
 (defun copy-link-to-clipboard (window)
+  "Copy the currently selected link to clipboard"
   (copy-value-to-clipboard window
                            (_ "Address copied to clipboard")))
 
