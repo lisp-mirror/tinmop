@@ -988,7 +988,8 @@ to the array"
 #+quicklisp
 (defun asdf-depends-on (&optional (system-name config:+program-name+))
   (let ((symbol-system (alexandria:symbolicate (string-upcase system-name))))
-    (asdf:system-depends-on (asdf:find-system symbol-system))))
+    (remove-if-not #'stringp
+                   (asdf:system-depends-on (asdf:find-system symbol-system)))))
 
 #+quicklisp
 (defun all-dependencies (system-name)
@@ -1000,7 +1001,9 @@ to the array"
         (let ((dependencies (get-direct-dependencies i)))
           (loop for j in dependencies do
             (pushnew j results :test #'string=)
-            (all-dependencies i))))
+            (setf results
+                  (remove-duplicates (append results (all-dependencies j))
+                                     :test #'string=)))))
       (sort results #'string<))))
 
 (defun all-program-dependencies (&optional download)
