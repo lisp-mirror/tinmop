@@ -1003,8 +1003,8 @@ to the array"
             (all-dependencies i))))
       (sort results #'string<))))
 
-#+quicklisp
 (defun all-program-dependencies (&optional download)
+  #+quicklisp
   (let* ((dependencies          (all-dependencies config:+program-name+))
          (clean-dependencies    (mapcar (lambda (a)
                                           (cond
@@ -1043,4 +1043,8 @@ to the array"
                  (format t "~a ~a ~a~%" system-name (first fields) (second fields))
                  (when download
                    (download-package fields))))
-              (format t "!error: ~a~%" system-name)))))))
+              (format t "!error: ~a~%" system-name))))))
+  #-quicklisp
+  (format t
+          "Unable to print dependencies because quicklisp was not loaded when compiling ~a.~%"
+          +program-name+))
