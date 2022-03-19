@@ -41,19 +41,19 @@ fi
 
 AM_GNU_GETTEXT([external])
 
-AC_PATH_PROG([LISP_COMPILER],[asbcl],[no])
+AC_PATH_PROG([LISP_COMPILER],[sbcl],[no])
 
 AC_PATH_PROG([LISP_COMPILER_ECL],[ecl],[no])
 
 if test "$LISP_COMPILER" = "no" ; then
     AC_MSG_WARN([Can not find SBCL, Common Lisp compiler.]);
-else
-    if test "$LISP_COMPILER" = "no" ; then
+    LISP_COMPILER=$LISP_COMPILER_ECL;
+    if test "$LISP_COMPILER_ECL" = "no" ; then
         AC_MSG_ERROR([Can not find ECL, Common Lisp compiler.]);
     fi
 fi
 
-LISP_COMPILER=$LISP_COMPILER_ECL;
+AC_MSG_NOTICE([Using $LISP_COMPILER as Common Lisp compiler])
 
 AC_PATH_PROG([CURL],[curl],[no])
 
