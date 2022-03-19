@@ -41,11 +41,19 @@ fi
 
 AM_GNU_GETTEXT([external])
 
-AC_PATH_PROG([LISP_COMPILER],[sbcl],[no])
+AC_PATH_PROG([LISP_COMPILER],[asbcl],[no])
+
+AC_PATH_PROG([LISP_COMPILER_ECL],[ecl],[no])
 
 if test "$LISP_COMPILER" = "no" ; then
-   AC_MSG_ERROR([Can not find SBCL, Common Lisp compiler.])
+    AC_MSG_WARN([Can not find SBCL, Common Lisp compiler.]);
+else
+    if test "$LISP_COMPILER" = "no" ; then
+        AC_MSG_ERROR([Can not find ECL, Common Lisp compiler.]);
+    fi
 fi
+
+LISP_COMPILER=$LISP_COMPILER_ECL;
 
 AC_PATH_PROG([CURL],[curl],[no])
 
@@ -115,26 +123,6 @@ if test "$DIRNAME" = "no" ; then
 fi
 
 AC_PROG_MKDIR_P
-
-dnl check sbcl version
-SBCL_MIN_VERSION="1.4.16";
-SBCL_VERSION=`${LISP_COMPILER} --version | ${AWK} -- '// {print $2}'`
-
-AC_ARG_ENABLE([check-sbcl-version], [AS_HELP_STRING([--disable-check-sbcl-version], [Disable checks for minimum supported SBCL version])], [], [])
-
-if test "$enable_check_sbcl_version" = "yes" || test "$enable_check_sbcl_version" = "" ; then
-   SBCL_VERSION_OK=`echo "$SBCL_VERSION $SBCL_MIN_VERSION" | ${AWK} -f compare_version.awk`
-
-   AC_MSG_CHECKING([if the compiler is too old])
-   AC_MSG_NOTICE([To Disable this test type: './configure --disable-check-sbcl-version.])
-
-   if test "$SBCL_VERSION_OK" = "1" ; then
-      AC_MSG_ERROR([Lisp compiler too old, $SBCL_MIN_VERSION is the oldest supported.])
-      exit 1;
-   else
-    AC_MSG_RESULT([version is not too old])
-   fi
-fi
 
 dnl checks for libraries
 

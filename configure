@@ -630,6 +630,7 @@ MAN
 UNZIP
 GPG
 CURL
+LISP_COMPILER_ECL
 LISP_COMPILER
 POSUB
 LTLIBINTL
@@ -756,7 +757,6 @@ with_gnu_ld
 enable_rpath
 with_libiconv_prefix
 with_libintl_prefix
-enable_check_sbcl_version
 '
       ac_precious_vars='build_alias
 host_alias
@@ -1402,8 +1402,6 @@ Optional Features:
   --disable-dependency-tracking
                           speeds up one-time build
   --disable-rpath         do not hardcode runtime library paths
-  --disable-check-sbcl-version
-                          Disable checks for minimum supported SBCL version
 
 Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
@@ -7013,8 +7011,8 @@ printf "%s\n" "#define HAVE_DCGETTEXT 1" >>confdefs.h
 
 
 
-# Extract the first word of "sbcl", so it can be a program name with args.
-set dummy sbcl; ac_word=$2
+# Extract the first word of "asbcl", so it can be a program name with args.
+set dummy asbcl; ac_word=$2
 { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
 printf %s "checking for $ac_word... " >&6; }
 if test ${ac_cv_path_LISP_COMPILER+y}
@@ -7060,9 +7058,63 @@ fi
 
 
 
-if test "$LISP_COMPILER" = "no" ; then
-   as_fn_error $? "Can not find SBCL, Common Lisp compiler." "$LINENO" 5
+# Extract the first word of "ecl", so it can be a program name with args.
+set dummy ecl; ac_word=$2
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+printf %s "checking for $ac_word... " >&6; }
+if test ${ac_cv_path_LISP_COMPILER_ECL+y}
+then :
+  printf %s "(cached) " >&6
+else $as_nop
+  case $LISP_COMPILER_ECL in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_LISP_COMPILER_ECL="$LISP_COMPILER_ECL" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  case $as_dir in #(((
+    '') as_dir=./ ;;
+    */) ;;
+    *) as_dir=$as_dir/ ;;
+  esac
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if as_fn_executable_p "$as_dir$ac_word$ac_exec_ext"; then
+    ac_cv_path_LISP_COMPILER_ECL="$as_dir$ac_word$ac_exec_ext"
+    printf "%s\n" "$as_me:${as_lineno-$LINENO}: found $as_dir$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
+
+  test -z "$ac_cv_path_LISP_COMPILER_ECL" && ac_cv_path_LISP_COMPILER_ECL="no"
+  ;;
+esac
 fi
+LISP_COMPILER_ECL=$ac_cv_path_LISP_COMPILER_ECL
+if test -n "$LISP_COMPILER_ECL"; then
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $LISP_COMPILER_ECL" >&5
+printf "%s\n" "$LISP_COMPILER_ECL" >&6; }
+else
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+printf "%s\n" "no" >&6; }
+fi
+
+
+
+if test "$LISP_COMPILER" = "no" ; then
+    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: WARNING: Can not find SBCL, Common Lisp compiler." >&5
+printf "%s\n" "$as_me: WARNING: Can not find SBCL, Common Lisp compiler." >&2;};
+else
+    if test "$LISP_COMPILER" = "no" ; then
+        as_fn_error $? "Can not find ECL, Common Lisp compiler." "$LINENO" 5;
+    fi
+fi
+
+LISP_COMPILER=$LISP_COMPILER_ECL;
 
 # Extract the first word of "curl", so it can be a program name with args.
 set dummy curl; ac_word=$2
@@ -7563,33 +7615,6 @@ if test "$DIRNAME" = "no" ; then
 fi
 
 
-
-SBCL_MIN_VERSION="1.4.16";
-SBCL_VERSION=`${LISP_COMPILER} --version | ${AWK} -- '// {print $2}'`
-
-# Check whether --enable-check-sbcl-version was given.
-if test ${enable_check_sbcl_version+y}
-then :
-  enableval=$enable_check_sbcl_version;
-fi
-
-
-if test "$enable_check_sbcl_version" = "yes" || test "$enable_check_sbcl_version" = "" ; then
-   SBCL_VERSION_OK=`echo "$SBCL_VERSION $SBCL_MIN_VERSION" | ${AWK} -f compare_version.awk`
-
-   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking if the compiler is too old" >&5
-printf %s "checking if the compiler is too old... " >&6; }
-   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: To Disable this test type: './configure --disable-check-sbcl-version." >&5
-printf "%s\n" "$as_me: To Disable this test type: './configure --disable-check-sbcl-version." >&6;}
-
-   if test "$SBCL_VERSION_OK" = "1" ; then
-      as_fn_error $? "Lisp compiler too old, $SBCL_MIN_VERSION is the oldest supported." "$LINENO" 5
-      exit 1;
-   else
-    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: version is not too old" >&5
-printf "%s\n" "version is not too old" >&6; }
-   fi
-fi
 
 
 { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for SSL_get_version in -lssl" >&5
