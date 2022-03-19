@@ -1047,4 +1047,4 @@ to the array"
   #-quicklisp
   (format t
           "Unable to print dependencies because quicklisp was not loaded when compiling ~a.~%"
-          +program-name+))
+          config:+program-name+))
