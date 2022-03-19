@@ -958,18 +958,22 @@ to the array"
 
 ;; package building utils
 
+#+quicklisp
 (defun ql-system-equals (a b)
   (string= (ql::short-description a)
            (ql::short-description b)))
 
+#+quicklisp
 (defun remove-system-duplicates-test (systems)
   (remove-duplicates systems
                      :test #'string=))
 
+#+quicklisp
 (alexandria:define-constant +github-quicklisp-source-url-template+
   "https://raw.githubusercontent.com/quicklisp/quicklisp-projects/master/projects/~a/source.txt"
   :test #'string=)
 
+#+quicklisp
 (defun get-quicklisp-original-file (system-name)
   (multiple-value-bind (stream response-code)
       (get-url-content (format nil
@@ -981,10 +985,12 @@ to the array"
              (fields (text-utils:split-words line)))
         fields))))
 
+#+quicklisp
 (defun asdf-depends-on (&optional (system-name config:+program-name+))
   (let ((symbol-system (alexandria:symbolicate (string-upcase system-name))))
     (asdf:system-depends-on (asdf:find-system symbol-system))))
 
+#+quicklisp
 (defun all-dependencies (system-name)
   (flet ((get-direct-dependencies (system-name)
            (remove-system-duplicates-test (asdf-depends-on system-name))))
@@ -997,6 +1003,7 @@ to the array"
             (all-dependencies i))))
       (sort results #'string<))))
 
+#+quicklisp
 (defun all-program-dependencies (&optional download)
   (let* ((dependencies          (all-dependencies config:+program-name+))
          (clean-dependencies    (mapcar (lambda (a)
