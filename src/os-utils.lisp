@@ -77,19 +77,17 @@
                              &key
                                (wait t)
                                search
-                               #-win32 pty
                                input
                                output
                                (error :output))
-  #-win32 (sb-ext:run-program program
-                      args
-                      :wait   wait
-                      :search search
-                      :pty    pty
-                      :input  input
-                      :output output
-                      :error  error)
-  #+win32 (sb-ext:run-program program
+  (declare (ignorable search))
+  #+ecl (ext:run-program program
+                         args
+                         :input  input
+                         :output output
+                         :error  error
+                         :wait   wait)
+  #+sbcl (sb-ext:run-program program
                       args
                       :wait   wait
                       :search search
@@ -98,7 +96,8 @@
                       :error  error))
 
 (defun process-exit-code (process)
-  (sb-ext:process-exit-code process))
+  #+ecl  (nth-value 1 (ext:external-process-status process))
+  #+sbcl (sb-ext:process-exit-code process))
 
 (defun process-exit-success-p (process)
   (= (process-exit-code process) 0))
@@ -209,9 +208,8 @@
                                             :search t
                                             :wait   t
                                             :output stream
-                                            :error  :output))
-           (exit-code (sb-ext:process-exit-code process)))
-      (when (/= exit-code 0)
+                                            :error  :output)))
+      (when (not (process-exit-success-p process))
         (error (format nil "File ~s extraction from ~s failed" file-entry zip-file))))))
 
 (defun copy-to-clipboard (text)

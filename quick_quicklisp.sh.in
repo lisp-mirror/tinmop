@@ -140,6 +140,7 @@ install_dependency () {
      --eval "(ql:quickload \"babel\")"             \
      --eval "(ql:quickload \"percent-encoding\")"  \
      --eval "(ql:quickload \"trivial-clipboard\")" \
+     --eval "(ql:quickload \"purgatory\")"         \
      --eval "(sb-ext:quit)"
 }
 
