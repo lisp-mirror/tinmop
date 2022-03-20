@@ -502,7 +502,9 @@
   (declare (ignore child child-pos))
   (sort-children object))
 
-(alexandria:define-constant +tree-arrow-char+ #\BLACK_RIGHT-POINTING_ISOSCELES_RIGHT_TRIANGLE
+(alexandria:define-constant +tree-arrow-char+
+    #+sbcl #\BLACK_RIGHT-POINTING_ISOSCELES_RIGHT_TRIANGLE
+    #+ecl  (code-char 128898)
   :test #'char=)
 
 (defmethod tree->text-lines ((object m-tree)
