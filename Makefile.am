@@ -66,7 +66,8 @@ $(PACKAGE): $(CONF_PATH_FILE) *.asd src/*
 		$(LISP_COMPILER) \
 		--eval "(asdf:load-system '$(PACKAGE))" \
 		--eval "(in-package main)" \
-		--eval "(asdf:make-build :tinmop :type :program :move-here #P\"./\" :epilogue-code '(main::main))"; \
+		--eval "(asdf:make-build :tinmop :type :program :move-here #P\"./\" :epilogue-code '(main::main))" \
+		--eval "(si:exit)"; \
 	fi
 $(CONF_PATH_FILE):
 	grep "^;" $(CONF_PATH_FILE_IN)                          >  $(CONF_PATH_FILE)
