@@ -505,10 +505,8 @@ will fire the `callback' function (with the selected field from `all-fields'
              (draw high-level-window)
              (win-box high-level-window)
              (print-text high-level-window title 2 0)))
-      (setf (background low-level-window)
-            (tui:make-win-background bg))
-      (setf (fgcolor low-level-window)
-            fg)
+      (setf (c:background low-level-window) (tui:make-win-background bg))
+      (setf (c:fgcolor low-level-window) fg)
       (win-resize high-level-window window-width window-height)
       (win-move high-level-window window-x window-y)
       (setf (rows high-level-window)
@@ -527,7 +525,7 @@ will fire the `callback' function (with the selected field from `all-fields'
       (select-row high-level-window 0)
       (draw)
       (loop named inner
-         for c = (tui:decode-key-event (get-wide-event low-level-window))
+         for c = (tui:decode-key-event (c:get-wide-event low-level-window))
          while (string/= c "q")
          do
            (cond

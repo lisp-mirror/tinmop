@@ -51,10 +51,9 @@
       (setf selected-line-bg selected-bg)
       (setf new-messages-mark new-message-value)
       (setf histogram-fg (swconf:tags-histogram-foreground))
-      (setf (background croatoan-window)
-            (tui:make-win-background bg))
-      (setf (bgcolor croatoan-window) bg)
-      (setf (fgcolor croatoan-window) fg)
+      (setf (c:background croatoan-window) (tui:make-win-background bg))
+      (setf (c:bgcolor croatoan-window) bg)
+      (setf (c:fgcolor croatoan-window) fg)
       (win-resize object width height)
       (win-move object x y)
       object)))
@@ -83,11 +82,11 @@
                 (print-text object
                             histogram
                             1 y
-                            :bgcolor (bgcolor croatoan-window)
+                            :bgcolor (c:bgcolor croatoan-window)
                             :fgcolor histogram-fg)
                 (when got-new-messages-p
                   (print-text object new-messages-mark nil nil
-                              :bgcolor (bgcolor croatoan-window)
+                              :bgcolor (c:bgcolor croatoan-window)
                               :fgcolor histogram-fg)))))))))
 
 (defmethod resync-rows-db ((object tags-window) &key (redraw t) (suggested-message-index nil))

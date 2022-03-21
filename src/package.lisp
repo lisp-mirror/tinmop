@@ -1744,7 +1744,6 @@
    :alexandria
    :cl-ppcre
    :access
-   :croatoan
    :config
    :constants
    :stack
@@ -1756,6 +1755,7 @@
   (:shadowing-import-from :misc :random-elt :shuffle)
   (:shadowing-import-from :stack :stack :stack-push :stack-pop :stack-empty-p)
   (:shadowing-import-from :text-utils :split-lines)
+  (:local-nicknames (:c :croatoan))
   (:export
    :key-config-holder
    :key-config
@@ -1838,7 +1838,6 @@
    :alexandria
    :cl-ppcre
    :access
-   :croatoan
    :config
    :constants
    :text-utils
@@ -1849,6 +1848,7 @@
    :tui-utils)
   (:shadowing-import-from :misc :random-elt :shuffle)
   (:shadowing-import-from :text-utils :split-lines)
+  (:local-nicknames (:c :croatoan))
   (:export
    :notify-window
    :pending
@@ -1861,7 +1861,6 @@
    :cl
    :alexandria
    :cl-ppcre
-   :croatoan
    :config
    :constants
    :text-utils
@@ -1871,6 +1870,7 @@
    :tui-utils)
   (:shadowing-import-from :misc :random-elt :shuffle)
   (:shadowing-import-from :text-utils :split-lines)
+  (:local-nicknames (:c :croatoan))
   (:export
    :suggestions-window
    :paginated-info
@@ -1883,7 +1883,6 @@
    :cl
    :alexandria
    :cl-ppcre
-   :croatoan
    :config
    :constants
    :text-utils
@@ -1894,6 +1893,7 @@
    :suggestions-window)
   (:shadowing-import-from :text-utils :split-lines)
   (:shadowing-import-from :misc :random-elt :shuffle)
+  (:local-nicknames (:c :croatoan))
   (:export
    :+starting-item-index+
    :complete-window
@@ -1907,7 +1907,6 @@
    :cl
    :alexandria
    :cl-ppcre
-   :croatoan
    :config
    :constants
    :text-utils
@@ -1920,6 +1919,7 @@
    :tui-utils)
   (:shadowing-import-from :text-utils :split-lines)
   (:shadowing-import-from :misc :random-elt :shuffle)
+  (:local-nicknames (:c :croatoan))
   (:export
    :keybindings-window
    :keybindings-tree
@@ -1979,7 +1979,6 @@
    :cl
    :alexandria
    :cl-ppcre
-   :croatoan
    :config
    :constants
    :text-utils
@@ -1993,6 +1992,7 @@
   (:shadowing-import-from :text-utils :split-lines)
   (:shadowing-import-from :misc :random-elt :shuffle)
   (:import-from :keybindings-window :update-keybindings-tree)
+  (:local-nicknames (:c :croatoan))
   (:export
    :line
    :selected-fg
@@ -2061,7 +2061,6 @@
    :cl
    :alexandria
    :cl-ppcre
-   :croatoan
    :config
    :constants
    :text-utils
@@ -2074,6 +2073,7 @@
    :tui-utils)
   (:shadowing-import-from :text-utils :split-lines)
   (:shadowing-import-from :misc :random-elt :shuffle)
+  (:local-nicknames (:c :croatoan))
   (:export
    :+octect-type+
    :make-temporary-file-from-node
@@ -2136,7 +2136,6 @@
    :cl
    :alexandria
    :cl-ppcre
-   :croatoan
    :config
    :constants
    :text-utils
@@ -2152,6 +2151,7 @@
   (:shadowing-import-from :text-utils :split-lines)
   (:shadowing-import-from :misc :random-elt :shuffle)
   (:import-from :keybindings-window :update-keybindings-tree)
+  (:local-nicknames (:c :croatoan))
   (:export
    :message-line
    :thread-window
@@ -2182,7 +2182,6 @@
    :cl
    :alexandria
    :cl-ppcre
-   :croatoan
    :config
    :constants
    :text-utils
@@ -2196,6 +2195,7 @@
    :tui-utils)
   (:shadowing-import-from :text-utils :split-lines)
   (:shadowing-import-from :misc :random-elt :shuffle)
+  (:local-nicknames (:c :croatoan))
   (:export
    :message-window
    :metadata
@@ -2252,7 +2252,6 @@
    :alexandria
    :cl-ppcre
    :access
-   :croatoan
    :config
    :constants
    :text-utils
@@ -2264,6 +2263,7 @@
    :tui-utils)
   (:shadowing-import-from :text-utils :split-lines)
   (:shadowing-import-from :misc :random-elt :shuffle)
+  (:local-nicknames (:c :croatoan))
   (:export
    :open-attach-window
    :status-id
@@ -2278,7 +2278,6 @@
    :alexandria
    :cl-ppcre
    :access
-   :croatoan
    :config
    :constants
    :text-utils
@@ -2290,6 +2289,7 @@
    :tui-utils)
   (:shadowing-import-from :text-utils :split-lines)
   (:shadowing-import-from :misc :random-elt :shuffle)
+  (:local-nicknames (:c :croatoan))
   (:export
    :open-message-link
    :init
@@ -2305,7 +2305,6 @@
    :alexandria
    :cl-ppcre
    :access
-   :croatoan
    :config
    :constants
    :text-utils
@@ -2317,6 +2316,7 @@
    :tui-utils)
   (:shadowing-import-from :text-utils :split-lines)
   (:shadowing-import-from :misc :random-elt :shuffle)
+  (:local-nicknames (:c :croatoan))
   (:export
    :open-gemini-certificates-window))
 
@@ -2326,7 +2326,6 @@
    :alexandria
    :cl-ppcre
    :access
-   :croatoan
    :config
    :constants
    :text-utils
@@ -2338,6 +2337,7 @@
    :tui-utils)
   (:shadowing-import-from :text-utils :split-lines)
   (:shadowing-import-from :misc :random-elt :shuffle)
+  (:local-nicknames (:c :croatoan))
   (:export
    :open-gemini-subscription-window))
 
@@ -2347,7 +2347,6 @@
    :alexandria
    :cl-ppcre
    :access
-   :croatoan
    :config
    :constants
    :text-utils
@@ -2359,6 +2358,7 @@
    :tui-utils)
   (:shadowing-import-from :text-utils :split-lines)
   (:shadowing-import-from :misc :random-elt :shuffle)
+  (:local-nicknames (:c :croatoan))
   (:export
    :highlight-current-section
    :open-toc-window))
@@ -2368,7 +2368,6 @@
    :cl
    :alexandria
    :cl-ppcre
-   :croatoan
    :config
    :constants
    :text-utils
@@ -2382,6 +2381,7 @@
   (:shadowing-import-from :text-utils :split-lines)
   (:shadowing-import-from :misc :random-elt :shuffle)
   (:import-from :keybindings-window :update-keybindings-tree)
+  (:local-nicknames (:c :croatoan))
   (:export
    :print-error
    :command-window
@@ -2403,7 +2403,6 @@
    :cl
    :alexandria
    :cl-ppcre
-   :croatoan
    :config
    :constants
    :text-utils
@@ -2417,6 +2416,7 @@
    :tui-utils)
   (:shadowing-import-from :text-utils :split-lines)
   (:shadowing-import-from :misc :random-elt :shuffle)
+  (:local-nicknames (:c :croatoan))
   (:export
    :message-ready-to-send
    :subject
@@ -2435,7 +2435,6 @@
    :alexandria
    :cl-ppcre
    :access
-   :croatoan
    :config
    :constants
    :text-utils
@@ -2447,6 +2446,7 @@
    :tui-utils)
   (:shadowing-import-from :text-utils :split-lines)
   (:shadowing-import-from :misc :random-elt :shuffle)
+  (:local-nicknames (:c :croatoan))
   (:export
    :follow-requests-window
    :init
@@ -2458,7 +2458,6 @@
    :alexandria
    :cl-ppcre
    :access
-   :croatoan
    :config
    :constants
    :text-utils
@@ -2470,6 +2469,7 @@
    :tui-utils)
   (:shadowing-import-from :text-utils :split-lines)
   (:shadowing-import-from :misc :random-elt :shuffle)
+  (:local-nicknames (:c :croatoan))
   (:export
    :tags-window
    :resync-rows-db
@@ -2481,7 +2481,6 @@
    :alexandria
    :cl-ppcre
    :access
-   :croatoan
    :config
    :constants
    :text-utils
@@ -2493,6 +2492,7 @@
    :tui-utils)
   (:shadowing-import-from :text-utils :split-lines)
   (:shadowing-import-from :misc :random-elt :shuffle)
+  (:local-nicknames (:c :croatoan))
   (:export
    :conversations-window
    :resync-rows-db
@@ -2504,7 +2504,6 @@
    :alexandria
    :cl-ppcre
    :access
-   :croatoan
    :config
    :constants
    :text-utils
@@ -2516,6 +2515,7 @@
    :tui-utils)
   (:shadowing-import-from :text-utils :split-lines)
   (:shadowing-import-from :misc :random-elt :shuffle)
+  (:local-nicknames (:c :croatoan))
   (:export
    :chats-list-window
    :chat->text
@@ -2527,7 +2527,6 @@
    :alexandria
    :cl-ppcre
    :access
-   :croatoan
    :config
    :constants
    :text-utils
@@ -2538,6 +2537,7 @@
    :tui-utils)
   (:shadowing-import-from :text-utils :split-lines)
   (:shadowing-import-from :misc :random-elt :shuffle)
+  (:local-nicknames (:c :croatoan))
   (:export
    :push-db-stream
    :remove-db-stream
@@ -2611,7 +2611,6 @@
    :alexandria
    :cl-ppcre
    :access
-   :croatoan
    :config
    :constants
    :text-utils
@@ -2622,6 +2621,7 @@
    :tui-utils)
   (:shadowing-import-from :text-utils :split-lines)
   (:shadowing-import-from :misc :random-elt :shuffle)
+  (:local-nicknames (:c :croatoan))
   (:export
    :focused-window
    :focused-keybindings
@@ -2635,7 +2635,6 @@
    :alexandria
    :cl-ppcre
    :access
-   :croatoan
    :config
    :constants
    :text-utils
@@ -2648,7 +2647,8 @@
   (:nicknames :ui)
   (:shadowing-import-from :text-utils :split-lines)
   (:shadowing-import-from :misc :random-elt :shuffle)
-  (:local-nicknames (:fstree :filesystem-tree-window))
+  (:local-nicknames (:fstree :filesystem-tree-window)
+                    (:c :croatoan))
   (:export
    :delete-message-status-marked-to-delete
    :open-manual
@@ -2897,7 +2897,6 @@
    :cl
    :alexandria
    :cl-ppcre
-   :croatoan
    :config
    :constants
    :misc-utils
@@ -2905,6 +2904,7 @@
    :specials)
   (:shadowing-import-from :text-utils :split-lines)
   (:shadowing-import-from :misc :random-elt :shuffle)
+  (:local-nicknames (:c :croatoan))
   (:export
    :refresh-refresh-all-chats-data
    :refresh-refresh-all-chats-messages
@@ -2949,10 +2949,10 @@
    :cl
    :alexandria
    :cl-ppcre
-   :croatoan
    :config
    :constants
    :text-utils
    :command-line)
   (:shadowing-import-from :text-utils :split-lines)
+  (:local-nicknames (:c :croatoan))
   (:export))

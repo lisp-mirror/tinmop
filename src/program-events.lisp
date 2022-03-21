@@ -322,7 +322,7 @@
 (defmethod process-event ((object change-window-title-event))
   (with-accessors ((title  payload)
                    (window window)) object
-    (setf (message-window::title window) title)))
+    (setf (windows::title window) title)))
 
 (define-constant +max-recover-count+ 3)
 

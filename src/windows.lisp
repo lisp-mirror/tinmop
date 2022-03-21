@@ -128,7 +128,7 @@
 
 (defun win-clear (window &key (redraw nil))
   "Clear window content"
-  (clear (croatoan-window window) :target :window :redraw redraw))
+  (c:clear (croatoan-window window) :target :window :redraw redraw))
 
 (defmacro gen-simple-win->croatoan-specialized-wrapper (fn-name &optional (prefix nil))
   "Generate micro  wrapper for simple curses  library function (window
@@ -136,7 +136,7 @@ height, position and so on)"
   (with-gensyms (window inner)
     `(defun ,(format-fn-symbol t "~@[~a-~]~a" prefix fn-name) (,window)
        (with-croatoan-window (,inner ,window)
-         (,fn-name ,inner)))))
+         (,(format-fn-symbol 'c "~a" fn-name) ,inner)))))
 
 (gen-simple-win->croatoan-specialized-wrapper width   win)
 
@@ -155,12 +155,12 @@ height, position and so on)"
 (defun menu-select (window)
   (with-croatoan-window (croatoan-window window)
     (prog1
-        (select croatoan-window)
+        (c:select croatoan-window)
       (win-close window))))
 
 (defun win-visible-p (win)
   (with-croatoan-window (croatoan-window win)
-    (visiblep croatoan-window)))
+    (c:visiblep croatoan-window)))
 
 (defun win-close (window)
   (with-croatoan-window (croatoan-window window)
@@ -180,11 +180,11 @@ height, position and so on)"
 
 (defun win-x (win)
   (with-croatoan-window (inner-window win)
-    (second (widget-position inner-window))))
+    (second (c:widget-position inner-window))))
 
 (defun win-y (win)
   (with-croatoan-window (inner-window win)
-    (first (widget-position inner-window))))
+    (first (c:widget-position inner-window))))
 
 (defmacro with-window-width ((win w) &body body)
   `(let ((,w (win-width  ,win)))
@@ -214,44 +214,44 @@ height, position and so on)"
 (defun win-move-cursor (window x y &key relative)
   "Wrapper of croatoan:move-window"
   (with-croatoan-window (inner window)
-    (move inner y x :relative relative)))
+    (c:move inner y x :relative relative)))
 
 (defun win-move-cursor-direction (window direction &optional (n 1))
   "Wrapper for croatoan:move-direction"
   (with-croatoan-window (inner window)
-    (move-direction inner direction n)))
+    (c:move-direction inner direction n)))
 
 (defun win-move (window x y &key relative)
   "Wrapper for croatoan:move-window"
   (with-croatoan-window (inner window)
-    (move-window inner y x :relative relative)))
+    (c:move-window inner y x :relative relative)))
 
 (defun win-resize (window width height)
   "Wrapper for croatoan:resize"
   (with-croatoan-window (inner window)
-    (resize inner height width)))
+    (c:resize inner height width)))
 
 (defun win-show (window)
   "Show a window (must be stacked, see croatoan)"
   (with-croatoan-window (inner window)
-    (setf (visiblep inner) t)))
+    (setf (c:visiblep inner) t)))
 
 (defun win-hide (window)
   "Hide a window (must be stacked, see croatoan)"
   (with-croatoan-window (inner window)
-    (setf (visiblep inner) nil)))
+    (setf (c:visiblep inner) nil)))
 
 (defun win-shown-p (window)
   "Show a window (must be stacked, see croatoan)"
   (with-croatoan-window (inner window)
-    (visiblep inner)))
+    (c:visiblep inner)))
 
 (defun win-set-background (window bg)
   "Set window background
    - window an instance of 'wrapper-window';
    - bg the returns value of 'tui-utils:make-win-background'"
   (with-croatoan-window (inner window)
-    (setf (background inner) bg)))
+    (setf (c:background inner) bg)))
 
 (defgeneric print-text (object text x y &key &allow-other-keys)
   (:documentation "Print text on object (usually a window)"))
@@ -287,9 +287,9 @@ height, position and so on)"
                                :bgcolor    bgcolor)
               x y))
 
-(defmethod print-text ((object wrapper-window) (text complex-string) x y
+(defmethod print-text ((object wrapper-window) (text c:complex-string) x y
                        &key &allow-other-keys)
-  (add (croatoan-window object) text :x x :y y))
+  (c:add (croatoan-window object) text :x x :y y))
 
 (defmethod print-text ((object wrapper-window) (text character) x y
                        &key
@@ -297,22 +297,22 @@ height, position and so on)"
                          (fgcolor    nil)
                          (bgcolor    nil)
                          &allow-other-keys)
-  (add (croatoan-window object)
-       (string text)
-       :x          x
-       :y          y
-       :attributes attributes
-       :bgcolor    bgcolor
-       :fgcolor    fgcolor))
+  (c:add (croatoan-window object)
+         (string text)
+         :x          x
+         :y          y
+         :attributes attributes
+         :bgcolor    bgcolor
+         :fgcolor    fgcolor))
 
 (defmethod print-text ((object wrapper-window) (text list) x y &key &allow-other-keys)
   (loop
      for block in text
      with current-x = x do
-       (add (croatoan-window object)
-            block
-            :x current-x
-            :y y)
+       (c:add (croatoan-window object)
+              block
+              :x current-x
+              :y y)
        (incf current-x (text-length block)))
   object)
 
@@ -375,9 +375,9 @@ height, position and so on)"
   (do-stack-element (window *window-stack*)
     (when (win-visible-p window)
       (win-touch window)
-      (mark-for-refresh (croatoan-window window)))
+      (c:mark-for-refresh (croatoan-window window)))
     (calculate window dt))
-  (refresh-marked))
+  (c:refresh-marked))
 
 (defun draw-all (&key (clear t))
    (let ((to-be-drawn (remove-intersecting-window)))
@@ -411,28 +411,27 @@ height, position and so on)"
         (refresh-config *gemini-toc-window*))))
 
 (defun cursor-show ()
-  (setf (cursor-visible-p (croatoan-window *main-window*)) t))
+  (setf (c:cursor-visible-p (croatoan-window *main-window*)) t))
 
 (defun cursor-hide ()
-  (setf (cursor-visible-p (croatoan-window *main-window*)) nil))
+  (setf (c:cursor-visible-p (croatoan-window *main-window*)) nil))
 
 (defun refresh-config-colors (window conf-key)
   (let ((bg (swconf:win-bg conf-key))
         (fg (swconf:win-fg conf-key)))
     (with-croatoan-window (croatoan-window window)
-      (setf (background croatoan-window)
-            (tui:make-win-background bg))
-      (setf (bgcolor    croatoan-window) bg)
-      (setf (fgcolor    croatoan-window) fg))
+      (setf (c:background croatoan-window) (tui:make-win-background bg))
+      (setf (c:bgcolor    croatoan-window) bg)
+      (setf (c:fgcolor    croatoan-window) fg))
     window))
 
 (defun refresh-config-sizes (window conf-key)
   (let ((raw-height (swconf:win-height conf-key))
         (raw-width  (swconf:win-width  conf-key)))
     (with-croatoan-window (croatoan-window window)
-      (resize croatoan-window
-              (main-window:parse-subwin-h raw-height)
-              (main-window:parse-subwin-w raw-width))
+      (c:resize croatoan-window
+                (main-window:parse-subwin-h raw-height)
+                (main-window:parse-subwin-w raw-width))
       window)))
 
 (defun add-flush-left-text (window message y-start
@@ -499,10 +498,9 @@ list of strings (the text lines)."
                                         (/ win-w 2))))
          (y                (truncate (- (/ (win-height screen) 2)
                                         (/ win-h 2)))))
-    (setf (background low-level-window)
-          (tui:make-win-background bg))
-    (setf (bgcolor low-level-window) bg)
-    (setf (fgcolor low-level-window) fg)
+    (setf (c:background low-level-window) (tui:make-win-background bg))
+    (setf (c:bgcolor low-level-window)    bg)
+    (setf (c:fgcolor low-level-window)    fg)
     (win-resize window win-w win-h)
     (win-move   window x y)
     (win-box window)
@@ -512,7 +510,7 @@ list of strings (the text lines)."
        for y from 1 do
          (print-text window line 1 y))
     (win-refresh window)
-    (get-char low-level-window)
+    (c:get-char low-level-window)
     (win-close window)))
 
 (defun make-dialog (parent title message color-pair
@@ -638,14 +636,14 @@ insetred by the user"
       (win-set-background window (make-win-background bg :color-fg fg))
       (add-flush-left-text window message 2 :has-border-p t)
       (win-refresh        window)
-      (setf (callback button-accept) 'accept)
-      (setf (callback button-cancel) 'cancel)
-      (setf (cursor-visible-p screen-low-level) t)
+      (setf (c:callback button-accept) 'accept)
+      (setf (c:callback button-cancel) 'cancel)
+      (setf (c:cursor-visible-p screen-low-level) t)
       (let ((res (croatoan:edit low-level-window)))
-        (setf (cursor-visible-p screen-low-level) nil)
+        (setf (c:cursor-visible-p screen-low-level) nil)
         (win-close window)
         (and res
-             (value field))))))
+             (c:value field))))))
 
 (defun make-checklist-dialog (screen parent title options)
   (with-croatoan-window (screen-low-level screen)
@@ -686,15 +684,15 @@ insetred by the user"
                                              :croatoan-window low-level-window)))
       (win-set-background window (make-win-background bg :color-fg fg))
       (win-refresh        window)
-      (setf (callback button-accept) 'accept)
-      (setf (callback button-cancel) 'cancel)
-      (setf (cursor-visible-p screen-low-level) t)
-      (let ((results (select low-level-window)))
+      (setf (c:callback button-accept) 'accept)
+      (setf (c:callback button-cancel) 'cancel)
+      (setf (c:cursor-visible-p screen-low-level) t)
+      (let ((results (c:select low-level-window)))
         (win-close window)
         (win-clear screen)
         (draw-all)
         (and results
-             (mapcar #'value results))))))
+             (mapcar #'c:value results))))))
 
 (defclass focus-marked-window ()
   ((in-focus
@@ -811,5 +809,5 @@ insetred by the user"
              (width            (- (win-width *main-window*)
                                   (win-width reference-window)))
              (x                (win-width reference-window)))
-        (resize croatoan-window (win-height window) width)
+        (c:resize croatoan-window (win-height window) width)
         (win-move window x (win-y window))))))

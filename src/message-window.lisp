@@ -303,7 +303,7 @@
 (defun make-invisible-row (original-object &optional (text ""))
   (let ((res (make-instance 'line
                             :fields      (list +row-invisible-field-key+ t)
-                            :normal-text (if (typep text 'croatoan:complex-string)
+                            :normal-text (if (typep text 'c:complex-string)
                                              text
                                              (make-tui-string text)))))
     (row-add-original-object res original-object)
@@ -420,7 +420,7 @@
                  collect
                  (text->rendered-lines-rows window i))))
 
-(defmethod text->rendered-lines-rows (window (text complex-string))
+(defmethod text->rendered-lines-rows (window (text c:complex-string))
   text)
 
 (defgeneric collect-lines-from-ir (object window &key &allow-other-keys))
@@ -519,7 +519,7 @@
 (defmethod colorize-lines ((object line))
   object)
 
-(defmethod colorize-lines ((object complex-string))
+(defmethod colorize-lines ((object c:complex-string))
   (make-instance 'line :normal-text object))
 
 (defmethod colorize-lines ((object string))

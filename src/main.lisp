@@ -34,32 +34,32 @@
 the event  that is fired  when no input  from user (key  pressed mouse
 etc.) happened"
   (windows:with-croatoan-window (croatoan-window specials:*main-window*)
-    (bind croatoan-window
-          :resize
-          (lambda (w event)
-            (declare (ignore w event))
-            (windows:refresh-config-all)
-            (windows:draw-all)))
-    (bind croatoan-window
-          t
-          (lambda (w event)
-            (declare (ignore w))
-            (incf-dt)
-            (handler-bind ((conditions:command-not-found
-                            (lambda (e)
-                              (invoke-restart 'command-window:print-error e))))
-              (command-window:manage-event event))))
+    (c:bind croatoan-window
+            :resize
+            (lambda (w event)
+              (declare (ignore w event))
+              (windows:refresh-config-all)
+              (windows:draw-all)))
+    (c:bind croatoan-window
+            t
+            (lambda (w event)
+              (declare (ignore w))
+              (incf-dt)
+              (handler-bind ((conditions:command-not-found
+                               (lambda (e)
+                                 (invoke-restart 'command-window:print-error e))))
+                (command-window:manage-event event))))
     ;; this is the main thread
-    (bind croatoan-window
-          nil
-          (lambda (w e)
-            (declare (ignore w e))
-            (incf-dt)
-            (incf-ticks)
-            (scheduled-events:run-scheduled-events *ticks*)
-            (when (not (program-events:stop-event-dispatching-p))
-              (program-events:dispatch-program-events))
-            (windows:calculate-all +dt+)))))
+    (c:bind croatoan-window
+            nil
+            (lambda (w e)
+              (declare (ignore w e))
+              (incf-dt)
+              (incf-ticks)
+              (scheduled-events:run-scheduled-events *ticks*)
+              (when (not (program-events:stop-event-dispatching-p))
+                (program-events:dispatch-program-events))
+              (windows:calculate-all +dt+)))))
 
 (defun init-i18n ()
   "Initialize i18n machinery"
@@ -187,15 +187,15 @@ etc.) happened"
 
 (defun run (draw-welcome-string)
   (windows:with-croatoan-window (croatoan-window specials:*main-window*)
-    (setf (frame-rate croatoan-window) +fps+)
+    (setf (c:frame-rate croatoan-window) +fps+)
     (db-utils:with-ready-database (:connect nil)
       (unwind-protect
            (progn
              (when draw-welcome-string
                (ui:show-welcome-window))
              (hooks:run-hooks 'hooks:*before-main-loop*)
-             (run-event-loop croatoan-window))
-        (end-screen)))))
+             (c:run-event-loop croatoan-window))
+        (c:end-screen)))))
 
 (defun load-script-file ()
   "Load (execute) a lisp file used in requests of a command line switch"
@@ -220,7 +220,7 @@ etc.) happened"
       (t
        (let ((croatoan::*debugger-hook* #'(lambda (c h)
                                              (declare (ignore h))
-                                             (end-screen)
+                                             (c:end-screen)
                                              (print c))))
          (init)
          (run first-time-starting))))))

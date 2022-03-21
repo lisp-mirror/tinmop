@@ -149,7 +149,7 @@
       (let ((height  (- (win-height *main-window*)
                         (win-height *message-window*)))
             (width   (win-width *main-window*)))
-        (resize croatoan-window height width)))
+        (c:resize croatoan-window height width)))
     (win-move object 0 0)))
 
 (defmethod calculate :after ((object filesystem-tree-window) dt)
@@ -178,8 +178,8 @@
 
 (defun treenode->selected-text (data window)
   (tui-string-apply-colors (treenode->text data window)
-                           (bgcolor window)
-                           (fgcolor window)))
+                           (c:bgcolor window)
+                           (c:fgcolor window)))
 
 (defun query-local-filesystem-path (path what)
   (case what
@@ -383,7 +383,7 @@
                      (window-width  (usable-window-width window))
                      (max-line-width nil))
                 (loop for expanded-row in expanded-rows
-                      when (> (text-width (normal-text expanded-row))
+                      when (> (c:text-width (normal-text expanded-row))
                               window-width)
                         do
                            (setf max-line-width expanded-row))

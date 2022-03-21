@@ -169,8 +169,8 @@
              (print-text object
                          (format nil "[~a] ~a" index (gemini-parser:name link))
                          1 y
-                         :bgcolor (bgcolor croatoan-window)
-                         :fgcolor (fgcolor croatoan-window)))))))
+                         :bgcolor (c:bgcolor croatoan-window)
+                         :fgcolor (c:fgcolor croatoan-window)))))))
 
 (defmethod search-row ((object open-gemini-document-link-window) regex &key (redraw t))
   (handler-case

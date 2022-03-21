@@ -57,10 +57,10 @@
                                         (/ height 2))))
            (x              (truncate (- (/ (win-width  screen) 2)
                                         (/ width 2)))))
-      (setf (background croatoan-window)
+      (setf (c:background croatoan-window)
             (tui:make-win-background bg))
-      (setf (bgcolor croatoan-window) bg)
-      (setf (fgcolor croatoan-window) fg)
+      (setf (c:bgcolor croatoan-window) bg)
+      (setf (c:fgcolor croatoan-window) fg)
       (setf style theme-style)
       (win-resize object width height)
       (win-move object x y)
@@ -77,8 +77,8 @@
   (with-accessors ((style                style)
                    (header-message-lines header-message-lines)) object
     (with-croatoan-window (croatoan-window object)
-      (let* ((bgcolor   (bgcolor croatoan-window))
-             (fgcolor   (fgcolor croatoan-window))
+      (let* ((bgcolor   (c:bgcolor croatoan-window))
+             (fgcolor   (c:fgcolor croatoan-window))
              (win-width (win-width-no-border object)))
         (loop
            for y from 1
@@ -118,8 +118,8 @@
     (refresh-config *follow-requests-window*)
     (line-oriented-window:update-all-rows *follow-requests-window*
                                           (make-rows usernames-follow-requests
-                                                     (bgcolor low-level-window)
-                                                     (fgcolor low-level-window)))
+                                                     (c:bgcolor low-level-window)
+                                                     (c:fgcolor low-level-window)))
     (setf (row-selected-index *follow-requests-window*) 0)
     *follow-requests-window*)))
 
