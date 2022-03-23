@@ -526,7 +526,7 @@ list of strings (the text lines)."
          (max-message-height (- (win-height-no-border parent)
                                 4))
          (message            (join-with-strings lines (format nil "~%")))
-         (dialog-window      (make-instance 'dialog-window
+         (dialog-window      (make-instance 'c:dialog-window
                                             :stacked              nil
                                             :center               t
                                             :message-text         message
@@ -602,22 +602,22 @@ insetred by the user"
                                                 (/ window-height 2)))
                                    (truncate (- (/ (win-width  parent) 2)
                                                 (/ window-width 2)))))
-           (button-cancel    (make-instance 'button
+           (button-cancel    (make-instance 'c:button
                                             :name     :b-cancel
                                             :title    (_ "Cancel")
                                             :position (list (truncate (1+ (* window-height
                                                                              3/4)))
                                                             2)))
-           (button-accept    (make-instance 'button
+           (button-accept    (make-instance 'c:button
                                             :name     :b-accept
                                             :title    (_ "OK")
                                             :position (list (truncate (* window-height 3/4))
                                                             2)))
-           (field            (make-instance 'field
+           (field            (make-instance 'c:field
                                             :position (list (truncate (* window-height 1/2))
                                                             2)
                                             :width    field-width))
-           (low-level-window (make-instance 'form-window
+           (low-level-window (make-instance 'c:form-window
                                             :stacked        nil
                                             :input-blocking t
                                             :width          window-width
