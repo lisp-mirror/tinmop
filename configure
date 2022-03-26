@@ -757,6 +757,7 @@ with_gnu_ld
 enable_rpath
 with_libiconv_prefix
 with_libintl_prefix
+with_ecl
 '
       ac_precious_vars='build_alias
 host_alias
@@ -1411,6 +1412,7 @@ Optional Packages:
   --without-libiconv-prefix     don't search for libiconv in includedir and libdir
   --with-libintl-prefix[=DIR]  search for libintl in DIR/include and DIR/lib
   --without-libintl-prefix     don't search for libintl in includedir and libdir
+  --with-ecl              Compile with Embedded Common Lisp compiler
 
 Some influential environment variables:
   CC          C compiler command
@@ -7105,13 +7107,20 @@ fi
 
 
 
+
+# Check whether --with-ecl was given.
+if test ${with_ecl+y}
+then :
+  withval=$with_ecl; LISP_COMPILER=$LISP_COMPILER_ECL
+fi
+
+
 if test "$LISP_COMPILER" = "no" ; then
-    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: WARNING: Can not find SBCL, Common Lisp compiler." >&5
-printf "%s\n" "$as_me: WARNING: Can not find SBCL, Common Lisp compiler." >&2;};
-    LISP_COMPILER=$LISP_COMPILER_ECL;
-    if test "$LISP_COMPILER_ECL" = "no" ; then
-        as_fn_error $? "Can not find ECL, Common Lisp compiler." "$LINENO" 5;
-    fi
+   if test "$LISP_COMPILER_ECL" != "no" ; then
+      { printf "%s\n" "$as_me:${as_lineno-$LINENO}: Unable to find SBCL but ECL seems installed on your system, try: \"./reconfigure --with-ecl\"" >&5
+printf "%s\n" "$as_me: Unable to find SBCL but ECL seems installed on your system, try: \"./reconfigure --with-ecl\"" >&6;}
+   fi
+   as_fn_error $? "Unable to find a Common Lisp compiler." "$LINENO" 5;
 fi
 
 { printf "%s\n" "$as_me:${as_lineno-$LINENO}: Using $LISP_COMPILER as Common Lisp compiler" >&5

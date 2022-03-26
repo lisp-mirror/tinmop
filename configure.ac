@@ -45,12 +45,13 @@ AC_PATH_PROG([LISP_COMPILER],[sbcl],[no])
 
 AC_PATH_PROG([LISP_COMPILER_ECL],[ecl],[no])
 
+AC_ARG_WITH([ecl], [AS_HELP_STRING([--with-ecl], [Compile with Embedded Common Lisp compiler])], [LISP_COMPILER=$LISP_COMPILER_ECL], [])
+
 if test "$LISP_COMPILER" = "no" ; then
-    AC_MSG_WARN([Can not find SBCL, Common Lisp compiler.]);
-    LISP_COMPILER=$LISP_COMPILER_ECL;
-    if test "$LISP_COMPILER_ECL" = "no" ; then
-        AC_MSG_ERROR([Can not find ECL, Common Lisp compiler.]);
-    fi
+   if test "$LISP_COMPILER_ECL" != "no" ; then
+      AC_MSG_NOTICE([Unable to find SBCL but ECL seems installed on your system, try: "./reconfigure --with-ecl"])
+   fi
+   AC_MSG_ERROR([Unable to find a Common Lisp compiler.]);
 fi
 
 AC_MSG_NOTICE([Using $LISP_COMPILER as Common Lisp compiler])
