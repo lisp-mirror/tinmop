@@ -105,43 +105,13 @@ install_quicklisp () {
 }
 
 install_dependency () {
-    # add here the lisp dependency
-    # e.g.
-    # @LISP_COMPILER@  \                   <- note the '\'
-    #  --eval "(ql:quickload \"swank\")" \ <- note the '\'
-    #  --eval "(sb-ext:quit)";             <- keep this line as latest
-    @LISP_COMPILER@  \
-     --eval "(ql:quickload \"alexandria\")"        \
-     --eval "(ql:quickload \"cl-ppcre-unicode\")"  \
-     --eval "(ql:quickload \"tooter\")"            \
-     --eval "(ql:quickload \"croatoan\")"          \
-     --eval "(ql:quickload \"osicat\")"            \
-     --eval "(ql:quickload \"cl-spark\")"          \
-     --eval "(ql:quickload \"access\")"            \
-     --eval "(ql:quickload \"sqlite\")"            \
-     --eval "(ql:quickload \"sxql\")"              \
-     --eval "(ql:quickload \"sxql-composer\")"     \
-     --eval "(ql:quickload \"marshal\")"           \
-     --eval "(ql:quickload \"bordeaux-threads\")"  \
-     --eval "(ql:quickload \"log4cl\")"            \
-     --eval "(ql:quickload \"local-time\")"        \
-     --eval "(ql:quickload \"cl-colors2\")"        \
-     --eval "(ql:quickload \"cl-i18n\")"           \
-     --eval "(ql:quickload \"clunit2\")"           \
-     --eval "(ql:quickload \"esrap\")"             \
-     --eval "(ql:quickload \"ieee-floats\")"       \
-     --eval "(ql:quickload \"parse-number\")"      \
-     --eval "(ql:quickload \"cl-html5-parser\")"   \
-     --eval "(ql:quickload \"unix-opts\")"         \
-     --eval "(ql:quickload \"crypto-shortcuts\")"  \
-     --eval "(ql:quickload \"drakma\")"            \
-     --eval "(ql:quickload \"usocket\")"           \
-     --eval "(ql:quickload \"cffi\")"              \
-     --eval "(ql:quickload \"babel\")"             \
-     --eval "(ql:quickload \"percent-encoding\")"  \
-     --eval "(ql:quickload \"trivial-clipboard\")" \
-     --eval "(ql:quickload \"purgatory\")"         \
-     --eval "(sb-ext:quit)"
+    sbcl_args=''
+    while read -r dep; do
+        sbcl_args="$sbcl_args --eval '(ql:quickload \"$dep\")'"
+    done < lisp-dependencies
+    sbcl_args="$sbcl_args --eval '(sb-ext:quit)'"
+
+    eval "@LISP_COMPILER@ $sbcl_args"
 }
 
 install_croatoan () {
