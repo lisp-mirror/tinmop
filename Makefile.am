@@ -58,6 +58,7 @@ dist_man1_MANS       = doc/tinmop.man
 
 $(PACKAGE): $(CONF_PATH_FILE) *.asd src/*
 	$(LISP_COMPILER) \
+		--eval "(push \"$$(pwd)/\" asdf:*central-registry*)" \
 		--eval "(asdf:make '$(PACKAGE) :build-pathname \"../$(PACKAGE)\")" \
 		--eval "(uiop:quit)"
 	mv src/tinmop $(PACKAGE)
