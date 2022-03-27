@@ -57,18 +57,10 @@ scripts/welcome-bot.lisp
 dist_man1_MANS       = doc/tinmop.man
 
 $(PACKAGE): $(CONF_PATH_FILE) *.asd src/*
-	if test $$(basename "$(LISP_COMPILER)") = "sbcl"; then \
-		$(LISP_COMPILER) \
-		--eval "(asdf:load-system '$(PACKAGE))" \
-		--eval "(in-package main)" \
-		--eval "(sb-ext:save-lisp-and-die \"$(PACKAGE)\" :toplevel 'main::main :executable t :purify t :save-runtime-options t)"; \
-	else \
-		$(LISP_COMPILER) \
-		--eval "(asdf:load-system '$(PACKAGE))" \
-		--eval "(in-package main)" \
-		--eval "(asdf:make-build :tinmop :type :program :move-here #P\"./\" :epilogue-code '(main::main))" \
-		--eval "(si:exit)"; \
-	fi
+	$(LISP_COMPILER) \
+		--eval "(asdf:make '$(PACKAGE) :build-pathname \"../$(PACKAGE)\")" \
+		--eval "(uiop:quit)"
+	mv src/tinmop $(PACKAGE)
 $(CONF_PATH_FILE):
 	grep "^;" $(CONF_PATH_FILE_IN)                          >  $(CONF_PATH_FILE)
 	echo -e "(in-package :config)\n"                        >> $(CONF_PATH_FILE);

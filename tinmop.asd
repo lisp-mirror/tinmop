@@ -53,6 +53,8 @@
                :percent-encoding
                :trivial-clipboard
                :uiop)
+  :entry-point "main::main"
+  :build-operation program-op
   :components ((:file "package")
                (:file "idn")
                (:file "config")
