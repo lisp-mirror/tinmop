@@ -731,36 +731,43 @@
     :reader    use-ui-notification-p
     :writer   use-ui-notification)))
 
+(defmacro with-sending-message-data ((message-body subject reply-to mentions visibility)
+                                     &body body)
+  (with-gensyms (send-win message-data)
+    `(let ((,send-win specials:*send-message-window*))
+       (with-accessors ((,message-data sending-message:message-data)) ,send-win
+         (with-accessors ((,message-body sending-message:body)
+                          (,subject      sending-message:subject)
+                          (,reply-to     sending-message:reply-to)
+                          (,mentions     sending-message:mentions)
+                          (,visibility   sending-message:visibility)) ,message-data
+           ,@body)))))
+
 (defmethod process-event ((object send-message-event))
   (let ((send-win specials:*send-message-window*))
-    (with-accessors ((message-data sending-message:message-data)) send-win
-      (with-accessors ((body       sending-message:body)
-                       (subject    sending-message:subject)
-                       (reply-to   sending-message:reply-to)
-                       (mentions   sending-message:mentions)
-                       (visibility sending-message:visibility)) message-data
-        (let* ((attachments (line-oriented-window:map-rows send-win
-                                                           #'line-oriented-window:normal-text)))
-          (hooks:run-hook 'hooks:*before-sending-message* object)
-          (msg-utils:maybe-crypt-message send-win
-                                         :notify-cant-crypt (use-ui-notification-p object))
-          (let ((exceeding-characters (ui:message-exceeds-server-limit-p body)))
-            (if exceeding-characters
-                (ui:exceeding-characters-notify exceeding-characters)
-                (let ((actual-message-body (if (text-utils:string-not-empty-p mentions)
-                                               (format nil
-                                                       "~a~a~%~a"
-                                                       +mention-prefix+
-                                                       mentions
-                                                       body)
-                                               body)))
-                  (client:send-status actual-message-body
-                                      reply-to
-                                      attachments
-                                      subject
-                                      (make-keyword (string-upcase visibility)))
-                  (ui:notify (_ "Message sent."))
-                  (ui:close-send-message-window)))))))))
+    (with-sending-message-data (body subject reply-to mentions visibility)
+      (let* ((attachments (line-oriented-window:map-rows send-win
+                                                         #'line-oriented-window:normal-text)))
+        (hooks:run-hook 'hooks:*before-sending-message* object)
+        (msg-utils:maybe-crypt-message send-win
+                                       :notify-cant-crypt (use-ui-notification-p object))
+        (let ((exceeding-characters (ui:message-exceeds-server-limit-p body)))
+          (if exceeding-characters
+              (ui:exceeding-characters-notify exceeding-characters)
+              (let ((actual-message-body (if (text-utils:string-not-empty-p mentions)
+                                             (format nil
+                                                     "~a~a~%~a"
+                                                     +mention-prefix+
+                                                     mentions
+                                                     body)
+                                             body)))
+                (client:send-status actual-message-body
+                                    reply-to
+                                    attachments
+                                    subject
+                                    (make-keyword (string-upcase visibility)))
+                (ui:notify (_ "Message sent."))
+                (ui:close-send-message-window))))))))
 
 (defun find-user-id-from-exact-acct (username)
   (when-let* ((remote-accounts-matching (api-client:search-user username

@@ -1491,6 +1491,7 @@
    :open-send-message-window-event
    :send-message-add-attachment-event
    :send-message-event
+   :with-sending-message-data
    :use-ui-notification
    :follow-user-event
    :unfollow-user-event
@@ -1667,6 +1668,7 @@
    :*before-quit*
    :*before-rendering-message-text*
    :*before-rendering-message-visible-rows*
+   :*before-composing-message*
    :*before-sending-message*
    :*skip-message-hook*
    :*after-saving-message*

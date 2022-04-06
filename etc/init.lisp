@@ -751,3 +751,34 @@
 ;;                               (trimmed     (text-utils:trim-blanks text))
 ;;                               (word-counts (length (text-utils:split-words trimmed))))
 ;;                     (< word-counts 10))))
+
+;;; this hook will remove the footnotes to link in the message added by tinmop
+
+(hooks:add-hook 'hooks:*before-composing-message*
+                (lambda (file)
+                  (let* ((lines                 (text-utils:split-lines (fs:slurp-file file)))
+                         (re-footnote-reference (cl-ppcre:create-scanner "\\[[0-9]+\\]"))
+                         (re-footnote           (cl-ppcre:create-scanner
+                                                (text-utils:strcat (swconf:quote-char)
+                                                                   "\\[[0-9]+\\]"
+                                                                   ".+")))
+                         (clean-lines (loop for line in lines
+                                            collect
+                                            (progn
+                                              (setf line
+                                                    (cl-ppcre:regex-replace-all re-footnote
+                                                                                line
+                                                                                ""))
+                                              (setf line
+                                                    (cl-ppcre:regex-replace-all re-footnote-reference
+                                                                                line
+                                                                                ""))
+                                              line))))
+                    (with-open-file (stream
+                                     file
+                                     :direction :output
+                                     :if-does-not-exist :error
+                                     :if-exists         :supersede)
+                      (loop for line in clean-lines do
+                        (format stream "~a~%" line))))
+                  file))

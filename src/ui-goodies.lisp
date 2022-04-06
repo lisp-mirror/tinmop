@@ -1251,6 +1251,7 @@ If some posts was deleted before, download them again."
                (insert-header-text temp-file)
                (prepare-reply-body temp-file)
                (add-signature temp-file)
+               (hooks:run-hook 'hooks:*before-composing-message* temp-file)
                (let ((reference-open-file (get-universal-time)))
                  (croatoan:end-screen)
                  (tui:with-notify-errors

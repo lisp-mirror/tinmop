@@ -93,6 +93,11 @@ non-nil.")
   message on  a message-window  (parameters the  visible rows  and the
   message window")
 
+(defparameter *before-composing-message* '()
+  "Run this hooks before composing the message, this means sending the
+  message to the chosen editor, th  the function takes the path of the
+  file where the message's contents is stored")
+
 (defparameter *before-sending-message* '()
   "Run this  hooks before sending  the message, note that  the message
   could  be encrypted  after this  hooks  runs, the  function takes  a
