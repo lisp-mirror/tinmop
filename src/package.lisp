@@ -1788,6 +1788,7 @@
    :win-fgcolor
    :win-refresh
    :win-close
+   :maybe-close-window
    :win-raise-to-top
    :win-move-cursor
    :win-move-cursor-direction

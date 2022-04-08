@@ -197,7 +197,10 @@
       (ui:error-message (_ "Invalid regular expression")))))
 
 (defun init-gemini-links (links &key (title (_ "Links")) (center-position nil))
+  "Note  that no  more that  one link  window can  be presents  on the
+screen."
   (let* ((low-level-window (make-croatoan-window :enable-function-keys t)))
+    (maybe-close-window *open-message-link-window*)
     (setf *open-message-link-window*
           (make-instance 'open-gemini-document-link-window
                          :center-position        center-position
@@ -284,6 +287,7 @@
 
 (defun init-chat-links (links)
   (let* ((low-level-window (make-croatoan-window :enable-function-keys t)))
+    (maybe-close-window *open-message-link-window*)
     (setf *open-message-link-window*
           (make-instance 'open-chat-document-link-window
                          :top-row-padding        0

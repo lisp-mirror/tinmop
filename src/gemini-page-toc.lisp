@@ -100,6 +100,7 @@
 
 (defun open-toc-window (gemini-window)
   (let* ((low-level-window (make-croatoan-window :enable-function-keys t)))
+    (maybe-close-window *gemini-toc-window*)
     (setf *gemini-toc-window*
           (make-instance 'gemini-toc-window
                          :title             (_ "Table of contents")

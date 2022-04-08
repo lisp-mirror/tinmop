@@ -99,7 +99,7 @@
   (win-show object))
 
 (defmethod print-object ((object wrapper-window) stream)
-  (print-unreadable-object (object stream :type t :identity nil)))
+  (print-unreadable-object (object stream :type t :identity t)))
 
 (defmacro with-croatoan-window ((slot window) &body body)
   `(with-accessors ((,slot croatoan-window)) ,window
@@ -166,6 +166,12 @@ height, position and so on)"
   (with-croatoan-window (croatoan-window window)
     (stack-remove-element *window-stack* window)
     (close croatoan-window)))
+
+(defun maybe-close-window (win)
+  "close `win' if it is a wrapper-window"
+  (and win
+       (typep win 'wrapper-window)
+       (win-close win)))
 
 (defun win-raise-to-top (window)
   (stack-raise-to-top *window-stack* window))
