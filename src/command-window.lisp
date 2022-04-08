@@ -557,9 +557,7 @@ command line."
               (when 'hooks:*after-char-to-command-window*
                 (hooks:run-hook 'hooks:*after-char-to-command-window*
                                 command-window))
-              (show-candidate-completion command-window))))
-          (t
-           (misc:dbg "unknow ~s ~a" decoded-event (type-of decoded-event)))))))
+              (show-candidate-completion command-window))))))))
   command-window)
 
 (defun set-input-mode (win mode suggestions-cached-win)
