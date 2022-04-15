@@ -193,6 +193,9 @@
 (defun generate-filesystem-window-handlers (path host port
                                             query fragment
                                             client-certificate client-key)
+  (setf 9p:*tag*           8)
+  (setf 9p:*fid*           1)
+  (setf 9p:*messages-sent* '())
   (with-open-ssl-stream (stream socket host port client-certificate client-key)
     (let* ((*stream*   stream)
            (*root-fid* (9p:mount *stream* "/")))
