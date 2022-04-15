@@ -487,9 +487,9 @@ will fire the `callback' function (with the selected field from `all-fields'
                                  (+ (find-max-line-width text-lines)
                                     2)))
          (window-height     (min (truncate (* 0.9 (win-height screen)))
-                                 (max (length text-lines)
-                                      (+ +min-shown-win-height+
-                                         2))))
+                                 (+ (max (length text-lines)
+                                         +min-shown-win-height+)
+                                         2)))
          (window-x          (truncate (- (* 0.5 (win-width screen))
                                          (* 0.5 window-width))))
          (window-y          (truncate (- (* 0.5 (win-height screen))
@@ -501,10 +501,20 @@ will fire the `callback' function (with the selected field from `all-fields'
                                            :uses-border-p     t
                                            :croatoan-window   low-level-window)))
     (flet ((draw ()
-             (win-clear high-level-window :redraw nil)
-             (draw high-level-window)
-             (win-box high-level-window)
-             (print-text high-level-window title 2 0)))
+             (let ((pages-count-line (format nil
+                                             "~a/~a"
+                                             (row-selected-index high-level-window)
+                                             (length text-lines))))
+               (win-clear high-level-window :redraw nil)
+               (draw high-level-window)
+               (win-box high-level-window)
+               (print-text high-level-window title 2 0)
+               (print-text high-level-window
+                           pages-count-line
+                           (- (win-width high-level-window)
+                              (length pages-count-line)
+                              1)
+                           (1- (win-height high-level-window))))))
       (setf (c:background low-level-window) (tui:make-win-background bg))
       (setf (c:fgcolor low-level-window) fg)
       (win-resize high-level-window window-width window-height)
