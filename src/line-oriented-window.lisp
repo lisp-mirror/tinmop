@@ -470,7 +470,7 @@ this exact quantity would go beyond the length or rows or zero."
                               :fgcolor (normal-fg row))))
           (let* ((current-selected (1+ (row-selected-index object)))
                  (pages-count-line (text-ellipsis (format nil
-                                                          "line ~a of ~a"
+                                                          (_ "line ~a of ~a")
                                                           current-selected
                                                           (rows-length object))
                                                   (win-width-no-border object)))

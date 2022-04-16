@@ -659,7 +659,6 @@
 
 (define-key "j"         #'chat-list-go-down                             *chats-list-keymap*)
 
-
 ;; chat  window
 
 (defun write-to-chat ()
