@@ -467,7 +467,21 @@ this exact quantity would go beyond the length or rows or zero."
                                               max-line-size)
                               x y
                               :bgcolor (normal-bg row)
-                              :fgcolor (normal-fg row)))))))))
+                              :fgcolor (normal-fg row))))
+          (let* ((current-selected (1+ (row-selected-index object)))
+                 (pages-count-line (text-ellipsis (format nil
+                                                          "line ~a of ~a"
+                                                          current-selected
+                                                          (rows-length object))
+                                                  (win-width-no-border object)))
+                 (x-count-line     (- (win-width object)
+                                      (length pages-count-line)
+                                      1))
+                 (y-count-line     (1- (win-height object))))
+            (print-text object
+                        pages-count-line
+                        x-count-line
+                        y-count-line)))))))
 
 (defgeneric resync-rows-db (object &key redraw)
   (:documentation "Synchronize information table slot of `object` with
@@ -501,20 +515,9 @@ will fire the `callback' function (with the selected field from `all-fields'
                                            :uses-border-p     t
                                            :croatoan-window   low-level-window)))
     (flet ((draw ()
-             (let ((pages-count-line (format nil
-                                             "~a/~a"
-                                             (row-selected-index high-level-window)
-                                             (length text-lines))))
-               (win-clear high-level-window :redraw nil)
-               (draw high-level-window)
-               (win-box high-level-window)
-               (print-text high-level-window title 2 0)
-               (print-text high-level-window
-                           pages-count-line
-                           (- (win-width high-level-window)
-                              (length pages-count-line)
-                              1)
-                           (1- (win-height high-level-window))))))
+             (win-clear high-level-window :redraw nil)
+             (draw high-level-window)
+             (print-text high-level-window title 2 0)))
       (setf (c:background low-level-window) (tui:make-win-background bg))
       (setf (c:fgcolor low-level-window) fg)
       (win-resize high-level-window window-width window-height)
