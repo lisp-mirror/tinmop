@@ -468,20 +468,20 @@ this exact quantity would go beyond the length or rows or zero."
                               x y
                               :bgcolor (normal-bg row)
                               :fgcolor (normal-fg row))))
-          (let* ((current-selected (1+ (row-selected-index object)))
-                 (pages-count-line (text-ellipsis (format nil
-                                                          (_ "line ~a of ~a")
-                                                          current-selected
-                                                          (rows-length object))
-                                                  (win-width-no-border object)))
-                 (x-count-line     (- (win-width object)
-                                      (length pages-count-line)
-                                      1))
-                 (y-count-line     (1- (win-height object))))
-            (print-text object
-                        pages-count-line
-                        x-count-line
-                        y-count-line)))))))
+          (when (> (rows-length object) 0)
+            (let* ((current-selected (1+ (row-selected-index object)))
+                   (pages-count-line (format nil
+                                             (_ "line ~a of ~a")
+                                             current-selected
+                                             (rows-length object)))
+                   (x-count-line     (- (win-width object)
+                                        (length pages-count-line)
+                                        1))
+                   (y-count-line     (1- (win-height object))))
+              (print-text object
+                          (text-ellipsis pages-count-line (win-width-no-border object))
+                          x-count-line
+                          y-count-line))))))))
 
 (defgeneric resync-rows-db (object &key redraw)
   (:documentation "Synchronize information table slot of `object` with
