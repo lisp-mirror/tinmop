@@ -581,9 +581,11 @@
 (defun copy-to-clipboard (window)
   (ui:copy-link-to-clipboard window))
 
-(define-key "C-c"       (lambda ()
-                          (copy-link-to-clipboard specials:*open-attach-window*))
-  *open-attach-keymap*)
+(defun copy-from-attach-window-to-clipboard ()
+  "Copy the selected link to clipboard"
+  (copy-link-to-clipboard specials:*open-attach-window*))
+
+(define-key "C-c"       #'copy-from-attach-window-to-clipboard          *open-attach-keymap*)
 
 (define-key "C-J"       #'open-message-attach-perform-opening           *open-attach-keymap*)
 
@@ -603,9 +605,11 @@
 
 (define-key "C-J"       #'open-message-link-perform-opening             *open-message-link-keymap*)
 
-(define-key "C-c"        (lambda ()
-                          (copy-link-to-clipboard specials:*open-message-link-window*))
-  *open-message-link-keymap*)
+(defun copy-from-message-link-to-clipboard ()
+  "Copy the selected link to clipboard"
+  (copy-link-to-clipboard specials:*open-message-link-window*))
+
+(define-key "C-c"       #'copy-from-message-link-to-clipboard           *open-message-link-keymap*)
 
 (define-key "up"        #'open-message-link-go-up                       *open-message-link-keymap*)
 

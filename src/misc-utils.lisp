@@ -118,12 +118,13 @@
 (defun function-name (data)
   "Implementation dependent"
   (assert (functionp data))
-  (multiple-value-bind (x y name)
-      (function-lambda-expression data)
-    (declare (ignore x y))
-    (if name
-        (string-downcase (symbol-name name))
-        data)))
+  (conditions:with-default-on-error ((_ "Anonymous function"))
+    (multiple-value-bind (x y name)
+        (function-lambda-expression data)
+      (declare (ignore x y))
+      (if name
+          (string-downcase (symbol-name name))
+          data))))
 
 (defmacro fn-delay (a)
   (if (symbolp a)
