@@ -114,9 +114,8 @@
 
 (defmacro set-option-variable (options option-name option-variable)
   (with-gensyms (option-value)
-    `(let ((,option-value (getf ,options ,option-name)))
-       (when ,option-value
-         (setf ,option-variable ,option-value)))))
+    `(alexandria:when-let ((,option-value (getf ,options ,option-name)))
+       (setf ,option-variable ,option-value))))
 
 (defun manage-opts ()
   (handler-bind ((opts:unknown-option          #'exit-on-error)
