@@ -118,7 +118,7 @@
 (defun function-name (data)
   "Implementation dependent"
   (assert (functionp data))
-  (conditions:with-default-on-error ((_ "Anonymous function"))
+  (conditions:with-default-on-error ((config:_ "Anonymous function"))
     (multiple-value-bind (x y name)
         (function-lambda-expression data)
       (declare (ignore x y))
