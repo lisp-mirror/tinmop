@@ -2696,6 +2696,20 @@ printed, on the main window."
               (avatar-url   (db:row-avatar account)))
     (open-attach-window:open-attachment avatar-url)))
 
+(defmacro with-notify-kami-error (&body body)
+  `(handler-bind ((purgatory:9p-error
+                    (lambda (e)
+                      (ui:notify (format nil (_ "Error: ~a") e)
+                                 :life     (* (swconf:config-notification-life) 5)
+                                 :as-error t)
+                      (invoke-restart 'purgatory:ignore-error e)))
+                  (error
+                    (lambda (e)
+                      (ui:notify (format nil (_ "Error: ~a") e)
+                                 :life     (* (swconf:config-notification-life) 5)
+                                 :as-error t))))
+    ,@body))
+
 (defun open-file-explorer (&optional (root "/"))
   (with-enqueued-process ()
     (let ((actual-root (fs:prepend-pwd root)))
@@ -2704,7 +2718,7 @@ printed, on the main window."
 
 (defun open-kami-address (url)
   (with-enqueued-process ()
-    (tui:with-notify-errors
+    (with-notify-kami-error
       (let ((handlers (kami:iri->filesystem-window-handlers url)))
         (if handlers
             (let* ((path          (uri:path (iri:iri-parse url)))
@@ -2745,7 +2759,7 @@ printed, on the main window."
                (when y-pressed-p
                  (info-message (format nil (_"deleting ~a") path))
                  (with-enqueued-process ()
-                   (tui:with-notify-errors
+                   (with-notify-kami-error
                      (fstree:delete-treenode win path)))))))
       (ask-string-input #'on-input-complete
                         :prompt
@@ -2759,7 +2773,7 @@ printed, on the main window."
     (flet ((on-input-complete (new-path)
              (when (string-not-empty-p new-path)
                (with-enqueued-process ()
-                 (tui:with-notify-errors
+                 (with-notify-kami-error
                    (fstree:rename-treenode win path new-path))))))
       (ask-string-input #'on-input-complete
                         :prompt
@@ -2772,7 +2786,7 @@ printed, on the main window."
   "Download a file"
   (when-let* ((win *filesystem-explorer-window*))
     (labels ((%download (win path destination-file)
-               (with-notify-errors
+               (with-notify-kami-error
                  (fstree:download-path win path destination-file)))
              (on-input-complete (destination-file)
                (when (string-not-empty-p destination-file)
@@ -2829,7 +2843,7 @@ Note: existing file will be overwritten."
                                                                  (_"downloading ~a → ~a")
                                                                  remote-file
                                                                  local-file))
-                                           (tui:with-notify-errors
+                                           (with-notify-kami-error
                                              (fstree:download-path win
                                                                    remote-file
                                                                    local-file))))
@@ -2879,7 +2893,7 @@ Note: existing file will be overwritten."
                                                                  (_"downloading ~a → ~a")
                                                                  source
                                                                  destination))
-                                               (tui:with-notify-errors
+                                               (with-notify-kami-error
                                                  (fstree:upload-path win
                                                                      source
                                                                      destination))))
@@ -2900,7 +2914,7 @@ Note: existing file will be overwritten."
              (when (string-not-empty-p new-path)
                (with-enqueued-process ()
                  (let ((dirp (fs:extension-dir-p new-path)))
-                   (tui:with-notify-errors
+                   (with-notify-kami-error
                      (fstree:create-treenode win new-path dirp)))))))
       (ask-string-input #'on-input-complete
                         :prompt        (_ "Create: ")
@@ -3027,7 +3041,7 @@ if the selected item represents a directory."
   (when-let* ((win    *filesystem-explorer-window*)
               (fields (line-oriented-window:selected-row-fields win))
               (path   (fstree:tree-path  fields)))
-    (tui:with-notify-errors
+    (with-notify-kami-error
       (fstree:open-node win path))))
 
 (defun file-explorer-node-details ()
@@ -3056,7 +3070,7 @@ if the selected item represents a directory."
   (let* ((win    *filesystem-explorer-window*)
          (fields (line-oriented-window:selected-row-fields win))
          (path   (fstree:tree-path  fields)))
-    (tui:with-notify-errors
+    (with-notify-kami-error
       (fstree:edit-node win path)
       (info-message (format nil (_ "File ~s was modified on server") path)))))
 
