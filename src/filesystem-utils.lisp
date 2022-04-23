@@ -390,8 +390,8 @@
   (dolist (temporary-file *temporary-files-created*)
     (delete-file-if-exists temporary-file)))
 
-(defmacro with-anaphoric-temp-file ((stream &key (prefix nil) (unlink nil)) &body body)
-  `(let ((temp-file (temporary-file ,prefix))) ; anaphora
+(defmacro with-anaphoric-temp-file ((stream &key  (unlink nil)) &body body)
+  `(let ((temp-file (temporary-file))) ; anaphora
        (unwind-protect
             (with-open-file (,stream temp-file
                                      :element-type      '(unsigned-byte 8)

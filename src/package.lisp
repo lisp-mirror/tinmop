@@ -751,7 +751,8 @@
    :cl
    :alexandria)
   (:export
-   :dump-certificate))
+   :dump-certificate
+   :certificate-fingerprint))
 
 (defpackage :db-utils
   (:use
@@ -2821,6 +2822,7 @@
    :gemini-streams-window-open-stream
    :gemini-refresh-page
    :gemini-subscribe-gemlog
+   :gemini-certificate-information
    :gemini-open-gemlog-window
    :gemlogs-subscription-go-up
    :gemlogs-subscription-go-down

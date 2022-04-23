@@ -1563,6 +1563,21 @@ certificate).
                       :prompt      (_ "Delete this certificate? [Y/n] ")
                       :complete-fn #'complete:complete-always-empty)))
 
+(defun gemini-certificate-information ()
+  (when-let* ((selected-row (line-oriented-window:selected-row-fields
+                             *gemini-certificates-window*))
+              (cache-key    (db:row-cache-key selected-row))
+              (pem-file     (gemini-client::tls-cert-find cache-key)))
+    (with-enqueued-process ()
+      (let ((fingerprint (x509:certificate-fingerprint pem-file)))
+        (windows:make-blocking-message-dialog specials:*main-window*
+                                              nil
+                                              (_ "Certificate information")
+                                              (list (_ "Certificate fingerprint (Kami ID):")
+                                                    fingerprint)
+                                              (swconf:win-bg swconf:+key-help-dialog+)
+                                              (swconf:win-fg swconf:+key-help-dialog+))))))
+
 (defun gemini-open-gemlog-window ()
   "Open a window with all the  gemlog subscribed."
   (gemini-subscription-window:open-gemini-subscription-window)

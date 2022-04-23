@@ -27,9 +27,40 @@
                (cffi:with-foreign-object (buf** :pointer)
                  (setf (cffi:mem-ref buf** :pointer) buf*)
                  (i2d-x509 cert buf**)
-                 (let* ((data (loop for i from 0 below certificate-length collect
-                                                                          (cffi:mem-aref buf* :unsigned-char i)))
+                 (let* ((data (loop for i from 0 below certificate-length
+                                    collect
+                                    (cffi:mem-aref buf* :unsigned-char i)))
                         (res  (misc:make-fresh-array certificate-length 0 '(unsigned-byte 8) t)))
                    (misc:copy-list-into-array data res)
                    res))))
-      (cl+ssl::x509-free cert))))
+      (cl+ssl:x509-free cert))))
+
+
+(defun pem->der (pem-file)
+  (handler-case
+      (let* ((raw     (fs:slurp-file pem-file))
+             (encoded (cl-ppcre:regex-replace-all "-----(BEGIN|END) CERTIFICATE-----" raw ""))
+             (decoded (base64:base64-string-to-usb8-array encoded)))
+        (fs:with-anaphoric-temp-file (stream)
+          (write-sequence decoded stream)
+          filesystem-utils::temp-file))
+   (error () pem-file)))
+
+(defgeneric certificate-fingerprint (object &key hash-algorithm))
+
+(defmacro decode-fingerprint (cert hash-algorithm)
+  (alexandria:with-gensyms (hash hash-string algo-string)
+    `(unwind-protect
+          (let* ((,hash        (cl+ssl:certificate-fingerprint ,cert ,hash-algorithm))
+                 (,hash-string (format nil "~{~2,'0x~}" (map 'list #'identity ,hash)))
+                 (,algo-string (format nil "~:@(~a~)" ,hash-algorithm)))
+            (text-utils:strcat ,algo-string ":" (string-downcase ,hash-string)))
+       (cl+ssl:x509-free ,cert))))
+
+(defmethod certificate-fingerprint ((object cl+ssl::ssl-stream) &key (hash-algorithm :sha256))
+  (let* ((cert (cl+ssl:ssl-stream-x509-certificate object)))
+    (decode-fingerprint cert hash-algorithm)))
+
+(defmethod certificate-fingerprint ((object string) &key (hash-algorithm :sha256))
+  (let* ((cert (cl+ssl:decode-certificate-from-file (pem->der object) :format :der)))
+    (decode-fingerprint cert hash-algorithm)))

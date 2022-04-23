@@ -506,7 +506,9 @@
 
 (define-key "q"         #'gemini-close-certificate-window            *gemini-certificates-keymap*)
 
-(define-key "C-J"       #'gemini-delete-certificate                  *gemini-certificates-keymap*)
+(define-key "d"         #'gemini-delete-certificate                  *gemini-certificates-keymap*)
+
+(define-key "C-J"       #'gemini-certificate-information             *gemini-certificates-keymap*)
 
 ;; gemini subscription window
 

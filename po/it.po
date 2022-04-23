@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tinmop 0.0.1\n"
 "Report-Msgid-Bugs-To: https://notabug.org/cage/tinmop/\n"
-"POT-Creation-Date: 2022-04-16 12:19+0200\n"
+"POT-Creation-Date: 2022-04-22 11:33+0200\n"
 "PO-Revision-Date: 2022-04-16 12:19+0200\n"
 "Last-Translator: cage <cage@invalid.org>\n"
 "Language-Team: Italian\n"
@@ -169,11 +169,11 @@ msgstr "Carica un modulo"
 msgid "MODULE-FILE"
 msgstr "FILE-DEL-MODULO"
 
-#: src/command-line.lisp:130
+#: src/command-line.lisp:129
 msgid "Usage"
 msgstr "Uso"
 
-#: src/command-line.lisp:131
+#: src/command-line.lisp:130
 msgid "Available options"
 msgstr "Opzioni diponibili"
 
@@ -306,6 +306,7 @@ msgid "Redirects to ~s, follows redirect? [y/N] "
 msgstr "Seguire la redirezione a ~s? [s/N] "
 
 #: src/gemini-viewer.lisp:744 src/tui-utils.lisp:504 src/tui-utils.lisp:514
+#: src/ui-goodies.lisp:2702 src/ui-goodies.lisp:2708
 #, lisp-format
 msgid "Error: ~a"
 msgstr "Errore: ~a"
@@ -361,7 +362,7 @@ msgstr "Biblioteca dei gempub"
 msgid "No address found"
 msgstr "nessun indirizzo trovato"
 
-#: src/kami/client.lisp:175
+#: src/kami/client.lisp:197
 #, lisp-format
 msgid "User: ~a Group: ~a Others ~a"
 msgstr "\"Utente: ~a Gruppo: ~a Altri: ~a\""
@@ -479,7 +480,7 @@ msgstr "Aiuto rapido"
 msgid "invalid regular expression ~s ~a"
 msgstr "Espressione regolare non valida ~s ~a"
 
-#: src/line-oriented-window.lisp:473
+#: src/line-oriented-window.lisp:474
 #, lisp-format
 msgid "line ~a of ~a"
 msgstr "linea ~a di ~a"
@@ -1509,154 +1510,154 @@ msgstr "eval: "
 msgid "load file: "
 msgstr "Carica il file: "
 
-#: src/ui-goodies.lisp:2722
+#: src/ui-goodies.lisp:2736
 #, lisp-format
 msgid "~s is not a valid kami address"
 msgstr "~s non è un indirizzo kami valido"
 
-#: src/ui-goodies.lisp:2746
+#: src/ui-goodies.lisp:2760
 #, lisp-format
 msgid "deleting ~a"
 msgstr "cancell ~a"
 
-#: src/ui-goodies.lisp:2752
+#: src/ui-goodies.lisp:2766
 #, lisp-format
 msgid "Delete ~a? [y/N] "
 msgstr "Cancella ~a? [s/N] "
 
-#: src/ui-goodies.lisp:2766
+#: src/ui-goodies.lisp:2780
 #, lisp-format
 msgid "Rename ~a to: "
 msgstr "Rinomina ~a a: "
 
-#: src/ui-goodies.lisp:2784
+#: src/ui-goodies.lisp:2798
 #, lisp-format
 msgid "Starting download of ~a"
 msgstr "Avvio il download di ~a"
 
-#: src/ui-goodies.lisp:2785
+#: src/ui-goodies.lisp:2799
 #, lisp-format
 msgid "Download completed in ~a"
 msgstr "Scaricamento di ~a completato"
 
-#: src/ui-goodies.lisp:2792
+#: src/ui-goodies.lisp:2806
 #, lisp-format
 msgid "Download ~a to: "
 msgstr "Scarica ~a in: "
 
-#: src/ui-goodies.lisp:2809
+#: src/ui-goodies.lisp:2823
 msgid "Download: "
 msgstr "Scarica: "
 
-#: src/ui-goodies.lisp:2829 src/ui-goodies.lisp:2879 src/ui-goodies.lisp:3124
+#: src/ui-goodies.lisp:2843 src/ui-goodies.lisp:2893 src/ui-goodies.lisp:3138
 #, lisp-format
 msgid "downloading ~a → ~a"
 msgstr "Scaricamento di ~a → ~a"
 
-#: src/ui-goodies.lisp:2838 src/ui-goodies.lisp:3133
+#: src/ui-goodies.lisp:2852 src/ui-goodies.lisp:3147
 msgid "Downloading completed."
 msgstr "Scaricamento completato."
 
-#: src/ui-goodies.lisp:2843
+#: src/ui-goodies.lisp:2857
 msgid "Save downloaded files in directory: "
 msgstr "Salva i file scaricati nella directory: "
 
-#: src/ui-goodies.lisp:2888 src/ui-goodies.lisp:3096
+#: src/ui-goodies.lisp:2902 src/ui-goodies.lisp:3110
 msgid "Uploading completed."
 msgstr "Caricamento completato."
 
-#: src/ui-goodies.lisp:2891 src/ui-goodies.lisp:3098
+#: src/ui-goodies.lisp:2905 src/ui-goodies.lisp:3112
 msgid "Upload: "
 msgstr "Carica: "
 
-#: src/ui-goodies.lisp:2906
+#: src/ui-goodies.lisp:2920
 msgid "Create: "
 msgstr "Crea: "
 
-#: src/ui-goodies.lisp:2928
+#: src/ui-goodies.lisp:2942
 msgid "Search for: "
 msgstr "Criterio di ricerca: "
 
-#: src/ui-goodies.lisp:2956
+#: src/ui-goodies.lisp:2970
 #, lisp-format
 msgid "Invalid regular expression ~a"
 msgstr "Espressione regolare non valida ~a"
 
-#: src/ui-goodies.lisp:2961
+#: src/ui-goodies.lisp:2975
 #, lisp-format
 msgid "Marked ~a item"
 msgid_plural "Marked ~a items"
 msgstr[0] "Selezionato ~a elemento"
 msgstr[1] "Selezionati ~a elementi"
 
-#: src/ui-goodies.lisp:2966
+#: src/ui-goodies.lisp:2980
 msgid "Mark items matching: "
 msgstr "Seleziona elementi che soddisfano la seguente espressione regolare:"
 
-#: src/ui-goodies.lisp:2974
+#: src/ui-goodies.lisp:2988
 #, lisp-format
 msgid "deleting ~a (~a of ~a)"
 msgstr "cancellazione di ~a (~a di ~a)"
 
-#: src/ui-goodies.lisp:2981
+#: src/ui-goodies.lisp:2995
 #, lisp-format
 msgid "Preparing to delete ~a"
 msgstr "Preparazione alla cancellazione di ~a"
 
-#: src/ui-goodies.lisp:2991
+#: src/ui-goodies.lisp:3005
 msgid "Completed"
 msgstr "Compito completato"
 
-#: src/ui-goodies.lisp:2994
+#: src/ui-goodies.lisp:3008
 #, lisp-format
 msgid "Delete ~a? "
 msgstr "Cancella ~a? "
 
-#: src/ui-goodies.lisp:3011
+#: src/ui-goodies.lisp:3025
 msgid "Delete marked items? "
 msgstr "Cancella gli elementi selezionati? "
 
-#: src/ui-goodies.lisp:3045
+#: src/ui-goodies.lisp:3059
 #, lisp-format
 msgid "Details of: ~a"
 msgstr "Dettagli di: ~a"
 
-#: src/ui-goodies.lisp:3046
+#: src/ui-goodies.lisp:3060
 msgid "Type"
 msgstr "Tipo"
 
-#: src/ui-goodies.lisp:3048
+#: src/ui-goodies.lisp:3062
 msgid "Size"
 msgstr "Dimensione"
 
-#: src/ui-goodies.lisp:3050
+#: src/ui-goodies.lisp:3064
 msgid "Permissions"
 msgstr "Permessi"
 
-#: src/ui-goodies.lisp:3061
+#: src/ui-goodies.lisp:3075
 #, lisp-format
 msgid "File ~s was modified on server"
 msgstr "Il file ~s è stato modificato sul server"
 
-#: src/ui-goodies.lisp:3088
+#: src/ui-goodies.lisp:3102
 #, lisp-format
 msgid "Uploading ~a"
 msgstr "Caricamento di ~a"
 
-#: src/ui-goodies.lisp:3111
+#: src/ui-goodies.lisp:3125
 msgid "Preparing for download…"
 msgstr "Preparazione allo scaricamento…"
 
-#: src/ui-goodies.lisp:3136
+#: src/ui-goodies.lisp:3150
 msgid "Download in: "
 msgstr "Scarica in: "
 
-#: src/ui-goodies.lisp:3155
+#: src/ui-goodies.lisp:3169
 #, lisp-format
 msgid "Deleting cache directory ~a"
 msgstr "Cancello la cache ~a"
 
-#: src/ui-goodies.lisp:3162
+#: src/ui-goodies.lisp:3176
 msgid "Delete cache? [y/N] "
 msgstr "Cancella la cache? [s/N] "
 
