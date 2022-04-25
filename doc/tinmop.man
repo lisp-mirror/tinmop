@@ -938,7 +938,10 @@ gemini-streams-window-up
 .SS "gemini certificates window"
 .TP
 \fBC-J      \fP
-gemini-delete-certificate
+delete selected certificate
+.TP
+\fBC-J      \fP
+print information for the selected certificate
 .TP
 \fBdown     \fP
 gemini-certificate-window-go-down
