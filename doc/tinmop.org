@@ -524,7 +524,7 @@
 
 ** gemini certificates window
 
-  - C-J       :: delete selected certificate
+  - d         :: delete selected certificate
   - C-J       :: print information for the selected certificate
   - down      :: gemini-certificate-window-go-down
   - q         :: gemini-close-certificate-window

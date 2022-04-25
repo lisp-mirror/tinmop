@@ -937,7 +937,7 @@ gemini-streams-window-up
 
 .SS "gemini certificates window"
 .TP
-\fBC-J      \fP
+\fBd        \fP
 delete selected certificate
 .TP
 \fBC-J      \fP
