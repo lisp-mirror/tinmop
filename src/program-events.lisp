@@ -706,14 +706,24 @@
 
 (defclass send-message-add-attachment-event (program-event) ())
 
+(defstruct attachment
+  (path)
+  (alt-text))
+
 (defmethod process-event ((object send-message-add-attachment-event))
   (with-accessors ((croatoan-window windows:croatoan-window)) specials:*send-message-window*
-    (let* ((new-attachment (payload object))
+    (let* ((new-attachment (attachment-path (payload object)))
+           (alt-text       (attachment-alt-text (payload object)))
            (fg             (croatoan:fgcolor croatoan-window))
            (bg             (croatoan:bgcolor croatoan-window))
            (line           (make-instance 'line-oriented-window:line
                                           :normal-text   new-attachment
                                           :selected-text new-attachment
+                                          :fields        (list :path
+                                                               new-attachment
+                                                               :alt-text
+                                                               alt-text)
+
                                           :normal-bg     bg
                                           :normal-fg     fg
                                           :selected-bg   fg
@@ -747,7 +757,11 @@
   (let ((send-win specials:*send-message-window*))
     (with-sending-message-data (body subject reply-to mentions visibility)
       (let* ((attachments (line-oriented-window:map-rows send-win
-                                                         #'line-oriented-window:normal-text)))
+                                                         #'line-oriented-window:normal-text))
+             (alt-text    (line-oriented-window:map-rows send-win
+                                                         (lambda (row)
+                                                           (getf (line-oriented-window:fields row)
+                                                                 :alt-text)))))
         (hooks:run-hook 'hooks:*before-sending-message* object)
         (msg-utils:maybe-crypt-message send-win
                                        :notify-cant-crypt (use-ui-notification-p object))
@@ -764,6 +778,7 @@
                 (client:send-status actual-message-body
                                     reply-to
                                     attachments
+                                    alt-text
                                     subject
                                     (make-keyword (string-upcase visibility)))
                 (ui:notify (_ "Message sent."))

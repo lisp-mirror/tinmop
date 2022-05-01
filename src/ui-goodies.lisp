@@ -1063,18 +1063,28 @@ If some posts was deleted before, download them again."
 
 (defun attach-add ()
   "Add an attach"
-  (flet ((on-add-attach (attach-path)
-           (if (string-not-empty-p attach-path)
+  (let ((attachment (make-attachment)))
+    (labels ((on-alt-text (alt-text)
+               (setf (attachment-alt-text attachment)
+                     alt-text)
                (let ((add-event (make-instance 'send-message-add-attachment-event
-                                               :payload attach-path)))
-                 (if (fs:file-exists-p attach-path)
-                     (push-event add-event)
-                     (error-message (format nil (_ "File ~s does not exists.") attach-path)))
-                 (attach-add))
-               (info-message (_ "Message ready to be sent")))))
-    (ask-string-input #'on-add-attach
-                      :prompt      (_ "Add attachment: ")
-                      :complete-fn #'complete:directory-complete)))
+                                               :payload attachment)))
+                 (push-event add-event)
+                 (attach-add)))
+             (on-add-attach (attach-path)
+               (if (string-not-empty-p attach-path)
+                   (progn
+                     (if (fs:file-exists-p attach-path)
+                         (setf (attachment-path attachment) attach-path)
+                         (error-message (format nil
+                                                (_ "File ~s does not exists.")
+                                                attach-path)))
+                     (ask-string-input #'on-alt-text
+                                       :prompt (_ "Add caption: ")))
+                   (info-message (_ "Message ready to be sent")))))
+      (ask-string-input #'on-add-attach
+                        :prompt      (_ "Add attachment: ")
+                        :complete-fn #'complete:directory-complete))))
 
 (defun change-subject ()
   "Change subject"

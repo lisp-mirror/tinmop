@@ -460,7 +460,11 @@ database."
   "Get a parent and a child of a status (identified by status-id), if exists"
   (tooter:context *client* status-id))
 
-(defun-api-call send-status (content in-reply-to-id attachments subject visibility)
+(defun-api-call send-status (content
+                             in-reply-to-id
+                             attachments
+                             attachments-alt-text
+                             subject visibility)
   "Send a status
 - content the actual text of the message
 - in-reply-to-id status-id of the message  you are replying to (or nil
@@ -472,7 +476,12 @@ database."
   (tooter:make-status *client*
                       content
                       :in-reply-to  in-reply-to-id
-                      :media        (mapcar #'fs:namestring->pathname attachments)
+                      :media        (mapcar (lambda (path alt-text)
+                                              (tooter:make-media *client*
+                                                                 (fs:namestring->pathname path)
+                                                                 :description alt-text))
+                                            attachments
+                                            attachments-alt-text)
                       :spoiler-text subject
                       :visibility   visibility))
 

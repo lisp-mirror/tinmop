@@ -1490,6 +1490,9 @@
    :send-message-change-mentions-event
    :send-message-change-visibility-event
    :open-send-message-window-event
+   :make-attachment
+   :attachment-path
+   :attachment-alt-text
    :send-message-add-attachment-event
    :send-message-event
    :with-sending-message-data
