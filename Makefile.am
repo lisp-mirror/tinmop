@@ -36,7 +36,7 @@ etc/init.lisp compare_version.awk
 SUBDIRS              = po
 
 dist_doc_DATA        = README.org README.txt LICENSES.org CONTRIBUTING.org \
-doc/man.org doc/send-toot.lisp NEWS.org ChangeLog AUTHORS
+doc/tinmop.org doc/send-toot.lisp NEWS.org ChangeLog AUTHORS
 
 confdir              = $(sysconfdir)/$(PACKAGE)
 

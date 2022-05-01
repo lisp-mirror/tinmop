@@ -727,24 +727,28 @@ the latest 15 mentions)."
     mentions-so-far))
 
 (defun update-mentions-folder (&key (delete-mentions-on-server t))
-  (when-let* ((all-mentions (all-mentions))
-              (trees        (flatten (loop
-                                        for mention in all-mentions
-                                        when (tooter:status mention)
-                                        collect
-                                          (expand-status-tree (tooter:status mention)))))
-              (event             (make-instance 'program-events:save-timeline-in-db-event
-                                                :payload       trees
-                                                :timeline-type db:+home-timeline+
-                                                :folder        db:+mentions-status-folder+
-                                                :localp        t
-                                                :min-id        nil)))
-    (when delete-mentions-on-server
-      (map nil
-           (lambda (m) (delete-notification (tooter:id m)))
-           all-mentions))
-    (program-events:push-event event)
-    all-mentions))
+  (let ((trees '()))
+    (when-let* ((all-mentions      (all-mentions))
+                (statuses          (loop for mention in all-mentions
+                                         when (tooter:status mention)
+                                           collect (tooter:status mention))))
+      (loop for status in statuses
+            when (not (member status trees))
+              do
+                 (loop for node in (expand-status-tree status)
+                       do
+                          (pushnew node trees)))
+      (let ((event (make-instance 'program-events:save-timeline-in-db-event
+                                  :payload       trees
+                                  :timeline-type db:+home-timeline+
+                                  :folder        db:+mentions-status-folder+
+                                  :localp        t
+                                  :min-id        nil)))
+        (when delete-mentions-on-server
+          (loop for mention in all-mentions do
+            (delete-notification (tooter:id mention))))
+        (program-events:push-event event)
+        all-mentions))))
 
 (defun expand-status-thread (status-id timeline folder force-saving-of-ignored-status-p)
   (when-let* ((tree  (expand-status-tree status-id))
@@ -789,7 +793,7 @@ node-status-id is not a leaf)."
   (expand-status-tree (tooter:id object)))
 
 (defmethod expand-status-tree ((object string))
-  "Given a status id returns the complete mesaages tree this status belong."
+  "Given a status id returns the complete messages tree this status belong."
   (multiple-value-bind (root fetched-branch)
       (climb-fetch-statuses object)
     (let ((res (copy-list fetched-branch)))
