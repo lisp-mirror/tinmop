@@ -21,6 +21,7 @@
   :version     "0.9.5"
   :pathname    "src"
   :serial      t
+  :bug-tracker "https://notabug.org/cage/tinmop/issues"
   :depends-on (:alexandria
                :cl-ppcre-unicode
                :tooter
