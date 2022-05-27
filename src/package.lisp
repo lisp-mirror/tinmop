@@ -133,7 +133,7 @@
    :dump-hash-table
    :with-messages-start-end
    :safe-random
-   :split-into-sublist
+   :split-into-chunks
    :group-by
    :delete@
    :return-whole

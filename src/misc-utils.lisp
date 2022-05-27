@@ -615,7 +615,7 @@ to the array"
 (defun array-slice (array start &optional (end nil))
   (let* ((new-size         (if end
                                (- end start)
-                               (length array)))
+                               (- (length array) start)))
          (new-fill-pointer (cond
                              ((array-has-fill-pointer-p array)
                               (if end
@@ -670,13 +670,26 @@ to the array"
          (swap (elt sequence rnd) (elt sequence i))))
   sequence)
 
-(defun split-into-sublist (lst len)
-  (if (or (= len 0)
-          (< (length lst) len))
-      (if (null lst)
-          lst
-          (list lst))
-      (append (list (subseq lst 0 len)) (split-into-sublist (subseq lst len) len))))
+(defun %split-into-chunks (sequence subseq-fn chunk-length &optional (accum ()))
+  (assert (> chunk-length 0))
+  (cond
+    ((null sequence)
+     (reverse accum))
+    ((< (length sequence) chunk-length)
+     (%split-into-chunks nil subseq-fn chunk-length (push sequence accum)))
+    (t
+     (%split-into-chunks (funcall subseq-fn sequence chunk-length)
+                         subseq-fn
+                         chunk-length
+                         (push (funcall subseq-fn sequence 0 chunk-length) accum)))))
+
+(defgeneric split-into-chunks (object chunk-length))
+
+(defmethod split-into-chunks ((object list) chunk-length)
+  (%split-into-chunks object #'subseq chunk-length))
+
+(defmethod split-into-chunks ((object vector) chunk-length)
+  (%split-into-chunks object #'array-slice chunk-length))
 
 (defun group-by (sequence &key (test #'=))
   (let ((distinct '()))
