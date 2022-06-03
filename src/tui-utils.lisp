@@ -388,6 +388,9 @@ latter has a length equals to `total-size'"))
 
 (defgeneric apply-coloring (from to))
 
+(defmethod misc:sequence-empty-p ((object complex-string))
+  (misc:sequence-empty-p (complex-char-array object)))
+
 (defmethod apply-coloring ((from complex-string) (to string))
   (with-accessors ((complex-char-array-from complex-char-array)) from
     (if (misc:sequence-empty-p complex-char-array-from)

@@ -366,9 +366,9 @@
         home)))
 
 (defun %mkstemp (prefix suffix)
-  (multiple-value-bind (x path)
+  (multiple-value-bind (fd path)
       (nix:mkstemps prefix suffix)
-    (declare (ignore x))
+    (nix:close fd)
     path))
 
 (defparameter *temporary-files-created* ())
