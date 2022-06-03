@@ -391,7 +391,7 @@ latter has a length equals to `total-size'"))
 (defmethod apply-coloring ((from complex-string) (to string))
   (with-accessors ((complex-char-array-from complex-char-array)) from
     (if (misc:sequence-empty-p complex-char-array-from)
-        ""
+        (make-tui-string "")
         (let* ((res            (make-tui-string to))
                (length-diff    (- (length to)
                                   (text-length from)))
