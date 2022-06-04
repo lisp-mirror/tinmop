@@ -63,6 +63,26 @@
              (fs:create-file home-file :skip-if-exists t)
              (get-resource-file system-dir home-dir path))))))))
 
+(defun get-resource-dir (system-dir home-dir path)
+  (let ((system-dir (fs:cat-parent-dir system-dir path))
+        (home-dir   (fs:cat-parent-dir home-dir   path)))
+    (cond
+      ((fs:dirp home-dir)
+       home-dir)
+      ((fs:dirp system-dir)
+       system-dir)
+      (t
+       (let ((msg (_ "Cannot find ~s in either ~s or ~s.")))
+         (restart-case
+             (error (format nil msg path system-dir home-dir))
+           (return-home-dirname ()
+             home-dir)
+           (return-system-dirname ()
+             system-dir)
+           (create-empty-in-home  ()
+             (fs:make-directory home-dir)
+             (get-resource-dir system-dir home-dir path))))))))
+
 (defun get-config-file (path)
   (get-resource-file +sys-conf-dir+ (home-confdir) path))
 
@@ -75,3 +95,6 @@
 
 (defun get-data-file (path)
   (get-resource-file +sys-data-dir+ (home-datadir) path))
+
+(defun get-data-dir (path)
+  (get-resource-dir +sys-data-dir+ (home-datadir) path))

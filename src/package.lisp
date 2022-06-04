@@ -466,7 +466,8 @@
    :create-empty-in-home
    :get-config-file
    :get-sys-config-file
-   :get-data-file))
+   :get-data-file
+   :get-data-dir))
 
 (defpackage :zip-info
   (:use
