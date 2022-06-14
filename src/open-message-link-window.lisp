@@ -74,25 +74,26 @@
     *open-message-link-window*))
 
 (defun open-message-link (url enqueue)
-  (let* ((parsed       (iri:iri-parse url))
-         (scheme       (uri:scheme parsed))
-         (decoded-path (percent-decode url)))
-    (when (and (not enqueue)
-               (swconf:close-link-window-after-select-p))
-      (ui:close-open-message-link-window))
-    (cond
-      ((string= gemini-constants:+gemini-scheme+ scheme)
-       (db:insert-in-history (ui:open-url-prompt) url)
-       (db:gemlog-mark-as-seen url)
-       (gemini-viewer:ensure-just-one-stream-rendering)
-       (gemini-viewer:load-gemini-url url
-                                      :give-focus-to-message-window t
-                                      :enqueue                      enqueue
-                                      :use-cached-file-if-exists    t))
-      ((fs:dirp decoded-path)
-       (ui:open-file-explorer decoded-path))
-      (t
-       (os-utils:open-resource-with-external-program decoded-path nil)))))
+  (tui-utils:with-notify-errors
+    (let* ((parsed       (iri:iri-parse url))
+           (scheme       (uri:scheme parsed))
+           (decoded-path (percent-decode url)))
+      (when (and (not enqueue)
+                 (swconf:close-link-window-after-select-p))
+        (ui:close-open-message-link-window))
+      (cond
+        ((string= gemini-constants:+gemini-scheme+ scheme)
+         (db:insert-in-history (ui:open-url-prompt) url)
+         (db:gemlog-mark-as-seen url)
+         (gemini-viewer:ensure-just-one-stream-rendering)
+         (gemini-viewer:load-gemini-url url
+                                        :give-focus-to-message-window t
+                                        :enqueue                      enqueue
+                                        :use-cached-file-if-exists    t))
+        ((fs:dirp decoded-path)
+         (ui:open-file-explorer decoded-path))
+        (t
+         (os-utils:open-resource-with-external-program decoded-path nil))))))
 
 (defclass open-links-window ()
   ((links
