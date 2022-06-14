@@ -140,7 +140,8 @@
                  (if (not saved-raw-mode)
                      (list :pre
                            (list (list :alt alt-text)))
-                     (list :pre-end () ""))))))
+                     (list :pre-end
+                           (list (list :alt saved-raw-mode))))))))
 
 (defrule link-prefix (and "=>"
                           (* space))
