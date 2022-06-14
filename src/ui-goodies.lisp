@@ -2350,8 +2350,10 @@ gemini://gemini.circumlunar.space/docs/companion/subscription.gmi
                   (if (tour-mode-parser:range-p index)
                       (let ((from (tour-mode-parser:range-from index))
                             (to   (tour-mode-parser:range-to   index)))
-                        (loop for i from (min from to) to (max from to) do
-                          (pushnew i all-indices :test #'=)))
+                        (loop for i from (min from to) to (max from to)
+                              when (< i (length links))
+                                do
+                                   (pushnew i all-indices :test #'=)))
                       (pushnew index all-indices :test #'=)))
                 (loop for index in (reverse all-indices) do
                   (if (<= 0 index (length links))
