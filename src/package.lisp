@@ -2658,6 +2658,7 @@
   (:local-nicknames (:fstree :filesystem-tree-window)
                     (:c :croatoan))
   (:export
+   :tui-active-p
    :delete-message-status-marked-to-delete
    :open-manual
    :quit-program

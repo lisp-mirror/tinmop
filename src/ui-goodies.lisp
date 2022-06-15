@@ -17,6 +17,9 @@
 
 (in-package :ui-goodies)
 
+(defun tui-active-p ()
+  specials:*main-window*)
+
 (defun boolean-input-accepted-p (user-input)
   (values (string-equal user-input (_ "y"))
           (string-not-empty-p user-input)))
