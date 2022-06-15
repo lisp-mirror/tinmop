@@ -226,7 +226,9 @@ screen."
 
 (defun init-tour-links (links &key (title (_ "Links")) (center-position nil))
   (let* ((low-level-window (make-croatoan-window :enable-function-keys t)))
-    (setf *tour-links-window*
+    (when *open-message-link-window*
+      (win-close *open-message-link-window*))
+    (setf *open-message-link-window*
           (make-instance 'open-gemini-document-link-window
                          :center-position        center-position
                          :top-row-padding        0
@@ -237,12 +239,12 @@ screen."
                          :uses-border-p          t
                          :keybindings            keybindings:*open-message-link-keymap*
                          :croatoan-window        low-level-window))
-    (refresh-config *tour-links-window*)
-    (resync-rows-db *tour-links-window* :redraw nil)
-    (when (not (line-oriented-window:rows-empty-p *tour-links-window*))
-      (select-row *tour-links-window* 0))
-    (draw *tour-links-window*)
-    *tour-links-window*))
+    (refresh-config *open-message-link-window*)
+    (resync-rows-db *open-message-link-window* :redraw nil)
+    (when (not (line-oriented-window:rows-empty-p *open-message-link-window*))
+      (select-row *open-message-link-window* 0))
+    (draw *open-message-link-window*)
+    *open-message-link-window*))
 
 (defclass open-chat-document-link-window (focus-marked-window
                                           simple-line-navigation-window

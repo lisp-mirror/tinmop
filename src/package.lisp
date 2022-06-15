@@ -1393,8 +1393,7 @@
    :*gemini-toc-window*
    :*chats-list-window*
    :*gempub-library-window*
-   :*filesystem-explorer-window*
-   :*tour-links-window*))
+   :*filesystem-explorer-window*))
 
 (defpackage :complete
   (:use

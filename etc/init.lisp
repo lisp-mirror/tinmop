@@ -133,6 +133,8 @@
 ;; (define "C-x a e"       #'bar)
 
 (defun gemini-search ()
+  "Search   the  geminispace   using  keyword   (note:  will   contact
+  \"gemini://geminispace.info/search\""
  (gemini-viewer:load-gemini-url "gemini://geminispace.info/search"))
 
 ;; global keymap
@@ -177,6 +179,16 @@
 (define-key "M-g g l"   #'open-gempub-library)
 
 (define-key "M-g g b s" #'display-bookmark)
+
+(defun open-gemini-links-and-ask-tour ()
+  "Open the link window and ask for tour link indices"
+  (when (message-window:display-gemini-text-p specials:*message-window*)
+    (when (not specials:*open-message-link-window*)
+      (ui:open-message-link))
+    (ui::focus-to-open-message-link-window)
+    (ui:tour-mode-link)))
+
+(define-key "M-t a"     #'open-gemini-links-and-ask-tour)
 
 (define-key "M-t t"     #'next-tour-link)
 

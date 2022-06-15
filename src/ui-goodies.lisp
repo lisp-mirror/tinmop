@@ -468,8 +468,7 @@ Metadata includes:
                     *open-attach-window*
                     *gemini-streams-window*
                     *gemini-certificates-window*
-                    *filesystem-explorer-window*
-                    *tour-links-window*))))
+                    *filesystem-explorer-window*))))
 
 (defun find-window-focused ()
   (stack:do-stack-element (window windows::*window-stack*)
@@ -701,11 +700,6 @@ along the focused window."
                      *open-message-link-window*
                      :documentation      "Move focus on open-link window"
                      :info-change-focus-message (_ "Focus passed on link window"))
-
-(gen-focus-to-window tour-links-window
-                     *tour-links-window*
-                     :documentation      "Move focus on tour links window"
-                     :info-change-focus-message (_ "Focus passed on tour links"))
 
 (gen-focus-to-window open-gemini-stream-windows
                      *gemini-streams-window*
@@ -2402,7 +2396,7 @@ gemini://gemini.circumlunar.space/docs/companion/subscription.gmi
     (open-message-link-window:init-tour-links  (reverse tour)
                                                :title           (_ "Current links tour")
                                                :center-position t)
-    (focus-to-tour-links-window))
+    (focus-to-open-message-link-window))
 
   (defun save-selected-message-in-tour ()
     "Save the selected link in the tour queue"
