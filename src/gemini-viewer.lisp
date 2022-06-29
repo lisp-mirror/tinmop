@@ -749,6 +749,10 @@
       #-debug-mode
       (error (e)
         (ui:notify (format nil (_ "Error getting ~s: ~a") url e)
+                   :as-error t))
+      #-debug-mode
+      (condition (c)
+        (ui:notify (format nil (_ "Error getting ~s: ~a") url c)
                    :as-error t)))))
 
 (defun history-back (window)

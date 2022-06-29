@@ -1423,8 +1423,9 @@
          (notification-message (format nil (_ "updating gemlog ~a") subscription)))
     (ui:notify-procedure (lambda ()
                            (db-utils:with-ready-database ()
-                             (ignore-errors
-                              (gemini-subscription:refresh subscription))))
+                              (handler-case
+                                  (gemini-subscription:refresh subscription)
+                                (condition () nil))))
                          notification-message
                          :ending-message nil)))
 
