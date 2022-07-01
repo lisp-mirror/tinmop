@@ -460,6 +460,8 @@
 
 (define-key "]"         #'open-next-visible-link                     *gemini-message-keymap*)
 
+(define-key "["         #'open-previous-link                         *gemini-message-keymap*)
+
 (define-key "C-]"       #'go-to-next-link                            *gemini-message-keymap*)
 
 (define-key "C-["       #'go-to-previous-link                        *gemini-message-keymap*)

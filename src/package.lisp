@@ -2746,6 +2746,7 @@
    :open-message-link-perform-opening
    :open-message-link-open-enqueue
    :open-next-visible-link
+   :open-previous-link
    :go-to-next-link
    :go-to-previous-link
    :copy-value-to-clipboard

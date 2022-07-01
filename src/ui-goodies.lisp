@@ -1386,22 +1386,40 @@ Browse and optionally open the links the text of the message window contains."
         (open-message-link-window:init (db:row-message-status-id selected-message))
         (focus-to-open-message-link-window))))
 
-(defun open-next-visible-link ()
+(defun open-next-visible-link (&key (reverse-search nil))
   "Open next visible link in the window"
-  (when-let* ((visible-rows (message-window:visible-rows *message-window*))
-              (link-line    (message-window:row-find-original-object  visible-rows
-                                                                      'gemini-parser:link-line))
-              (link-object  (message-window:extract-original-object link-line)))
-    (let* ((uri          (gemini-parser::link-value link-object))
-           (current-url  (ignore-errors (iri:iri-parse (gemini-viewer:current-gemini-url))))
-           (absolute-uri (if (or (null current-url)
-                                 (iri:absolute-url-p uri))
-                             uri
-                             (gemini-parser:absolutize-link uri
-                                                            (uri:host current-url)
-                                                            (uri:port current-url)
-                                                            (uri:path current-url)))))
-      (open-message-link-window:open-message-link absolute-uri nil))))
+  (let* ((win                *message-window*)
+         (row-end-search      (when reverse-search
+                                (line-oriented-window:row-selected-index win)))
+         (visible-rows        (when (not reverse-search)
+                                (message-window:visible-rows *message-window*)))
+         (reverse-search-rows (when reverse-search
+                                (line-oriented-window:rows-safe-subseq win
+                                                                       0
+                                                                       :end row-end-search)))
+         (link-line (if reverse-search
+                        (message-window:row-find-original-object reverse-search-rows
+                                                                 'gemini-parser:link-line
+                                                                 :from-end t
+                                                                 :end row-end-search)
+                        (message-window:row-find-original-object visible-rows
+                                                                 'gemini-parser:link-line)))
+         (link-object  (message-window:extract-original-object link-line)))
+    (when link-object
+      (let* ((uri          (gemini-parser::link-value link-object))
+             (current-url  (ignore-errors (iri:iri-parse (gemini-viewer:current-gemini-url))))
+             (absolute-uri (if (or (null current-url)
+                                   (iri:absolute-url-p uri))
+                               uri
+                               (gemini-parser:absolutize-link uri
+                                                              (uri:host current-url)
+                                                              (uri:port current-url)
+                                                              (uri:path current-url)))))
+        (open-message-link-window:open-message-link absolute-uri nil)))))
+
+(defun open-previous-link ()
+  "Open the first link above the first visible row."
+  (open-next-visible-link :reverse-search t))
 
 (defun go-to-next-link ()
   (when-let* ((win                *message-window*)

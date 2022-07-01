@@ -166,7 +166,7 @@
 
 (defgeneric rows-remove-if (object function &key &allow-other-keys))
 
-(defgeneric rows-find-if (object function &key &allow-other-keys))
+(defgeneric rows-find-if (object function &key from-end start end key &allow-other-keys))
 
 (defgeneric rows-safe-subseq (object start &key end &allow-other-keys))
 
@@ -365,8 +365,13 @@ this exact quantity would go beyond the length or rows or zero."
 (defmethod rows-remove-if ((object row-oriented-widget) (function function) &key &allow-other-keys)
   (remove-if function (rows object)))
 
-(defmethod rows-find-if ((object row-oriented-widget) (predicate function) &key &allow-other-keys)
-  (find-if predicate (rows object)))
+(defmethod rows-find-if ((object row-oriented-widget) (predicate function)
+                         &key from-end (start 0) end key &allow-other-keys)
+  (find-if predicate (rows object)
+           :from-end from-end
+           :start    start
+           :end      end
+           :key      key))
 
 (defmethod rows-safe-subseq ((object row-oriented-widget) start
                              &key (end nil) &allow-other-keys)
