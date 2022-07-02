@@ -1131,51 +1131,55 @@ than (swconf:config-purge-history-days-offset) days in the past"
                    (statuses-count   tooter:statuses-count)
                    (moved            tooter:moved)
                    (bot              tooter:bot)) object
-    (let ((actual-created-at   (decode-datetime-string created-at))
-          (actual-botp         (prepare-for-db bot          :to-integer t))
-          (actual-discoverable (prepare-for-db discoverable :to-integer t))
-          (actual-locked       (prepare-for-db locked       :to-integer t))
-          (actual-moved-id     (if moved
-                                   (prepare-for-db (tooter:id moved))
-                                   (prepare-for-db nil))))
-      (complete:initialize-complete-username-cache)
-      (insert-or-update +table-account+
-                        (:id
-                         :username
-                         :acct
-                         :url
-                         :display-name
-                         :note
-                         :avatar
-                         :avatar-static
-                         :header
-                         :header-static
-                         :locked
-                         :discoverable
-                         :created-at
-                         :followers-count
-                         :following-count
-                         :statuses-count
-                         :moved-id
-                         :botp)
-                        (id
-                         username
-                         account-name
-                         url
-                         display-name
-                         note
-                         avatar
-                         avatar-static
-                         header
-                         header-static
-                         actual-locked
-                         actual-discoverable
-                         actual-created-at
-                         followers-count
-                         following-count
-                         statuses-count
-                         actual-moved-id
-                         actual-botp)))))
+    (flet ((clean-chars (string)
+             (remove-corrupting-utf8-chars string)))
+      (let ((actual-created-at   (decode-datetime-string created-at))
+            (actual-botp         (prepare-for-db bot          :to-integer t))
+            (actual-username     (clean-chars username))
+            (actual-display-name (clean-chars display-name))
+            (actual-discoverable (prepare-for-db discoverable :to-integer t))
+            (actual-locked       (prepare-for-db locked       :to-integer t))
+            (actual-moved-id     (if moved
+                                     (prepare-for-db (tooter:id moved))
+                                     (prepare-for-db nil))))
+        (complete:initialize-complete-username-cache)
+        (insert-or-update +table-account+
+                          (:id
+                           :username
+                           :acct
+                           :url
+                           :display-name
+                           :note
+                           :avatar
+                           :avatar-static
+                           :header
+                           :header-static
+                           :locked
+                           :discoverable
+                           :created-at
+                           :followers-count
+                           :following-count
+                           :statuses-count
+                           :moved-id
+                           :botp)
+                          (id
+                           actual-username
+                           account-name
+                           url
+                           actual-display-name
+                           note
+                           avatar
+                           avatar-static
+                           header
+                           header-static
+                           actual-locked
+                           actual-discoverable
+                           actual-created-at
+                           followers-count
+                           following-count
+                           statuses-count
+                           actual-moved-id
+                           actual-botp))))))
 
 (defmethod update-db ((object tooter:tag-history) &key (tag nil) &allow-other-keys)
   (assert (stringp tag))
