@@ -51,7 +51,7 @@ This function return the 'post-title' substring."
                        (return-from subtitle-p nil))))
                  res))))
     (when-let* ((data   (slurp-gemini-url url))
-                (page   (babel:octets-to-string data))
+                (page   (text-utils:to-s data))
                 (parsed (parse-gemini-file page))
                 (iri    (iri:iri-parse url))
                 (title  (gemini-first-h1 parsed)))
@@ -68,7 +68,7 @@ This function return the 'post-title' substring."
 be subscribed before (see: 'gemini-subscription:subcribe'"
   (handler-case
       (when-let* ((data       (slurp-gemini-url url))
-                  (page       (babel:octets-to-string data))
+                  (page       (text-utils:to-s data))
                   (parsed     (parse-gemini-file page))
                   (gemlog-iri (iri:iri-parse url)))
         (let ((links (remove-if-not (lambda (a) (link-post-timestamp-p (name a)))

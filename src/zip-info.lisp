@@ -209,7 +209,7 @@
     (file-position stream (+ +cd-fixed-size+ start-of-central-directory))
     (let ((res (make-array file-name-length :element-type +byte-type+)))
       (read-sequence res stream)
-      (babel:octets-to-string res))))
+      (text-utils:to-s res))))
 
 (defun list-entries (path)
   (let ((start-of-central-directory (start-of-central-directory path))

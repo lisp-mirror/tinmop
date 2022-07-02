@@ -995,7 +995,7 @@ to the array"
                                system-name))
     (when (or (< response-code 400)
               (> response-code 499))
-      (let* ((line   (babel:octets-to-string (read-line-into-array stream)))
+      (let* ((line   (text-utils:to-s (read-line-into-array stream)))
              (fields (text-utils:split-words line)))
         fields))))
 

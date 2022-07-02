@@ -325,6 +325,6 @@
       (setf (uri:path copy) clean-path))
     copy))
 
-(defmethod to-s ((object uri:uri))
+(defmethod to-s ((object uri:uri) &key &allow-other-keys)
   (with-output-to-string (stream)
     (uri:render-uri object stream)))

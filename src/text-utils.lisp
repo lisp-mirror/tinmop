@@ -72,12 +72,12 @@
                   (return-from utf8-encoded-p nil))))
          t)))))
 
-(defgeneric to-s (object))
+(defgeneric to-s (object &key &allow-other-keys))
 
-(defmethod to-s ((object string))
+(defmethod to-s ((object string) &key &allow-other-keys)
   object)
 
-(defmethod to-s ((object vector))
+(defmethod to-s ((object vector) &key (errorp t) &allow-other-keys)
   (handler-case
       (let ((byte-vector (make-array (length object)
                                      :element-type    '(unsigned-byte 8)
@@ -86,14 +86,14 @@
         (loop for i from 0 below (length object) do
           (setf (aref byte-vector i)
                 (logand (aref object i) #xff)))
-        (babel:octets-to-string byte-vector :errorp nil))
+        (babel:octets-to-string byte-vector :errorp errorp))
     (error ()
       (coerce object 'string))))
 
-(defmethod to-s ((object character))
+(defmethod to-s ((object character) &key &allow-other-keys)
   (string object))
 
-(defmethod to-s (object)
+(defmethod to-s (object &key &allow-other-keys)
   (format nil "~a" object))
 
 (defun clean-unprintable-chars (string)
@@ -179,7 +179,7 @@
     (flex:with-input-from-sequence (stream (babel:string-to-octets text))
       (loop for line-as-array = (misc:read-line-into-array stream)
             while line-as-array do
-              (push (babel:octets-to-string line-as-array) res)))
+              (push (text-utils:to-s line-as-array) res)))
     (let ((*blanks* '(#\Newline)))
       (reverse (mapcar #'trim-blanks res)))))
 

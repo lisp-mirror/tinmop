@@ -347,7 +347,7 @@
                  (format string-stream "#~a" fragment))))))
     (write-string (render) stream)))
 
-(defmethod to-s ((object iri))
+(defmethod to-s ((object iri) &key &allow-other-keys)
   (with-output-to-string (stream)
     (render-iri object stream)))
 

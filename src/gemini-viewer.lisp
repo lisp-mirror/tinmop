@@ -344,7 +344,7 @@
                                                                       "/favicon.txt"
                                                                       :port port))
                         (response-body (gemini-client:slurp-gemini-url favicon-url))
-                        (favicon-list  (coerce (babel:octets-to-string response-body :errorp t)
+                        (favicon-list  (coerce (text-utils:to-s response-body :errorp t)
                                                'list))
                         (emoji         (starting-emoji favicon-list))
                         (favicon       (if emoji
@@ -387,7 +387,7 @@
                    (maybe-render-line preformat-wrapper-event)
                    (write-sequence preformat-line file-stream))))
              (array->string (array remove-bom)
-               (let ((res (babel:octets-to-string array :errorp nil)))
+               (let ((res (text-utils:to-s array :errorp nil)))
                  (if (and (string-not-empty-p res)
                           remove-bom
                           (char= (first-elt res)

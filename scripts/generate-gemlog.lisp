@@ -41,9 +41,9 @@
 
 (a:define-constant +archive-topic-file+  "topics.gmi" :test #'string=)
 
-(defparameter *gemlog-header*  (format nil "# Posts~%"))
+(defparameter *gemlog-header*  (format nil "# Posts~2%## Il gemlog di cage~2%"))
 
-(defparameter *topic-index-header*  (format nil "# Topics archive~%"))
+(defparameter *topic-index-header*  (format nil "# Topics archive~2%"))
 
 (defparameter *uri-prefix-path*  "/")
 
@@ -255,7 +255,7 @@
                      :if-exists         :supersede)
       (write-sequence *topic-index-header* stream)
       (loop for topic in all-topics do
-        (format stream "~a~%" (geminize-h2 topic))
+        (format stream "~a~2%" (geminize-h2 topic))
         (let ((in-topic-posts (remove-if-not (lambda (post)
                                                (let ((post-topics (post-topics post)))
                                                  (find topic

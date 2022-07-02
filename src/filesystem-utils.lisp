@@ -58,7 +58,7 @@
     (let ((seq (make-array (file-length stream) :element-type '(unsigned-byte 8))))
       (read-sequence seq stream)
       (if convert-to-string
-          (babel:octets-to-string seq :errorp errorp)
+          (text-utils:to-s seq :errorp errorp)
           seq))))
 
 (defun dump-sequence-to-file (seq file)
