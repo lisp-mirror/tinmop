@@ -404,7 +404,8 @@ height, position and so on)"
         (refresh-config *conversations-window*)
         (refresh-config *command-window*)
         (refresh-config *send-message-window*)
-        (refresh-config *chats-list-window*))
+        (refresh-config *chats-list-window*)
+        (refresh-config *open-message-link-window*))
       (progn
         (refresh-config *main-window*)
         (refresh-config *thread-window*)
@@ -414,7 +415,8 @@ height, position and so on)"
         (refresh-config *command-window*)
         (refresh-config *send-message-window*)
         (refresh-config *chats-list-window*)
-        (refresh-config *gemini-toc-window*))))
+        (refresh-config *gemini-toc-window*)
+        (refresh-config *open-message-link-window*))))
 
 (defun cursor-show ()
   (setf (c:cursor-visible-p (croatoan-window *main-window*)) t))
