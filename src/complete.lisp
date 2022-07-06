@@ -213,6 +213,12 @@ list af all possible candidtae for completion."
                                   (non-nulls-a (- length-a nulls-a))
                                   (non-nulls-b (- length-b nulls-b)))
                              (cond
+                               ((and (= length-a (length template))
+                                     (= nulls-a 0))
+                                t)
+                               ((and (= length-b (length template))
+                                     (= nulls-b 0))
+                                nil)
                                ((= length-a length-b)
                                 (< nulls-a nulls-b))
                                ((= non-nulls-a non-nulls-b)
