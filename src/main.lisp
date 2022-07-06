@@ -34,32 +34,48 @@
 the event  that is fired  when no input  from user (key  pressed mouse
 etc.) happened"
   (windows:with-croatoan-window (croatoan-window specials:*main-window*)
-    (c:bind croatoan-window
-            :resize
-            (lambda (w event)
-              (declare (ignore w event))
-              (windows:refresh-config-all)
-              (windows:draw-all)))
-    (c:bind croatoan-window
-            t
-            (lambda (w event)
-              (declare (ignore w))
-              (incf-dt)
-              (handler-bind ((conditions:command-not-found
-                               (lambda (e)
-                                 (invoke-restart 'command-window:print-error e))))
-                (command-window:manage-event event))))
-    ;; this is the main thread
-    (c:bind croatoan-window
-            nil
-            (lambda (w e)
-              (declare (ignore w e))
-              (incf-dt)
-              (incf-ticks)
-              (scheduled-events:run-scheduled-events *ticks*)
-              (when (not (program-events:stop-event-dispatching-p))
-                (program-events:dispatch-program-events))
-              (windows:calculate-all +dt+)))))
+    (let ((skip-event nil))
+      (flet ((manage-keyboard-event (event)
+               (incf-dt)
+               (handler-bind ((conditions:command-not-found
+                                (lambda (e)
+                                  (invoke-restart 'command-window:print-error e))))
+                 (command-window:manage-event event))))
+        (c:bind croatoan-window
+                :resize
+                (lambda (w event)
+                  (declare (ignore w event))
+                  (windows:refresh-config-all)
+                  (windows:draw-all)))
+        ;; this is an ugly hack for the bug reported here:
+        ;; https://lists.gnu.org/archive/html/help-ncurses/2022-07/msg00000.html
+        ;; If someone have an idea how to address the issue drop me a message!
+        (c:bind croatoan-window
+                #\Esc
+                (lambda (w e)
+                  (declare (ignore w e))
+                  (setf skip-event t)))
+        (c:bind croatoan-window
+                t
+                (lambda (w event)
+                  (declare (ignore w))
+                  (let ((event-key (c:event-key event)))
+                    (when (not (and skip-event
+                                    (characterp event-key)
+                                    (<= (char-code event-key) 255)))
+                      (setf skip-event nil)
+                      (manage-keyboard-event event)))))
+        ;; this is the main thread
+        (c:bind croatoan-window
+                nil
+                (lambda (w e)
+                  (declare (ignore w e))
+                  (incf-dt)
+                  (incf-ticks)
+                  (scheduled-events:run-scheduled-events *ticks*)
+                  (when (not (program-events:stop-event-dispatching-p))
+                    (program-events:dispatch-program-events))
+                  (windows:calculate-all +dt+)))))))
 
 (defun init-i18n ()
   "Initialize i18n machinery"
