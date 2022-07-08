@@ -611,11 +611,15 @@
 (defmethod scroll-next-page ((object message-window))
   (with-accessors ((rows                 rows)
                    (row-selected-index   row-selected-index)) object
-    (let ((actual-window-height (win-height-no-border object)))
-      (when (and (> (- (rows-length object)
-                  row-selected-index)
+    (let ((actual-window-height (1- (win-height-no-border object)))
+          (rows-length          (rows-length object)))
+      (when (and (> (- rows-length
+                       row-selected-index)
                     actual-window-height)
-                 (/= (row-move object actual-window-height)
+                 (/= (row-move object (min actual-window-height
+                                           (- rows-length
+                                              (+ row-selected-index
+                                                 actual-window-height))))
                      0))
           (draw object)))))
 
