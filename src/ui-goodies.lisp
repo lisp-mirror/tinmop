@@ -1405,16 +1405,16 @@ Browse and optionally open the links the text of the message window contains."
                                (message-window:row-find-original-object visible-rows
                                                                         'gemini-parser:link-line)))
                 (link-object  (message-window:extract-original-object link-line))
-                (uri          (gemini-parser::link-value link-object))
-                (current-url  (ignore-errors (iri:iri-parse (gemini-viewer:current-gemini-url))))
-                (absolute-uri (if (or (null current-url)
-                                      (iri:absolute-url-p uri))
-                                  uri
-                                  (gemini-parser:absolutize-link uri
-                                                                 (uri:host current-url)
-                                                                 (uri:port current-url)
-                                                                 (uri:path current-url)))))
-      (open-message-link-window:open-message-link absolute-uri nil))))
+                (uri          (gemini-parser::link-value link-object)))
+      (let* ((current-url  (ignore-errors (iri:iri-parse (gemini-viewer:current-gemini-url))))
+             (absolute-uri (if (or (null current-url)
+                                   (iri:absolute-url-p uri))
+                               uri
+                               (gemini-parser:absolutize-link uri
+                                                              (uri:host current-url)
+                                                              (uri:port current-url)
+                                                              (uri:path current-url)))))
+        (open-message-link-window:open-message-link absolute-uri nil)))))
 
 (defun open-previous-link ()
   "Open the first link above the first visible row."

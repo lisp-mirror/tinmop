@@ -1,3 +1,333 @@
+2022-07-09 cage
+
+	* po/it.po,
+	* scripts/generate-gemlog.lisp:
+
+	- fixed formatting in generated gemlog topic index;
+	- fixed italian translation.
+
+2022-07-08 cage
+
+	* src/message-window.lisp:
+
+	- fixed excessive page scrolling in message window.
+
+2022-07-06 cage
+
+	* src/complete.lisp,
+	* src/main.lisp:
+
+	- mitigated issue with unparsed keyboard input coming from ncurses.
+	- improved sorting of URI fuzzy matching.
+
+2022-07-03 cage
+
+	* src/windows.lisp:
+
+	- made links window repects resize events.
+
+2022-07-02 cage
+
+	* scripts/generate-gemlog.lisp,
+	* src/db.lisp,
+	* src/filesystem-utils.lisp,
+	* src/gemini-viewer.lisp,
+	* src/gemini/client.lisp,
+	* src/gemini/subscription.lisp,
+	* src/iri-parser.lisp,
+	* src/misc-utils.lisp,
+	* src/text-utils.lisp,
+	* src/ui-goodies.lisp,
+	* src/uri-parser.lisp,
+	* src/zip-info.lisp:
+
+	- removed direct call to babel:cotets-to-string, using 'to-s' wrapper,
+	instead.
+	- [gemini] prevented crash when no previous link to open is found
+	before the selected line.
+	- clean usernames from problematic characters.
+
+2022-07-01 cage
+
+	* etc/init.lisp,
+	* src/line-oriented-window.lisp,
+	* src/message-window.lisp,
+	* src/package.lisp,
+	* src/ui-goodies.lisp:
+
+	- [gemini] added command 'open-previous-link'.
+
+2022-06-29 cage
+
+	* src/gemini-viewer.lisp,
+	* src/program-events.lisp:
+
+	- [gemini] prevented landing on debugger (or even crash) when DNS
+	lookup fails.
+
+2022-06-15 cage
+
+	* etc/init.lisp,
+	* scripts/generate-gemlog.lisp,
+	* src/open-message-link-window.lisp,
+	* src/package.lisp,
+	* src/specials.lisp,
+	* src/ui-goodies.lisp:
+
+	- added 'ui:tui-active-p'.
+	- [gemini] added a script to generate a gemlog;
+	- removed *tour-links-window*;
+	- adding a new command: open-gemini-links-and-ask-tour.
+
+2022-06-14 cage
+
+	* src/gemini/gemini-parser.lisp,
+	* src/open-message-link-window.lisp,
+	* src/ui-goodies.lisp:
+
+	- [gemini] added alt text even for preformatting end tag.
+	- prevented crash when the tour indices exceeds the number of links in
+	a page.
+	- [gemini] prevented crash when an illegal character is found in an
+	URI.
+
+2022-06-04 cage
+
+	* src/package.lisp,
+	* src/resources-utils.lisp:
+
+	- added 'get-resource-dir' and 'get-data-dir'.
+
+2022-06-03 cage
+
+	* src/filesystem-utils.lisp,
+	* src/tui-utils.lisp:
+
+	- prevented 'apply-coloring' signals an error when coloring an empty
+	complex-string.
+	- fixed return type of 'apply-coloring' when the complex-string is
+	empty.
+	- removed file descriptor leak in '%mkstemp';
+	- specialized method sequence-empty-p for complex string.
+
+2022-05-27 cage
+
+	* src/misc-utils.lisp,
+	* src/package.lisp:
+
+	- fixed misc:array-slice;
+	- changed misc:split-into-sublist to misc:split-into-chunks.
+
+2022-05-25 cage
+
+	* tinmop.asd:
+
+	- added bugtracker URI.
+
+2022-05-01 cage
+
+	* Makefile.am,
+	* Makefile.in,
+	* po/it.po,
+	* po/tinmop.pot,
+	* src/api-client.lisp,
+	* src/package.lisp,
+	* src/program-events.lisp,
+	* src/ui-goodies.lisp:
+
+	- optimized expanding of status trees that contains mentions;
+	- fixed file path of Makefile.am;
+	- fixed typo.
+	- added captions for attachments.
+	- updated italian translation.
+
+2022-04-25 cage
+
+	* doc/tinmop.man,
+	* doc/tinmop.org,
+	* doc/{man.org => tinmop.org}:
+
+	- updated manpage.
+	- fixed manpage.
+
+2022-04-23 cage
+
+	* etc/init.lisp,
+	* po/it.po,
+	* po/tinmop.pot,
+	* quick_quicklisp.sh.in,
+	* src/filesystem-utils.lisp,
+	* src/package.lisp,
+	* src/ui-goodies.lisp,
+	* src/x509.lisp:
+
+	- allowed printing about kami ID from the window of the TLS
+	certificates.
+	- updated italian translation.
+	- updated croatoan commit.
+
+2022-04-22 cage
+
+	* src/kami/client.lisp,
+	* src/misc-utils.lisp,
+	* src/ui-goodies.lisp:
+
+	- [kami] removed setf' of global variables.
+	- prevented program freeze quen a kami error occurred.
+
+2022-04-20 cage
+
+	* src/command-line.lisp:
+
+	- used 'alexandria:when-let' macro to semplify the code.
+
+2022-04-16 cage
+
+	* etc/init.lisp,
+	* po/it.po,
+	* po/tinmop.pot,
+	* src/line-oriented-window.lisp,
+	* src/misc-utils.lisp:
+
+	- added row count for all window that display rows of text.
+	- prevented crash when building the function bound to a keychord that
+	is dadined as an anonymous function.
+	- updated italian translation.
+	- prevented printing line count for empty row window.
+
+2022-04-15 cage
+
+	* src/kami/client.lisp,
+	* src/line-oriented-window.lisp:
+
+	- preventd program  to hang when  a file  is created or  deleted using
+	kami.
+	When a file  was created and deleted and the  kami window was closed
+	the program stopped responding if the  user tried to open a new kami
+	address.
+	- improved a bit appearance of help window.
+
+2022-04-08 cage
+
+	* src/command-window.lisp,
+	* src/gemini-page-toc.lisp,
+	* src/open-message-link-window.lisp,
+	* src/package.lisp,
+	* src/windows.lisp:
+
+	- ensured only an instance of gemini TOC, gemini link and chat window
+	could exists.
+	- removed debug message.
+
+2022-04-06 cage
+
+	* etc/init.lisp,
+	* src/hooks.lisp,
+	* src/package.lisp,
+	* src/program-events.lisp,
+	* src/ui-goodies.lisp,
+	* src/x509.lisp:
+
+	- hooks:*before-composing-message*;
+	- removed memory leak in ssl-utils:dump-certificate;
+	- added an hook to remove footnotes added by tinmop in post's reply.
+
+2022-03-27 Andrea Feletto <andrea@andreafeletto.com>, cage
+
+	* Makefile.am,
+	* Makefile.in,
+	* lisp-dependencies,
+	* quick_quicklisp.sh.in,
+	* tinmop.asd:
+
+	- simplified Makefile (used asdf to build the executable in a portable
+	way).
+	- moved lisp dependency list to own file
+	- added PWD value to asdf registry.
+
+2022-03-26 cage
+
+	* configure,
+	* configure.ac:
+
+	- enable configure option to compile with ECL compiler.
+
+2022-03-23 cage
+
+	* src/windows.lisp:
+
+	- added package qualificator to croatoan's classes symbols.
+
+2022-03-21 cage
+
+	* Makefile.in,
+	* src/conversations-window.lisp,
+	* src/filesystem-tree-window.lisp,
+	* src/follow-requests.lisp,
+	* src/gemini-page-toc.lisp,
+	* src/line-oriented-window.lisp,
+	* src/main.lisp,
+	* src/message-window.lisp,
+	* src/notify-window.lisp,
+	* src/open-attach-window.lisp,
+	* src/open-message-link-window.lisp,
+	* src/package.lisp,
+	* src/program-events.lisp,
+	* src/sending-message.lisp,
+	* src/tags-window.lisp,
+	* src/windows.lisp:
+
+	- used package local nickname instead us :use croatoan's symbols.
+
+2022-03-20 cage
+
+	* Makefile.am,
+	* quick_quicklisp.sh.in,
+	* src/constants.lisp,
+	* src/emoji-matcher.lisp,
+	* src/main-window.lisp,
+	* src/mtree-utils.lisp,
+	* src/os-utils.lisp:
+
+	- added compilation macros to use ECl processes procedures;
+	- added compilation macro to skip SBCL specific muffling condition
+	procedures;
+	- added purgatory as dependency to installing script.
+	- using codepoints instead of char to match emoji, this changes allow
+	for ECL to compile the code.
+	- added compilation macro to compile constant using ECL.
+	- ensured exiting from REPL when building the executable using ECL.
+
+2022-03-19 cage
+
+	* Makefile.am,
+	* Makefile.in,
+	* configure,
+	* configure.ac,
+	* quick_quicklisp.sh.in,
+	* src/misc-utils.lisp:
+
+	- disabled functions that depends on quicklisp.
+	- suppressed missing function warning when quicklisp is unavailable.
+	- added package qualificator to constant's name to prevent warning.
+	- fixed functions that print program's dependencies.
+	- removed fetching purgatory from repository, quicklisp includes the
+	latest version now.
+	- added support for ECL in autotools scripts.
+	- fixed building scripts.
+
+2022-03-12 cage
+
+	* ChangeLog,
+	* NEWS.org,
+	* etc/init.lisp,
+	* src/ui-goodies.lisp:
+
+	- updated Changelog.
+	- added a command to subscribe to tag from the tag window.
+	- updated NEWS.org;
+	- added docstring.
+
 2022-03-11 cage
 
 	* po/it.po,
@@ -16,7 +346,7 @@
 	intersecting ones.
 	- optimized 'draw-all' made clearing window optional and draw only
 	full visible window.
-	- fixed a bit 'win-clear', calling wclear wa not needed.
+	- fixed a bit 'win-clear', calling wclear was not needed.
 	- pass the focus to the message-window when opening a gemini from a
 	message link window.
 	- [gemini] rendered again the focus mark when a gemini stream has
