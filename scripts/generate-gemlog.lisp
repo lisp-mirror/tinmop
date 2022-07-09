@@ -262,7 +262,8 @@
                                                        post-topics
                                                        :test #'string-equal)))
                                              all-posts)))
-          (write-links in-topic-posts stream))))))
+          (write-links in-topic-posts stream))
+        (format stream "~%")))))
 
 (defun generate-gemlog (bulk-posts-dir output-directory)
   (multiple-value-bind (all-posts all-topics)
