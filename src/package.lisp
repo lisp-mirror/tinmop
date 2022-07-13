@@ -434,6 +434,7 @@
    :config
    :text-utils)
   (:export
+   :http-link-iri-p
    :make-tag-node
    :tag
    :attributes
@@ -1209,6 +1210,7 @@
    :gemini-link-colors
    :gemini-link-prefix-to-gemini
    :gemini-link-prefix-to-other
+   :gemini-link-prefix-to-http
    :gemini-quote-prefix
    :gemini-quote-prefix
    :gemini-h1-prefix

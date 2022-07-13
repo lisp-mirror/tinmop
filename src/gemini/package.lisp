@@ -67,6 +67,7 @@
    :gemini-page-theme
    :link-prefix-gemini
    :link-prefix-other
+   :link-prefix-http
    :h1-prefix
    :h2-prefix
    :h3-prefix

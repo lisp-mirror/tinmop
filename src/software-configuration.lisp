@@ -496,6 +496,7 @@
                    scheme
                    link
                    links
+                   http
                    creation-time
                    access-time
                    visibility
@@ -736,6 +737,9 @@
 
 (defun gemini-link-prefix-to-other ()
   (gemini-link-prefix +key-other+))
+
+(defun gemini-link-prefix-to-http ()
+  (gemini-link-prefix +key-http+))
 
 (defun gemini-quote-prefix ()
   (access-non-null-conf-value *software-configuration*

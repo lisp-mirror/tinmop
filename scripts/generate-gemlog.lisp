@@ -47,6 +47,14 @@
 
 (defparameter *uri-prefix-path*  "/")
 
+(defparameter *post-home-backlink*  "../index.gmi")
+
+(defparameter *post-home-backlink-name*  "home")
+
+(defparameter *indices-home-backlink*  "./index.gmi")
+
+(defparameter *indices-home-backlink-name*  "home")
+
 (defun parse-date (timestring)
   (local-time:parse-timestring timestring))
 
@@ -211,6 +219,10 @@
                                     :if-does-not-exist :create
                                     :if-exists         :supersede)
               (sexp->gmi (content post) stream)
+              (write-sequence (geminize-link (strcat *post-home-backlink*
+                                                     " "
+                                                     *post-home-backlink-name*))
+                              stream)
               (notify "Processed ~a~%" (original-file-path post)))
           (error (e)
             (format *error-output*
@@ -244,7 +256,12 @@
                      :if-does-not-exist :create
                      :if-exists         :supersede)
       (format gemlog-stream *gemlog-header*)
-      (write-links all-posts gemlog-stream))))
+      (write-links all-posts gemlog-stream)
+      (format gemlog-stream "~%")
+      (write-sequence (geminize-link (strcat *indices-home-backlink*
+                                               " "
+                                               *indices-home-backlink-name*))
+                        gemlog-stream))))
 
 (defun make-topic-index (all-posts output-directory all-topics)
   (let ((topics-index-path (cat-parent-dir output-directory +archive-topic-file+)))
@@ -262,8 +279,12 @@
                                                        post-topics
                                                        :test #'string-equal)))
                                              all-posts)))
-          (write-links in-topic-posts stream))
-        (format stream "~%")))))
+          (write-links in-topic-posts stream)
+          (format stream "~%")))
+      (write-sequence (geminize-link (strcat *indices-home-backlink*
+                                             " "
+                                             *indices-home-backlink-name*))
+                      stream))))
 
 (defun generate-gemlog (bulk-posts-dir output-directory)
   (multiple-value-bind (all-posts all-topics)

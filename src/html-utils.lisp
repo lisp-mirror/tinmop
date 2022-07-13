@@ -27,6 +27,13 @@
 
 (define-constant +attribute-url+  "href" :test #'string=)
 
+(define-constant +http-scheme+    "http" :test #'string=)
+
+(defun http-link-iri-p (iri)
+  (conditions:with-default-on-error (nil)
+    (or (text-utils:string-starts-with-p +http-scheme+ iri)
+        (null (uri:scheme (iri:iri-parse iri))))))
+
 (defun make-tag-node (tag attributes value)
   "create a node"
   (if (listp value)

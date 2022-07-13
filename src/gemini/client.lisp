@@ -189,6 +189,7 @@
                          :viewport           viewport
                          :link-prefix-other  (swconf:gemini-link-prefix-to-other)
                          :link-prefix-gemini (swconf:gemini-link-prefix-to-gemini)
+                         :link-prefix-http   (swconf:gemini-link-prefix-to-http)
                          :link-bg            link-bg
                          :link-fg            link-fg
                          :link-attributes    link-attributes

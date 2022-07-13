@@ -359,6 +359,10 @@
     :initarg  :link-prefix-gemini
     :initform "-> "
     :accessor link-prefix-gemini)
+   (link-prefix-http
+    :initarg  :link-prefix-http
+    :initform "-> "
+    :accessor link-prefix-http)
    (link-prefix-other
     :initarg  :link-prefix-other
     :initform "^ "
@@ -578,17 +582,27 @@
                    (trim text)
                    text)))
            (linkify (link-name link-value)
-             (let ((raw-link-text (if (gemini-link-iri-p link-value)
-                                      (if (text-utils:starting-emoji link-name)
-                                          (format nil "~a" link-name)
-                                          (format nil
-                                                  "~a~a"
-                                                  (link-prefix-gemini theme)
-                                                  link-name))
-                                      (format nil
-                                              "~a~a"
-                                              (link-prefix-other  theme)
-                                              link-name))))
+             (let ((raw-link-text (cond
+                                    ((gemini-link-iri-p link-value)
+                                     (if (text-utils:starting-emoji link-name)
+                                         (format nil
+                                                 "~a~a"
+                                                 (text-utils:trim-blanks (link-prefix-other theme))
+                                                 link-name)
+                                         (format nil
+                                                 "~a~a"
+                                                 (link-prefix-gemini theme)
+                                                 link-name)))
+                                    ((html-utils::http-link-iri-p link-value)
+                                     (format nil
+                                             "~a~a"
+                                             (link-prefix-http theme)
+                                             link-name))
+                                    (t
+                                     (format nil
+                                             "~a~a"
+                                             (link-prefix-other theme)
+                                             link-name)))))
                (tui:make-tui-string raw-link-text
                                     :attributes (link-attributes theme)
                                     :fgcolor    (link-fg         theme)
