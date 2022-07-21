@@ -1218,6 +1218,8 @@
    :gemini-h3-prefix
    :gemini-bullet-prefix
    :gemini-preformatted-fg
+   :gemini-subscription-url-fg
+   :gemini-subscription-count-fg
    :gemini-certificates-window-colors
    :gemini-toc-padding-char
    :signature-file-path

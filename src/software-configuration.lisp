@@ -479,6 +479,7 @@
                    position
                    exclusive
                    mode
+                   count
                    toc
                    downloading
                    animation
@@ -494,6 +495,7 @@
                    padding
                    value
                    scheme
+                   uri
                    link
                    links
                    http
@@ -775,6 +777,18 @@
                                   +key-preformatted-text+
                                   +key-foreground+)
       :white))
+
+(defun gemini-subscription-url-fg ()
+  (access-non-null-conf-value *software-configuration*
+                              +key-gemini-subscription-window+
+                              +key-uri+
+                              +key-foreground+))
+
+(defun gemini-subscription-count-fg ()
+  (access-non-null-conf-value *software-configuration*
+                              +key-gemini-subscription-window+
+                              +key-count+
+                              +key-foreground+))
 
 (defun gemini-certificates-window-colors ()
   "return three color values"
@@ -1464,6 +1478,8 @@
                    #'gemini-h2-prefix
                    #'gemini-h3-prefix
                    #'gemini-bullet-prefix
+                   #'gemini-subscription-url-fg
+                   #'gemini-subscription-count-fg
                    #'signature-file-path
                    #'window-titles-ends
                    #'tags-new-message-mark

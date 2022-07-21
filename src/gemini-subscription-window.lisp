@@ -39,19 +39,33 @@
   object)
 
 (defun gemlog->text (gemlog-db-row window)
-  (format nil
-          "~a ~s ~a/~a"
-          (tui:text-ellipsis (db:row-title gemlog-db-row)
-                             (truncate (/ (win-width window)
-                                          3)))
-          (if (db:row-subtitle gemlog-db-row)
-              (tui:text-ellipsis (db:row-subtitle gemlog-db-row)
-                                 (truncate (/ (win-width window)
-                                              3)))
-              (_ "No subtitle"))
-          (db:row-unseen-count gemlog-db-row)
-          (+ (db:row-unseen-count gemlog-db-row)
-             (db:row-seen-count   gemlog-db-row))))
+  (let ((unseen-count (db:row-unseen-count gemlog-db-row)))
+    (reduce (lambda (a b) (cat-tui-string a b :color-attributes-contagion nil))
+            (list (make-tui-string (format nil
+                                           " ~a/~a "
+                                           unseen-count
+                                           (+ unseen-count
+                                              (db:row-seen-count   gemlog-db-row)))
+                                   :fgcolor (when (> unseen-count 0)
+                                              (swconf:gemini-subscription-count-fg)))
+                  (make-tui-string (format nil
+                                           "~a"
+                                           (tui:text-ellipsis (db:row-url gemlog-db-row)
+                                                              (truncate (* (win-width window)
+                                                                           1/3))))
+                                   :fgcolor (when (> unseen-count 0)
+                                              (swconf:gemini-subscription-url-fg)))
+                  (make-tui-string (format nil
+                                           " ~a ~s"
+                                           (tui:text-ellipsis (db:row-title gemlog-db-row)
+                                                              (truncate (* (win-width window)
+                                                                           1/3)))
+                                           (if (db:row-subtitle gemlog-db-row)
+                                               (tui:text-ellipsis (db:row-subtitle gemlog-db-row)
+                                                                  (truncate (* (win-width window)
+                                                                               1/3)))
+                                               (_ "No subtitle")))
+                                   :attributes (attribute-bold))))))
 
 (defmethod resync-rows-db ((object gemini-subscription-window)
                            &key
