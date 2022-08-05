@@ -73,9 +73,10 @@ be subscribed before (see: 'gemini-subscription:subcribe'"
                   (gemlog-iri (iri:iri-parse url)))
         (let ((links (remove-if-not (lambda (a) (link-post-timestamp-p (name a)))
                                     (sexp->links parsed
-                                                 (uri:host gemlog-iri)
-                                                 (uri:port gemlog-iri)
-                                                 (uri:path gemlog-iri)))))
+                                                 (uri:host  gemlog-iri)
+                                                 (uri:port  gemlog-iri)
+                                                 (uri:path  gemlog-iri)
+                                                 (uri:query gemlog-iri)))))
           (loop for link in links do
             (when (not (db:find-gemlog-entry (to-s (target link))))
               (let ((date (link-post-timestamp (name link))))

@@ -1100,6 +1100,7 @@
                                                       nil
                                                       nil
                                                       local-path
+                                                      nil
                                                       :comes-from-local-file local-path-p))
              (ir-text      (gemini-parser:sexp->text-rows parsed
                                                           gemini-client:*gemini-page-theme*)))
@@ -1207,6 +1208,7 @@
                                                       nil
                                                       nil
                                                       parent-dir
+                                                      nil
                                                       :comes-from-local-file t))
                   (local-links (remove-if (lambda (link)
                                             (let ((target      (gemini-parser:target link)))
@@ -1403,10 +1405,11 @@
            (url      (iri:iri-parse gemlog-url))
            (parsed   (gemini-parser:parse-gemini-file gemini-page))
            (links    (gemini-parser:sexp->links parsed
-                                                (uri:host url)
-                                                (uri:port url)
-                                                (uri:path url)))
-           (theme   gemini-client:*gemini-page-theme*))
+                                                (uri:host  url)
+                                                (uri:port  url)
+                                                (uri:path  url)
+                                                (uri:query url)))
+           (theme    gemini-client:*gemini-page-theme*))
       (gemini-viewer:maybe-initialize-metadata specials:*message-window*)
       (refresh-gemini-message-window links
                                      gemini-page

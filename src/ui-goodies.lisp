@@ -1412,9 +1412,10 @@ Browse and optionally open the links the text of the message window contains."
                                    (iri:absolute-url-p uri))
                                uri
                                (gemini-parser:absolutize-link uri
-                                                              (uri:host current-url)
-                                                              (uri:port current-url)
-                                                              (uri:path current-url)))))
+                                                              (uri:host  current-url)
+                                                              (uri:port  current-url)
+                                                              (uri:path  current-url)
+                                                              (uri:query current-url)))))
         (open-message-link-window:open-message-link absolute-uri nil)))))
 
 (defun open-previous-link ()

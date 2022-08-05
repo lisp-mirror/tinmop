@@ -260,18 +260,29 @@
       path
       (fs:parent-dir-path path)))
 
-(defun absolutize-link (link-value original-host original-port original-path)
+(defun absolutize-link (link-value original-host original-port original-path original-query)
   (let ((parsed (or (ignore-errors (iri:iri-parse link-value))
                     (iri:make-iri nil nil nil nil link-value nil nil))))
     (cond
       ((null (uri:host parsed))
-       (let* ((absolute-path-p (string-starts-with-p "/" link-value))
-              (path            (if absolute-path-p
-                                   (uri:path parsed)
-                                   (strcat (if original-path
-                                               (path-last-dir original-path)
-                                               "/")
-                                           (uri:path parsed)))))
+       (let* ((absolute-path-p      (string-starts-with-p "/" link-value))
+              (query-path-p         (uri:query parsed))
+              (path                (cond
+                                     (absolute-path-p
+                                      (uri:path parsed))
+                                     ((and query-path-p
+                                           original-query)
+                                      (strcat (safe-all-but-last-elt original-path)
+                                              (uri:path parsed)))
+                                     ((or query-path-p
+                                          original-query)
+                                      (strcat original-path
+                                              (uri:path parsed)))
+                                     (t
+                                      (strcat (if original-path
+                                                  (path-last-dir original-path)
+                                                  "/")
+                                              (uri:path parsed))))))
          (make-gemini-iri original-host
                           (fs:normalize-path path)
                           :query    (uri:query parsed)
@@ -325,7 +336,7 @@
       (setf iri (strcat iri "#" fragment)))
     iri))
 
-(defun sexp->links (parsed-gemini original-host original-port original-path
+(defun sexp->links (parsed-gemini original-host original-port original-path original-query
                     &key (comes-from-local-file nil))
   (loop
     for node in parsed-gemini
@@ -344,7 +355,8 @@
                                    (absolutize-link link-value
                                                     original-host
                                                     original-port
-                                                    original-path)))))
+                                                    original-path
+                                                    original-query)))))
             (make-instance 'gemini-link
                            :target rendered-link
                            :name   (tag-value node)))))
