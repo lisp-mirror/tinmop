@@ -386,12 +386,12 @@ height, position and so on)"
   (c:refresh-marked))
 
 (defun draw-all (&key (clear t))
-   (let ((to-be-drawn (remove-intersecting-window)))
-     (loop for window in to-be-drawn do
-       (when (win-visible-p window)
-         (when clear
-           (win-clear window))
-         (draw window)))))
+  (let ((to-be-drawn (remove-intersecting-window)))
+    (loop for window in to-be-drawn do
+      (when (win-visible-p window)
+        (when clear
+          (win-clear window))
+        (draw window)))))
 
 (defun refresh-config-all ()
   (if command-line:*gemini-full-screen-mode*

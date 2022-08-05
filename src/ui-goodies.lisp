@@ -432,6 +432,7 @@ Metadata includes:
         win)
   (remove-focus-to-all-windows)
   (setf (windows:in-focus win) t)
+  (stack:stack-raise-to-top windows::*window-stack* win)
   (windows:draw-all :clear nil)
   (when info-change-focus-message
     (info-message info-change-focus-message +maximum-event-priority+))
