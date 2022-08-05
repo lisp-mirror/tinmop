@@ -313,10 +313,11 @@
                    (port                    port)
                    (path                    path)
                    (meta                    meta)
+                   (query                   query)
                    (status-code             status-code)
                    (status-code-description status-code-description)) stream-object
     (let* ((parsed   (gemini-parser:parse-gemini-file src-data))
-           (links    (gemini-parser:sexp->links parsed host port path))
+           (links    (gemini-parser:sexp->links parsed host port path query))
            (response (gemini-client:make-gemini-file-response status-code
                                                               status-code-description
                                                               meta
