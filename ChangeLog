@@ -1,10 +1,60 @@
+2022-08-05 cage
+
+	* src/gemini-viewer.lisp,
+	* src/gemini/gemini-parser.lisp,
+	* src/gemini/subscription.lisp,
+	* src/program-events.lisp,
+	* src/ui-goodies.lisp,
+	* src/windows.lisp:
+
+	- taken into account the query of the original URI when combining it
+	with a path.
+	- moved window that got the focus on top of the windows stack, to be
+	sure will be visible to the user when redrawing the terminal.
+	Merge branch 'fix-absolutize-links'
+
+2022-07-21 cage
+
+	* etc/default-theme.conf,
+	* src/gemini-subscription-window.lisp,
+	* src/package.lisp,
+	* src/software-configuration.lisp:
+
+	- improved appearance of gemini subscriptions window.
+
+2022-07-15 cage
+
+	* src/gemini/client.lisp:
+
+	- [gemini] remove redirect loop when the meta was an absolute URI.
+
+2022-07-13 cage
+
+	* etc/default-theme.conf,
+	* scripts/generate-gemlog.lisp,
+	* src/gemini/client.lisp,
+	* src/gemini/gemini-parser.lisp,
+	* src/gemini/package.lisp,
+	* src/html-utils.lisp,
+	* src/package.lisp,
+	* src/software-configuration.lisp:
+
+	- [modules] added backlink to generated gemlog pages;
+	- [gemini] fixed rendering of links that starts with an emoji.
+
 2022-07-09 cage
 
+	* ChangeLog,
 	* po/it.po,
-	* scripts/generate-gemlog.lisp:
+	* scripts/generate-gemlog.lisp,
+	* src/ui-goodies.lisp:
 
 	- fixed formatting in generated gemlog topic index;
-	- fixed italian translation.
+	- fixed Italian translation.
+	- [gemini] fixed command for opening of the next visible link;
+	- updated ChangeLog.
+
+
 
 2022-07-08 cage
 
@@ -24,7 +74,7 @@
 
 	* src/windows.lisp:
 
-	- made links window repects resize events.
+	- made links window respects resize events.
 
 2022-07-02 cage
 
@@ -41,7 +91,7 @@
 	* src/uri-parser.lisp,
 	* src/zip-info.lisp:
 
-	- removed direct call to babel:cotets-to-string, using 'to-s' wrapper,
+	- removed direct call to babel:octets-to-string, using 'to-s' wrapper,
 	instead.
 	- [gemini] prevented crash when no previous link to open is found
 	before the selected line.
@@ -139,7 +189,7 @@
 	- fixed file path of Makefile.am;
 	- fixed typo.
 	- added captions for attachments.
-	- updated italian translation.
+	- updated Italian translation.
 
 2022-04-25 cage
 
@@ -163,7 +213,7 @@
 
 	- allowed printing about kami ID from the window of the TLS
 	certificates.
-	- updated italian translation.
+	- updated Italian translation.
 	- updated croatoan commit.
 
 2022-04-22 cage
@@ -173,13 +223,13 @@
 	* src/ui-goodies.lisp:
 
 	- [kami] removed setf' of global variables.
-	- prevented program freeze quen a kami error occurred.
+	- prevented program freeze when a kami error occurred.
 
 2022-04-20 cage
 
 	* src/command-line.lisp:
 
-	- used 'alexandria:when-let' macro to semplify the code.
+	- used 'alexandria:when-let' macro to simplify the code.
 
 2022-04-16 cage
 
@@ -191,8 +241,8 @@
 
 	- added row count for all window that display rows of text.
 	- prevented crash when building the function bound to a keychord that
-	is dadined as an anonymous function.
-	- updated italian translation.
+	  is defined as an anonymous function.
+	- updated Italian translation.
 	- prevented printing line count for empty row window.
 
 2022-04-15 cage
@@ -200,7 +250,7 @@
 	* src/kami/client.lisp,
 	* src/line-oriented-window.lisp:
 
-	- preventd program  to hang when  a file  is created or  deleted using
+	- prevented program  to hang when  a file  is created or  deleted using
 	kami.
 	When a file  was created and deleted and the  kami window was closed
 	the program stopped responding if the  user tried to open a new kami
@@ -323,7 +373,7 @@
 	* etc/init.lisp,
 	* src/ui-goodies.lisp:
 
-	- updated Changelog.
+	- updated ChangeLog.
 	- added a command to subscribe to tag from the tag window.
 	- updated NEWS.org;
 	- added docstring.
@@ -408,8 +458,8 @@
 	- added command to copy a link to clipboard.
 	- refactored clipboard utility function.
 	- fixed positioning of links window.
-	- made tour links window indipendent from other links window.
-	- updated italian translation.
+	- made tour links window independent from other links window.
+	- updated Italian translation.
 	- allowed to copy to clipboard post's attachments.
 	- fixed slot and reader name.
 
@@ -460,7 +510,7 @@
 	- fixed positioning of message-window when resizing terminal in gemini
 	mode.
 	- added 'k' and 'j' as alias for scrolling windows up and down.
-	- updated italian translation.
+	- updated Italian translation.
 	- [gemini] added two new commands to go back in an URL path.
 	- added command 'gemini-jump-to-link';
 	- fixed layout in gemini full screen mode.
@@ -490,7 +540,7 @@
 	- updated ci/README.md.
 	- added keychord 'C-q' to quit the program.
 
-2022-02-21 Franceso Bonanno
+2022-02-21 Francesco Bonanno
 
 	* ci/Containerfile,
 	* ci/README.md,
@@ -585,7 +635,7 @@
 	- [kami] prevented crash when downloading fails, notify an error
 	instead.
 	- updated docstrings.
-	- updated italian translation.
+	- updated Italian translation.
 	- fixed symbol export for 'normalize path' (thanks op!).
 
 2022-02-16 cage
@@ -599,7 +649,7 @@
 
 	- [kami] fixed mirror uploading.
 	- prevented signalling error when an invalid byte sequence is met,
-	when converting octects to string.
+	when converting octets to string.
 	- renamed function: 'filesystem-query-treenode' ->
 	'filesystem-query-path'.
 	- renamed function: 'download-treenode' -> 'download-path'.
@@ -632,8 +682,8 @@
 	window.
 	- prevented a condition variable to be awaken even if condition is not
 	actually met.
-	- updated italian translation.
-	- updated NEWS.org and Changelog.
+	- updated Italian translation.
+	- updated NEWS.org and ChangeLog.
 
 2022-02-09 cage
 
@@ -656,8 +706,8 @@
 	- prevented block of software when opening a kami address with the
 	filesystem explorer window opened.
 	- [kami] added 'file-explorer-mark-by-regexp'.
-	- updated Changelog.
-	- icreased version number.
+	- updated ChangeLog.
+	- increased version number.
 	- updated manpage.
 
 2022-02-05 cage

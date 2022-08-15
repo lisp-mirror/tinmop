@@ -45,7 +45,7 @@
                                            " ~a/~a "
                                            unseen-count
                                            (+ unseen-count
-                                              (db:row-seen-count   gemlog-db-row)))
+                                              (db:row-seen-count gemlog-db-row)))
                                    :fgcolor (when (> unseen-count 0)
                                               (swconf:gemini-subscription-count-fg)))
                   (make-tui-string (format nil

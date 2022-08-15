@@ -3069,7 +3069,7 @@ than `days-in-the-past' days (default: `(swconf:config-purge-cache-days-offset)'
                                                    :gemini-subscription.url))))
                                :seen-count))
                        (from +table-gemini-subscription+)
-                       (order-by :title)))
+                       (order-by (:desc :unseen-count) :title)))
               (rows  (fetch-all-rows query)))
     rows))
 
