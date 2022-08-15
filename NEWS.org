@@ -1,3 +1,18 @@
+* 2022-03-12 version 0.9.6
+
+ - Improvements
+   - [gemini] Improved appearance of  windows that shows subscriptions
+     to gemlogs;
+   - move focus between visible window using 'TAB'.
+
+ - New script
+   - [gemini] added a script to generate a gemlog;
+
+ - Bugfix
+
+   Many bugs have been fixed, please  refers to the ChangeLog file for
+   details;
+
 * 2022-03-12 version 0.9.5
 
   - New Features
