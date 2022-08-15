@@ -1,4 +1,4 @@
-* 2022-03-12 version 0.9.6
+* 2022-08-15 version 0.9.7
 
  - Improvements
    - [gemini] Improved appearance of  windows that shows subscriptions
