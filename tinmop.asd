@@ -18,7 +18,7 @@
 (defsystem :tinmop
   :author      "cage"
   :license     "GPLv3"
-  :version     "0.9.7"
+  :version     "0.9.8"
   :pathname    "src"
   :serial      t
   :bug-tracker "https://notabug.org/cage/tinmop/issues"

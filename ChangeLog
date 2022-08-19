@@ -1,17 +1,39 @@
+2022-08-19 cage
+
+        * src/gemini/client.lisp:
+
+        - [gemini] added missing mandatory argument to function that builds
+        the redirect URI.
+
+2022-08-15 cage
+
+        * ChangeLog,
+        * NEWS.org,
+        * src/db.lisp,
+        * src/gemini-subscription-window.lisp,
+        * tinmop.asd:
+
+        - changed sorting criteria for gemlog subscriptions;
+        Promotes on top subscriptions with unread posts.
+        - updated ChangeLog.
+        - increased version number;
+        - updated News file.
+        - actually increased version number.
+
 2022-08-05 cage
 
-	* src/gemini-viewer.lisp,
-	* src/gemini/gemini-parser.lisp,
-	* src/gemini/subscription.lisp,
-	* src/program-events.lisp,
-	* src/ui-goodies.lisp,
-	* src/windows.lisp:
+        * src/gemini-viewer.lisp,
+        * src/gemini/gemini-parser.lisp,
+        * src/gemini/subscription.lisp,
+        * src/program-events.lisp,
+        * src/ui-goodies.lisp,
+        * src/windows.lisp:
 
-	- taken into account the query of the original URI when combining it
-	with a path.
-	- moved window that got the focus on top of the windows stack, to be
-	sure will be visible to the user when redrawing the terminal.
-	Merge branch 'fix-absolutize-links'
+        - taken into account the query of the original URI when combining it
+        with a path.
+        - moved window that got the focus on top of the windows stack, to be
+        sure will be visible to the user when redrawing the terminal.
+        Merge branch 'fix-absolutize-links'
 
 2022-07-21 cage
 
