@@ -528,9 +528,10 @@
                                       (strcat meta-path "?" meta-query)
                                       meta-path))
                  (new-url    (gemini-parser:absolutize-link meta-path-query
-                                                            (uri:host iri-from)
-                                                            (uri:port iri-from)
-                                                            (uri:path iri-from))))
+                                                            (uri:host  iri-from)
+                                                            (uri:port  iri-from)
+                                                            (uri:path  iri-from)
+                                                            (uri:query iri-from))))
             new-url)))))
 
 (defmethod build-redirect-iri (meta (iri-from string))
