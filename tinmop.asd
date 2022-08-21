@@ -100,6 +100,10 @@
                (:module kami
                 :components ((:file "package")
                              (:file "client")))
+               (:module gopher
+                :components ((:file "package")
+                             (:file "parser")
+                             (:file "client")))
                (:file "command-line")
                (:file "specials")
                (:file "keybindings")
