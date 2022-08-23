@@ -2717,7 +2717,7 @@ example)."
                                 :verbose           nil
                                 :print             nil
                                 :if-does-not-exist :error)))))
-          (push-event (make-instance 'gemini-display-data-page
+          (push-event (make-instance 'display-output-script-page
                                      :window *message-window*
                                      :payload output)))))))
 (defun load-script-file ()

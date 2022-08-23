@@ -1525,6 +1525,7 @@
    :add-pagination-status-event
    :status-id
    :timeline
+   :display-output-script-page
    :gemini-display-data-page
    :gemini-request-event
    :gemini-back-event

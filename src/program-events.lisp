@@ -1079,6 +1079,20 @@
     (tui:with-notify-errors
       (api-client:poll-vote poll-id choices))))
 
+(defclass display-output-script-page (program-event)
+  ((window
+    :initform nil
+    :initarg :window
+    :accessor window)))
+
+(defmethod process-event ((object display-output-script-page))
+  (with-accessors ((page-data  payload)
+                   (window     window)) object
+    (when (text-utils:string-not-empty-p page-data)
+      (tui:with-notify-errors
+        (message-window:prepare-for-rendering window page-data)
+        (windows:draw window)))))
+
 (defclass gemini-display-data-page (program-event)
   ((window
     :initform nil
