@@ -40,7 +40,9 @@
                      (redundant-server "+" "identifier for a redundant server")
                      (tn3270-session   "T" "identifier for a tn3270 session")
                      (gif-image-file   "g" "identifier for an image in GIF")
-                     (image-file       "I" "identifier for an image file")))
+                     (image-file       "I" "identifier for an image file")
+                     (info             "i" "information line")
+                     (uri              "h" "hyperlink")))
 
 (a:define-constant +gopher-scheme+ "gopher" :test #'string=)
 
@@ -79,6 +81,10 @@
 (%gen-check-line-predicate gif-file         +line-type-gif-image-file+)
 
 (%gen-check-line-predicate image-file       +line-type-image-file+)
+
+(%gen-check-line-predicate info             +line-type-info+)
+
+(%gen-check-line-predicate uri              +line-type-uri+)
 
 (defclass gopher-line ()
   ((username
@@ -143,6 +149,10 @@
 
 (gen-selector-class line-image-file)
 
+(gen-selector-class line-info)
+
+(gen-selector-class line-uri)
+
 (defun check-line-type (data reference)
   (typep data reference))
 
@@ -178,6 +188,10 @@
 (gen-check-line-predicate gif-file         'line-gif-image-file)
 
 (gen-check-line-predicate image-file       'line-image-file)
+
+(gen-check-line-predicate info             'line-info)
+
+(gen-check-line-predicate uri              'line-uri)
 
 (defrule line-separator (and #\Return #\Newline)
   (:constant :line-separator))
@@ -273,9 +287,22 @@
                               ((%line-type-gif-file-p line-type)
                                (make-instance 'line-gif-file))
                               ((%line-type-image-file-p line-type)
-                               (make-instance 'line-image-file)))))
+                               (make-instance 'line-image-file))
+                              ((%line-type-info-p line-type)
+                               (make-instance 'line-info))
+                              ((%line-type-uri-p line-type)
+                               (make-instance 'line-uri)))))
             (setf (username instance) (getf entry :user-name)
                   (selector instance) (getf entry :selector)
                   (host     instance) (getf entry :host)
                   (port     instance) (getf entry :port))
             instance))))
+
+(defun parse-iri (iri)
+  (let* ((parsed   (iri:iri-parse iri))
+         (host     (uri:host parsed))
+         (port     (uri:port parsed))
+         (path     (uri:path parsed))
+         (type     (second (fs:split-path-elements path)))
+         (selector (subseq path (+ 2 (length type)))))
+    (values host port type selector)))

@@ -25,6 +25,7 @@
    :misc)
   (:local-nicknames (:a :alexandria))
   (:export
+   :+gopher-scheme+
    :+line-type-file+
    :+line-type-dir+
    :+line-type-cso+
@@ -35,7 +36,10 @@
    :+line-type-index-search+
    :+line-type-telnet-session+
    :+line-type-binary-file+
-   :+gopher-scheme+
+   :+line-type-gif-image-file+
+   :+line-type-image-file+
+   :+line-type-info+
+   :+line-type-uri+
    :line-file
    :line-dir
    :line-cso
@@ -50,6 +54,7 @@
    :line-tn3270-session
    :line-gif-file
    :line-image-file
+   :line-uri
    :line-file-p
    :line-dir-p
    :line-cso-p
@@ -64,18 +69,21 @@
    :line-tn3270-session-p
    :line-gif-file-p
    :line-image-file-p
-   :parse-menu))
+   :line-image-uri-p
+   :parse-menu
+   :parse-iri))
 
 (defpackage gopher-client
   (:use
    :cl
    :cl-ppcre
-   :esrap
    :config
    :constants
    :text-utils
    :misc
-   :gemini-constants)
-   (:local-nicknames (:a :alexandria))
-   (:export
-    :+gopher-scheme+))
+   :gopher-parser)
+  (:local-nicknames (:a :alexandria)
+                    (:parser :gopher-parser))
+  (:export
+   :request
+   :request-from-iri))

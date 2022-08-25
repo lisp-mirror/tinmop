@@ -251,15 +251,16 @@
         (nix:s-isdir (nix:stat-mode (nix:stat path))))))
 
 (defun split-path-elements (path)
-  (cl-ppcre:split *directory-sep-regexp* path))
+  (let ((splitted (cl-ppcre:split *directory-sep-regexp* path)))
+    (substitute *directory-sep* "" splitted :test #'string=)))
 
 (defun path-last-element (path)
-  (let ((elements (cl-ppcre:split *directory-sep-regexp* path)))
+  (let ((elements (split-path-elements path)))
     (and elements
          (last-elt elements))))
 
 (defun path-first-element (path)
-  (let ((elements (cl-ppcre:split *directory-sep-regexp* path)))
+  (let ((elements (split-path-elements path)))
     (and elements
          (first-elt elements))))
 
