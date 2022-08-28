@@ -256,8 +256,6 @@
 
 ;; thread window keymap
 
-(define-key "Q"         #'gopher-window::tt                           *thread-keymap*)
-
 (define-key "up"        #'thread-go-up                                *thread-keymap*)
 
 (define-key "down"      #'thread-go-down                              *thread-keymap*)
