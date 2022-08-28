@@ -100,6 +100,10 @@
                (:module kami
                 :components ((:file "package")
                              (:file "client")))
+               (:module gopher
+                :components ((:file "package")
+                             (:file "parser")
+                             (:file "client")))
                (:file "command-line")
                (:file "specials")
                (:file "keybindings")
@@ -122,6 +126,7 @@
                (:file "message-rendering-utils")
                (:file "thread-window")
                (:file "message-window")
+               (:file "gopher-window")
                (:file "open-attach-window")
                (:file "open-message-link-window")
                (:file "gemini-client-certificates-window")

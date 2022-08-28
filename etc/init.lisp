@@ -256,6 +256,8 @@
 
 ;; thread window keymap
 
+(define-key "Q"         #'gopher-window::tt                           *thread-keymap*)
+
 (define-key "up"        #'thread-go-up                                *thread-keymap*)
 
 (define-key "down"      #'thread-go-down                              *thread-keymap*)
@@ -751,6 +753,20 @@
 (define-key "M u"       #'file-explorer-upload-mirror   *filesystem-explorer-keymap*)
 
 (define-key "M d"       #'file-explorer-download-mirror *filesystem-explorer-keymap*)
+
+;; gopher viewer keymap
+
+(define-key "up"        #'gopher-window:go-to-previous-link          *gopher-keymap*)
+
+(define-key "down"      #'gopher-window:go-to-next-link              *gopher-keymap*)
+
+(define-key "k"         #'gopher-window:go-to-previous-link          *gopher-keymap*)
+
+(define-key "j"         #'gopher-window:go-to-next-link              *gopher-keymap*)
+
+(define-key "C-J"       #'gopher-window:open-menu-link               *gopher-keymap*)
+
+(define-key "b"         #'gemini-history-back                        *gopher-keymap*)
 
 ;;;; hooks
 

@@ -463,7 +463,8 @@
      ,@(loop for name in names collect
              `(gen-key-constant ,name))))
 
-(gen-key-constants experimental
+(gen-key-constants unknown
+                   experimental
                    regex
                    background
                    foreground
@@ -478,6 +479,7 @@
                    height
                    position
                    exclusive
+                   search
                    mode
                    count
                    toc
@@ -492,6 +494,7 @@
                    focus
                    prefix
                    postfix
+                   line
                    padding
                    value
                    scheme
@@ -543,6 +546,7 @@
                    chats-list-window
                    gemini-subscription-window
                    gemini-toc-window
+                   gopher-window
                    attachment-header
                    max-numbers-allowed-attachments
                    max-message-length
@@ -591,6 +595,11 @@
                    unread
                    directory-symbol
                    directory
+                   file
+                   binary-file
+                   text-file
+                   image-file
+                   gif-file
                    fetch
                    update
                    iri
@@ -926,7 +935,6 @@
                        +key-library+)
       (res:home-datadir)))
 
-
 (defun external-editor ()
   (access:access *software-configuration*
                  +key-editor+))
@@ -1044,6 +1052,67 @@
                    +key-password-echo-character+)
 
 (gen-simple-access (all-link-open-program) +key-open-link-helper+)
+
+(gen-simple-access (gopher-line-prefix-directory)
+                   +key-gopher-window+
+                   +key-line+
+                   +key-prefix+
+                   +key-directory+)
+
+(gen-simple-access (gopher-line-prefix-uri)
+                   +key-gopher-window+
+                   +key-line+
+                   +key-prefix+
+                   +key-uri+)
+
+(gen-simple-access (gopher-line-prefix-unknown)
+                   +key-gopher-window+
+                   +key-line+
+                   +key-prefix+
+                   +key-unknown+)
+
+(gen-simple-access (gopher-line-prefix-binary-file)
+                   +key-gopher-window+
+                   +key-line+
+                   +key-prefix+
+                   +key-binary-file+)
+
+(gen-simple-access (gopher-line-prefix-text-file)
+                   +key-gopher-window+
+                   +key-line+
+                   +key-prefix+
+                   +key-text-file+)
+
+(gen-simple-access (gopher-line-prefix-image-file)
+                   +key-gopher-window+
+                   +key-line+
+                   +key-prefix+
+                   +key-image-file+)
+
+(gen-simple-access (gopher-line-prefix-gif-file)
+                   +key-gopher-window+
+                   +key-line+
+                   +key-prefix+
+                   +key-gif-file+)
+
+(gen-simple-access (gopher-line-prefix-search-index)
+                   +key-gopher-window+
+                   +key-line+
+                   +key-prefix+
+                   +key-search+)
+
+(gen-simple-access (gopher-line-prefix-foreground)
+                   +key-gopher-window+
+                   +key-line+
+                   +key-prefix+
+                   +key-foreground+)
+
+(gen-simple-access (gopher-line-prefix-attribute
+                    :transform-value-fn tui-utils:text->tui-attribute)
+                   +key-gopher-window+
+                   +key-line+
+                   +key-prefix+
+                   +key-attribute+)
 
 (defun link-regex->program-to-use-parameters (link)
   (find-if (lambda (a) (cl-ppcre:scan (re a) link))
