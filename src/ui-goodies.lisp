@@ -2181,7 +2181,7 @@ Currently the only recognized protocols are gemini and kami."
                 (open-kami-address trimmed-url))
                ((text-utils:string-starts-with-p gopher-parser:+gopher-scheme+ trimmed-url)
                 (multiple-value-bind (host port type selector)
-                    (gopher-parser:parse-iri address)
+                    (gopher-parser:parse-iri trimmed-url)
                   (gopher-window::make-request host port type selector)))
                (t
                 (open-gemini-address trimmed-url))))))
