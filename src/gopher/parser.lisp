@@ -87,7 +87,12 @@
 (%gen-check-line-predicate uri              +line-type-uri+)
 
 (defclass gopher-line ()
-  ((username
+  ((line-type-id
+    :initarg :line-type-id
+    :initform ""
+    :accessor line-type-id
+    :type     string)
+   (username
     :initarg :username
     :initform ""
     :accessor username
@@ -153,6 +158,8 @@
 
 (gen-selector-class line-uri)
 
+(gen-selector-class line-unknown)
+
 (defun check-line-type (data reference)
   (typep data reference))
 
@@ -193,6 +200,8 @@
 
 (gen-check-line-predicate uri              'line-uri)
 
+(gen-check-line-predicate unknown          'unknown)
+
 (defrule line-separator (and #\Return #\Newline)
   (:constant :line-separator))
 
@@ -207,9 +216,6 @@
 
 (defrule last-line (and #\. line-separator)
   (:constant :last-line))
-
-(defrule text-block (+ (not last-line))
-  (:text t))
 
 (defrule line-type unascii
   (:text t))
@@ -291,17 +297,29 @@
                               ((%line-type-info-p line-type)
                                (make-instance 'line-info))
                               ((%line-type-uri-p line-type)
-                               (make-instance 'line-uri)))))
-            (setf (username instance) (getf entry :user-name)
-                  (selector instance) (getf entry :selector)
-                  (host     instance) (getf entry :host)
-                  (port     instance) (getf entry :port))
+                               (make-instance 'line-uri))
+                              (t
+                               (make-instance 'line-unknown)))))
+            (setf (line-type-id instance) (getf entry :type)
+                  (username     instance) (getf entry :user-name)
+                  (selector     instance) (getf entry :selector)
+                  (host         instance) (getf entry :host)
+                  (port         instance) (getf entry :port))
             instance))))
+
+(defrule text-block (+ (not (and #\Newline #\. #\Return #\Newline)))
+  (:text t))
+
+(defrule text-file (and (* text-block) (and #\Newline #\. #\Return #\Newline))
+  (:function caar))
+
+(defun parse-text-file (data)
+  (parse 'text-file data))
 
 (defun parse-iri (iri)
   (let* ((parsed   (iri:iri-parse iri))
          (host     (uri:host parsed))
-         (port     (uri:port parsed))
+         (port     (or (uri:port parsed) 70))
          (path     (uri:path parsed))
          (type     (second (fs:split-path-elements path)))
          (selector (subseq path (+ 2 (length type)))))

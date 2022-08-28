@@ -30,8 +30,10 @@
 (defun %request (host &key
                         (port 70)
                         (selector "")
-                        (terminate-strategy :response-teminal)
+                        (terminate-strategy :response-terminal)
                         (collect-fn (lambda (data) (format t "~a" (to-s data)))))
+  (assert (or (null terminate-strategy)
+              (eq terminate-strategy :response-terminal)))
   (flet ((open-socket (hostname port)
            (usocket:socket-connect hostname
                                    port
@@ -59,12 +61,12 @@
                                             '(unsigned-byte 8)
                                             t))
              (first-chunk-size (read-sequence buffer stream)))
-        (funcall collect-fn (subseq buffer 0 first-chunk-size))
-        (loop for read-so-far = first-chunk-size
-              while (not (end-response-p read-so-far buffer))
-              do
-                 (format t "~a~%" read-so-far)
-                 (funcall collect-fn (subseq buffer 0 read-so-far)))))))
+        (labels ((read-all (buffer read-so-far)
+                   (funcall collect-fn (subseq buffer 0 read-so-far))
+                   (when (not (end-response-p read-so-far buffer))
+                     (let ((new-chunk-size (read-sequence buffer stream)))
+                       (read-all buffer new-chunk-size)))))
+          (read-all buffer first-chunk-size))))))
 
 (defmacro gen-request-function (return-types strategies)
   `(defun ,(format-fn-symbol t "request")
@@ -72,7 +74,7 @@
         &key
           (port 70)
           (selector "")
-          (collect-fn (lambda (data) (format t "~a" (to-s data)))))
+          (collect-fn (lambda (data) (format t "~s" (to-s data)))))
      (cond
        ,@(append
           (loop for return-type in return-types
@@ -87,8 +89,10 @@
           `(((string= response-type +line-type-uri+)
              (open-message-link-window:open-message-link selector nil)))
           `((t
-             (error 'conditions:not-implemented-error
-                    :text (format nil (_ "This line type ~s in not supported") response-type))))))))
+             (%request host :port               port
+                            :selector           selector
+                            :terminate-strategy nil
+                            :collect-fn         collect-fn)))))))
 
 (gen-request-function (+line-type-file+
                        +line-type-dir+
@@ -101,17 +105,17 @@
                        +line-type-gif-image-file+
                        +line-type-image-file+
                        +line-type-info+)
-                      (:response-teminal
-                       :response-teminal
-                       :response-teminal
+                      (:response-terminal
+                       :response-terminal
+                       :response-terminal
                        nil
                        nil
                        nil
-                       :response-teminal
+                       :response-terminal
                        nil
                        nil
                        nil
-                       :response-teminal))
+                       :response-terminal))
 
 (defun request-from-iri (iri &optional (collect-function (lambda (data)
                                                            (format t "~a" (to-s data)))))

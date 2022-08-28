@@ -126,6 +126,7 @@
                (:file "message-rendering-utils")
                (:file "thread-window")
                (:file "message-window")
+               (:file "gopher-window")
                (:file "open-attach-window")
                (:file "open-message-link-window")
                (:file "gemini-client-certificates-window")

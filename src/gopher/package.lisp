@@ -40,13 +40,18 @@
    :+line-type-image-file+
    :+line-type-info+
    :+line-type-uri+
+   :line-type-id
+   :selector
+   :username
+   :port
+   :host
    :line-file
    :line-dir
    :line-cso
    :line-error
    :line-mac-hex-file
    :line-dos-archive-file
-   :line-dos-uuencoded-file
+   :line-uuencoded-file
    :line-index-search
    :line-telnet-session
    :line-binary-file
@@ -54,23 +59,28 @@
    :line-tn3270-session
    :line-gif-file
    :line-image-file
+   :line-info
    :line-uri
-   :line-file-p
-   :line-dir-p
-   :line-cso-p
-   :line-error-p
-   :line-mac-hex-file-p
-   :line-dos-archive-file-p
-   :line-uuencoded-file-p
-   :line-index-search-p
-   :line-telnet-session-p
-   :line-binary-file-p
-   :line-redundant-server-p
-   :line-tn3270-session-p
-   :line-gif-file-p
-   :line-image-file-p
-   :line-image-uri-p
+   :line-unknown
+   :line-type-file-p
+   :line-type-info-p
+   :line-type-dir-p
+   :line-type-cso-p
+   :line-type-error-p
+   :line-type-mac-hex-file-p
+   :line-type-dos-archive-file-p
+   :line-type-uuencoded-file-p
+   :line-type-index-search-p
+   :line-type-telnet-session-p
+   :line-type-binary-file-p
+   :line-type-redundant-server-p
+   :line-type-tn3270-session-p
+   :line-type-gif-file-p
+   :line-type-image-file-p
+   :line-type-image-uri-p
+   :line-unknown-p
    :parse-menu
+   :parse-text-file
    :parse-iri))
 
 (defpackage gopher-client
@@ -85,5 +95,6 @@
   (:local-nicknames (:a :alexandria)
                     (:parser :gopher-parser))
   (:export
+   :make-collect-fn
    :request
    :request-from-iri))

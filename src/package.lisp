@@ -1155,6 +1155,7 @@
    :+key-main-window+
    :+key-thread-window+
    :+key-message-window+
+   :+key-gopher-window+
    :+key-chat-window+
    :+key-chats-list-window+
    :+key-gemini-subscription-window+
@@ -1262,6 +1263,16 @@
    :config-username
    :config-password-echo-character
    :config-win-focus-mark
+   :config-gopher-line-prefix-directory
+   :config-gopher-line-prefix-uri
+   :config-gopher-line-prefix-unknown
+   :config-gopher-line-prefix-binary-file
+   :config-gopher-line-prefix-text-file
+   :config-gopher-line-prefix-image-file
+   :config-gopher-line-prefix-gif-file
+   :config-gopher-line-prefix-search-index
+   :config-gopher-line-prefix-attribute
+   :config-gopher-line-prefix-foreground
    :link-regex->program-to-use
    :link-regex->program-to-use-buffer-size
    :use-tinmop-as-external-program-p
@@ -1397,7 +1408,8 @@
    :*gemini-toc-window*
    :*chats-list-window*
    :*gempub-library-window*
-   :*filesystem-explorer-window*))
+   :*filesystem-explorer-window*
+   :*gopher-window*))
 
 (defpackage :complete
   (:use
@@ -1717,6 +1729,7 @@
    :*gemini-toc-keymap*
    :*gempub-library-keymap*
    :*filesystem-explorer-keymap*
+   :*gopher-keymap*
    :define-key
    :init-keyboard-mapping
    :find-keymap-node
@@ -2257,6 +2270,32 @@
    :init
    :search-gemini-fragment))
 
+(defpackage :gopher-window
+  (:use
+   :cl
+   :cl-ppcre
+   :config
+   :constants
+   :text-utils
+   :misc
+   :mtree
+   :keybindings
+   :specials
+   :windows
+   :modeline-window
+   :line-oriented-window
+   :tui-utils)
+  (:shadowing-import-from :text-utils :split-lines)
+  (:shadowing-import-from :misc :random-elt :shuffle)
+  (:local-nicknames (:c  :croatoan)
+                    (:a  :alexandria))
+  (:export
+   :gopher-window
+   :go-to-next-link
+   :go-to-previous-link
+   :open-menu-link
+   :init))
+
 (defpackage :open-attach-window
   (:use
    :cl
@@ -2705,6 +2744,8 @@
    :message-scroll-end
    :message-scroll-next-page
    :message-scroll-previous-page
+   :message-window-go-up
+   :message-window-go-down
    :message-search-regex
    :message-toggle-preformatted-block
    :focus-to-message-window
@@ -2713,6 +2754,7 @@
    :focus-to-follow-requests-window
    :focus-to-tags-window
    :focus-to-conversations-window
+   :focus-to-gopher-window
    :print-quick-help
    :apropos-help
    :apropos-help-global

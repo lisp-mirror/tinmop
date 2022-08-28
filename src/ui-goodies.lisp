@@ -412,6 +412,12 @@ Metadata includes:
 (defun message-scroll-previous-page ()
   (message-window:scroll-previous-page *message-window*))
 
+(defun message-window-go-down ()
+  (line-window-go-down *gemini-certificates-window*))
+
+(defun message-window-go-up ()
+  (line-window-go-up *gemini-certificates-window*))
+
 (defun message-search-regex-callback (regex &key (priority +maximum-event-priority+))
   (let ((event (make-instance 'search-regex-message-content-event
                               :priority priority
@@ -736,6 +742,11 @@ along the focused window."
                      *filesystem-explorer-window*
                      :documentation      "Move focus on filesystem explorer window"
                      :info-change-focus-message (_ "Focus passed on file explorer window"))
+
+(gen-focus-to-window gopher-window
+                     *gopher-window*
+                     :documentation      "Move focus on gopher window"
+                     :info-change-focus-message (_ "Focus passed on gopher window"))
 
 (defun print-quick-help ()
   "Print a quick help"
@@ -2164,11 +2175,16 @@ open-message-link-window:open-message-link"
 Currently the only recognized protocols are gemini and kami."
   (flet ((on-input-complete (url)
            (let ((trimmed-url (trim-blanks url)))
-             (if (text-utils:string-starts-with-p kami:+kami-scheme+ trimmed-url)
-                 (progn
-                   (file-explorer-close-window)
-                   (open-kami-address trimmed-url))
-                 (open-gemini-address trimmed-url)))))
+             (cond
+               ((text-utils:string-starts-with-p kami:+kami-scheme+ trimmed-url)
+                (file-explorer-close-window)
+                (open-kami-address trimmed-url))
+               ((text-utils:string-starts-with-p gopher-parser:+gopher-scheme+ trimmed-url)
+                (multiple-value-bind (host port type selector)
+                    (gopher-parser:parse-iri address)
+                  (gopher-window::make-request host port type selector)))
+               (t
+                (open-gemini-address trimmed-url))))))
     (if (null address)
         (let ((prompt (open-url-prompt)))
           (ask-string-input #'on-input-complete

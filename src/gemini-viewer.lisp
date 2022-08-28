@@ -760,13 +760,12 @@
   (when-let* ((metadata (message-window:metadata window))
               (history  (misc:safe-all-but-last-elt (gemini-metadata-history metadata)))
               (last     (last-elt history)))
-    (setf (gemini-metadata-history metadata)
-          history)
+    (setf (gemini-metadata-history metadata) history)
     (ui:info-message (format nil (_ "Going back to: ~a") last))
     (let ((found (find-db-stream-url last)))
       (if found
           (db-entry-to-foreground last)
-          (load-gemini-url last))))) ; this happens if navigating in a local tree
+          (ui:open-net-address last))))) ; this happens history kept a non gemini iri
 
 (defun view-source (window)
   (when-let* ((metadata (message-window:metadata window))
