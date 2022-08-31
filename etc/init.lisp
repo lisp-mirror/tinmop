@@ -766,6 +766,12 @@
 
 (define-key "b"         #'gemini-history-back                        *gopher-keymap*)
 
+(define-key "C-b a"     #'bookmark-gopher-page                       *gopher-keymap*)
+
+(define-key "C-b s"     #'display-bookmark                           *gopher-keymap*)
+
+(define-key "C-b d"     #'delete-gemini-bookmark                     *gopher-keymap*)
+
 ;;;; hooks
 
 ;; this module  will install an  hook to  rewrite urls; By  default it

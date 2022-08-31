@@ -27,6 +27,16 @@
     :accessor page-type
     :documentation "The type of the page , 0,1,2,i etc.")))
 
+(defun gopher-window-p (w)
+  (typep w 'gopher-window))
+
+(defun current-gopher-url ()
+  (when (gopher-window-p specials:*gopher-window*)
+    (a:when-let* ((metadata (message-window:metadata specials:*message-window*))
+                  (history  (gemini-viewer:gemini-metadata-history metadata))
+                  (link     (a:last-elt history)))
+      link)))
+
 (defmethod refresh-config :after ((object gopher-window))
   (refresh-config-colors object swconf:+key-gopher-window+)
   (let* ((height (win-height *message-window*))

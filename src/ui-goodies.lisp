@@ -2577,6 +2577,34 @@ gemini page the program is rendering."
                            :prompt (format nil (_ "Insert certificate file: "))
                            :complete-fn #'complete:directory-complete))))
 
+(defun bookmark-gopher-page ()
+  (cond
+    ((not (gopher-window:gopher-window-p specials:*gopher-window*))
+     (error-message (_ "The window is not displaying a gopher document")))
+    ((not (gopher-window:current-gopher-url))
+     (error-message (_ "This page can not be added to bookmarks")))
+    (t
+     (let* ((link        (gopher-window:current-gopher-url))
+            (description (_ "No description")))
+       (labels ((on-description-completed (new-description)
+                  (if (text-utils:string-empty-p new-description)
+                      (error-message (_ "Empty description"))
+                      (progn
+                        (setf description new-description)
+                        (ui:ask-string-input #'on-section-completed
+                                             :prompt (format nil (_ "Insert bookmark section: "))
+                                             :complete-fn #'complete:bookmark-section-complete))))
+                (on-section-completed (section)
+                  (db-utils:with-ready-database (:connect nil)
+                    (db:bookmark-add db:+bookmark-gemini-type-entry+
+                                     link
+                                     :section     section
+                                     :description description))
+                  (notify (format nil (_ "Added ~s in bookmark") link))))
+         (ui:ask-string-input #'on-description-completed
+                              :prompt        (format nil (_ "Insert bookmark description: "))
+                              :initial-value description))))))
+
 (defun bookmark-gemini-page ()
   (cond
     ((not (message-window:gemini-window-p))

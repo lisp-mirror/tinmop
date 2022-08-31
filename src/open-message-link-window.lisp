@@ -75,25 +75,29 @@
 
 (defun open-message-link (url enqueue)
   (tui-utils:with-notify-errors
-    (let* ((parsed       (iri:iri-parse url))
-           (scheme       (uri:scheme parsed))
-           (decoded-path (percent-decode url)))
-      (when (and (not enqueue)
-                 (swconf:close-link-window-after-select-p))
-        (ui:close-open-message-link-window))
-      (cond
-        ((string= gemini-constants:+gemini-scheme+ scheme)
-         (db:insert-in-history (ui:open-url-prompt) url)
-         (db:gemlog-mark-as-seen url)
-         (gemini-viewer:ensure-just-one-stream-rendering)
-         (gemini-viewer:load-gemini-url url
-                                        :give-focus-to-message-window t
-                                        :enqueue                      enqueue
-                                        :use-cached-file-if-exists    t))
-        ((fs:dirp decoded-path)
-         (ui:open-file-explorer decoded-path))
-        (t
-         (os-utils:open-resource-with-external-program decoded-path nil))))))
+    (if (text-utils:string-starts-with-p gopher-parser:+gopher-scheme+ url)
+        (multiple-value-bind (host port type selector)
+            (gopher-parser:parse-iri url)
+          (gopher-window::make-request host port type selector))
+        (let* ((parsed       (iri:iri-parse url))
+               (scheme       (uri:scheme parsed))
+               (decoded-path (percent-decode url)))
+          (when (and (not enqueue)
+                     (swconf:close-link-window-after-select-p))
+            (ui:close-open-message-link-window))
+          (cond
+            ((string= gemini-constants:+gemini-scheme+ scheme)
+             (db:insert-in-history (ui:open-url-prompt) url)
+             (db:gemlog-mark-as-seen url)
+             (gemini-viewer:ensure-just-one-stream-rendering)
+             (gemini-viewer:load-gemini-url url
+                                            :give-focus-to-message-window t
+                                            :enqueue                      enqueue
+                                            :use-cached-file-if-exists    t))
+            ((fs:dirp decoded-path)
+             (ui:open-file-explorer decoded-path))
+            (t
+             (os-utils:open-resource-with-external-program decoded-path nil)))))))
 
 (defclass open-links-window ()
   ((links

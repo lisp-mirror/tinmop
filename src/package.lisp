@@ -2292,6 +2292,8 @@
                     (:a  :alexandria))
   (:export
    :gopher-window
+   :gopher-window-p
+   :current-gopher-url
    :go-to-next-link
    :go-to-previous-link
    :open-menu-link
@@ -2908,6 +2910,7 @@
    :ask-input-on-tofu-error
    :import-gemini-certificate
    :bookmark-gemini-page
+   :bookmark-gopher-page
    :display-bookmark
    :delete-gemini-bookmark
    :display-latest-visited-urls
