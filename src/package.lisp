@@ -217,7 +217,7 @@
    :make-null-pointer
    :with-load-forms-in-var
    :time-unix->universal
-   :time-second-of
+   :time-seconds-of
    :time-minutes-of
    :time-hour-of
    :time-date-of

@@ -896,7 +896,7 @@ to the array"
      ,@(loop for i in name-pos collect
             `(gen-time-access ,(car i) ,(cdr i)))))
 
-(gen-all-time-access (second     . 0)
+(gen-all-time-access (seconds    . 0)
                      (minutes    . 1)
                      (hour       . 2)
                      (date       . 3)
