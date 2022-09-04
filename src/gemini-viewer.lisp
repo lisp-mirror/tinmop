@@ -547,7 +547,6 @@
                        :running))))
       (multiple-value-bind (actual-iri host path query port fragment)
           (gemini-client:displace-iri parsed-iri)
-        (declare (ignore actual-iri))
         (gemini-client:debug-gemini "response is a stream")
         (labels ((make-text-based-stream (gemini-format-p)
                    (let* ((starting-status (starting-status meta))
@@ -586,6 +585,7 @@
           (cond
             ((gemini-client:gemini-file-stream-p meta)
              (gemini-client:debug-gemini "response is a gemini document stream")
+             (push-url-to-history specials:*message-window* actual-iri)
              (make-text-based-stream t))
             ((gemini-client:text-file-stream-p meta)
              (gemini-client:debug-gemini "response is a text stream")
@@ -712,7 +712,6 @@
                   (if (find-db-stream-url actual-iri)
                       (progn
                         (gemini-client:debug-gemini  "caching found for ~a" actual-iri)
-                        (push-url-to-history specials:*message-window* actual-iri)
                         (db-entry-to-foreground actual-iri))
                       (progn
                         (gemini-client:debug-gemini "caching *not* found for ~a" actual-iri)
@@ -727,7 +726,6 @@
                                 (find-db-stream-url actual-iri)))
                   (when (null enqueue)
                     (ensure-just-one-stream-rendering))
-                  (push-url-to-history specials:*message-window* actual-iri)
                   (gemini-client:request-dispatch url
                                                   gemini-client::dispatch-table
                                                   :certificate     certificate

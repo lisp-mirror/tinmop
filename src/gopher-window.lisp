@@ -212,49 +212,49 @@
                         port
                         type
                         selector)))
-      (gemini-viewer:push-url-to-history message-win link)))
-  (cond
-    ((gopher-parser::%line-type-dir-p type)
-     (let ((data (misc:make-fresh-array 0 :type '(unsigned-int 8))))
-       (gopher-client:request host
-                              type
-                              :port       port
-                              :selector   selector
-                              :collect-fn (gopher-client:make-collect-fn data))
-       (init)
-       (ui:focus-to-gopher-window)
-       (print-response-rows *gopher-window*
-                            (gopher-parser:parse-menu (text-utils:to-s data)))
-       (select-row *gopher-window* 0)
-       (draw *gopher-window*)))
-    ((gopher-parser::%line-type-file-p type)
-     (win-close *gopher-window*)
-     (let ((data (misc:make-fresh-array 0 :type '(unsigned-int 8))))
-       (gopher-client:request host
-                              type
-                              :port       port
-                              :selector   selector
-                              :collect-fn (gopher-client:make-collect-fn data))
-       (let* ((text      (to-s data))
-              (raw-lines (split-lines (gopher-parser:parse-text-file text)))
-              (lines     (mapcar (lambda (a)
-                                   (message-window:text->rendered-lines-rows *message-window*
-                                                                             a))
-                                 raw-lines)))
-         (line-oriented-window:update-all-rows *message-window* (a:flatten lines))
-         (draw *message-window*)
-         (ui:focus-to-message-window))))
-    (t
-     (fs:with-anaphoric-temp-file (stream)
-       (gopher-client:request host
-                              type
-                              :port       port
-                              :selector   selector
-                              :collect-fn (lambda (buffer)
-                                            (write-sequence buffer stream)))
-       (finish-output stream)
-       (os-utils:open-resource-with-external-program filesystem-utils:temp-file
-                                                     nil)))))
+      (cond
+        ((gopher-parser::%line-type-dir-p type)
+         (gemini-viewer:push-url-to-history message-win link)
+         (let ((data (misc:make-fresh-array 0 :type '(unsigned-int 8))))
+           (gopher-client:request host
+                                  type
+                                  :port       port
+                                  :selector   selector
+                                  :collect-fn (gopher-client:make-collect-fn data))
+           (init)
+           (ui:focus-to-gopher-window)
+           (print-response-rows *gopher-window*
+                                (gopher-parser:parse-menu (text-utils:to-s data)))
+           (select-row *gopher-window* 0)
+           (draw *gopher-window*)))
+        ((gopher-parser::%line-type-file-p type)
+         (win-close *gopher-window*)
+         (let ((data (misc:make-fresh-array 0 :type '(unsigned-int 8))))
+           (gopher-client:request host
+                                  type
+                                  :port       port
+                                  :selector   selector
+                                  :collect-fn (gopher-client:make-collect-fn data))
+           (let* ((text      (to-s data))
+                  (raw-lines (split-lines (gopher-parser:parse-text-file text)))
+                  (lines     (mapcar (lambda (a)
+                                       (message-window:text->rendered-lines-rows *message-window*
+                                                                                 a))
+                                     raw-lines)))
+             (line-oriented-window:update-all-rows *message-window* (a:flatten lines))
+             (draw *message-window*)
+             (ui:focus-to-message-window))))
+        (t
+         (fs:with-anaphoric-temp-file (stream)
+           (gopher-client:request host
+                                  type
+                                  :port       port
+                                  :selector   selector
+                                  :collect-fn (lambda (buffer)
+                                                (write-sequence buffer stream)))
+           (finish-output stream)
+           (os-utils:open-resource-with-external-program filesystem-utils:temp-file
+                                                         nil)))))))
 
 (defun open-menu-link ()
   (a:when-let* ((win          *gopher-window*)
