@@ -18,9 +18,9 @@
 (in-package :modules)
 
 (defun load-sys-module (path &key (not-found-signal-error t))
-  (when-let ((file (if not-found-signal-error
-                       (get-sys-config-file path)
-                       (ignore-errors (get-sys-config-file path)))))
+  (a:when-let ((file (if not-found-signal-error
+                         (get-sys-config-file path)
+                         (ignore-errors (get-sys-config-file path)))))
     (load file :verbose nil :print nil)))
 
 (defun load-module (path &key (not-found-signal-error t))

@@ -17,7 +17,7 @@
 (in-package :modules)
 
 (defun mark-message-deleted-by-regex (regex)
-  (when-let ((scanner (ignore-errors (create-scanner regex))))
+  (a:when-let ((scanner (ignore-errors (create-scanner regex))))
     (with-accessors ((row-selected-index row-selected-index)
                      (timeline-type      thread-window:timeline-type)
                      (timeline-folder    thread-window:timeline-folder)) *thread-window*

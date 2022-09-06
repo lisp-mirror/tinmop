@@ -2973,7 +2973,6 @@
 (defpackage :modules
   (:use
    :cl
-   :alexandria
    :cl-ppcre
    :config
    :constants
@@ -2986,6 +2985,7 @@
    :keybindings
    :program-events
    :ui-goodies)
+  (:local-nicknames (:a :alexandria))
   (:shadowing-import-from :resources-utils :init)
   (:export
    :load-sys-module
