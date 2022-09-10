@@ -281,23 +281,26 @@
     (and (> (length registers) 0)
          (elt registers 0))))
 
-(defun parent-dir-path (path)
-  (let ((splitted (remove-if #'(lambda (a) (string= "" a))
+(defun parent-dir-path (path &key (normalize-results nil))
+  (let ((splitted (remove-if  #'text-utils:string-empty-p
                              (split-path-elements path))))
     (cond
       ((> (length splitted) 1)
-       (let ((res (if (string= (string (elt path 0)) *directory-sep*)
-                      (concatenate 'string *directory-sep* (first splitted))
-                      (first splitted))))
-         (loop for i in (subseq splitted 1 (1- (length splitted))) do
-              (setf res (concatenate 'string res *directory-sep* i)))
-         (setf res (concatenate 'string res *directory-sep*))
-         res))
+       (let ((path (text-utils:join-with-strings (misc:safe-all-but-last-elt splitted)
+                                                 *directory-sep*)))
+         (setf path (text-utils:strcat path *directory-sep*))
+         (when (string= (first splitted) *directory-sep*)
+           (setf path (subseq path 1)))
+         (if normalize-results
+             (normalize-path path)
+             path)))
       ((or (= (length splitted) 1)
            (null splitted))
        *directory-sep*)
       (t
-       path))))
+       (if normalize-results
+           (normalize-path path)
+           path)))))
 
 (defun append-file-to-path (dir filename)
   (let ((actual-dir (if (cl-ppcre:scan (concatenate 'string *directory-sep* "$")
