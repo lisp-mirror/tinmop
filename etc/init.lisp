@@ -262,7 +262,9 @@
                 (status-id    (db:row-message-status-id selected-row)))
     (ui:info-message (format nil "ID: ~a" status-id))))
 
-(define-key "I"         #'print-post-id                             *thread-keymap*)
+(define-key "I"         #'print-post-id                               *thread-keymap*)
+
+(define-key "s d"       #'status-tree->text                             *thread-keymap*)
 
 (define-key "up"        #'thread-go-up                                *thread-keymap*)
 

@@ -2769,6 +2769,7 @@
    :refresh-thread
    :refresh-thread-totally
    :refresh-tags
+   :status-tree->text
    :favourite-selected-status
    :unfavourite-selected-status
    :boost-selected-status

@@ -514,7 +514,6 @@
                                (child-char      (string #\├))
                                (spacer-child    (string #\─))
                                (arrow-char      (format nil "~c " +tree-arrow-char+))
-
                                (print-data      nil)
                                (print-data-fn   #'to-s))
   (let ((res         ())

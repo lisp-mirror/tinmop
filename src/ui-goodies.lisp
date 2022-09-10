@@ -939,6 +939,74 @@ Expand the post until all the reply and parents are downloaded.
 If some posts was deleted before, download them again."
   (expand-status-tree t))
 
+(defun status-tree->text ()
+  (let* ((thread "")
+         (message-max-width (truncate (/ (win-width-no-border *message-window*) 3)))
+         (padding-step      (truncate (/ message-max-width 4))))
+    (labels ((print-node-data (node padding)
+               (let* ((row              (mtree:data node))
+                      (content          (html-utils:html->text (db:row-message-content row)
+                                                               :body-footnotes-separator
+                                                               (format nil (_ "───── links ───── ~%"))))
+                      (author           (format nil "~a (~a)"
+                                                (db:row-message-username row)
+                                                (db:row-message-user-display-name row)))
+                      (creation-time    (db:row-message-creation-time row))
+                      (encoded-date     (format-time (db-utils:encode-datetime-string creation-time)
+                                                     (swconf:date-fmt swconf:+key-message-window+)))
+                      (visibility       (message-rendering-utils::visibility->mark
+                                         (db:row-message-visibility row)))
+                      (from-label       (_ "From: "))
+                      (visibility-label (_ "Visibility: "))
+                      (date-label       (_ "Date: "))
+                      (lines   (flatten (mapcar (lambda (a)
+                                                  (flush-left-mono-text (split-words a)
+                                                                        message-max-width))
+                                                (split-lines content))))
+                      (padding-spaces (make-string padding :initial-element #\space))
+                      (text-lines     (mapcar (lambda (a) (strcat padding-spaces
+                                                                  a
+                                                                  (format nil "~%")))
+                                              lines))
+                      (text           (format nil
+                                              "~2%~a~a~a~%~a~a~a~%~a~a~a~2%~a"
+                                              padding-spaces from-label author
+                                              padding-spaces date-label encoded-date
+                                              padding-spaces visibility-label visibility
+                                              (join-with-strings text-lines ""))))
+                 text))
+             (print-tree (tree &optional (padding 0))
+               (let ((children-padding (+ padding padding-step)))
+                 (setf thread (strcat thread (print-node-data tree padding)))
+                 (loop
+                   for node across (children tree) do
+                     (print-tree node children-padding))))
+             (save-file (file)
+               (when-let* ((selected-message (line-oriented-window:selected-row-fields *thread-window*))
+                           (timeline         (thread-window:timeline-type *thread-window*))
+                           (folder           (thread-window:timeline-folder *thread-window*))
+                           (status-id        (actual-author-message-id selected-message)))
+                   (with-enqueued-process ()
+                     (db-utils:with-ready-database (:connect t)
+                       (let* ((tree (db:message-id->tree timeline folder status-id)))
+                         (print-tree tree)
+                         (when (string-not-empty-p file)
+                           (if (fs:file-exists-p file)
+                               (error-message (format nil
+                                                      (_ "I refuse to overwrite an existing file ~s.")
+                                                      file))
+                               (with-open-file (stream file
+                                                       :direction         :output
+                                                       :if-exists         :supersede
+                                                       :if-does-not-exist :error)
+                                 (write-sequence thread stream))))
+                         (message-window:prepare-for-rendering *message-window* thread)
+                         (windows:draw *message-window*)
+                         (focus-to-message-window)))))))
+      (ask-string-input #'save-file
+                        :prompt      (_ "Save thread to file: ")
+                        :complete-fn #'complete:directory-complete))))
+
 (defun refresh-tags ()
   "Update messages for subscribed tags"
   (let* ((all-tags        (db:all-subscribed-tags-name))

@@ -96,7 +96,7 @@
 (defun node->link (node)
   (html-utils:attribute-value (html-utils:find-attribute :href node)))
 
-(defun html->text (html &key (add-link-footnotes t))
+(defun html->text (html &key (add-link-footnotes t) (body-footnotes-separator ""))
   "Transform html to text, note that if `add-link-footnotes` is non nil footnotes that marks html link in the text are added aftere the body of the message
 
 This function uses a library that transform html5 text into s-expressions um the form
@@ -152,7 +152,7 @@ Some convenience functions are provided to works with these structures.
                           (descend-children node))))))
             (descend root)
             (if add-link-footnotes
-                (strcat body footnotes)
+                (strcat body body-footnotes-separator footnotes)
                 body)))))))
 
 (defun extract-shotcodes (file)
