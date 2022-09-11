@@ -214,9 +214,7 @@ list af all possible candidtae for completion."
                                   (non-nulls-a (- length-a nulls-a))
                                   (non-nulls-b (- length-b nulls-b)))
                              (cond
-                               ((= length-a length-b)
-                                (> non-nulls-a non-nulls-b))
-                               ((= non-nulls-a non-nulls-b)
+                               ((= nulls-a nulls-b)
                                 (> length-a length-b))
                                (t
                                 (> non-nulls-a non-nulls-b)))))))
