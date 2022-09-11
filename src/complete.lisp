@@ -196,6 +196,7 @@ list af all possible candidtae for completion."
           do
              (when-let ((indices-matched (cl-i18n-utils:fuzzy-match template
                                                                     candidate
+                                                                    :char-comparison-fn #'char-equal
                                                                     :similarity-match     5
                                                                     :similarity-mismatch -5
                                                                     :penalty-weight       1)))
@@ -213,14 +214,8 @@ list af all possible candidtae for completion."
                                   (non-nulls-a (- length-a nulls-a))
                                   (non-nulls-b (- length-b nulls-b)))
                              (cond
-                               ((and (= length-a (length template))
-                                     (= nulls-a 0))
-                                t)
-                               ((and (= length-b (length template))
-                                     (= nulls-b 0))
-                                nil)
                                ((= length-a length-b)
-                                (< nulls-a nulls-b))
+                                (> non-nulls-a non-nulls-b))
                                ((= non-nulls-a non-nulls-b)
                                 (> length-a length-b))
                                (t
