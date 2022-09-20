@@ -528,6 +528,7 @@ and `make-blocking-list-dialog-window') showing the full docstring for a command
                            (*thread-keymap*              . (_ "Thread window keymap"))
                            (*message-keymap*             . (_ "Message window keymap"))
                            (*gemini-message-keymap*      . (_ "Gemini page keymap"))
+                           (*gopher-keymap*              . (_ "Gopher window keymap"))
                            (*tags-keymap*                . (_ "Subscribed tags keymap"))
                            (*conversations-keymap*       . (_ "Conversation keymap"))
                            (*send-message-keymap*        . (_ "Post pleroma message keymap"))
