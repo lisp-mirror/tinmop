@@ -203,6 +203,21 @@
     (win-clear win)
     (windows:draw win)))
 
+(defun make-search-query (selector search-expression)
+  (format nil "~a~a~a" selector #\tab search-expression))
+
+(defun search-index-server (host port selector)
+  (flet ((on-input-complete (search-expression)
+           (when (string-not-empty-p search-expression)
+             (program-events:with-enqueued-process ()
+               (make-request host
+                             port
+                             gopher-parser:+line-type-dir+
+                             (make-search-query selector search-expression))))))
+    (ui:ask-string-input #'on-input-complete
+                      :prompt      (_ "Enter search terms: ")
+                      :complete-fn #'complete:complete-always-empty)))
+
 (defun make-request (host port type selector)
   (let ((message-win     specials:*message-window*))
     (gemini-viewer:maybe-initialize-metadata message-win)
@@ -227,6 +242,8 @@
                                 (gopher-parser:parse-menu (text-utils:to-s data)))
            (select-row *gopher-window* 0)
            (draw *gopher-window*)))
+        ((gopher-parser::%line-type-index-search-p type)
+         (search-index-server host port selector))
         ((gopher-parser::%line-type-file-p type)
          (win-close *gopher-window*)
          (let ((data (misc:make-fresh-array 0 :type '(unsigned-int 8))))

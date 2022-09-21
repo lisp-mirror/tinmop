@@ -257,7 +257,7 @@
                      :host      (sixth  line)
                      :port      (elt    line 7)))))
 
-(defrule menu (and (* dir-entity) last-line)
+(defrule menu (and (* dir-entity) (? last-line))
   (:function first))
 
 (defun parse-menu (data)
