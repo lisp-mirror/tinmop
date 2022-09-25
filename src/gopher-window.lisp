@@ -92,7 +92,8 @@
 (defun %gemline->text-simple (line prefix)
   (let* ((prefix-color     (swconf:config-gopher-line-prefix-foreground))
          (prefix-attribute (swconf:config-gopher-line-prefix-attribute))
-         (colorized        (message-window::colorize-lines (gopher-parser:username line)))
+         (username         (remove-corrupting-utf8-chars (gopher-parser:username line)))
+         (colorized        (message-window::colorize-lines username))
          (colorized-prefix (tui:make-tui-string prefix
                                                 :attributes prefix-attribute
                                                 :fgcolor    prefix-color)))
