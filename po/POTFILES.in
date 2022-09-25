@@ -1,4 +1,5 @@
 modules/share-gemini-link.lisp
+src/2d-utils.lisp
 src/api-client.lisp
 src/api-pleroma-entities.lisp
 src/api-pleroma.lisp
@@ -35,6 +36,10 @@ src/gemini/gemini-parser.lisp
 src/gemini/package.lisp
 src/gemini/subscription.lisp
 src/gempub.lisp
+src/gopher-window.lisp
+src/gopher/client.lisp
+src/gopher/package.lisp
+src/gopher/parser.lisp
 src/hooks.lisp
 src/html-utils.lisp
 src/idn.lisp
