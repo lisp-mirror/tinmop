@@ -472,6 +472,7 @@
   - right     :: message-scroll-right
   - up        :: message-scroll-up
   - |         :: send-to-pipe
+  - b         :: net-address-history-back
 
 ** Gemini viewer window
 
@@ -487,7 +488,7 @@
   - T         :: show-tour-links
   - U         :: gemini-view-source
   - ]         :: open-next-visible-link
-  - b         :: gemini-history-back
+  - b         :: net-address-history-back
   - c         :: gemini-open-certificates-window
   - d         :: gemini-open-streams-window
   - down      :: message-scroll-down
@@ -630,6 +631,18 @@
   - u         :: file-explorer-upload-path
   - up        :: file-explorer-go-up
   - x         :: file-explorer-expand-path
+
+** Gopher window
+
+  - up        :: gopher-window:go-to-previous-link
+  - down      :: gopher-window:go-to-next-link
+  - k         :: gopher-window:go-to-previous-link
+  - j         :: gopher-window:go-to-next-link
+  - C-J       :: gopher-window:open-menu-link
+  - b         :: net-address-history-back
+  - C-b a     :: bookmark-gopher-page
+  - C-b s     :: display-bookmark
+  - C-b d     :: delete-gemini-bookmark
 
 * BUGS
 

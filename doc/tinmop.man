@@ -808,6 +808,9 @@ message-scroll-up
 .TP
 \fB|        \fP
 send-to-pipe
+.TP
+\fBb        \fP
+net-address-history-back
 
 .SS "Gemini viewer window"
 .TP
@@ -848,7 +851,7 @@ gemini-view-source
 open-next-visible-link
 .TP
 \fBb        \fP
-gemini-history-back
+net-address-history-back
 .TP
 \fBc        \fP
 gemini-open-certificates-window
@@ -1191,6 +1194,35 @@ file-explorer-go-up
 .TP
 \fBx        \fP
 file-explorer-expand-path
+
+.SS "Gopher window"
+.TP
+\fBup       \fP
+gopher-window:go-to-previous-link
+.TP
+\fBdown     \fP
+gopher-window:go-to-next-link
+.TP
+\fBk        \fP
+gopher-window:go-to-previous-link
+.TP
+\fBj        \fP
+gopher-window:go-to-next-link
+.TP
+\fBC-J      \fP
+gopher-window:open-menu-link
+.TP
+\fBb        \fP
+net-address-history-back
+.TP
+\fBC-b a    \fP
+bookmark-gopher-page
+.TP
+\fBC-b s    \fP
+display-bookmark
+.TP
+\fBC-b d    \fP
+delete-gemini-bookmark
 
 .SH "BUGS"
 .PP
