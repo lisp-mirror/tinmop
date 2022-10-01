@@ -706,7 +706,16 @@ numerical indices identifying the option voting for"
                         :exclude-types exclude-types
                         :account-id    account-id))
 
-(defun mentions (max-id &optional (excluded-types '(:follow :favourite :reblog)))
+(defparameter *all-notification-types*
+  '(:follow
+    :favourite
+    :reblog
+    :mention
+    :poll
+    :follow-request))
+
+(defun mentions (max-id &optional (excluded-types (remove :mention
+                                                          *all-notification-types*)))
   "Get the  latest mentions, starting from `min-id` (pass nil to get
 the latest 15 mentions)."
   (get-notifications :max-id        max-id
@@ -737,10 +746,10 @@ the latest 15 mentions)."
 
 (defun update-mentions-folder (&key (delete-mentions-on-server t))
   (let ((trees '()))
-    (when-let* ((all-mentions      (all-mentions))
-                (statuses          (loop for mention in all-mentions
-                                         when (tooter:status mention)
-                                           collect (tooter:status mention))))
+    (when-let* ((all-mentions (all-mentions))
+                (statuses     (loop for mention in all-mentions
+                                    when (tooter:status mention)
+                                      collect (tooter:status mention))))
       (loop for status in statuses
             when (not (member status trees))
               do

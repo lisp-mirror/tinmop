@@ -2159,7 +2159,6 @@
 (defpackage :thread-window
   (:use
    :cl
-   :alexandria
    :cl-ppcre
    :config
    :constants
@@ -2176,7 +2175,8 @@
   (:shadowing-import-from :text-utils :split-lines)
   (:shadowing-import-from :misc :random-elt :shuffle)
   (:import-from :keybindings-window :update-keybindings-tree)
-  (:local-nicknames (:c :croatoan))
+  (:local-nicknames (:c :croatoan)
+                    (:a :alexandria))
   (:export
    :message-line
    :thread-window

@@ -155,7 +155,7 @@
       (modeline-bold-expand window folder))))
 
 (defun expand-message-hashtags (window)
-  (when-let ((selected-row (selected-row window)))
+  (a:when-let ((selected-row (selected-row window)))
     (with-tuify-results (window)
       (db-utils:db-getf (fields selected-row) :tags))))
 
@@ -389,7 +389,7 @@ db:renumber-timeline-message-index."
       (if (null trees)
           (values nil nil)
           (progn
-            (reversef trees)
+            (a:reversef trees)
             (loop for tree in trees do
                  (setf tree-lines (lcat tree-lines (tree->annotated-tree tree))))
             (multiple-value-bind (fitted-lines selected-pos)
@@ -432,10 +432,10 @@ db:renumber-timeline-message-index."
 
 (defmethod build-lines ((object list) annotated-tree selected-pos)
   (let* ((renderizable-tree (mapcar (lambda (line)
-                                      (let* ((annotation   (annotated-text-symbol (last-elt line)))
-                                             (new-line     (copy-list line))
-                                             (subject      (annotated-line->message-subject line)))
-                                        (setf (last-elt new-line)
+                                      (let* ((annotation (annotated-text-symbol (a:last-elt line)))
+                                             (new-line   (copy-list line))
+                                             (subject    (annotated-line->message-subject line)))
+                                        (setf (a:last-elt new-line)
                                               (cons annotation subject))
                                         new-line))
                                     annotated-tree))
@@ -445,7 +445,7 @@ db:renumber-timeline-message-index."
                                                 :initial-value (make-tui-string "")))
                                       renderizable-tree))
          (fields              (mapcar (lambda (line)
-                                        (rest  (last-elt line)))
+                                        (rest  (a:last-elt line)))
                                       annotated-tree)))
     (values rendered-tree-lines fields)))
 
@@ -672,7 +672,7 @@ db:renumber-timeline-message-index."
                    (message-indices   (mapcar (lambda (row)
                                                 (db-utils:db-getf row :message-index))
                                               all-fields))
-                   (max-message-index (last-elt message-indices))
+                   (max-message-index (a:last-elt message-indices))
                    (max-author-length (db:max-username-length timeline-type timeline-folder)))
               (loop
                  for index from 0
@@ -691,8 +691,8 @@ db:renumber-timeline-message-index."
                                         :index       index
                                         :selected    (= index selected-pos))
                          new-rows))
-              (nreversef prefixes)
-              (nreversef new-rows)
+              (a:nreversef prefixes)
+              (a:nreversef new-rows)
               (pad-row-prefix prefixes)
               (loop
                  for row in new-rows
@@ -782,7 +782,7 @@ db:renumber-timeline-message-index."
                                     message-index))))))
 
 (defun message-tuple-id->message-index (timeline-type timeline-folder status-id)
-  (when-let* ((message (db::message-from-timeline-folder-id timeline-type
+  (a:when-let* ((message (db::message-from-timeline-folder-id timeline-type
                                                             timeline-folder
                                                             status-id)))
     (db:row-message-index message)))
@@ -790,7 +790,7 @@ db:renumber-timeline-message-index."
 (defmethod goto-message ((object thread-window) (message-index string) &key (redraw t))
   (with-accessors ((timeline-folder timeline-folder)
                    (timeline-type   timeline-type)) object
-    (when-let* ((index (message-tuple-id->message-index timeline-type
+    (a:when-let* ((index (message-tuple-id->message-index timeline-type
                                                         timeline-folder
                                                         message-index)))
       (goto-message object index :redraw redraw))))
@@ -801,7 +801,7 @@ db:renumber-timeline-message-index."
 (defmethod goto-last-message ((object thread-window))
   (with-accessors ((timeline-folder timeline-folder)
                    (timeline-type   timeline-type)) object
-    (when-let ((last-message-index (db:last-message-index-status timeline-type timeline-folder)))
+    (a:when-let ((last-message-index (db:last-message-index-status timeline-type timeline-folder)))
       (goto-message object last-message-index))))
 
 (defun find-row-with-status-id (thread-window status-id)
@@ -827,7 +827,7 @@ db:renumber-timeline-message-index."
         (suggested-message-index
          (update-thread-window object suggested-message-index))
         (t
-         (when-let* ((selected-row  (selected-row object))
+         (a:when-let* ((selected-row  (selected-row object))
                      (message-index (db:row-message-index (fields selected-row))))
            (update-thread-window object message-index))))
       (when redraw
@@ -835,14 +835,14 @@ db:renumber-timeline-message-index."
   object)
 
 (defun reblogged-data (reblogger-status)
-  (when-let* ((reblogged-id     (db:row-message-reblog-id reblogger-status))
+  (a:when-let* ((reblogged-id     (db:row-message-reblog-id reblogger-status))
               (reblogged-status (db:find-status-id reblogged-id)))
     (let ((body            (db:row-message-rendered-text reblogged-status))
           (attachments     (status-attachments->text reblogged-id)))
       (values body attachments))))
 
 (defun maybe-remove-mentions (window status-id)
-  (when-let ((exists-mention-p (db:single-status-exists-p status-id
+  (a:when-let ((exists-mention-p (db:single-status-exists-p status-id
                                                           db:+home-timeline+
                                                           db:+mentions-status-folder+)))
     (remove-mention window status-id)))
@@ -852,7 +852,7 @@ db:renumber-timeline-message-index."
                    (rows               rows)
                    (timeline-type      timeline-type)
                    (timeline-folder    timeline-folder)) object
-    (when-let* ((selected-row (selected-row object))
+    (a:when-let* ((selected-row (selected-row object))
                 (fields       (fields selected-row))
                 (original     (db-utils:db-getf fields :content :default ""))
                 (status-id    (db:row-message-status-id fields))
@@ -924,7 +924,7 @@ db:renumber-timeline-message-index."
                    (rows               rows)
                    (timeline-folder    timeline-folder)
                    (timeline-type      timeline-type)) window
-    (when-let* ((selected-fields (selected-row-fields window))
+    (a:when-let* ((selected-fields (selected-row-fields window))
                 (starting-index  (db-utils:db-getf selected-fields :message-index)))
       (let ((matching-status (if (eq direction :next)
                                  (db:search-next-message-body     timeline-type
@@ -958,7 +958,7 @@ db:renumber-timeline-message-index."
                    (rows               rows)
                    (timeline-folder    timeline-folder)
                    (timeline-type      timeline-type)) window
-    (when-let* ((selected-fields (selected-row-fields window))
+    (a:when-let* ((selected-fields (selected-row-fields window))
                 (starting-index  (db-utils:db-getf selected-fields :message-index)))
       (let ((matching-status (if (eq direction :next)
                                  (db:search-next-message-meta     timeline-type
@@ -992,7 +992,7 @@ db:renumber-timeline-message-index."
                    (rows               rows)
                    (timeline-folder    timeline-folder)
                    (timeline-type      timeline-type)) object
-    (when-let* ((selected-fields (selected-row-fields object))
+    (a:when-let* ((selected-fields (selected-row-fields object))
                 (starting-index  (db-utils:db-getf selected-fields :message-index)))
       (let ((matching-status (db:search-next-unread-message timeline-type
                                                             timeline-folder
@@ -1012,8 +1012,10 @@ db:renumber-timeline-message-index."
 (defmethod remove-mention ((object thread-window) status-id)
   (with-accessors ((mentions mentions)) object
     (setf mentions
-          (remove-if (lambda (mention) (api-client:id= (tooter:id (tooter:status mention))
-                                                       status-id))
+          (remove-if (lambda (mention)
+                       (let* ((mention-status    (tooter:status mention))
+                              (mention-status-id (tooter:id mention-status)))
+                         (api-client:id= mention-status-id status-id)))
                      mentions))
     object))
 
