@@ -406,6 +406,8 @@
 
 (define-key "|"         #'send-to-pipe                                *message-keymap*)
 
+(define-key "b"         #'gemini-history-back                         *message-keymap*)
+
 ;; gemini viewer keymap
 
 (define-key "up"        #'message-scroll-up                          *gemini-message-keymap*)

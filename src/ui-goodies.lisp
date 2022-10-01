@@ -2267,7 +2267,7 @@ Currently the only recognized protocols are gemini and kami."
                                  :priority program-events:+maximum-event-priority+))
 
 (defun gemini-history-back ()
-  "Reopen a previous visited gemini address"
+  "Reopen a previous visited net address"
   (push-event (make-instance 'gemini-back-event)))
 
 (defun address-go-back-in-path ()

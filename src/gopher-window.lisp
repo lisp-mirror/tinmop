@@ -222,16 +222,16 @@
 (defun make-request (host port type selector)
   (let ((message-win     specials:*message-window*))
     (gemini-viewer:maybe-initialize-metadata message-win)
-    (let ((link (format nil "~a://~a:~a/~a/~a"
-                        gopher-parser:+gopher-scheme+
-                        host
-                        port
-                        type
-                        selector)))
-      (with-notify-errors
+    (with-notify-errors
+      (let ((link (format nil "~a://~a:~a/~a/~a"
+                          gopher-parser:+gopher-scheme+
+                          host
+                          port
+                          type
+                          selector)))
+        (gemini-viewer:push-url-to-history message-win link)
         (cond
           ((gopher-parser::%line-type-dir-p type)
-           (gemini-viewer:push-url-to-history message-win link)
            (let ((data (misc:make-fresh-array 0 :type '(unsigned-int 8))))
              (gopher-client:request host
                                     type
