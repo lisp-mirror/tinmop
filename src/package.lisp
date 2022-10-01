@@ -2859,7 +2859,7 @@
    :open-url-prompt
    :open-net-address
    :open-gemini-address
-   :gemini-history-back
+   :net-address-history-back
    :address-go-back-in-path
    :address-go-root-path
    :gemini-view-source

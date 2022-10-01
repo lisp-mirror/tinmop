@@ -2266,7 +2266,7 @@ Currently the only recognized protocols are gemini and kami."
                                  :use-cached-file-if-exists t
                                  :priority program-events:+maximum-event-priority+))
 
-(defun gemini-history-back ()
+(defun net-address-history-back ()
   "Reopen a previous visited net address"
   (push-event (make-instance 'gemini-back-event)))
 

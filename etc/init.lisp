@@ -406,7 +406,7 @@
 
 (define-key "|"         #'send-to-pipe                                *message-keymap*)
 
-(define-key "b"         #'gemini-history-back                         *message-keymap*)
+(define-key "b"         #'net-address-history-back                    *message-keymap*)
 
 ;; gemini viewer keymap
 
@@ -438,7 +438,7 @@
 
 (define-key "l"         #'open-message-link                          *gemini-message-keymap*)
 
-(define-key "b"         #'gemini-history-back                        *gemini-message-keymap*)
+(define-key "b"         #'net-address-history-back                   *gemini-message-keymap*)
 
 (define-key "B"         #'address-go-back-in-path                    *gemini-message-keymap*)
 
@@ -776,7 +776,7 @@
 
 (define-key "C-J"       #'gopher-window:open-menu-link               *gopher-keymap*)
 
-(define-key "b"         #'gemini-history-back                        *gopher-keymap*)
+(define-key "b"         #'net-address-history-back                   *gopher-keymap*)
 
 (define-key "C-b a"     #'bookmark-gopher-page                       *gopher-keymap*)
 
