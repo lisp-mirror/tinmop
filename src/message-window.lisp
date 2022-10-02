@@ -303,8 +303,8 @@
 (defun make-render-vspace-row (&optional (original-object
                                           (make-instance 'gemini-parser:vertical-space)))
   (let ((res (make-instance 'line
-                 :normal-text (make-tui-string (format nil "~%"))
-                 :fields      (list +row-vertical-space-field-key+ 1))))
+                            :normal-text (make-tui-string (format nil "~%"))
+                            :fields      (list +row-vertical-space-field-key+ 1))))
     (row-add-original-object res original-object)
     (row-add-group-id res (gemini-parser:group-id original-object))
     res))
@@ -503,6 +503,14 @@
 (defmethod text->line (object)
   (make-instance 'line
                  :normal-text object))
+
+(defgeneric line->text (object))
+
+(defmethod line->text ((object line))
+  (tui-string->chars-string (normal-text object)))
+
+(defmethod line->text ((object sequence))
+  (map 'list #'line->text object))
 
 (defmethod text->rendered-lines-rows (window (text string))
   (let* ((fitted-lines (%fit-text window text))
@@ -842,3 +850,20 @@ fragment matches- move the window to the line when matching occurred."
                                  finally (return line))))
             (row-move window (+ starting-match-row-pos line-matched))
             (draw window)))))))
+
+(defgeneric lines->uri (object))
+
+(defmethod lines->uri ((object message-window))
+  (flatten (map-rows object
+                     (lambda (row)
+                       (when-let* ((text-line (line->text row))
+                                   (uri       (lines->uri text-line)))
+                         uri)))))
+
+(defmethod lines->uri ((object string))
+  (when-let* ((words (split-words object)))
+    (remove-if (lambda (word)
+                 (if (< (length word) 4)
+                     t
+                     (not (iri:absolute-url-p word))))
+               words)))

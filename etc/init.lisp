@@ -386,6 +386,8 @@
 
 (define-key "j"         #'message-scroll-down                         *message-keymap*)
 
+(define-key "l"         #'message-extract-links                       *message-keymap*)
+
 (define-key "left"      #'message-scroll-left                         *message-keymap*)
 
 (define-key "right"     #'message-scroll-right                        *message-keymap*)

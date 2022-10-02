@@ -353,7 +353,8 @@
 
 (defun absolute-url-p (url)
   (when-let ((iri (iri:iri-parse url :null-on-error t)))
-    (not (null (uri:scheme iri)))))
+    (not (or (null (uri:scheme iri))
+             (null (uri:host   iri))))))
 
 (defun ipv4-address-p (string)
   (ignore-errors

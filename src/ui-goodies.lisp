@@ -388,6 +388,14 @@ Metadata includes:
                       :prompt        (_ "Unsubscribe to: ")
                       :complete-fn   #'complete:tags-complete)))
 
+(defun message-extract-links ()
+  (when-let* ((all-iris  (message-window:lines->uri *message-window*))
+              (all-links (mapcar (lambda (a)
+                                   (make-instance 'gemini-parser:gemini-link
+                                                  :target a))
+                                 all-iris)))
+    (open-link-window :links all-links)))
+
 (defun message-scroll-up ()
   (message-window:scroll-up *message-window*))
 
@@ -1442,18 +1450,23 @@ If some posts was deleted before, download them again."
                       :prompt      (_ "Search key: ")
                       :complete-fn #'complete:complete-always-empty)))
 
+(defun open-link-window (&key (give-focus t) (enqueue nil) links)
+  (flet ((process ()
+           (open-message-link-window:init-gemini-links links)
+           (when give-focus
+             (focus-to-open-message-link-window))))
+    (if enqueue
+        (with-enqueued-process ()
+          (process))
+        (process))))
+
 (defun open-gemini-message-link-window (&key (give-focus t) (enqueue nil))
   (let* ((window   *message-window*)
          (metadata (message-window:metadata window))
          (links    (gemini-viewer:gemini-metadata-links metadata)))
-    (flet ((process ()
-             (open-message-link-window:init-gemini-links links)
-             (when give-focus
-               (focus-to-open-message-link-window))))
-      (if enqueue
-          (with-enqueued-process ()
-            (process))
-          (process)))))
+    (open-link-window :give-focus give-focus
+                      :enqueue    enqueue
+                      :links      links)))
 
 (defun open-message-link ()
   "Open message links window

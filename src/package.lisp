@@ -2268,6 +2268,7 @@
    :generate-gemini-toc
    :gemini-toc-entry
    :gemini-toc-group-id
+   :lines->uri
    :init
    :search-gemini-fragment))
 
@@ -2739,6 +2740,7 @@
    :thread-mark-prevent-delete-selected-message
    :subscribe-to-hash
    :unsubscribe-to-hash
+   :message-extract-links
    :message-scroll-up
    :message-scroll-down
    :message-scroll-left
