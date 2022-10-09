@@ -316,16 +316,25 @@
 (defun parse-text-file (data)
   (parse 'text-file data))
 
+(defrule gopher-url-authority (or (and (+ (not #\:))
+                                       #\:
+                                       (+ (not #\/))
+                                       #\/)
+                                  (and (+ (not #\/))
+                                       #\/))
+  (:function (lambda (a)
+               (let* ((host-port a)
+                      (host (coerce (first host-port) 'string))
+                      (port (if (third host-port)
+                                (parse-integer (coerce (third host-port) 'string))
+                                70)))
+                 (list host port)))))
+
 (defrule gopher-url (and (+ (not #\:))
                          "://"
-                         (or (and (+ (not #\:))
-                                  #\:
-                                  (+ (not #\/))
-                                  #\/)
-                             (and (+ (not #\/))
-                                  #\/))
-                         (? (and (+ (not #\/))
-                                 #\/))
+                         gopher-url-authority
+                         (? (and (not #\/)
+                                 (& #\/)))
                          (* (character-ranges (#\u0000 #\uffff))))
   (:function (lambda (a)
                (let* ((host-port (third a))
@@ -335,9 +344,12 @@
                                 70))
                       (type-path (fourth a))
                       (type      (if (car type-path)
-                                     (coerce (car type-path) 'string)
+                                     (string (car type-path))
                                      +line-type-dir+))
                       (path      (coerce (fifth a) 'string)))
+                 (when (and (string-not-empty-p path)
+                            (not (car type-path)))
+                   (setf path (strcat "/" path)))
                (list host port path type)))))
 
 (defun parse-iri (iri)

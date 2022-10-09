@@ -264,7 +264,7 @@
 
 (define-key "I"         #'print-post-id                               *thread-keymap*)
 
-(define-key "s d"       #'status-tree->text                             *thread-keymap*)
+(define-key "s d"       #'status-tree->text                           *thread-keymap*)
 
 (define-key "up"        #'thread-go-up                                *thread-keymap*)
 
