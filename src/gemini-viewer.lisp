@@ -712,7 +712,9 @@
                   (if (find-db-stream-url actual-iri)
                       (progn
                         (gemini-client:debug-gemini  "caching found for ~a" actual-iri)
-                        (db-entry-to-foreground actual-iri))
+                        (db-entry-to-foreground actual-iri)
+                        (gemini-viewer:push-url-to-history specials:*message-window*
+                                                           actual-iri))
                       (progn
                         (gemini-client:debug-gemini "caching *not* found for ~a" actual-iri)
                         (request actual-iri
