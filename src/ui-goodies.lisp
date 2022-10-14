@@ -342,9 +342,14 @@ Metadata includes:
 
 (defun thread-open-selected-message ()
   "Open selected message"
-  (setf (windows:keybindings specials:*message-window*)
-        keybindings:*message-keymap*)
-  (thread-window:open-message *thread-window*))
+  (let ((new-title-event (make-instance 'program-events:change-window-title-event
+                                        :payload (message-window::message-window-title)
+                                        :window *message-window*)))
+    (push-event new-title-event)
+    (with-enqueued-process ()
+      (setf (windows:keybindings specials:*message-window*)
+            keybindings:*message-keymap*)
+      (thread-window:open-message *thread-window*))))
 
 (defun thread-mark-delete-selected-message ()
   "Mark selected message for deletion"
@@ -2266,7 +2271,7 @@ Currently the only recognized protocols are gemini and kami."
                       (multiple-value-bind (host port type selector)
                           (gopher-parser:parse-iri trimmed-url)
                         (gopher-window::make-request host port type selector))
-                    (error (e) (error-message (_ "Invalid gopher address."))))))
+                    (error () (error-message (_ "Invalid gopher address."))))))
                (t
                 (open-gemini-address trimmed-url))))))
     (if (null address)
