@@ -40,6 +40,7 @@
    :+gemini-scheme+
    :+preformatted-prefix+
    :+max-header-level+
+   :*raw-mode-data*
    :*pre-group-id*
    :*pre-alt-text*
    :*header-group-id*

@@ -799,5 +799,6 @@
   `(let ((gemini-parser:*pre-group-id*    -1)
          (gemini-parser:*header-group-id* -1)
          (gemini-parser:*source-line-id*  -1)
-         (gemini-parser:*pre-alt-text*    ""))
+         (gemini-parser:*pre-alt-text*    "")
+         (gemini-parser:*raw-mode-data*   nil))
      ,@body))
