@@ -1,3 +1,25 @@
+* 2022-10-14 version 0.9.9
+
+  - New feature
+
+    - This version added support for the gopher protocol.
+      https://en.wikipedia.org/wiki/Gopher_(protocol)
+    - added a command to fetch a pleroma thread given a post's ID;
+    - added a command to get a pleroma post's ID;
+    - added a command to command to convert a pleroma thread to text.
+
+  - Improvements
+    - [gemini/gopher] searching  in  URL  history  does not  takes  into  account  the
+      characters case.
+
+   - Bugfix
+     - prevented crash when opening a post where the user was mentioned
+     - reset the message window's title when opening a post and the message
+       window is displaying a gemini page;
+     - removed unused argument.
+     - [gemini] pushed link into history of visited URL even if the page
+       hes been gotten from local cache.
+
 * 2022-08-19 version 0.9.8
 
  - Bugfix

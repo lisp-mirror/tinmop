@@ -1,3 +1,219 @@
+2022-10-14 cage
+
+	* src/gemini-viewer.lisp,
+	* src/ui-goodies.lisp:
+
+	- reset the message window's title when opening a post and the message
+	window is displaying a gemini page;
+	- removed unused argument.
+	- [gemini] pushed link into history of visited URL even if the page
+	hes been gotten from local cache.
+
+2022-10-09 cage
+
+	* etc/init.lisp,
+	* src/gopher/parser.lisp,
+	* src/ui-goodies.lisp:
+
+	- fixed gopher URI parser.
+	- capured errors signalled by malformed URI, when opening gopher
+	address.
+
+2022-10-02 cage
+
+	* etc/init.lisp,
+	* src/iri-parser.lisp,
+	* src/message-window.lisp,
+	* src/package.lisp,
+	* src/ui-goodies.lisp:
+
+	- added a  function to  extract and display  links extracted  from the
+	contents of a message window;
+	- fixed 'iri:absolute-url-p'.
+
+2022-10-01 cage
+
+	* doc/tinmop.man,
+	* doc/tinmop.org,
+	* etc/init.lisp,
+	* src/api-client.lisp,
+	* src/gopher-window.lisp,
+	* src/package.lisp,
+	* src/thread-window.lisp,
+	* src/ui-goodies.lisp:
+
+	- ensured non mention notifications are excluded in
+	'api-client:mentions'.
+	- [gopher] added notification of any error signaled when making a
+	gopher request.
+	- [gopher] fixed going back to net history.
+	- changed function's name: 'gemini-history-back' ->
+	'net-address-history-back'.
+	- updated manpage.
+
+2022-09-25 cage
+
+	* po/POTFILES.in,
+	* po/it.po,
+	* po/tinmop.pot,
+	* src/gopher-window.lisp,
+	* src/ui-goodies.lisp:
+
+	- [gopher] removed bad characters when printing lines.
+	- enqueue the procedure to create a gopher window.
+	- updated italian translation.
+
+2022-09-23 cage
+
+	* src/gopher/parser.lisp:
+
+	- [gopher] uses type 1 lines as default type for URI.
+
+2022-09-21 cage
+
+	* etc/default-theme.conf,
+	* src/gopher-window.lisp,
+	* src/gopher/parser.lisp:
+
+	- [gopher] added support for index search lines.
+
+2022-09-20 cage
+
+	* src/keybindings.lisp:
+
+	- prevented  a crash  adding the  gopher keymap  to the  list of  help
+	window's headers.
+
+2022-09-11 cage
+
+	* src/complete.lisp:
+
+	- fixed 'complete-uri-matcher', does not take into account string case
+	difference anymore.
+	- simplified sorting predicate to complete IRI.
+
+2022-09-10 cage
+
+	* etc/init.lisp,
+	* src/filesystem-utils.lisp,
+	* src/html-utils.lisp,
+	* src/mtree-utils.lisp,
+	* src/package.lisp,
+	* src/ui-goodies.lisp:
+
+	- added command "status-tree->text".
+	- fixed regression in 'text-utils:parent-dir-path'.
+
+2022-09-06 cage
+
+	* etc/init.lisp,
+	* modules/delete-by-regex.lisp,
+	* src/modules.lisp,
+	* src/package.lisp:
+
+	- added command 'print-post-id';
+	- removed importing of alexandria in modules, used local-nickname,
+	instead.
+
+2022-09-04 cage
+
+	* src/gemini-viewer.lisp,
+	* src/gopher-window.lisp:
+
+	- allowed pushing in the address visited queue only gemtext pages and
+	gopher menu.
+
+2022-08-31 cage
+
+	* etc/init.lisp,
+	* src/gopher-window.lisp,
+	* src/misc-utils.lisp,
+	* src/open-message-link-window.lisp,
+	* src/package.lisp,
+	* src/program-events.lisp,
+	* src/ui-goodies.lisp:
+
+	- added bookmarking of gopher addresses.
+	- renamed function.
+
+2022-08-29 cage
+
+	* src/gopher/parser.lisp:
+
+	- added a new parser just for gopher  address; they are not IRI as the
+	selector part can contains arbitrary  characters even that ones that
+	are not allowed in IRI's path component.
+
+2022-08-28 cage
+
+	* etc/default-theme.conf,
+	* etc/init.lisp,
+	* modules/expand-abbrev-command-window.lisp,
+	* src/gemini-viewer.lisp,
+	* src/gopher-window.lisp,
+	* src/gopher/client.lisp,
+	* src/gopher/package.lisp,
+	* src/gopher/parser.lisp,
+	* src/keybindings.lisp,
+	* src/package.lisp,
+	* src/software-configuration.lisp,
+	* src/specials.lisp,
+	* src/ui-goodies.lisp,
+	* tinmop.asd:
+
+	- added a basic gopher implementation.
+	Merge branch 'gopher-support'
+	- removed debug code.
+	- fixed 'ui:open-net-address';
+	- [module] expanded gopher abbreviation in
+	'expand-abbrev-command-window.lisp'.
+
+2022-08-25 cage
+
+	* src/filesystem-utils.lisp,
+	* src/gopher/client.lisp,
+	* src/gopher/package.lisp,
+	* src/gopher/parser.lisp:
+
+	- fixed 'fs:split-path-elements'
+	- before:
+	(fs:split-path-elements "/a/b") ;=> ("" "a" "b")
+	(fs:split-path-elements "/a/b") ;=> ("a" "b")
+	- [gopher] added 'client:request'.
+
+2022-08-23 cage
+
+	* scripts/fetch-post-tree.lisp,
+	* src/package.lisp,
+	* src/program-events.lisp,
+	* src/ui-goodies.lisp:
+
+	- added module 'fetch-post-tree.lisp';
+	- changed the window type from gemini to standard type for printing
+	the output from a module.
+
+2022-08-21 cage
+
+	* src/gemini/package.lisp,
+	* src/gopher/client.lisp,
+	* src/gopher/package.lisp,
+	* src/gopher/parser.lisp,
+	* tinmop.asd:
+
+	- [gopher] implemented a basic parser.
+
+2022-08-19 cage
+
+	* ChangeLog,
+	* NEWS.org,
+	* src/gemini/client.lisp,
+	* tinmop.asd:
+
+	- [gemini] added missing mandatory argument to function that builds
+	the redirect URI.
+	- increased version number;
+	- updated NEWS and Changelog.
+
 2022-08-19 cage
 
         * src/gemini/client.lisp:
