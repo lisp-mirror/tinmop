@@ -377,14 +377,25 @@ Returns nil if the user did not provided a server in the configuration file"
 
 (defun-api-call get-timeline-tag (tag &key min-id (limit 20))
   "Gets messages that contains tags identified by parameter `tag'"
-  (tooter:timeline-tag *client*
-                       tag
-                       :local      nil
-                       :only-media nil
-                       :max-id     nil
-                       :since-id   nil
-                       :min-id     min-id
-                       :limit      limit))
+  (restart-case
+      (tooter:timeline-tag *client*
+                           tag
+                           :local      nil
+                           :only-media nil
+                           :max-id     nil
+                           :since-id   nil
+                           :min-id     min-id
+                           :limit      limit)
+    (retry-ignoring-min-id ()
+      (ignore-errors
+       (tooter:timeline-tag *client*
+                            tag
+                           :local      nil
+                           :only-media nil
+                           :max-id     nil
+                           :since-id   nil
+                           :min-id     nil
+                           :limit      limit)))))
 
 (defun-api-call update-timeline-tag (tag folder &key
                                                 (recover-count 0)
@@ -395,22 +406,22 @@ Returns nil if the user did not provided a server in the configuration file"
   reflectings  the changes  in  the timeline  (saves  messages in  the
   database etc.)"
   (when tag
-    (let* ((timeline-statuses         (get-timeline-tag tag
-                                                        :min-id min-id
-                                                        :limit  limit))
-           (trees                     (if command-line:*update-timeline-climb-message-tree*
-                                          (flatten (loop
-                                                      for node-status in timeline-statuses
-                                                      collect
-                                                        (expand-status-tree node-status)))
-                                          timeline-statuses))
-           (save-timeline-in-db-event (make-instance 'program-events:save-timeline-in-db-event
-                                                     :payload       trees
-                                                     :timeline-type db:+federated-timeline+
-                                                     :folder        folder
-                                                     :localp        nil
-                                                     :min-id        min-id
-                                                     :recover-count recover-count)))
+    (when-let* ((timeline-statuses         (get-timeline-tag tag
+                                                             :min-id min-id
+                                                             :limit  limit))
+                (trees                     (if command-line:*update-timeline-climb-message-tree*
+                                               (flatten (loop
+                                                          for node-status in timeline-statuses
+                                                          collect
+                                                          (expand-status-tree node-status)))
+                                               timeline-statuses))
+                (save-timeline-in-db-event (make-instance 'program-events:save-timeline-in-db-event
+                                                          :payload       trees
+                                                          :timeline-type db:+federated-timeline+
+                                                          :folder        folder
+                                                          :localp        nil
+                                                          :min-id        min-id
+                                                          :recover-count recover-count)))
       (update-pagination-statuses-so-far timeline-statuses
                                          db:+default-tag-timeline+
                                          folder

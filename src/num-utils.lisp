@@ -21,11 +21,11 @@
 
 (defun safe-parse-number (maybe-number &key (fix-fn #'(lambda (e) (declare (ignore e)) nil)))
   (handler-bind ((error
-                   (lambda(e)
+                   (lambda (e)
                      (return-from safe-parse-number (funcall fix-fn e)))))
     (if (or (not (stringp maybe-number))
             (string= maybe-number "-"))
-        (error "Paring a non string element")
+        (error "Parsing a non string element")
         (parse-number:parse-number maybe-number))))
 
 (defun parse-number-default (maybe-number default)

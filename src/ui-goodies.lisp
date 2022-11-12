@@ -473,7 +473,7 @@ Metadata includes:
     (setf intersect-sorted
           (remove window intersect-sorted))
     (setf intersect-sorted
-          (remove-if-not (lambda(a) (typep a 'main-window::focus-marked-window))
+          (remove-if-not (lambda (a) (typep a 'main-window::focus-marked-window))
                          intersect-sorted))
     (when intersect-sorted
       (remove-focus-to-all-windows)
@@ -1025,7 +1025,13 @@ If some posts was deleted before, download them again."
   (let* ((all-tags        (db:all-subscribed-tags-name))
          (all-paginations (db:all-tag-paginations-status all-tags)))
     (flet ((update ()
-             (client:update-subscribed-tags all-tags all-paginations)
+             (handler-bind ((tooter:request-failed
+                              (lambda (e)
+                                (notify (format nil
+                                                (_ "Error getting the latest unread messages for tag ~a, trying fetching the latest")
+                                                (tooter:url e)))
+                                (invoke-restart 'api-client::retry-ignoring-min-id))))
+               (client:update-subscribed-tags all-tags all-paginations))
              (let ((update-got-message-event
                     (make-instance 'tag-mark-got-messages-event))
                    (notify-event
