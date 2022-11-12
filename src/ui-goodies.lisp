@@ -1029,7 +1029,7 @@ If some posts was deleted before, download them again."
                               (lambda (e)
                                 (notify (format nil
                                                 (_ "Error getting the latest unread messages for tag ~a, trying fetching the latest")
-                                                (tooter:url e)))
+                                                (tooter:uri e)))
                                 (invoke-restart 'api-client::retry-ignoring-min-id))))
                (client:update-subscribed-tags all-tags all-paginations))
              (let ((update-got-message-event
