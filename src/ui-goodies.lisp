@@ -953,6 +953,11 @@ If some posts was deleted before, download them again."
   (expand-status-tree t))
 
 (defun status-tree->text ()
+  "Convert  a thread  to  a text  representation, if  a  file path  is
+provided will  be created,  with the  thread's content,  otherwise the
+text will be printed on the main window.
+
+It an existing file path is provided the command will refuse to run."
   (let* ((thread "")
          (message-max-width (truncate (/ (win-width-no-border *message-window*) 3)))
          (padding-step      (truncate (/ message-max-width 4))))
