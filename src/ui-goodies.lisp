@@ -1173,16 +1173,27 @@ It an existing file path is provided the command will refuse to run."
                                                :payload attachment)))
                  (push-event add-event)
                  (attach-add)))
+             (on-attach-confirmed (maybe-accepted)
+               (with-valid-yes-at-prompt (maybe-accepted y-pressed-p)
+                 (when y-pressed-p
+                   (ask-string-input #'on-alt-text
+                                     :prompt (_ "Add caption: ")))))
+             (confirm-attach (attach-path)
+               (if (fs:file-exists-p attach-path)
+                   (progn
+                     (setf (attachment-path attachment) attach-path)
+                     (croatoan:end-screen)
+                     (tui:with-notify-errors
+                       (os-utils:xdg-open attach-path))
+                     (ask-string-input #'on-attach-confirmed
+                                       :prompt
+                                       (format nil (_ "Attach ~a? [y/N] ") attach-path)))
+                   (error-message (format nil
+                                          (_ "File ~s does not exists.")
+                                          attach-path))))
              (on-add-attach (attach-path)
                (if (string-not-empty-p attach-path)
-                   (progn
-                     (if (fs:file-exists-p attach-path)
-                         (setf (attachment-path attachment) attach-path)
-                         (error-message (format nil
-                                                (_ "File ~s does not exists.")
-                                                attach-path)))
-                     (ask-string-input #'on-alt-text
-                                       :prompt (_ "Add caption: ")))
+                   (confirm-attach attach-path)
                    (info-message (_ "Message ready to be sent")))))
       (ask-string-input #'on-add-attach
                         :prompt      (_ "Add attachment: ")
