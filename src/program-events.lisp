@@ -1678,6 +1678,29 @@
       (tui:with-print-error-message
         (os-utils:send-to-pipe data command))))
 
+(defclass print-mentions-event (program-event) ())
+
+(defmethod process-event ((object print-mentions-event))
+  (let* ((thread-window  specials:*thread-window*)
+         (mentions       (thread-window::mentions thread-window))
+         (message-window specials:*message-window*))
+    (if mentions
+        (labels ((print-mention (notification)
+                   (format nil "type: ~a from ~a"
+                           (tooter:kind notification)
+                           (tooter:account-name (tooter:account notification))))
+                 (make-rows (mentions)
+                   (mapcar (lambda (mention)
+                             (make-instance 'mention
+                                            :fields        (list :original-object mention)
+                                            :normal-text   (print-mention mention)
+                                            :selected-text (print-mention mention)))
+                           mentions)))
+          (line-oriented-window:update-all-rows message-window (make-rows mentions))
+          (windows:win-clear message-window)
+          (windows:draw message-window))
+        (ui:info-message (_ "No mentions")))))
+
 ;;;; general usage
 
 (defclass function-event (program-event) ())

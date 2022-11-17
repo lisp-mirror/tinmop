@@ -3373,3 +3373,7 @@ gemini client certificates!)."
                              children))))))))
     (ask-string-input #'on-input-complete
                       :prompt (format nil (_ "Delete cache? [y/N] ")))))
+
+(defun print-mentions ()
+  "Print the mentions"
+  (push-event (make-instance 'print-mentions-event)))

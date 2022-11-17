@@ -376,6 +376,8 @@
 
 (define-key "|"         #'send-message-to-pipe                        *thread-keymap*)
 
+(define-key "M"         #'print-mentions                              *thread-keymap*)
+
 ;; message window keymap
 
 (define-key "up"        #'message-scroll-up                           *message-keymap*)

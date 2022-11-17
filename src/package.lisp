@@ -1568,6 +1568,7 @@
    :help-apropos-event
    :redraw-window-event
    :send-to-pipe-event
+   :print-mentions-event
    :function-event
    :with-enqueued-process
    :dispatch-program-events))
@@ -2953,7 +2954,8 @@
    :file-explorer-edit-file
    :file-explorer-upload-mirror
    :file-explorer-download-mirror
-   :clear-cache))
+   :clear-cache
+   :print-mentions))
 
 (defpackage :scheduled-events
   (:use
