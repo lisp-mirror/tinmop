@@ -21,6 +21,7 @@
 ;; ENTRIES               := COMMENT*
 ;;                         (USE-FILE
 ;;                          | IGNORE-USER-RE-ASSIGN
+;;                          | IGNORE-USER-BOOST-RE-ASSIGN
 ;;                          | COLOR-RE-ASSIGN
 ;;                          | SERVER-ASSIGN
 ;;                          | USERNAME-ASSIGN
@@ -39,6 +40,7 @@
 ;;                               generic-value) ; the order in this list *is* important
 ;;                         blanks)
 ;; IGNORE-USER-RE-ASSIGN := IGNORE-USER-RE-KEY ASSIGN REGEXP
+;; IGNORE-USER-BOOST-RE-ASSIGN := IGNORE-USER-RE-KEY ASSIGN REGEXP
 ;; COLOR-RE-ASSIGN       := COLOR-RE-KEY ASSIGN REGEXP FG-COLOR (? ATTRIBUTE-VALUE)
 ;; USE-FILE              := (AND USE BLANKS FILEPATH BLANKS)
 ;; POST-ALLOWED-LANGUAGE := "post-allowed-language" BLANKS ASSIGN REGEXP
@@ -267,8 +269,16 @@
 (defrule ignore-user-re-key "ignore-user-regexp"
   (:constant :ignore-user-re))
 
+(defrule ignore-user-boost-re-key "ignore-user-boost-regexp"
+  (:constant :ignore-user-boost-re))
+
 (defrule ignore-user-re-assign
     (and ignore-user-re-key blanks
+         assign blanks regexp blanks)
+  (:function (lambda (a) (list (first a) (fifth a)))))
+
+(defrule ignore-user-boost-re-assign
+    (and ignore-user-boost-re-key blanks
          assign blanks regexp blanks)
   (:function (lambda (a) (list (first a) (fifth a)))))
 
@@ -428,6 +438,7 @@
          (or use-file
              color-re-assign
              ignore-user-re-assign
+             ignore-user-boost-re-assign
              server-assign
              username-assign
              open-link-helper
@@ -608,6 +619,7 @@
                    password-echo-character
                    color-re
                    ignore-user-re
+                   ignore-user-boost-re
                    post-allowed-language
                    purge-history-days-offset
                    purge-cache-days-offset)
@@ -628,6 +640,7 @@
         (cond
           ((or (eq +key-color-re+ key)
                (eq +key-ignore-user-re+ key)
+               (eq +key-ignore-user-boost-re+ key)
                (eq +key-open-link-helper+ key)
                (eq +key-post-allowed-language+ key))
            (setf (access:accesses *software-configuration* key)
@@ -946,6 +959,10 @@
 (defun ignore-users-regexps ()
   (access:accesses *software-configuration*
                    +key-ignore-user-re+))
+
+(defun ignore-users-boost-regexps ()
+  (access:accesses *software-configuration*
+                   +key-ignore-user-boost-re+))
 
 (defmacro gen-win-key-access (fn-suffix key)
   `(defun ,(misc:format-fn-symbol t "win-~a" fn-suffix) (win-key)

@@ -860,6 +860,7 @@
    :delete-by-id
    :account-ignored-p
    :user-ignored-p
+   :boost-ignored-p
    :acct->user
    :acct->id
    :username->id
@@ -1239,6 +1240,7 @@
    :gempub-library-directory
    :color-regexps
    :ignore-users-regexps
+   :ignore-users-boost-regexps
    :win-bg
    :win-fg
    :win-height

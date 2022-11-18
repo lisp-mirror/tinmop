@@ -387,6 +387,7 @@
         (let ((account-id (tooter:id (tooter:account status)))
               (status-id  (tooter:id status))
               (language   (tooter:language status))
+              (rebloggedp (tooter:parent status))
               (skip-this-status nil))
           (when force-saving-of-ignored-status-p
             (db:remove-from-status-ignored status-id folder timeline-type))
@@ -395,6 +396,8 @@
                     (and language
                          (cl-ppcre:scan (swconf:config-post-allowed-language)
                                         language))
+                    (and rebloggedp
+                         (db:boost-ignored-p account-id))
                     (hooks:run-hook-until-success 'hooks:*skip-message-hook*
                                                   status
                                                   timeline-type

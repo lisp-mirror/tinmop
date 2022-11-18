@@ -752,6 +752,16 @@
                (return-from user-ignored-p t)))
         nil)))
 
+(defun boost-ignored-p (account-id)
+  "Returns non nil if this boost must be ignored"
+  (when-let ((ignore-regexps (swconf:ignore-users-boost-regexps))
+             (username (db:user-id->username account-id)))
+    (misc:dbg "ignore ~a" ignore-regexps)
+    (loop for ignore-re in ignore-regexps do
+      (when (cl-ppcre:scan ignore-re username)
+        (return-from boost-ignored-p t)))
+    nil))
+
 (defun acct->user (acct)
   "Convert `acct' (acct is synonyym  for username in mastodon account)
 to the corresponding row in table +table-account+"
