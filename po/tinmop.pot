@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tinmop 0.9.9\n"
 "Report-Msgid-Bugs-To: https://notabug.org/cage/tinmop/\n"
-"POT-Creation-Date: 2022-11-15 20:40+0100\n"
+"POT-Creation-Date: 2022-11-19 10:36+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -176,7 +176,7 @@ msgstr ""
 msgid "Error: command ~a not found"
 msgstr ""
 
-#: src/conditions.lisp:77 src/conditions.lisp:81 src/db.lisp:2892
+#: src/conditions.lisp:77 src/conditions.lisp:81 src/db.lisp:2902
 #: src/message-rendering-utils.lisp:155 src/message-rendering-utils.lisp:189
 #: src/message-rendering-utils.lisp:194
 msgid "unknown"
@@ -202,7 +202,7 @@ msgstr ""
 msgid "home"
 msgstr ""
 
-#: src/db.lisp:3190
+#: src/db.lisp:3200
 msgid "no description"
 msgstr ""
 
@@ -211,7 +211,7 @@ msgid "not implemented"
 msgstr ""
 
 #: src/filesystem-tree-window.lisp:522 src/line-oriented-window.lisp:325
-#: src/open-message-link-window.lisp:202 src/program-events.lisp:465
+#: src/open-message-link-window.lisp:202 src/program-events.lisp:468
 msgid "Invalid regular expression"
 msgstr ""
 
@@ -270,7 +270,7 @@ msgstr ""
 msgid "Table of contents"
 msgstr ""
 
-#: src/gemini-subscription-window.lisp:67 src/program-events.lisp:1405
+#: src/gemini-subscription-window.lisp:67 src/program-events.lisp:1408
 msgid "No subtitle"
 msgstr ""
 
@@ -656,71 +656,75 @@ msgstr ""
 msgid "Destination directory ~s does not exists"
 msgstr ""
 
-#: src/program-events.lisp:582
+#: src/program-events.lisp:585
 msgid "No message selected!"
 msgstr ""
 
-#: src/program-events.lisp:784
+#: src/program-events.lisp:787
 msgid "Message sent."
 msgstr ""
 
-#: src/program-events.lisp:809
+#: src/program-events.lisp:812
 #, lisp-format
 msgid "Unable to find user ~a"
 msgstr ""
 
-#: src/program-events.lisp:818
+#: src/program-events.lisp:821
 #, lisp-format
 msgid "Followed  ~a"
 msgstr ""
 
-#: src/program-events.lisp:827
+#: src/program-events.lisp:830
 #, lisp-format
 msgid "Unfollowed  ~a"
 msgstr ""
 
-#: src/program-events.lisp:863
+#: src/program-events.lisp:866
 #, lisp-format
 msgid "Downloaded new messages for tag ~a"
 msgstr ""
 
-#: src/program-events.lisp:978
+#: src/program-events.lisp:981
 #, lisp-format
 msgid "Got ~a notification"
 msgid_plural "Got ~a notifications"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/program-events.lisp:1165
+#: src/program-events.lisp:1168
 #, lisp-format
 msgid "Index of local directory ~a~2%"
 msgstr ""
 
-#: src/program-events.lisp:1198
+#: src/program-events.lisp:1201
 msgid "Empty address"
 msgstr ""
 
-#: src/program-events.lisp:1360
+#: src/program-events.lisp:1363
 #, lisp-format
 msgid "Unable to subscribe to ~s"
 msgstr ""
 
-#: src/program-events.lisp:1416
+#: src/program-events.lisp:1419
 #, lisp-format
 msgid "~a ~:[(not opened)~;(opened)~]~%"
 msgstr ""
 
-#: src/program-events.lisp:1441
+#: src/program-events.lisp:1444
 #, lisp-format
 msgid "updating gemlog ~a"
 msgstr ""
 
-#: src/program-events.lisp:1489
+#: src/program-events.lisp:1492
 msgid "TOC can be shown for gemini windows only."
 msgstr ""
 
-#: src/program-events.lisp:1598
+#: src/program-events.lisp:1601
 msgid "no label"
+msgstr ""
+
+#: src/program-events.lisp:1705
+msgid "No mentions"
 msgstr ""
 
 #: src/resources-utils.lisp:55 src/resources-utils.lisp:75
@@ -761,21 +765,21 @@ msgstr ""
 msgid "Subject: "
 msgstr ""
 
-#: src/software-configuration.lisp:647
+#: src/software-configuration.lisp:660
 #, lisp-format
 msgid "fatal error: The file ~a is empty"
 msgstr ""
 
-#: src/software-configuration.lisp:674
+#: src/software-configuration.lisp:687
 #, lisp-format
 msgid "The configuration (*.conf) file is missing the value for ~s"
 msgstr ""
 
-#: src/software-configuration.lisp:715
+#: src/software-configuration.lisp:728
 msgid "(directory)"
 msgstr ""
 
-#: src/software-configuration.lisp:845
+#: src/software-configuration.lisp:858
 msgid "This message was crypted."
 msgstr ""
 
