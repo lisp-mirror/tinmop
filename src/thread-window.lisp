@@ -820,7 +820,7 @@ db:renumber-timeline-message-index."
     (when-window-shown (object)
       (cond
         (suggested-status-id
-         (let ((message-index (message-tuple-id->message-index timeline-type
+         (a:when-let* ((message-index (message-tuple-id->message-index timeline-type
                                                                timeline-folder
                                                                suggested-status-id)))
            (update-thread-window object message-index)))
@@ -828,7 +828,7 @@ db:renumber-timeline-message-index."
          (update-thread-window object suggested-message-index))
         (t
          (a:when-let* ((selected-row  (selected-row object))
-                     (message-index (db:row-message-index (fields selected-row))))
+                       (message-index (db:row-message-index (fields selected-row))))
            (update-thread-window object message-index))))
       (when redraw
         (draw object))))
