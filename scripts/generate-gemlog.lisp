@@ -41,6 +41,8 @@
 
 (a:define-constant +archive-topic-file+  "topics.gmi" :test #'string=)
 
+(a:define-constant +post-valid-file-extension+ "gmi$" :test #'string=)
+
 (defparameter *gemlog-header*  (format nil "# Posts~2%## Il gemlog di cage~2%"))
 
 (defparameter *topic-index-header*  (format nil "# Topics archive~2%"))
@@ -126,7 +128,9 @@
       (apply #'format t control args)))
 
 (defun bulk->posts (capsule-bulk-dir)
-  (let* ((original-post-files (remove-if-not #'fs:regular-file-p
+  (let* ((original-post-files (remove-if-not (lambda (a)
+                                               (and (fs:regular-file-p a)
+                                                    (cl-ppcre:scan +post-valid-file-extension+ a)))
                                              (fs:collect-children capsule-bulk-dir)))
          (parsed-posts        (mapcar (lambda (a)
                                         (handler-case

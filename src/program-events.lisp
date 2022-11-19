@@ -617,6 +617,7 @@
                    (new-timeline      new-timeline)
                    (message-index     message-index)
                    (message-status-id message-status-id)) object
+
     (assert message-index)
     (when new-timeline
       (setf (thread-window:timeline-type specials:*thread-window*)
@@ -1694,7 +1695,7 @@
                            (tooter:account-name (tooter:account notification))))
                  (make-rows (mentions)
                    (mapcar (lambda (mention)
-                             (make-instance 'mention
+                             (make-instance 'line-oriented-window:line
                                             :fields        (list :original-object mention)
                                             :normal-text   (print-mention mention)
                                             :selected-text (print-mention mention)))
