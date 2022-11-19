@@ -1,13 +1,92 @@
+2022-11-19 cage
+
+	* po/it.po,
+	* po/tinmop.pot:
+
+	- updated Italian translation.
+
+2022-11-18 cage
+
+	* src/db.lisp,
+	* src/package.lisp,
+	* src/program-events.lisp,
+	* src/software-configuration.lisp,
+	* src/thread-window.lisp:
+
+	- added a configuration directive to filter boost based on a regular
+	expression matching the username.
+
+2022-11-17 cage
+
+	* etc/init.lisp,
+	* etc/shared.conf,
+	* src/package.lisp,
+	* src/program-events.lisp,
+	* src/ui-goodies.lisp:
+
+	- added command 'print-mentions';
+	- highlight mentions in message window.
+
+2022-11-15 cage
+
+	* etc/shared.conf,
+	* po/it.po,
+	* po/tinmop.pot,
+	* src/text-utils.lisp,
+	* src/ui-goodies.lisp:
+
+	- added preview and confirm prompt for each file attached on a status.
+	- allowed also collection of gopher address, printed on the message
+	window, in the link window.
+	- updated Italian translation.
+
+2022-11-13 cage
+
+	* src/ui-goodies.lisp:
+
+	- added docstring for 'status-tree->text'.
+	- made notification an error.
+
+2022-11-12 cage
+
+	* src/api-client.lisp,
+	* src/num-utils.lisp,
+	* src/ui-goodies.lisp:
+
+	- added code to try to recover from a failed tag request.
+	- fixed accessor's name.
+
+2022-10-29 cage
+
+	* quick_quicklisp.sh.in:
+
+	- updated croatoan version.
+
 2022-10-14 cage
 
+	* ChangeLog,
+	* NEWS.org,
+	* configure,
+	* configure.ac,
 	* src/gemini-viewer.lisp,
-	* src/ui-goodies.lisp:
+	* src/gemini/gemini-parser.lisp,
+	* src/gemini/package.lisp,
+	* src/ui-goodies.lisp,
+	* tinmop.asd:
 
 	- reset the message window's title when opening a post and the message
 	window is displaying a gemini page;
 	- removed unused argument.
 	- [gemini] pushed link into history of visited URL even if the page
 	hes been gotten from local cache.
+	- updated version number;
+	updated Chengelog and NEWS files
+	- updated autotools scripts.
+	- [gemini] made the special variable gemini-parser:*raw-mode-data*
+	thread local
+	There is  no sense to  share it  between multiple threads  parsing a
+	gemini stream as the status of the parser (preformatted or not) from
+	one could leaks into another.
 
 2022-10-09 cage
 
