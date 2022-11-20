@@ -617,7 +617,6 @@
                    (new-timeline      new-timeline)
                    (message-index     message-index)
                    (message-status-id message-status-id)) object
-
     (assert message-index)
     (when new-timeline
       (setf (thread-window:timeline-type specials:*thread-window*)
