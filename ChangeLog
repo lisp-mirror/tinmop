@@ -1,9 +1,19 @@
-2022-11-19 cage
+2022-11-19 cage <cage@invalid>
 
+	* ChangeLog,
 	* po/it.po,
-	* po/tinmop.pot:
+	* po/tinmop.pot,
+	* scripts/generate-gemlog.lisp,
+	* src/program-events.lisp,
+	* src/thread-window.lisp:
 
-	- updated Italian translation.
+	- updated italian translation.
+	- updated Changelog.
+	- prevented crash when updating the thread window with a non existent
+	status-id.
+	- [gemini] prevented the script 'generate-gemlog.lisp' to export files
+	that do not match .gmi extension;
+	- fixed wrong class name when printing mentions.
 
 2022-11-18 cage
 
