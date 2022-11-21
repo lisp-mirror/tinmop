@@ -99,7 +99,7 @@
 
 (defun open-chats-list-window ()
   (let* ((low-level-window (make-croatoan-window :enable-function-keys t)))
-    (setf  *chats-list-window*
+    (setf *chats-list-window*
           (make-instance 'chats-list-window
                          :top-row-padding   0
                          :title             (_ "Current chats")

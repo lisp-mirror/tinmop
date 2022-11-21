@@ -1526,7 +1526,8 @@
     (tui:with-notify-errors
       (let ((chats (api-pleroma:get-chats)))
         (dolist (chat chats)
-          (db:update-db chat))))))
+          (db:update-db chat)))
+      (line-oriented-window:resync-rows-db specials:*chats-list-window*))))
 
 (defclass update-all-chat-messages-event (program-event) ())
 

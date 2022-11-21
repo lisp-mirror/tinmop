@@ -48,15 +48,18 @@
 
 (defgeneric get-all-chats (object &key &allow-other-keys))
 
+(defun sort-chat-id< (chats)
+  (sort chats #'string< :key #'chat-id))
+
 (defmethod get-all-chats ((object tooter:client) &key (min-id nil) (accum ()))
   "Get a list of all chats, ordered from the more recent updated."
-  (let ((chats (api-client:sort-id< (get-chats-list object :min-id min-id))))
+  (let ((chats (sort-chat-id< (get-chats-list object :min-id min-id))))
     (if chats
         (let ((new-min-id (chat-id (last-elt chats))))
           (get-all-chats object
                          :min-id new-min-id
                          :accum  (append chats accum)))
-        (api-client:sort-id< accum))))
+        (sort-chat-id< accum))))
 
 (defgeneric post-chat-message (object chat-id content media))
 

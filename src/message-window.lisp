@@ -559,7 +559,8 @@
 
 (defmethod prepare-for-rendering ((object message-window) text-data &key (jump-to-first-row t))
   (update-all-rows object (text->rendered-lines-rows object text-data))
-  (when jump-to-first-row
+  (when (and jump-to-first-row
+             (not (rows-empty-p object)))
     (select-row object 0))
   object)
 
