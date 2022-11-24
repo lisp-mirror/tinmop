@@ -493,6 +493,10 @@ this exact quantity would go beyond the length or rows or zero."
   table in the database, if `redraw`  is not nil redraw the object, if
   possible"))
 
+(defmethod resync-rows-db ((object null) &key redraw)
+  (declare (ignore redraw))
+  t)
+
 (defun make-blocking-list-dialog-window (screen all-fields text-lines callback
                                          &optional (title (_ "Information")))
   "Draw a  window with a scrollable list of entries, pressing enter
