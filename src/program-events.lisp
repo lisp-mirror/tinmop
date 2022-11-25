@@ -1690,9 +1690,11 @@
          (message-window specials:*message-window*))
     (if mentions
         (labels ((print-mention (notification)
-                   (format nil "type: ~a from ~a"
-                           (tooter:kind notification)
-                           (tooter:account-name (tooter:account notification))))
+                   (let ((raw-text (format nil
+                                           "type: ~a from ~a"
+                                           (tooter:kind notification)
+                                           (tooter:account-name (tooter:account notification)))))
+                     (tui:make-tui-string raw-text)))
                  (make-rows (mentions)
                    (mapcar (lambda (mention)
                              (make-instance 'line-oriented-window:line

@@ -429,7 +429,8 @@
               (loop
                 named download-loop
                 for ct from 0
-                for line-as-array = (read-line-into-array download-stream)
+                for line-as-array = (with-print-error-message
+                                      (read-line-into-array download-stream))
                 while line-as-array do
                   (gemini-client:debug-gemini "[stream] gemini file stream raw data line : ~a"
                                               line-as-array)
@@ -493,45 +494,47 @@
         (setf support-file (fs:temporary-file :extension extension)))
       (with-open-support-file (file-stream support-file)
         (let ((partial-content-not-opened t))
-        (labels ((download-completed-p (buffer read-so-far)
-                   (< read-so-far (length buffer)))
-                 (opening-partial-contents-p (read-so-far)
-                   (let ((buffer-size (swconf:link-regex->program-to-use-buffer-size path)))
-                     (if buffer-size
-                         (> read-so-far buffer-size)
-                         (> read-so-far swconf:+buffer-minimum-size-to-open+))))
-                 (%fill-buffer ()
-                   (declare (optimize (debug 0) (speed 3)))
-                   (when (downloading-allowed-p wrapper-object)
-                     (multiple-value-bind (program-exists y wait-for-download)
-                         (swconf:link-regex->program-to-use support-file)
-                       (declare (ignore y))
-                       (multiple-value-bind (buffer read-so-far)
-                           (read-array download-stream +read-buffer-size+)
-                         (declare ((vector (unsigned-byte 8)) buffer))
-                         (declare (fixnum read-so-far))
-                         (increment-bytes-count wrapper-object read-so-far)
-                         (if (download-completed-p buffer read-so-far)
-                             (progn
-                               (write-sequence buffer file-stream :start 0 :end read-so-far)
-                               (force-output file-stream)
-                               (setf (stream-status wrapper-object) :completed)
-                               (gemini-client:close-ssl-socket socket)
-                               (when (or wait-for-download
-                                         partial-content-not-opened)
-                                 (os-utils:open-resource-with-external-program support-file
-                                                                               nil)))
-                             (progn
-                               (write-sequence buffer file-stream)
-                               (when (and partial-content-not-opened
-                                          program-exists
-                                          (not wait-for-download)
-                                          (opening-partial-contents-p (octect-count wrapper-object)))
-                                 (setf partial-content-not-opened nil)
-                                 (os-utils:open-resource-with-external-program support-file
-                                                                               nil))
-                               (%fill-buffer))))))))
-          (%fill-buffer)))))))
+          (labels ((download-completed-p (buffer read-so-far)
+                     (and buffer
+                          (< read-so-far (length buffer))))
+                   (opening-partial-contents-p (read-so-far)
+                     (let ((buffer-size (swconf:link-regex->program-to-use-buffer-size path)))
+                       (if buffer-size
+                           (> read-so-far buffer-size)
+                           (> read-so-far swconf:+buffer-minimum-size-to-open+))))
+                   (%fill-buffer ()
+                     (declare (optimize (debug 0) (speed 3)))
+                     (when (downloading-allowed-p wrapper-object)
+                       (multiple-value-bind (program-exists y wait-for-download)
+                           (swconf:link-regex->program-to-use support-file)
+                         (declare (ignore y))
+                         (multiple-value-bind (buffer read-so-far)
+                             (with-print-error-message
+                               (read-array download-stream +read-buffer-size+))
+                           (declare ((vector (unsigned-byte 8)) buffer))
+                           (declare (fixnum read-so-far))
+                           (increment-bytes-count wrapper-object read-so-far)
+                           (if (download-completed-p buffer read-so-far)
+                               (progn
+                                 (write-sequence buffer file-stream :start 0 :end read-so-far)
+                                 (force-output file-stream)
+                                 (setf (stream-status wrapper-object) :completed)
+                                 (gemini-client:close-ssl-socket socket)
+                                 (when (or wait-for-download
+                                           partial-content-not-opened)
+                                   (os-utils:open-resource-with-external-program support-file
+                                                                                 nil)))
+                               (progn
+                                 (write-sequence buffer file-stream)
+                                 (when (and partial-content-not-opened
+                                            program-exists
+                                            (not wait-for-download)
+                                            (opening-partial-contents-p (octect-count wrapper-object)))
+                                   (setf partial-content-not-opened nil)
+                                   (os-utils:open-resource-with-external-program support-file
+                                                                                 nil))
+                                 (%fill-buffer))))))))
+            (%fill-buffer)))))))
 
 (defun request-success-dispatched-clrs (enqueue)
   (lambda (status code-description meta response socket iri parsed-iri)
