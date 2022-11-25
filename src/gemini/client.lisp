@@ -556,7 +556,7 @@ TODO: Add client certificate."
              (debug-gemini "success response data: ~s ~s ~s ~s ~s ~s"
                            status code-description meta response socket iri)
              (let ((data (misc:make-fresh-array 0 0 '(unsigned-byte 8) nil)))
-               (loop for new-byte = (read-byte response nil nil)
+               (loop for new-byte = (ignore-errors (read-byte response nil nil))
                      while new-byte do
                        (vector-push-extend new-byte data))
                (close-ssl-socket socket)
