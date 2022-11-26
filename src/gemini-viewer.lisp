@@ -511,8 +511,10 @@
                          (multiple-value-bind (buffer read-so-far)
                              (with-print-error-message
                                (read-array download-stream +read-buffer-size+))
-                           (declare ((vector (unsigned-byte 8)) buffer))
-                           (declare (fixnum read-so-far))
+                           (declare ((or null
+                                         (vector (unsigned-byte 8)))
+                                     buffer))
+                           (declare ((or null fixnum) read-so-far))
                            (increment-bytes-count wrapper-object read-so-far)
                            (if (download-completed-p buffer read-so-far)
                                (progn
