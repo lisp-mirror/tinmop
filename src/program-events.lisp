@@ -971,17 +971,19 @@
 (defclass update-mentions-event (program-event) ())
 
 (defmethod process-event ((object update-mentions-event))
-  (when-let* ((mentions       (api-client:update-mentions-folder :delete-mentions-on-server t))
-              (mentions-count (length mentions))
-              (thread-window  specials:*thread-window*))
-    (when command-line:*notify-mentions*
-      (loop for mention in mentions do
-        (thread-window:add-mention thread-window mention))
-      (ui:notify (format nil
-                         (n_ "Got ~a notification"
-                             "Got ~a notifications"
-                             mentions-count)
-                         mentions-count)))))
+  (let ((delete-fetched-mentions-required (swconf:config-delete-fetched-mentions-p)))
+    (when-let* ((mentions       (api-client:update-mentions-folder
+                                 :delete-mentions-on-server delete-fetched-mentions-required))
+                (mentions-count (length mentions))
+                (thread-window  specials:*thread-window*))
+      (when command-line:*notify-mentions*
+        (loop for mention in mentions do
+          (thread-window:add-mention thread-window mention))
+        (ui:notify (format nil
+                           (n_ "Got ~a notification"
+                               "Got ~a notifications"
+                               mentions-count)
+                           mentions-count))))))
 
 (defclass expand-thread-event (program-event event-with-timeline-and-folder)
   ((status-id

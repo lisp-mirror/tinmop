@@ -601,6 +601,8 @@
                    selected
                    unselected
                    deleted
+                   fetched
+                   delete
                    input
                    read
                    unread
@@ -622,7 +624,8 @@
                    ignore-user-boost-re
                    post-allowed-language
                    purge-history-days-offset
-                   purge-cache-days-offset)
+                   purge-cache-days-offset
+                   mentions)
 
 (defun perform-missing-value-check (file)
   (handler-case
@@ -982,6 +985,12 @@
   `(defun ,(misc:format-fn-symbol t "config-~a" fn-name) ()
      (,transform-value-fn (access:accesses *software-configuration*
                                            ,@keys))))
+
+(gen-simple-access (delete-fetched-mentions-p
+                    :transform-value-fn db-utils:db-not-nil-p)
+                    +key-delete+
+                    +key-fetched+
+                    +key-mentions+)
 
 (gen-simple-access (gemini-fullscreen-toc-width
                     :transform-value-fn main-window:parse-subwin-w)

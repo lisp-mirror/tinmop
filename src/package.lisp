@@ -1252,6 +1252,7 @@
    :tree-config-rendering-values
    :make-tree-colormap
    :left-arrow
+   :config-delete-fetched-mentions-p
    :config-gemini-fullscreen-toc-width
    :config-gemini-fullscreen-links-height
    :config-post-allowed-language

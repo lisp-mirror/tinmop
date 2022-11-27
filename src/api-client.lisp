@@ -756,7 +756,6 @@ the latest 15 mentions)."
     mentions-so-far))
 
 (defun update-mentions-folder (&key (delete-mentions-on-server t))
-  (declare (ignorable delete-mentions-on-server)) ; because of the render macro '#-debug-mode'
   (let ((trees '()))
     (when-let* ((all-mentions (all-mentions))
                 (statuses     (loop for mention in all-mentions
@@ -774,7 +773,6 @@ the latest 15 mentions)."
                                   :folder        db:+mentions-status-folder+
                                   :localp        t
                                   :min-id        nil)))
-        #-debug-mode
         (when delete-mentions-on-server
           (loop for mention in all-mentions do
             (delete-notification (tooter:id mention))))
