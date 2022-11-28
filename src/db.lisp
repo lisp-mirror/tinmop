@@ -756,7 +756,6 @@
   "Returns non nil if this boost must be ignored"
   (when-let ((ignore-regexps (swconf:ignore-users-boost-regexps))
              (username (db:user-id->username account-id)))
-    (misc:dbg "ignore ~a" ignore-regexps)
     (loop for ignore-re in ignore-regexps do
       (when (cl-ppcre:scan ignore-re username)
         (return-from boost-ignored-p t)))
