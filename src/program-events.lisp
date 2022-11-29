@@ -388,6 +388,7 @@
               (status-id  (tooter:id status))
               (language   (tooter:language status))
               (rebloggedp (tooter:parent status))
+              (tags       (db::concat-tags status))
               (skip-this-status nil))
           (when force-saving-of-ignored-status-p
             (db:remove-from-status-ignored status-id folder timeline-type))
@@ -398,6 +399,8 @@
                                         language))
                     (and rebloggedp
                          (db:boost-ignored-p account-id))
+                    (and (text-utils:string-not-empty-p tags)
+                         (db:tags-ignored-p tags))
                     (hooks:run-hook-until-success 'hooks:*skip-message-hook*
                                                   status
                                                   timeline-type

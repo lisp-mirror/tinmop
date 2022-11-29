@@ -17,85 +17,87 @@
 
 (in-package :software-configuration)
 
-;; CONFIG                := (ENTRIES)*
-;; ENTRIES               := COMMENT*
-;;                         (USE-FILE
-;;                          | IGNORE-USER-RE-ASSIGN
-;;                          | IGNORE-USER-BOOST-RE-ASSIGN
-;;                          | COLOR-RE-ASSIGN
-;;                          | SERVER-ASSIGN
-;;                          | USERNAME-ASSIGN
-;;                          | OPEN-LINK-HELPER
-;;                          | POST-ALLOWED-LANGUAGE
-;;                          | GENERIC-ASSIGN)
-;;                         COMMENT*
-;; SERVER-ASSIGN         := SERVER-KEY BLANKS ASSIGN BLANKS GENERIC-VALUE BLANKS
-;; USERNAME-ASSIGN       := USERNAME-KEY BLANKS WITH BLANKS GENERIC-VALUE BLANKS
-;; OPEN-LINK-HELPER      := OPEN-LINK-HELPER-KEY BLANKS ASSIGN BLANKS
-;;                          REGEXP PROGRAM-NAME BLANKS USE-CACHE? NOWAIT?
-;; GENERIC-ASSIGN        := (and key blanks assign blanks
-;;                           (or quoted-string
-;;                               hexcolor
-;;                               colorname
-;;                               generic-value) ; the order in this list *is* important
-;;                         blanks)
-;; IGNORE-USER-RE-ASSIGN := IGNORE-USER-RE-KEY ASSIGN REGEXP
+;; CONFIG                      := (ENTRIES)*
+;; ENTRIES                     := COMMENT*
+;;                               (USE-FILE
+;;                                | IGNORE-USER-RE-ASSIGN
+;;                                | IGNORE-USER-BOOST-RE-ASSIGN
+;;                                | IGNORE-TAG-RE-ASSIGN
+;;                                | COLOR-RE-ASSIGN
+;;                                | SERVER-ASSIGN
+;;                                | USERNAME-ASSIGN
+;;                                | OPEN-LINK-HELPER
+;;                                | POST-ALLOWED-LANGUAGE
+;;                                | GENERIC-ASSIGN)
+;;                               COMMENT*
+;; SERVER-ASSIGN               := SERVER-KEY BLANKS ASSIGN BLANKS GENERIC-VALUE BLANKS
+;; USERNAME-ASSIGN             := USERNAME-KEY BLANKS WITH BLANKS GENERIC-VALUE BLANKS
+;; OPEN-LINK-HELPER            := OPEN-LINK-HELPER-KEY BLANKS ASSIGN BLANKS
+;;                                REGEXP PROGRAM-NAME BLANKS USE-CACHE? NOWAIT?
+;; GENERIC-ASSIGN              := (and key blanks assign blanks
+;;                                 (or quoted-string
+;;                                     hexcolor
+;;                                     colorname
+;;                                     generic-value) ; the order in this list *is* important
+;;                                 blanks)
+;; IGNORE-USER-RE-ASSIGN       := IGNORE-USER-RE-KEY ASSIGN REGEXP
 ;; IGNORE-USER-BOOST-RE-ASSIGN := IGNORE-USER-RE-KEY ASSIGN REGEXP
-;; COLOR-RE-ASSIGN       := COLOR-RE-KEY ASSIGN REGEXP FG-COLOR (? ATTRIBUTE-VALUE)
-;; USE-FILE              := (AND USE BLANKS FILEPATH BLANKS)
-;; POST-ALLOWED-LANGUAGE := "post-allowed-language" BLANKS ASSIGN REGEXP
-;; KEY                   := FIELD (FIELD-SEPARATOR KEY)*
-;; BLANKS                := (BLANK)*
-;; FILEPATH              := QUOTED-STRING
-;; PROGRAM-NAME          := QUOTED-STRING
-;; USE-CACHE             := USE BLANKS CACHE
-;; NOWAIT                := NO BLANKS WAIT BLANKS (BUFFER-LABEL BLANKS DIGIT+)?
-;; NO                    := "no"
-;; WAIT                  := "wait"
-;; CACHE                 := "cache"
-;; USE                   := "use"
-;; SERVER-KEY            := "server"
-;; USERNAME-KEY          := "username"
-;; COLOR-RE-KEY          := "color-regexp"
-;; IGNORE-USER-RE-KEY    := "ignore-user-regexp"
-;; OPEN                  := "open"
-;; OPEN-LINK-HELPER-KEY  := OPEN
-;; WITH-KEY              := "with"
-;; BUFFER-LABEL          := "buffer"
-;; REGEXP                := QUOTED-STRING
-;; QUOTED-STRING         := #\" (not #\") #\"
-;; FIELD                 := ( (or ESCAPED-CHARACTER
-;;                               (not #\# ASSIGN BLANK FIELD-SEPARATOR) )*
-;; COMMENT               := BLANKS #\# (not #\Newline)* BLANKS
-;; FIELD-SEPARATOR       := #\.
-;; GENERIC-VALUE         := KEY
-;; ASSIGN                := #\=
-;; BLANK                 := (or #\space #\Newline #\Tab)
-;; BG-COLOR              := COLOR
-;; FG-COLOR              := COLOR
-;; COLOR                 := HEX-COLOR | COLOR-NAME
-;; HEX-COLOR             := HEXCOLOR-PREFIX
-;;                         HEXDIGIT HEXDIGIT -> red
-;;                         HEXDIGIT HEXDIGIT -> green
-;;                         HEXDIGIT HEXDIGIT -> blue
-;; ESCAPED-CHARACTER     := #\\ any-character
-;; HEXCOLOR-PREFIX       := #\#
-;; HEX-DIGIT             := (and (character-ranges #\0 #\9)
-;;                              (character-ranges #\a #\f)
-;;                              (character-ranges #\A #\f)
-;; DIGIT                 := (character-ranges #\0 #\9)
-;; ATTRIBUTE-VALUE       := "bold"
-;;                         | "italic"
-;;                         | "underline"
-;;                         | "blink"
-;; COLOR-NAME            := "black"
-;;                         | "red"
-;;                         | "green"
-;;                         | "yellow"
-;;                         | "blue"
-;;                         | "magenta"
-;;                         | "cyan"
-;;                         | "white"
+;; IGNORE-TAG-RE-ASSIGN        := IGNORE-USER-RE-KEY ASSIGN REGEXP
+;; COLOR-RE-ASSIGN             := COLOR-RE-KEY ASSIGN REGEXP FG-COLOR (? ATTRIBUTE-VALUE)
+;; USE-FILE                    := (AND USE BLANKS FILEPATH BLANKS)
+;; POST-ALLOWED-LANGUAGE       := "post-allowed-language" BLANKS ASSIGN REGEXP
+;; KEY                         := FIELD (FIELD-SEPARATOR KEY)*
+;; BLANKS                      := (BLANK)*
+;; FILEPATH                    := QUOTED-STRING
+;; PROGRAM-NAME                := QUOTED-STRING
+;; USE-CACHE                   := USE BLANKS CACHE
+;; NOWAIT                      := NO BLANKS WAIT BLANKS (BUFFER-LABEL BLANKS DIGIT+)?
+;; NO                          := "no"
+;; WAIT                        := "wait"
+;; CACHE                       := "cache"
+;; USE                         := "use"
+;; SERVER-KEY                  := "server"
+;; USERNAME-KEY                := "username"
+;; COLOR-RE-KEY                := "color-regexp"
+;; IGNORE-USER-RE-KEY          := "ignore-user-regexp"
+;; OPEN                        := "open"
+;; OPEN-LINK-HELPER-KEY        := OPEN
+;; WITH-KEY                    := "with"
+;; BUFFER-LABEL                := "buffer"
+;; REGEXP                      := QUOTED-STRING
+;; QUOTED-STRING               := #\" (not #\") #\"
+;; FIELD                       := ( (or ESCAPED-CHARACTER
+;;                                  (not #\# ASSIGN BLANK FIELD-SEPARATOR) )*
+;; COMMENT                     := BLANKS #\# (not #\Newline)* BLANKS
+;; FIELD-SEPARATOR             := #\.
+;; GENERIC-VALUE               := KEY
+;; ASSIGN                      := #\=
+;; BLANK                       := (or #\space #\Newline #\Tab)
+;; BG-COLOR                    := COLOR
+;; FG-COLOR                    := COLOR
+;; COLOR                       := HEX-COLOR | COLOR-NAME
+;; HEX-COLOR                   := HEXCOLOR-PREFIX
+;;                               HEXDIGIT HEXDIGIT -> red
+;;                               HEXDIGIT HEXDIGIT -> green
+;;                               HEXDIGIT HEXDIGIT -> blue
+;; ESCAPED-CHARACTER           := #\\ any-character
+;; HEXCOLOR-PREFIX             := #\#
+;; HEX-DIGIT                   := (and (character-ranges #\0 #\9)
+;;                                    (character-ranges #\a #\f)
+;;                                    (character-ranges #\A #\f)
+;; DIGIT                       := (character-ranges #\0 #\9)
+;; ATTRIBUTE-VALUE             := "bold"
+;;                               | "italic"
+;;                               | "underline"
+;;                               | "blink"
+;; COLOR-NAME                  := "black"
+;;                               | "red"
+;;                               | "green"
+;;                               | "yellow"
+;;                               | "blue"
+;;                               | "magenta"
+;;                               | "cyan"
+;;                               | "white"
 
 (define-constant +conf-filename+         "main.conf"             :test #'string=)
 
@@ -272,6 +274,9 @@
 (defrule ignore-user-boost-re-key "ignore-user-boost-regexp"
   (:constant :ignore-user-boost-re))
 
+(defrule ignore-tag-re-assign "ignore-tag-regexp"
+  (:constant :ignore-tag-re))
+
 (defrule ignore-user-re-assign
     (and ignore-user-re-key blanks
          assign blanks regexp blanks)
@@ -439,6 +444,7 @@
              color-re-assign
              ignore-user-re-assign
              ignore-user-boost-re-assign
+             ignore-tag-re-assign
              server-assign
              username-assign
              open-link-helper
@@ -622,6 +628,7 @@
                    color-re
                    ignore-user-re
                    ignore-user-boost-re
+                   ignore-tag-re
                    post-allowed-language
                    purge-history-days-offset
                    purge-cache-days-offset
@@ -644,6 +651,7 @@
           ((or (eq +key-color-re+ key)
                (eq +key-ignore-user-re+ key)
                (eq +key-ignore-user-boost-re+ key)
+               (eq +key-ignore-tag-re+ key)
                (eq +key-open-link-helper+ key)
                (eq +key-post-allowed-language+ key))
            (setf (access:accesses *software-configuration* key)
@@ -966,6 +974,10 @@
 (defun ignore-users-boost-regexps ()
   (access:accesses *software-configuration*
                    +key-ignore-user-boost-re+))
+
+(defun ignore-tag-regexps ()
+  (access:accesses *software-configuration*
+                   +key-ignore-tag-re+))
 
 (defmacro gen-win-key-access (fn-suffix key)
   `(defun ,(misc:format-fn-symbol t "win-~a" fn-suffix) (win-key)

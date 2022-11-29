@@ -82,7 +82,7 @@
                    (mapping-code->fn mapping-code->fn)
                    (parsed-modeline  parsed-modeline)) object
     ;; parsed is like '("foo" (:key "a") "bar" ...)
-    (let ((res    (make-tui-string "")))
+    (let ((res (make-tui-string "")))
       (loop for i in parsed-modeline do
            (let ((executed (cond
                              ((listp i)

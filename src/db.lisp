@@ -761,6 +761,14 @@
         (return-from boost-ignored-p t)))
     nil))
 
+(defun tags-ignored-p (tags)
+  "Returns non nil if theh tags of a status must be filtered out"
+  (when-let ((ignore-regexps (swconf:ignore-tag-regexps)))
+    (loop for ignore-re in ignore-regexps do
+      (when (cl-ppcre:scan ignore-re tags)
+        (return-from tags-ignored-p t)))
+    nil))
+
 (defun acct->user (acct)
   "Convert `acct' (acct is synonyym  for username in mastodon account)
 to the corresponding row in table +table-account+"
@@ -1216,6 +1224,13 @@ than (swconf:config-purge-history-days-offset) days in the past"
                              (:and (:= :day  actual-day)
                                    (:= :tag  tag)))))))))
 
+(defun concat-tags (status)
+  (with-accessors ((tags tooter:tags)) status
+    (if tags
+        (join-with-strings (mapcar #'client:tag-name tags)
+                           +tag-separator+)
+        "")))
+
 (defmethod update-db ((object tooter:status)
                       &key
                         (timeline +local-timeline+)
@@ -1252,8 +1267,7 @@ than (swconf:config-purge-history-days-offset) days in the past"
            (tag-names          (if tags
                                    (mapcar #'client:tag-name tags)
                                    ""))
-           (actual-tags        (join-with-strings tag-names
-                                                  +tag-separator+))
+           (actual-tags        (concat-tags object))
            (actual-language    (prepare-for-db language))
            ;; use string-downcase as a workaround because tooter return an upcased keyword
            (actual-visibility  (string-downcase (prepare-for-db visibility)))

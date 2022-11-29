@@ -861,6 +861,7 @@
    :account-ignored-p
    :user-ignored-p
    :boost-ignored-p
+   :tags-ignored-p
    :acct->user
    :acct->id
    :username->id
@@ -1241,6 +1242,7 @@
    :color-regexps
    :ignore-users-regexps
    :ignore-users-boost-regexps
+   :ignore-tag-regexps
    :win-bg
    :win-fg
    :win-height
