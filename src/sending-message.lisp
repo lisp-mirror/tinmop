@@ -121,7 +121,7 @@
                (label-subject-raw           (_ "Subject: "))
                (label-visibility-raw        (_ "Visibility: "))
                (label-reply-length-raw      (length label-reply-raw))
-               (label-mentions-length-raw    (length label-mentions-raw))
+               (label-mentions-length-raw   (length label-mentions-raw))
                (label-subject-raw-length    (length label-subject-raw))
                (label-visibility-raw-length (length label-visibility-raw))
                (max-field-length            (max label-reply-length-raw
