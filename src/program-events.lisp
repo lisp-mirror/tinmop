@@ -799,7 +799,9 @@
                                                             username))
                                                  remote-accounts-matching)))
     (values (tooter:id matched-account)
-            username)))
+            username
+            matched-account)))
+
 
 (defmacro with-process-follower ((username user-id
                                   &optional
@@ -819,9 +821,15 @@
 (defmethod process-event ((object follow-user-event))
   (with-accessors ((username payload)) object
     (with-process-follower (username user-id db:all-unfollowed-usernames)
-      (client:follow-user  user-id)
-      (db:add-to-followers user-id)
-      (ui:notify (format nil (_ "Followed  ~a") username)))))
+      (let ((user-object (nth-value 2 (find-user-id-from-exact-acct username))))
+        (if user-object
+            (progn
+              (db:update-db user-object)
+              (client:follow-user user-id)
+              (db:add-to-followers user-id)
+              (ui:notify (format nil (_ "Followed  ~a") username)))
+            (ui:notify (format nil (_ "User ~a not found on the server") username)
+                       :as-error t))))))
 
 (defclass unfollow-user-event (program-event) ())
 
