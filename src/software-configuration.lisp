@@ -490,6 +490,8 @@
                    end
                    left
                    right
+                   geometry
+                   tile
                    stopper
                    root
                    width
@@ -618,6 +620,7 @@
                    binary-file
                    text-file
                    image-file
+                   images
                    gif-file
                    fetch
                    update
@@ -632,7 +635,8 @@
                    post-allowed-language
                    purge-history-days-offset
                    purge-cache-days-offset
-                   mentions)
+                   mentions
+                   montage)
 
 (defun perform-missing-value-check (file)
   (handler-case
@@ -1060,6 +1064,18 @@
                    +key-iri+
                    +key-fragment+
                    +key-regex+)
+
+(gen-simple-access (gemini-images-montage-geometry)
+                   +key-gemini+
+                   +key-images+
+                   +key-montage+
+                   +key-geometry+)
+
+(gen-simple-access (gemini-images-montage-tile)
+                   +key-gemini+
+                   +key-images+
+                   +key-montage+
+                   +key-tile+)
 
 (defun config-notify-window-geometry ()
   (values (access:accesses  *software-configuration*

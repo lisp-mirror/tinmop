@@ -1537,8 +1537,10 @@ displayed using  the standard image  viewer installed on  the system."
     (with-enqueued-process ()
       (let* ((command-line (flatten (list "-title" (gemini-viewer:current-gemini-url)
                                           "-frame" "5"
-                                          "-geometry" "320x320"
-                                          "-tile"     "x4"
+                                          "-geometry"
+                                          (swconf:config-gemini-images-montage-geometry)
+                                          "-tile"
+                                          (swconf:config-gemini-images-montage-tile)
                                           "-background" "Grey"
                                           "-bordercolor" "SkyBlue"
                                           "-mattecolor"  "Lavender"

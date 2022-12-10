@@ -1258,6 +1258,8 @@
    :config-delete-fetched-mentions-p
    :config-gemini-fullscreen-toc-width
    :config-gemini-fullscreen-links-height
+   :config-gemini-images-montage-tile
+   :config-gemini-images-montage-geometry
    :config-post-allowed-language
    :config-purge-history-days-offset
    :config-purge-cage-days-offset
