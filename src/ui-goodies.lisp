@@ -1517,40 +1517,44 @@ It an existing file path is provided the command will refuse to run."
                                   collect
                                   (fs:temporary-file :extension ".bitmap")))
               (output-file  (fs:temporary-file)))
-    (loop for file in files
-          for uri in images-uris
-          do
+    (map nil
+         (lambda (file uri)
+           (with-enqueued-process ()
              (let ((data (gemini-client:slurp-gemini-url (gemini-parser:target uri))))
+               (info-message (format nil (_ "downloaded: ~a") (gemini-parser:target uri))
+                             program-events:+maximum-event-priority+)
                (with-open-file (stream file
                                        :direction :output
                                        :if-does-not-exist :error
                                        :if-exists :supersede
                                        :element-type filesystem-tree-window:+octect-type+)
-                 (write-sequence data stream))))
-    (let* ((command-line (flatten (list "-title" (gemini-viewer:current-gemini-url)
-                                        "-frame" "5"
-                                        "-geometry" "320x320"
-                                        "-tile"     "x4"
-                                        "-background" "Grey"
-                                        "-bordercolor" "SkyBlue"
-                                        "-mattecolor"  "Lavender"
-                                        "-font" "Arial"
-                                        "-pointsize" "12"
-                                       (loop for name in names
-                                             for file in files
-                                             collect
-                                             (list "-label" name file))
-                                       "-")))
-           (process (os-utils:run-external-program +montage-bin+
-                                                   command-line
-                                                   :search t
-                                                   :wait   t
-                                                   :input  t
-                                                   :output output-file
-                                                   :error  t)))
-      (if (not (os-utils:process-exit-success-p process))
-          (error-message (_ "Error during images montage."))
-          (os-utils:xdg-open output-file))))
+                 (write-sequence data stream)))))
+         files
+         images-uris)
+    (with-enqueued-process ()
+      (let* ((command-line (flatten (list "-title" (gemini-viewer:current-gemini-url)
+                                          "-frame" "5"
+                                          "-geometry" "320x320"
+                                          "-tile"     "x4"
+                                          "-background" "Grey"
+                                          "-bordercolor" "SkyBlue"
+                                          "-mattecolor"  "Lavender"
+                                          "-pointsize" "12"
+                                          (loop for name in names
+                                                for file in files
+                                                collect
+                                                (list "-label" name file))
+                                          "-")))
+             (process (os-utils:run-external-program +montage-bin+
+                                                     command-line
+                                                     :search t
+                                                     :wait   t
+                                                     :input  t
+                                                     :output output-file
+                                                     :error  t)))
+        (if (not (os-utils:process-exit-success-p process))
+            (error-message (_ "Error during images montage."))
+            (os-utils:xdg-open output-file)))))
   #-montage-bin
   (notify (_ "ImageMagick binaries not found on this system") :as-error t))
 
