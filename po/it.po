@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: tinmop 0.0.1\n"
 "Report-Msgid-Bugs-To: https://notabug.org/cage/tinmop/\n"
 "POT-Creation-Date: 2022-12-10 14:17+0100\n"
-"PO-Revision-Date: 2022-12-10 14:17+0100\n"
+"PO-Revision-Date: 2022-12-10 14:19+0100\n"
 "Last-Translator: cage <cage@invalid.org>\n"
 "Language-Team: Italian\n"
 "Language: it\n"
@@ -1230,7 +1230,7 @@ msgid "Sending message"
 msgstr "Spedisco il messaggio"
 
 #: src/ui-goodies.lisp:1512
-#, fuzzy, lisp-format
+#, lisp-format
 msgid "Figure: ~~~d,'0d"
 msgstr "Figura: ~~~d,'0d"
 
