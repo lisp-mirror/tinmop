@@ -1500,7 +1500,10 @@ It an existing file path is provided the command will refuse to run."
   :test #'string=)
 
 (defun gemini-images-montage ()
-  #+montage-bin
+  "Generate an image  formed that contains all the images  linked to a
+gemini page and arranged in a grid layout, the resulting image is then
+displayed using  the standard image  viewer installed on  the system."
+#+montage-bin
   (when-let* ((window       *message-window*)
               (metadata     (message-window:metadata window))
               (links        (gemini-viewer:gemini-metadata-links metadata))
