@@ -1509,7 +1509,7 @@ It an existing file path is provided the command will refuse to run."
                                             links))
               (images-count (length images-uris))
               (name-padding (num:count-digit images-count))
-              (name-format  (format nil (_"\"Figure: ~~~d,'0d\"") name-padding))
+              (name-format  (format nil (_ "Figure: ~~~d,'0d") name-padding))
               (names        (loop for ct from 1 below (1+ images-count)
                                   collect
                                   (format nil name-format ct)))
@@ -1549,7 +1549,7 @@ It an existing file path is provided the command will refuse to run."
                                                    :output output-file
                                                    :error  t)))
       (if (not (os-utils:process-exit-success-p process))
-          (error-message (_ "Error during image composition."))
+          (error-message (_ "Error during images montage."))
           (os-utils:xdg-open output-file))))
   #-montage-bin
   (notify (_ "ImageMagick binaries not found on this system") :as-error t))
