@@ -19,7 +19,9 @@
 
 (alexandria:define-constant +unzip-bin+     "@UNZIP@"    :test #'string=)
 
-(alexandria:define-constant +man-bin+       "@MAN@"    :test #'string=)
+(alexandria:define-constant +man-bin+       "@MAN@"      :test #'string=)
+
+(alexandria:define-constant +montage-bin+   "@MONTAGE@"  :test #'string=)
 
 (eval-when (:compile-toplevel :load-toplevel :execute)
 
@@ -30,7 +32,9 @@
 
   (allow-features +unzip-bin+ :gempub-support)
 
-  (allow-features +man-bin+   :man-bin))
+  (allow-features +man-bin+   :man-bin)
+
+  (allow-features +montage-bin+ :montage-bin))
 
 (defmacro with-return-untranslated ((untranslated) &body body)
   `(handler-bind ((i18n-conditions:no-translation-table-error

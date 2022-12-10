@@ -123,6 +123,13 @@ if test "$DIRNAME" = "no" ; then
    exit 1;
 fi
 
+AC_PATH_PROGS([MONTAGE],[montage],[no])
+
+if test "$MONTAGE" = "no" ; then
+   AC_MSG_WARN([Can not find imagemagick 'montage' executable.])
+   exit 1;
+fi
+
 AC_PROG_MKDIR_P
 
 dnl checks for libraries

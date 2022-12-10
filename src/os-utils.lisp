@@ -79,7 +79,9 @@
                                search
                                input
                                output
-                               (error :output))
+                               (error :output)
+                               #+sbcl (if-output-exists :supersede)
+                               #+sbcl (if-error-exists :supersede))
   (declare (ignorable search))
   #+ecl (ext:run-program program
                          args
@@ -88,12 +90,14 @@
                          :error  error
                          :wait   wait)
   #+sbcl (sb-ext:run-program program
-                      args
-                      :wait   wait
-                      :search search
-                      :input  input
-                      :output output
-                      :error  error))
+                             args
+                             :wait   wait
+                             :search search
+                             :input  input
+                             :output output
+                             :error  error
+                             :if-output-exists if-output-exists
+                             :if-error-exists if-error-exists))
 
 (defun process-exit-code (process)
   #+ecl  (nth-value 1 (ext:external-process-status process))

@@ -1496,6 +1496,64 @@ It an existing file path is provided the command will refuse to run."
                       :enqueue    enqueue
                       :links      links)))
 
+(define-constant +image-link-extension-re+ "(?i)(\\.jpg$)|(\\.bmp$)|(\\.png$)|(\\.tiff$)|(\\.tga$)|(\\.ps$)|(\\.svg)|(\\.pcx)"
+  :test #'string=)
+
+(defun gemini-images-montage ()
+  #+montage-bin
+  (when-let* ((window       *message-window*)
+              (metadata     (message-window:metadata window))
+              (links        (gemini-viewer:gemini-metadata-links metadata))
+              (images-uris   (remove-if-not (lambda (a) (cl-ppcre:scan +image-link-extension-re+
+                                                                       (gemini-parser:target a)))
+                                            links))
+              (images-count (length images-uris))
+              (name-padding (num:count-digit images-count))
+              (name-format  (format nil (_"\"Figure: ~~~d,'0d\"") name-padding))
+              (names        (loop for ct from 1 below (1+ images-count)
+                                  collect
+                                  (format nil name-format ct)))
+              (files        (loop for ct from 0 below images-count
+                                  collect
+                                  (fs:temporary-file :extension ".bitmap")))
+              (output-file  (fs:temporary-file)))
+    (loop for file in files
+          for uri in images-uris
+          do
+             (let ((data (gemini-client:slurp-gemini-url (gemini-parser:target uri))))
+               (with-open-file (stream file
+                                       :direction :output
+                                       :if-does-not-exist :error
+                                       :if-exists :supersede
+                                       :element-type filesystem-tree-window:+octect-type+)
+                 (write-sequence data stream))))
+    (let* ((command-line (flatten (list "-title" (gemini-viewer:current-gemini-url)
+                                        "-frame" "5"
+                                        "-geometry" "320x320"
+                                        "-tile"     "x4"
+                                        "-background" "Grey"
+                                        "-bordercolor" "SkyBlue"
+                                        "-mattecolor"  "Lavender"
+                                        "-font" "Arial"
+                                        "-pointsize" "12"
+                                       (loop for name in names
+                                             for file in files
+                                             collect
+                                             (list "-label" name file))
+                                       "-")))
+           (process (os-utils:run-external-program +montage-bin+
+                                                   command-line
+                                                   :search t
+                                                   :wait   t
+                                                   :input  t
+                                                   :output output-file
+                                                   :error  t)))
+      (if (not (os-utils:process-exit-success-p process))
+          (error-message (_ "Error during image composition."))
+          (os-utils:xdg-open output-file))))
+  #-montage-bin
+  (notify (_ "ImageMagick binaries not found on this system") :as-error t))
+
 (defun open-message-link ()
   "Open message links window
 

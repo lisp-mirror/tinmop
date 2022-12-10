@@ -482,6 +482,8 @@
 
 (define-key "C-["       #'go-to-previous-link                        *gemini-message-keymap*)
 
+(define-key "I M"       #'gemini-images-montage                      *gemini-message-keymap*)
+
 ;; gemini page table of contents keymap
 
 (define-key "up"        #'gemini-toc-scroll-up                       *gemini-toc-keymap*)

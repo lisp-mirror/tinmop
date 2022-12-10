@@ -36,6 +36,7 @@
    :+xdg-open-bin+
    :+unzip-bin+
    :+man-bin+
+   :+montage-bin+
    :_
    :n_))
 
@@ -2799,6 +2800,7 @@
    :search-link-window
    :open-gemini-message-link-window
    :open-message-link
+   :gemini-images-montage
    :open-message-link-go-up
    :open-message-link-go-down
    :open-message-link-perform-opening
