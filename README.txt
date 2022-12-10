@@ -92,6 +92,10 @@ Table of Contents
     • unzip (command line utitlity to decompress zip file);
     • your favourite editor (default: nano).
 
+  ⁃ optional recommended programs:
+    • man
+    • imagemagick
+
   All the dependencies above should be available using the package
   manager of your distribution (`apt', `yum' etc).
 
