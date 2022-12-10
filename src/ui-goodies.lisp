@@ -1512,10 +1512,13 @@ displayed using  the standard image  viewer installed on  the system."
                                             links))
               (images-count (length images-uris))
               (name-padding (num:count-digit images-count))
-              (name-format  (format nil (_ "Figure: ~~~d,'0d") name-padding))
-              (names        (loop for ct from 1 below (1+ images-count)
+              (names        (loop for uri in images-uris
                                   collect
-                                  (format nil name-format ct)))
+                                  (or (gemini-parser:name uri)
+                                      (when-let* ((parsed (iri:iri-parse (gemini-parser:target uri)
+                                                                         :null-on-error t))
+                                                  (path   (and parsed (uri:path parsed))))
+                                        (fs:path-last-element path)))))
               (files        (loop for ct from 0 below images-count
                                   collect
                                   (fs:temporary-file :extension ".bitmap")))
