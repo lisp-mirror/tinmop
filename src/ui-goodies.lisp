@@ -1503,7 +1503,7 @@ It an existing file path is provided the command will refuse to run."
   "Generate an image  formed that contains all the images  linked to a
 gemini page and arranged in a grid layout, the resulting image is then
 displayed using  the standard image  viewer installed on  the system."
-#+montage-bin
+  #+montage-bin
   (when-let* ((window       *message-window*)
               (metadata     (message-window:metadata window))
               (links        (gemini-viewer:gemini-metadata-links metadata))
@@ -1526,43 +1526,48 @@ displayed using  the standard image  viewer installed on  the system."
     (map nil
          (lambda (file uri)
            (with-enqueued-process ()
-             (let ((data (gemini-client:slurp-gemini-url (gemini-parser:target uri))))
-               (info-message (format nil (_ "downloaded: ~a") (gemini-parser:target uri))
-                             program-events:+maximum-event-priority+)
-               (with-open-file (stream file
-                                       :direction :output
-                                       :if-does-not-exist :error
-                                       :if-exists :supersede
-                                       :element-type filesystem-tree-window:+octect-type+)
-                 (write-sequence data stream)))))
+             (tui:with-notify-errors
+               (let ((data (gemini-client:slurp-gemini-url (gemini-parser:target uri))))
+                 (info-message (format nil (_ "downloaded: ~a") (gemini-parser:target uri))
+                               program-events:+maximum-event-priority+)
+                 (with-open-file (stream file
+                                         :direction :output
+                                         :if-does-not-exist :error
+                                         :if-exists :supersede
+                                         :element-type filesystem-tree-window:+octect-type+)
+                   (write-sequence data stream))))))
          files
          images-uris)
     (with-enqueued-process ()
-      (let* ((command-line (flatten (list "-title" (gemini-viewer:current-gemini-url)
-                                          "-frame" "5"
-                                          "-geometry"
-                                          (swconf:config-gemini-images-montage-geometry)
-                                          "-tile"
-                                          (swconf:config-gemini-images-montage-tile)
-                                          "-background" "Grey"
-                                          "-bordercolor" "SkyBlue"
-                                          "-mattecolor"  "Lavender"
-                                          "-pointsize" "12"
-                                          (loop for name in names
-                                                for file in files
-                                                collect
-                                                (list "-label" name file))
-                                          "-")))
-             (process (os-utils:run-external-program +montage-bin+
-                                                     command-line
-                                                     :search t
-                                                     :wait   t
-                                                     :input  t
-                                                     :output output-file
-                                                     :error  t)))
-        (if (not (os-utils:process-exit-success-p process))
-            (error-message (_ "Error during images montage."))
-            (os-utils:xdg-open output-file)))))
+      (tui:with-notify-errors
+        (let ((error-message (misc:make-fresh-array 0 #\a 'character nil)))
+          (with-output-to-string (error-stream error-message)
+            (let* ((command-line (flatten (list "-title" (gemini-viewer:current-gemini-url)
+                                                "-frame" "5"
+                                                "-geometry"
+                                                (swconf:config-gemini-images-montage-geometry)
+                                                "-tile"
+                                                (swconf:config-gemini-images-montage-tile)
+                                                "-background" "Grey"
+                                                "-bordercolor" "SkyBlue"
+                                                "-mattecolor"  "Lavender"
+                                                "-font"        "Sans"
+                                                "-pointsize" "12"
+                                                (loop for name in names
+                                                      for file in files
+                                                      collect
+                                                      (list "-label" name file))
+                                                "-")))
+                   (process (os-utils:run-external-program +montage-bin+
+                                                           command-line
+                                                           :search t
+                                                           :wait   t
+                                                           :input  t
+                                                           :output output-file
+                                                           :error  error-stream)))
+              (if (not (os-utils:process-exit-success-p process))
+                  (error-message (format nil (_ "Error during images montage: ~a.") error-message))
+                  (os-utils:xdg-open output-file))))))))
   #-montage-bin
   (notify (_ "ImageMagick binaries not found on this system") :as-error t))
 
