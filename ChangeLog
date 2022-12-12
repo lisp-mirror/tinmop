@@ -1,3 +1,142 @@
+2022-12-11 cage
+
+	* src/ui-goodies.lisp:
+
+	- captured error that could happens when making a image mosaic from a
+	gemini page.
+
+2022-12-10 cage
+
+	* Makefile.in,
+	* README.org,
+	* README.txt,
+	* configure,
+	* configure.ac,
+	* etc/init.lisp,
+	* etc/shared.conf,
+	* po/it.po,
+	* po/tinmop.pot,
+	* src/config.lisp.in.in,
+	* src/os-utils.lisp,
+	* src/package.lisp,
+	* src/software-configuration.lisp,
+	* src/ui-goodies.lisp:
+
+	- added command 'gemini-images-montage'.
+	- updated italian translation;
+	- fixed error messages when collecting images.
+	- removed fuzzy bit from italian PO file.
+	- added progression messages when composing images.
+	- added docstring to 'gemini-images-montage'
+	- updated READMEs.
+	- added a pair of directives to configure montage of gemini images.
+	- added a better name for images captions, when composing images from
+	a gemini page.
+
+2022-12-09 cage
+
+	* src/program-events.lisp:
+
+	- ensured an user is added into the the database before following
+	them.
+
+2022-12-08 cage
+
+	* etc/shared.conf,
+	* src/sending-message.lisp:
+
+	- reworked a few regular expressions to fix mentions coloring.
+
+2022-12-07 cage
+
+	* src/open-message-link-window.lisp:
+
+	- prevented useless percent encoding of a path.
+
+2022-11-29 cage
+
+	* src/db.lisp,
+	* src/modeline-window.lisp,
+	* src/package.lisp,
+	* src/program-events.lisp,
+	* src/software-configuration.lisp:
+
+	- added a configuration directive to filter out unwanted hashtags.
+
+2022-11-28 cage
+
+	* src/db.lisp:
+
+	- removed debug code.
+
+2022-11-27 cage
+
+	* etc/shared.conf,
+	* src/api-client.lisp,
+	* src/package.lisp,
+	* src/program-events.lisp,
+	* src/software-configuration.lisp:
+
+	- added a configuration directive to leave or delete mentions from the
+	server after fetching them.
+
+2022-11-26 cage
+
+	* src/gemini-viewer.lisp:
+
+	- fixed declaration.
+
+2022-11-25 cage
+
+	* src/api-client.lisp,
+	* src/gemini-viewer.lisp,
+	* src/gemini/client.lisp,
+	* src/program-events.lisp,
+	* src/tui-utils.lisp:
+
+	- prevented deletion of mentions when the program is in debug-mode;
+	- [gemini] prevented crash when and error getting data from TLS
+	socket;
+	- prevented crash when dumping mentions.
+	- ignore errors when getting gemlog feeds data.
+
+2022-11-24 cage
+
+	* src/line-oriented-window.lisp:
+
+	- prevented crash when calling resync-rows-db of a null object.
+
+2022-11-23 cage
+
+	* etc/shared.conf:
+
+	- fixed coloring regex.
+
+2022-11-21 cage
+
+	* src/api-pleroma.lisp,
+	* src/chats-list-window.lisp,
+	* src/message-window.lisp,
+	* src/program-events.lisp,
+	* tinmop.asd:
+
+	- prevented crash when opening empty chat windows;
+	- fixed refreshing of chats.
+	- flipped off debug switch.
+
+2022-11-20 cage
+
+	* ChangeLog,
+	* configure,
+	* configure.ac,
+	* src/program-events.lisp,
+	* tinmop.asd:
+
+	- updated Changelog.
+	- increased version number.
+	- removed field from changelog.
+	- removed empty line.
+
 2022-11-19 cage
 
 	* ChangeLog,
