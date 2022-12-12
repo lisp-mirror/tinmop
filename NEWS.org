@@ -1,20 +1,30 @@
 * 2022-12-12 version 0.9.9.1
 
   - New feature
-
-   - This version added support for the gopher protocol.
-     https://en.wikipedia.org/wiki/Gopher_(protocol)
-   - added a command to fetch a pleroma thread given a post's ID;
-   - added a command to get a pleroma post's ID;
-   - added a command to command to convert a pleroma thread to text.
+    - added command `print-mentions', to dump mentions in the main window;
+    - added  a configuration  directive  to filter  boost  based on  a
+      regular expression matching the username;
+    - added a configuration directive to filter out unwanted hashtags;
+    - added a configuration directive to leave or delete mentions from the
+      server after fetching them;
+    - added command 'gemini-images-montage'.
 
   - Improvements
-   - [gemini/gopher] searching  in  URL  history  does not  takes  into  account  the
-     characters case.
+    - added preview and confirm prompt for each file attached on a status;
+    - [gemini] prevented  the script 'generate-gemlog.lisp'  to export
+      files that do not match .gmi extension;
 
   - Bugfix
     - fixed bug that prevented updating list of posts from subscribed tags;
-    - gopher links from a message windows are collected into the links window
+    - gopher links from a main window are collected into the links window;
+    - [gemini] prevented  the script 'generate-gemlog.lisp'  to export
+      files that do not match .gmi extension;
+    - prevented crash when opening empty chat windows;
+    - fixed refreshing of chats
+    - [gemini] prevented  crash when and  error getting data  from TLS
+      socket;
+    - fixed  bug that  prevented  a remote  user to  be  added in  the
+      database whan following them;
 
 
 * 2022-10-14 version 0.9.9
@@ -33,7 +43,7 @@
 
    - Bugfix
      - prevented crash when opening a post where the user was mentioned
-     - reset the message window's title when opening a post and the message
+     - reset the main window's title when opening a post and the message
        window is displaying a gemini page;
      - removed unused argument.
      - [gemini] pushed link into history of visited URL even if the page
