@@ -2,7 +2,7 @@
 
 * Name
 
-  tinmop - a client for gemini, pleroma social network or 9p protocol overt TLS
+  tinmop - a client for gemini, gopher, pleroma social network and 9p protocol over TLS
 
 * Synopsis
 
@@ -19,7 +19,7 @@
 
 
   Tinmop proposes an extensible terminal interface to connect with
-  Pleroma social network or for the gemini protocol
+  Pleroma social network, the gemini and gopher protocol
 
   - gemini://gemini.circumlunar.space/
   - [[https://gemini.circumlunar.space/docs/]]
@@ -483,6 +483,7 @@
   - C-b a     :: bookmark-gemini-page
   - C-b d     :: delete-gemini-bookmark
   - C-b s     :: display-bookmark
+  - I M       :: collect and join together all the images linked from a gemini page and then display the resulting images
   - N         :: repeat-search
   - O         :: open-gemini-toc
   - T         :: show-tour-links

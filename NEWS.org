@@ -1,6 +1,9 @@
 * 2022-12-12 version 0.9.9.1
 
   - New feature
+    - added command `gemini-images-montage'  this command collects and
+      joins together all the images linked from a gemini page and then
+      displays the resulting images
     - added command `print-mentions', to dump mentions in the main window;
     - added  a configuration  directive  to filter  boost  based on  a
       regular expression matching the username;

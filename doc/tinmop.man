@@ -2,7 +2,7 @@
 
 .SH "Name"
 .PP
-tinmop - a client for gemini, pleroma social network or 9p protocol overt TLS
+tinmop - a client for gemini, gopher, pleroma social network and 9p protocol over TLS
 
 .SH "Synopsis"
 .PP
@@ -23,7 +23,7 @@ information about this topic can be found on the following websites:
 
 .PP
 Tinmop proposes an extensible terminal interface to connect with
-Pleroma social network or for the gemini protocol
+Pleroma social network, the gemini and gopher protocol
 
 .IP \(em 4
 gemini://gemini.circumlunar.space/
@@ -834,6 +834,9 @@ delete-gemini-bookmark
 .TP
 \fBC-b s    \fP
 display-bookmark
+.TP
+\fBI M      \fP
+collect and join together all the images linked from a gemini page and then display the resulting images
 .TP
 \fBN        \fP
 repeat-search
